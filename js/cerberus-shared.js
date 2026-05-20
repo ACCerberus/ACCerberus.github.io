@@ -176,15 +176,76 @@
     });
   }
 
+  // ─── TOAST NOTIFICATIONS ON ALL PAGES ───
+  // Extends toast system site-wide (previously only on index.html)
+  function initToasts() {
+    // Don't add if already exists (index.html has its own)
+    if (document.getElementById('toastContainer')) return;
+
+    // Inject toast CSS
+    var style = document.createElement('style');
+    style.textContent = '.toast-container{position:fixed;bottom:24px;right:24px;z-index:9000;display:flex;flex-direction:column;gap:8px;pointer-events:none}' +
+      '.toast{pointer-events:auto;padding:12px 18px;background:rgba(10,10,15,0.95);border:1px solid rgba(255,255,255,0.06);border-radius:10px;font-size:0.78rem;color:#c8ccd4;max-width:360px;display:flex;align-items:flex-start;gap:10px;animation:toastIn 0.3s ease;box-shadow:0 4px 24px rgba(0,0,0,0.4);font-family:Inter,-apple-system,sans-serif}' +
+      '.toast.out{animation:toastOut 0.3s ease forwards}' +
+      '@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}' +
+      '@keyframes toastOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(40px)}}' +
+      '.toast-icon{flex-shrink:0;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;margin-top:1px}' +
+      '.toast-icon-block{background:rgba(224,64,80,0.15);color:#e04050}' +
+      '.toast-icon-ok{background:rgba(48,200,96,0.15);color:#30c860}' +
+      '.toast-icon-info{background:rgba(232,160,32,0.15);color:#e8a020}' +
+      '.toast-text{line-height:1.4}.toast-text strong{color:#eef0f4}' +
+      '.toast-time{font-family:"JetBrains Mono",monospace;font-size:0.6rem;color:#6b7084;margin-top:3px}';
+    document.head.appendChild(style);
+
+    var container = document.createElement('div');
+    container.className = 'toast-container';
+    container.id = 'toastContainer';
+    document.body.appendChild(container);
+
+    var msgs = [
+      { icon: 'ok', text: '<strong>Signature DB synced</strong> \u2014 all regions up to date' },
+      { icon: 'info', text: '<strong>Threat intel</strong> \u2014 new loader variant catalogued' },
+      { icon: 'block', text: '<strong>DMA board blocked</strong> \u2014 firmware fingerprint matched' },
+      { icon: 'ok', text: '<strong>Kernel integrity</strong> \u2014 scan cycle verified' },
+      { icon: 'info', text: '<strong>SDK update</strong> \u2014 v0.4.3.0a available for partners' },
+      { icon: 'ok', text: '<strong>AI model</strong> \u2014 behavioral engine updated' },
+    ];
+
+    function showToast() {
+      var msg = msgs[Math.floor(Math.random() * msgs.length)];
+      var toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = '<div class="toast-icon toast-icon-' + msg.icon + '">' +
+        (msg.icon === 'block' ? 'X' : msg.icon === 'ok' ? '\u2713' : '!') +
+        '</div><div class="toast-text">' + msg.text +
+        '<div class="toast-time">' + new Date().toLocaleTimeString() + '</div></div>';
+      container.appendChild(toast);
+      setTimeout(function () { toast.classList.add('out'); }, 5000);
+      setTimeout(function () { if (toast.parentNode) toast.remove(); }, 5300);
+      while (container.children.length > 3) container.removeChild(container.firstChild);
+    }
+
+    // First toast after 20-40s, then every 45-120s (less frequent than homepage)
+    setTimeout(function () {
+      showToast();
+      setInterval(function () {
+        if (Math.random() < 0.5) showToast();
+      }, 45000 + Math.floor(Math.random() * 75000));
+    }, 20000 + Math.floor(Math.random() * 20000));
+  }
+
   // ─── INIT ───
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
       fetchState();
       initPageTransitions();
+      initToasts();
     });
   } else {
     fetchState();
     initPageTransitions();
+    initToasts();
   }
 
 })();
+
