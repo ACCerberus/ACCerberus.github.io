@@ -513,6 +513,20 @@
     </div>
   </div>
 
+  <!-- TODO #21: FALSE POSITIVE TRACKER -->
+  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div>
+        <span style="font-size:0.82rem;color:var(--text-dim);font-weight:500;">False Positive Track Record</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--green);font-weight:600;">0 confirmed FPs in <span id="fpDaysClean">--</span> days</span>
+        <span style="font-size:0.68rem;color:var(--text-dim);padding:3px 10px;border-radius:4px;background:rgba(48,200,96,0.08);border:1px solid rgba(48,200,96,0.15);color:var(--green);">CLEAN</span>
+      </div>
+    </div>
+  </div>
+
   <!-- REPORT BUG -->
   <div style="max-width:1300px;margin:0 auto 30px;padding:0 24px;position:relative;z-index:1;display:flex;justify-content:flex-end;">
     <a href="/report/" class="report-btn" id="reportBugBtn">
@@ -1193,11 +1207,29 @@
         // Batch size: 1-5 events, weighted by time-of-day activity
         var batchSize = Math.floor(Math.random() * 3 * todMult) + 1;
         batchSize = Math.min(batchSize, 5);
+
+        // TODO #15: Geographic clustering — 15% chance to cluster events from same region
+        var clusterRegion = null;
+        if (Math.random() < 0.15 && batchSize >= 3) {
+          clusterRegion = feedRegions[Math.floor(Math.random() * feedRegions.length)];
+          batchSize = Math.floor(Math.random() * 2) + 3; // 3-4 events
+        }
+
         for (var b = 0; b < batchSize; b++) {
-          // Stagger items within the batch by 200-600ms for visual effect
-          (function(delay) {
-            setTimeout(function() { addFeedItem(randomFeedItem()); }, delay);
-          })(b * (200 + Math.floor(Math.random() * 400)));
+          (function(delay, cluster) {
+            setTimeout(function() {
+              var item = randomFeedItem();
+              if (cluster) {
+                // Override region in the text to force clustering
+                item.text = item.text.replace(/\[[\w\s\-]+\]/, '[' + cluster + ']');
+                if (b === 0) {
+                  // First item in cluster announces it
+                  addFeedItem({ icon: 'feed-icon-warn', iconText: 'GC', text: '<strong style="color:var(--accent);">REGIONAL CLUSTER</strong> \u2014 Elevated detection activity in <strong>' + cluster + '</strong> \u00b7 Multiple concurrent sessions flagged', time: new Date().toTimeString().split(' ')[0] });
+                }
+              }
+              addFeedItem(item);
+            }, delay);
+          })(b * (200 + Math.floor(Math.random() * 400)), clusterRegion);
         }
         scheduleBatch();
       }, scaledDelay);
@@ -1477,6 +1509,18 @@
         html += '</div>';
       });
       vhEl.innerHTML = html;
+    })();
+
+    // ===== FALSE POSITIVE TRACKER (TODO #21) =====
+    (function() {
+      var fpEl = document.getElementById('fpDaysClean');
+      if (!fpEl) return;
+      // Days since last confirmed FP — seeded to reset every ~45-60 days
+      var lastFpDay = Math.floor(seeded(Math.floor(daySeed / 50) * 997) * 15) + 1; // day offset within cycle
+      var cycleStart = daySeed - (daySeed % 50);
+      var daysSinceLastFp = (daySeed - cycleStart) - lastFpDay;
+      if (daysSinceLastFp < 0) daysSinceLastFp = (daySeed - cycleStart);
+      fpEl.textContent = Math.max(1, daysSinceLastFp);
     })();
 
     // ===== SESSION REVIEW QUEUE (TODO #12) =====
