@@ -1001,27 +1001,27 @@
     </div>
     <div class="metrics-grid reveal">
       <div class="metric-card">
-        <div class="metric-value">99.87%</div>
-        <div class="metric-label">Detection Rate</div>
-        <div class="metric-sub">Across all cheat categories</div>
+        <div class="metric-value">96.2%</div>
+        <div class="metric-label">Overall Detection Rate</div>
+        <div class="metric-sub">Blended across all cheat categories</div>
       </div>
       <div class="metric-card">
-        <div class="metric-value">0.003%</div>
+        <div class="metric-value">0.012%</div>
         <div class="metric-label">False Positive Rate</div>
-        <div class="metric-sub">Borderline cases go to manual review</div>
+        <div class="metric-sub">Borderline cases escalate to manual review</div>
       </div>
       <div class="metric-card">
-        <div class="metric-value">&lt;0.3%</div>
+        <div class="metric-value">&lt;0.4%</div>
         <div class="metric-label">CPU Overhead</div>
         <div class="metric-sub">Avg across all layers</div>
       </div>
       <div class="metric-card">
-        <div class="metric-value">&lt;2ms</div>
+        <div class="metric-value">&lt;3ms</div>
         <div class="metric-label">Scan Latency</div>
         <div class="metric-sub">Per detection cycle</div>
       </div>
       <div class="metric-card">
-        <div class="metric-value">18MB</div>
+        <div class="metric-value">22MB</div>
         <div class="metric-label">Memory Footprint</div>
         <div class="metric-sub">Total runtime allocation</div>
       </div>
@@ -1030,6 +1030,94 @@
         <div class="metric-label">Frame Impact</div>
         <div class="metric-sub">Measured at 240fps</div>
       </div>
+    </div>
+
+    <!-- Detection breakdown by category -->
+    <div class="metrics-breakdown reveal" style="max-width:900px;margin:3rem auto 0;padding:0 2rem;">
+      <h3 style="font-family:var(--font-heading);color:var(--text-bright);font-size:1.1rem;margin-bottom:1.5rem;">Detection Rate by Category</h3>
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span style="min-width:160px;font-size:0.85rem;color:var(--text-dim);">Known Signatures</span>
+          <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="width:99.1%;height:100%;background:var(--green);border-radius:4px;"></div></div>
+          <span style="min-width:50px;text-align:right;font-family:var(--font-mono);font-size:0.8rem;color:var(--green);">99.1%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span style="min-width:160px;font-size:0.85rem;color:var(--text-dim);">Internal Cheats</span>
+          <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="width:97.4%;height:100%;background:var(--green);border-radius:4px;"></div></div>
+          <span style="min-width:50px;text-align:right;font-family:var(--font-mono);font-size:0.8rem;color:var(--green);">97.4%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span style="min-width:160px;font-size:0.85rem;color:var(--text-dim);">External Overlays</span>
+          <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="width:95.8%;height:100%;background:var(--accent);border-radius:4px;"></div></div>
+          <span style="min-width:50px;text-align:right;font-family:var(--font-mono);font-size:0.8rem;color:var(--accent);">95.8%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span style="min-width:160px;font-size:0.85rem;color:var(--text-dim);">Kernel Exploits</span>
+          <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="width:93.6%;height:100%;background:var(--accent);border-radius:4px;"></div></div>
+          <span style="min-width:50px;text-align:right;font-family:var(--font-mono);font-size:0.8rem;color:var(--accent);">93.6%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span style="min-width:160px;font-size:0.85rem;color:var(--text-dim);">DMA / Hardware</span>
+          <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="width:78.3%;height:100%;background:var(--red);border-radius:4px;"></div></div>
+          <span style="min-width:50px;text-align:right;font-family:var(--font-mono);font-size:0.8rem;color:var(--red);">78.3%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span style="min-width:160px;font-size:0.85rem;color:var(--text-dim);">Zero-Day / Novel</span>
+          <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="width:64.7%;height:100%;background:var(--red);border-radius:4px;"></div></div>
+          <span style="min-width:50px;text-align:right;font-family:var(--font-mono);font-size:0.8rem;color:var(--red);">64.7%</span>
+        </div>
+      </div>
+      <p style="font-size:0.75rem;color:var(--text-dim);margin-top:1rem;font-style:italic;">Rates from internal testing — v0.4.2 beta. Undetected cases are escalated to manual review.</p>
+    </div>
+
+    <!-- What devs are actively improving -->
+    <div class="dev-focus reveal" style="max-width:900px;margin:3rem auto 0;padding:0 2rem;">
+      <h3 style="font-family:var(--font-heading);color:var(--text-bright);font-size:1.1rem;margin-bottom:1.5rem;">Active Development Focus</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+            <span style="color:var(--red);font-size:0.7rem;font-family:var(--font-mono);background:rgba(224,64,80,0.1);padding:2px 8px;border-radius:4px;">PRIORITY</span>
+            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">DMA Detection</span>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;">Improving PCIe bus anomaly detection and TLP timing analysis. Current 78% rate is our biggest gap — targeting 90%+ by v0.5.</p>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+            <span style="color:var(--red);font-size:0.7rem;font-family:var(--font-mono);background:rgba(224,64,80,0.1);padding:2px 8px;border-radius:4px;">PRIORITY</span>
+            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">Zero-Day Heuristics</span>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;">Training the behavioral AI on broader datasets for novel cheat patterns. Expanding feature extraction from memory allocation sequences and syscall chains.</p>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+            <span style="color:var(--accent);font-size:0.7rem;font-family:var(--font-mono);background:var(--accent-dim);padding:2px 8px;border-radius:4px;">IN PROGRESS</span>
+            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">False Positive Reduction</span>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;">Refining confidence thresholds and adding secondary verification passes. Goal is to bring FP rate below 0.005% before GA release.</p>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+            <span style="color:var(--accent);font-size:0.7rem;font-family:var(--font-mono);background:var(--accent-dim);padding:2px 8px;border-radius:4px;">IN PROGRESS</span>
+            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">Hypervisor Evasion</span>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;">Hardening nested VM detection and CPUID masking checks. Some cheats use custom hypervisors to hide memory manipulation from ring-0 scans.</p>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+            <span style="color:var(--green);font-size:0.7rem;font-family:var(--font-mono);background:rgba(48,200,96,0.1);padding:2px 8px;border-radius:4px;">PLANNED</span>
+            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">Firmware Integrity</span>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;">Adding UEFI Secure Boot chain validation and SPI flash attestation to catch firmware-level implants before the OS even loads.</p>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+            <span style="color:var(--green);font-size:0.7rem;font-family:var(--font-mono);background:rgba(48,200,96,0.1);padding:2px 8px;border-radius:4px;">PLANNED</span>
+            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">Driver Signature Bypass</span>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;">Detecting vulnerable signed drivers (BYOVD) being loaded to disable kernel protections. Building a blocklist of known exploitable driver hashes.</p>
+        </div>
+      </div>
+      <p style="font-size:0.75rem;color:var(--text-dim);margin-top:1.25rem;font-style:italic;">Last updated May 2026. Roadmap subject to change based on threat landscape.</p>
     </div>
   </section>
 
