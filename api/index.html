@@ -1098,25 +1098,76 @@
       })
     };
 
-    // ── Try it ──
+    // ── TODO #13: API Rate Limit Simulation ──
+    var apiRateLimit = { max: 50, remaining: 50, resetAt: Date.now() + 60000 };
+    setInterval(function() {
+      if (Date.now() >= apiRateLimit.resetAt) {
+        apiRateLimit.remaining = apiRateLimit.max;
+        apiRateLimit.resetAt = Date.now() + 60000;
+      }
+    }, 1000);
+
     function tryEndpoint(key) {
       const panelEl = document.getElementById('rp-' + key);
       const bodyEl  = document.getElementById('rb-' + key);
       const timeEl  = document.getElementById('rt-' + key);
       const statEl  = document.getElementById('ts-' + key);
 
+      // Reset rate limit window if expired
+      if (Date.now() >= apiRateLimit.resetAt) {
+        apiRateLimit.remaining = apiRateLimit.max;
+        apiRateLimit.resetAt = Date.now() + 60000;
+      }
+
       statEl.textContent = 'Sending...';
       statEl.className = 'try-status';
 
       const latency = rndInt(38, 210);
       setTimeout(() => {
+        if (apiRateLimit.remaining <= 0) {
+          var retryAfter = Math.ceil((apiRateLimit.resetAt - Date.now()) / 1000);
+          bodyEl.innerHTML = fmtJSON({ error: 'rate_limit_exceeded', message: 'Too many requests. Retry after ' + retryAfter + 's.', retry_after: retryAfter });
+          timeEl.textContent = latency + 'ms';
+          statEl.textContent = '429 Too Many Requests';
+          statEl.className = 'try-status';
+          statEl.style.color = 'var(--red)';
+          panelEl.classList.add('visible');
+          updateRateLimitDisplay();
+          return;
+        }
+        apiRateLimit.remaining--;
         const data = generators[key]();
+        // Inject rate limit headers into response display
+        data._headers = { 'X-RateLimit-Limit': apiRateLimit.max, 'X-RateLimit-Remaining': apiRateLimit.remaining, 'X-RateLimit-Reset': Math.ceil(apiRateLimit.resetAt / 1000) };
         bodyEl.innerHTML = fmtJSON(data);
         timeEl.textContent = latency + 'ms';
         statEl.textContent = '200 OK';
         statEl.className = 'try-status ok';
+        statEl.style.color = '';
         panelEl.classList.add('visible');
+        updateRateLimitDisplay();
       }, latency + 80);
+    }
+
+    // Rate limit display bar
+    function updateRateLimitDisplay() {
+      var bar = document.getElementById('rateLimitBar');
+      if (!bar) {
+        var container = document.createElement('div');
+        container.id = 'rateLimitContainer';
+        container.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:9000;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:0.72rem;font-family:var(--font-mono);color:var(--text-dim);min-width:220px;';
+        container.innerHTML = '<div style="margin-bottom:6px;">API Rate Limit</div>' +
+          '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<div style="flex:1;height:4px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden;">' +
+          '<div id="rateLimitBar" style="height:100%;background:var(--green);border-radius:2px;transition:width 0.3s;"></div></div>' +
+          '<span id="rateLimitText"></span></div>';
+        document.body.appendChild(container);
+        bar = document.getElementById('rateLimitBar');
+      }
+      var pct = (apiRateLimit.remaining / apiRateLimit.max) * 100;
+      bar.style.width = pct + '%';
+      bar.style.background = pct > 40 ? 'var(--green)' : pct > 15 ? 'var(--accent)' : 'var(--red)';
+      document.getElementById('rateLimitText').textContent = apiRateLimit.remaining + '/' + apiRateLimit.max;
     }
 
     // ── Tab switching ──
