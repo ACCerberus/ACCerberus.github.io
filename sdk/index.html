@@ -569,9 +569,9 @@
     <!-- VERSION HISTORY -->
     <div class="section-header">
       <div class="section-title">Version History</div>
-      <div class="section-subtitle">All SDK releases — download counts shown persist in your browser</div>
+      <div class="section-subtitle">Current and recent releases</div>
     </div>
-    <div class="version-table-wrap" style="margin-bottom:40px;">
+    <div class="version-table-wrap" style="margin-bottom:20px;">
       <table class="version-table">
         <thead>
           <tr>
@@ -586,6 +586,32 @@
         <tbody id="versionTableBody">
         </tbody>
       </table>
+    </div>
+
+    <!-- ARCHIVE -->
+    <div style="margin-bottom:40px;">
+      <button id="archiveToggle" onclick="toggleArchive()" style="width:100%;padding:12px 20px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);font-family:var(--font);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all 0.2s;">
+        <span><span style="margin-right:8px;">&#9660;</span> Archived Versions <span style="font-size:0.7rem;color:var(--text-dim);margin-left:8px;" id="archiveCount"></span></span>
+        <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);">v0.1.0 — v0.3.4</span>
+      </button>
+      <div id="archiveWrap" style="display:none;margin-top:4px;">
+        <div class="version-table-wrap">
+          <table class="version-table">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Date</th>
+                <th>Size</th>
+                <th>Changes</th>
+                <th>Downloads</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="archiveTableBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -753,24 +779,47 @@
       return n;
     }
 
-    // ===== RENDER VERSION TABLE =====
+    // ===== RENDER VERSION TABLE (split recent + archive) =====
+    var RECENT_COUNT = 3; // Show top 3 in main table
+
+    function renderVersionRow(v) {
+      var dlCount = getVersionDlCount(v);
+      var html = '<tr>';
+      html += '<td class="vt-version">' + v.ver + (v.current ? ' <span class="vt-current">CURRENT</span>' : '') + '</td>';
+      html += '<td class="vt-date">' + v.date + '</td>';
+      html += '<td class="vt-size">' + v.size + '</td>';
+      html += '<td class="vt-changes">' + v.changes + '</td>';
+      html += '<td class="vt-dls" id="vdl-' + v.ver.replace(/\./g,'_') + '">' + dlCount.toLocaleString() + '</td>';
+      html += '<td><button class="vt-dl-btn" onclick="handleVersionDl(\'' + v.ver + '\')">';
+      html += '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+      html += (v.current ? 'Download' : 'Get') + '</button></td>';
+      html += '</tr>';
+      return html;
+    }
+
     function renderVersionTable() {
-      var tbody = document.getElementById('versionTableBody');
-      var html = '';
-      versions.forEach(function(v) {
-        var dlCount = getVersionDlCount(v);
-        html += '<tr>';
-        html += '<td class="vt-version">' + v.ver + (v.current ? ' <span class="vt-current">CURRENT</span>' : '') + '</td>';
-        html += '<td class="vt-date">' + v.date + '</td>';
-        html += '<td class="vt-size">' + v.size + '</td>';
-        html += '<td class="vt-changes">' + v.changes + '</td>';
-        html += '<td class="vt-dls" id="vdl-' + v.ver.replace(/\./g,'_') + '">' + dlCount.toLocaleString() + '</td>';
-        html += '<td><button class="vt-dl-btn" onclick="handleVersionDl(\'' + v.ver + '\')">';
-        html += '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
-        html += (v.current ? 'Download' : 'Get') + '</button></td>';
-        html += '</tr>';
+      var recentHtml = '';
+      var archiveHtml = '';
+      versions.forEach(function(v, i) {
+        if (i < RECENT_COUNT) {
+          recentHtml += renderVersionRow(v);
+        } else {
+          archiveHtml += renderVersionRow(v);
+        }
       });
-      tbody.innerHTML = html;
+      document.getElementById('versionTableBody').innerHTML = recentHtml;
+      document.getElementById('archiveTableBody').innerHTML = archiveHtml;
+      var archiveCount = versions.length - RECENT_COUNT;
+      document.getElementById('archiveCount').textContent = archiveCount + ' older release' + (archiveCount !== 1 ? 's' : '');
+    }
+
+    var archiveOpen = false;
+    function toggleArchive() {
+      archiveOpen = !archiveOpen;
+      document.getElementById('archiveWrap').style.display = archiveOpen ? 'block' : 'none';
+      var btn = document.getElementById('archiveToggle');
+      btn.querySelector('span span').textContent = archiveOpen ? '\u25B2' : '\u25BC';
+      btn.style.borderColor = archiveOpen ? 'var(--accent)' : '';
     }
 
     function handleVersionDl(verStr) {
