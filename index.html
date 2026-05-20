@@ -597,26 +597,6 @@
       .compare-table { font-size: 0.75rem; }
     }
 
-    /* ===== DDOS PROTECTION SPLASH ===== */
-    .ddos-shield {
-      position: fixed; inset: 0; z-index: 9999;
-      background: #0a0a0f;
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity 0.5s ease;
-    }
-    .ddos-shield.done { opacity: 0; pointer-events: none; }
-    .ddos-inner { text-align: center; max-width: 420px; padding: 40px; }
-    .ddos-logo { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #c07818); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 800; font-size: 1.2rem; color: #050507; margin: 0 auto 24px; }
-    .ddos-title { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--text-bright); margin-bottom: 8px; }
-    .ddos-sub { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 28px; line-height: 1.6; }
-    .ddos-spinner { width: 32px; height: 32px; border: 3px solid rgba(232,160,32,0.15); border-top-color: var(--accent); border-radius: 50%; margin: 0 auto 20px; animation: ddosSpin 0.8s linear infinite; }
-    @keyframes ddosSpin { to { transform: rotate(360deg); } }
-    .ddos-status { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-bottom: 4px; }
-    .ddos-status.pass { color: var(--green); }
-    .ddos-checks { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; text-align: left; }
-    .ddos-check { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); }
-    .ddos-check .chk { color: var(--green); font-weight: 700; }
-    .ddos-check .pending { color: var(--text-dim); }
     /* NOTIFICATION TOASTS */
     .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
     .toast { pointer-events: auto; padding: 12px 18px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; font-size: 0.78rem; color: var(--text); max-width: 360px; display: flex; align-items: flex-start; gap: 10px; animation: toastIn 0.3s ease; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
@@ -631,34 +611,9 @@
     .toast-text strong { color: var(--text-bright); }
     .toast-time { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-dim); margin-top: 3px; }
 
-    .ddos-vpn-warn {
-      margin-top: 18px; padding: 14px 18px; border-radius: 10px; text-align: left;
-      background: rgba(224,64,80,0.08); border: 1px solid rgba(224,64,80,0.25);
-    }
-    .ddos-vpn-warn.warn-vpn { background: rgba(224,64,80,0.08); border-color: rgba(224,64,80,0.25); }
-    .ddos-vpn-warn.warn-ok { background: rgba(48,200,96,0.06); border-color: rgba(48,200,96,0.2); }
-    .ddos-vpn-title { font-family: var(--font-heading); font-size: 0.78rem; font-weight: 700; margin-bottom: 6px; }
-    .ddos-vpn-title.vpn-bad { color: var(--red); }
-    .ddos-vpn-title.vpn-good { color: var(--green); }
-    .ddos-vpn-detail { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); line-height: 1.7; }
-    .ddos-vpn-detail span { color: var(--text); }
-    .ddos-ray { font-family: var(--font-mono); font-size: 0.65rem; color: rgba(255,255,255,0.15); margin-top: 20px; }
   </style>
 </head>
 <body>
-
-  <!-- DDoS Protection Splash -->
-  <div class="ddos-shield" id="ddosShield">
-    <div class="ddos-inner">
-      <div class="ddos-logo">C</div>
-      <div class="ddos-title">Checking your connection</div>
-      <div class="ddos-sub">cerberus.dev needs to verify that you are human. This is automatic and usually completes in a few seconds.</div>
-      <div class="ddos-spinner" id="ddosSpinner"></div>
-      <div class="ddos-checks" id="ddosChecks"></div>
-      <div class="ddos-vpn-warn" id="ddosVpnWarn" style="display:none;"></div>
-      <div class="ddos-ray" id="ddosRay"></div>
-    </div>
-  </div>
 
   <!-- NOTIFICATION TOASTS -->
   <div class="toast-container" id="toastContainer"></div>
@@ -1890,156 +1845,6 @@
         nav.style.borderBottomColor = 'rgba(255,255,255,0.06)';
       }
     }, { passive: true });
-
-    // Currency switcher removed — pricing is now "Contact Sales"
-
-    // ===== DDOS PROTECTION SPLASH WITH REAL VPN/PROXY DETECTION =====
-    (function() {
-      var shield = document.getElementById('ddosShield');
-      if (!shield) return;
-      var checksEl = document.getElementById('ddosChecks');
-      var rayEl = document.getElementById('ddosRay');
-      var spinner = document.getElementById('ddosSpinner');
-      var vpnWarnEl = document.getElementById('ddosVpnWarn');
-
-      // Generate Ray ID
-      var rayId = '';
-      for (var i = 0; i < 16; i++) rayId += '0123456789abcdef'[Math.floor(Math.random() * 16)];
-      rayEl.textContent = 'Ray ID: ' + rayId + ' \u00b7 Performance & security by Cerberus Shield';
-
-      // Fetch real IP info from ipapi.is (free, HTTPS, has VPN/proxy/Tor detection)
-      var ipData = null;
-      var ipFetched = false;
-      fetch('https://api.ipapi.is/')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          // Normalize the response to a common format
-          ipData = {
-            ip: data.ip,
-            isVPN: data.is_vpn || false,
-            isProxy: data.is_proxy || false,
-            isTor: data.is_tor || false,
-            isDatacenter: data.is_datacenter || false,
-            company: data.company ? data.company.name : 'Unknown',
-            companyType: data.company ? data.company.type : 'unknown',
-            asn: data.asn ? data.asn.asn : 'N/A',
-            country: data.location ? data.location.country : '',
-            city: data.location ? data.location.city : '',
-            region: data.location ? data.location.state : '',
-          };
-          ipFetched = true;
-        })
-        .catch(function() { ipFetched = true; });
-
-      function maskIP(ip) {
-        if (!ip) return 'unknown';
-        var parts = ip.split('.');
-        if (parts.length === 4) return parts[0] + '.' + parts[1] + '.***.' + parts[3];
-        return ip.split(':').slice(0, 3).join(':') + ':***';
-      }
-
-      // Check steps — IP verification waits for real API response
-      var idx = 0;
-      var checks = [
-        { text: 'Resolving IP address...', run: function(div, next) {
-          var waited = 0;
-          var poll = setInterval(function() {
-            waited += 100;
-            if (ipFetched || waited > 4000) {
-              clearInterval(poll);
-              if (ipData && ipData.ip) {
-                div.innerHTML = '<span class="chk">\u2713</span> IP verified: ' + maskIP(ipData.ip) + ' \u00b7 ' + (ipData.country || 'Unknown') + (ipData.city ? ', ' + ipData.city : '');
-              } else {
-                div.innerHTML = '<span class="chk">\u2713</span> IP resolved';
-              }
-              next();
-            }
-          }, 100);
-        }},
-        { text: 'Checking browser integrity...', delay: 600 },
-        { text: 'Validating TLS fingerprint...', delay: 500 },
-        { text: 'Scanning for VPN / proxy / Tor...', run: function(div, next) {
-          setTimeout(function() {
-            var isAnon = ipData && (ipData.isVPN || ipData.isProxy || ipData.isTor);
-            var isDC = ipData && ipData.isDatacenter;
-            if (isAnon || isDC) {
-              var threats = [];
-              if (ipData.isVPN) threats.push('VPN');
-              if (ipData.isProxy) threats.push('Proxy');
-              if (ipData.isTor) threats.push('Tor');
-              if (ipData.isDatacenter) threats.push('Datacenter');
-              div.innerHTML = '<span style="color:var(--red);font-weight:700;">\u2717</span> <span style="color:var(--red);">' + threats.join(' + ') + ' detected</span>';
-
-              spinner.style.display = 'none';
-              document.querySelector('.ddos-title').textContent = 'Access Blocked';
-              document.querySelector('.ddos-title').style.color = 'var(--red)';
-              document.querySelector('.ddos-sub').textContent = 'Anonymized connections are not permitted.';
-
-              vpnWarnEl.style.display = 'block';
-              vpnWarnEl.className = 'ddos-vpn-warn warn-vpn';
-              vpnWarnEl.innerHTML = '<div class="ddos-vpn-title vpn-bad">\u26A0 Connection Blocked</div>' +
-                '<div class="ddos-vpn-detail">' +
-                'IP: <span>' + maskIP(ipData.ip) + '</span><br/>' +
-                'Type: <span style="color:var(--red);">' + threats.join(', ') + '</span><br/>' +
-                'ISP: <span>' + (ipData.company || 'Unknown') + '</span><br/>' +
-                'Location: <span>' + (ipData.city || '') + (ipData.region ? ', ' + ipData.region : '') + (ipData.country ? ', ' + ipData.country : '') + '</span><br/>' +
-                'ASN: <span>' + (ipData.asn || 'N/A') + '</span><br/><br/>' +
-                '<span style="color:var(--red);">Cerberus Anti-Cheat requires a direct connection. Disconnect your VPN, proxy, or Tor client and try again.</span>' +
-                '</div>' +
-                '<button id="ddosRetryBtn" style="margin-top:14px;width:100%;padding:12px;border-radius:8px;background:var(--accent);color:#050507;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);">Disconnect VPN & Retry</button>';
-
-              document.getElementById('ddosRetryBtn').addEventListener('click', function() {
-                location.reload();
-              });
-              return; // Block — do not call next()
-            } else {
-              div.innerHTML = '<span class="chk">\u2713</span> No VPN / proxy / Tor detected';
-              if (ipData) {
-                vpnWarnEl.style.display = 'block';
-                vpnWarnEl.className = 'ddos-vpn-warn warn-ok';
-                vpnWarnEl.innerHTML = '<div class="ddos-vpn-title vpn-good">\u2713 Connection Verified</div>' +
-                  '<div class="ddos-vpn-detail">' +
-                  'IP: <span>' + maskIP(ipData.ip) + '</span><br/>' +
-                  'ISP: <span>' + (ipData.company || 'Unknown') + '</span><br/>' +
-                  'Location: <span>' + (ipData.city || '') + (ipData.country ? ', ' + ipData.country : '') + '</span><br/>' +
-                  'Type: <span style="color:var(--green);">Direct connection \u2014 no anonymization detected</span>' +
-                  '</div>';
-              }
-            }
-            next();
-          }, 800);
-        }},
-        { text: 'Analyzing request headers...', delay: 500 },
-        { text: 'Connection verified', delay: 300 },
-      ];
-
-      function nextCheck() {
-        if (idx >= checks.length) {
-          spinner.style.display = 'none';
-          setTimeout(function() {
-            shield.classList.add('done');
-            setTimeout(function() { shield.style.display = 'none'; }, 600);
-          }, 1000);
-          return;
-        }
-        var check = checks[idx];
-        var div = document.createElement('div');
-        div.className = 'ddos-check';
-        div.innerHTML = '<span class="pending">\u25CB</span> ' + check.text;
-        checksEl.appendChild(div);
-
-        if (check.run) {
-          check.run(div, function() { idx++; nextCheck(); });
-        } else {
-          setTimeout(function() {
-            div.innerHTML = '<span class="chk">\u2713</span> ' + check.text.replace('...', '');
-            idx++;
-            nextCheck();
-          }, check.delay);
-        }
-      }
-      setTimeout(nextCheck, 500);
-    })();
 
     // ===== NOTIFICATION TOAST SYSTEM =====
     (function() {
