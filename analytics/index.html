@@ -277,6 +277,19 @@
       .nav { padding: 12px 20px; }
       .nav-links { display: none; }
     }
+    /* Skeleton loading animation (QOL #1) */
+    @keyframes skeletonShimmer {
+      0% { background-position: -200px 0; }
+      100% { background-position: calc(200px + 100%) 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 100%);
+      background-size: 200px 100%;
+      animation: skeletonShimmer 1.5s ease-in-out infinite;
+      border-radius: 4px;
+      color: transparent !important;
+    }
+    .skeleton * { visibility: hidden; }
   </style>
 </head>
 <body>
@@ -350,6 +363,20 @@
     <div class="stat-card">
       <div class="stat-card-label"><span>False Positive Rate</span><span class="stat-card-change stat-down" id="sFPChange"></span></div>
       <div class="stat-card-value" id="sFalsePos"></div>
+    </div>
+  </div>
+
+  <!-- BAN WAVE COUNTDOWN (TODO #6) -->
+  <div id="banWaveCountdown" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse-dot 2s ease-in-out infinite;"></div>
+        <span style="font-size:0.82rem;color:var(--text-dim);font-weight:500;">Next Scheduled Ban Wave</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span id="banWaveTimer" style="font-family:var(--font-mono);font-size:1.1rem;color:var(--accent);font-weight:600;letter-spacing:1px;">--:--:--</span>
+        <span id="banWaveStatus" style="font-size:0.72rem;color:var(--text-dim);padding:3px 10px;border-radius:4px;background:rgba(232,160,32,0.1);border:1px solid rgba(232,160,32,0.2);">PENDING</span>
+      </div>
     </div>
   </div>
 
@@ -481,8 +508,20 @@
     <p style="margin-top: 12px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved.</p>
   </footer>
 
+  <script src="/js/cerberus-shared.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ===== SKELETON LOADING (QOL #1) =====
+    // Add skeleton class to all stat cards, remove after data loads
+    document.querySelectorAll('.stat-card-value').forEach(function(el) {
+      el.classList.add('skeleton');
+      el.textContent = '\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0';
+    });
+    function removeSkeleton(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.remove('skeleton');
+    }
 
     // ===== TIME =====
     function updateTime() {
@@ -510,6 +549,7 @@
     var detRate = (95.6 + seeded(daySeed * 101) * 1.2).toFixed(1);
     var detRateChange = (seeded(daySeed * 103) * 0.8 - 0.2).toFixed(1);
     document.getElementById('sDetRate').textContent = detRate + '%';
+    removeSkeleton('sDetRate');
     document.getElementById('sDetRateChange').textContent = (detRateChange >= 0 ? '+' : '') + detRateChange + '%';
     document.getElementById('sDetRateChange').className = 'stat-card-change ' + (detRateChange >= 0 ? 'stat-up' : 'stat-down');
 
@@ -517,6 +557,7 @@
     var latency = (1.8 + seeded(daySeed * 107) * 0.7).toFixed(1);
     var latChange = (seeded(daySeed * 109) * 0.6 - 0.3).toFixed(1);
     document.getElementById('sLatency').textContent = latency + 'ms';
+    removeSkeleton('sLatency');
     document.getElementById('sLatencyChange').textContent = (latChange >= 0 ? '+' : '') + latChange + 'ms';
     document.getElementById('sLatencyChange').className = 'stat-card-change ' + (latChange <= 0 ? 'stat-down' : 'stat-up');
 
@@ -524,6 +565,7 @@
     var fpRate = (0.008 + seeded(daySeed * 113) * 0.010).toFixed(3);
     var fpChange = (seeded(daySeed * 117) * 0.006 - 0.003).toFixed(3);
     document.getElementById('sFalsePos').textContent = fpRate + '%';
+    removeSkeleton('sFalsePos');
     document.getElementById('sFPChange').textContent = (fpChange >= 0 ? '+' : '') + fpChange + '%';
     document.getElementById('sFPChange').className = 'stat-card-change ' + (fpChange <= 0 ? 'stat-down' : 'stat-up');
 
@@ -709,6 +751,7 @@
     }
 
     function animateValue(el, target, suffix) {
+      if (el) el.classList.remove('skeleton');
       var start = 0; var duration = 1200; var startTime = null;
       suffix = suffix || '';
       function step(ts) {
@@ -1359,6 +1402,67 @@
         html += '</div>';
       });
       vhEl.innerHTML = html;
+    })();
+
+    // ===== BAN WAVE COUNTDOWN (TODO #6) =====
+    (function() {
+      var timerEl = document.getElementById('banWaveTimer');
+      var statusEl = document.getElementById('banWaveStatus');
+      if (!timerEl) return;
+
+      // Seed wave time per day so it's consistent
+      var ds = daySeed;
+      var waveHour = Math.floor(seeded(ds * 251) * 6) + 16; // waves fire between 16:00-22:00 UTC
+      var waveMinute = Math.floor(seeded(ds * 257) * 60);
+      var now = new Date();
+      var waveTime = new Date(now);
+      waveTime.setUTCHours(waveHour, waveMinute, 0, 0);
+      // If wave already passed today, it already fired
+      var waveFired = now > waveTime;
+      var waveActive = false;
+      var waveActiveEnd = new Date(waveTime.getTime() + 180000); // 3 min active period
+
+      function updateCountdown() {
+        var now = new Date();
+        if (waveFired && now < waveActiveEnd) {
+          // Wave is active right now
+          if (!waveActive) {
+            waveActive = true;
+            statusEl.textContent = 'EXECUTING';
+            statusEl.style.background = 'rgba(224,64,80,0.15)';
+            statusEl.style.borderColor = 'rgba(224,64,80,0.3)';
+            statusEl.style.color = '#e04050';
+            // Publish cross-page event
+            if (window.CERBERUS) CERBERUS.publishEvent('banWave', { count: Math.floor(seeded(ds * 263) * 180) + 20 });
+          }
+          var remaining = Math.max(0, waveActiveEnd - now);
+          var sec = Math.floor(remaining / 1000);
+          timerEl.textContent = 'WAVE IN PROGRESS';
+          timerEl.style.color = '#e04050';
+        } else if (waveFired && now >= waveActiveEnd) {
+          // Wave completed
+          statusEl.textContent = 'COMPLETED';
+          statusEl.style.background = 'rgba(48,200,96,0.1)';
+          statusEl.style.borderColor = 'rgba(48,200,96,0.2)';
+          statusEl.style.color = '#30c860';
+          timerEl.textContent = 'NEXT WAVE TOMORROW';
+          timerEl.style.color = '#30c860';
+          return; // stop updating
+        } else {
+          // Countdown to wave
+          var diff = Math.max(0, waveTime - now);
+          var h = Math.floor(diff / 3600000);
+          var m = Math.floor((diff % 3600000) / 60000);
+          var s = Math.floor((diff % 60000) / 1000);
+          timerEl.textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+          if (diff <= 0) {
+            waveFired = true;
+            waveActiveEnd = new Date(Date.now() + 180000);
+          }
+        }
+        setTimeout(updateCountdown, 1000);
+      }
+      updateCountdown();
     })();
   </script>
 
