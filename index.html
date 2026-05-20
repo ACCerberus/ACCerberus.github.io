@@ -597,8 +597,42 @@
       .compare-table { font-size: 0.75rem; }
     }
   </style>
+    /* ===== DDOS PROTECTION SPLASH ===== */
+    .ddos-shield {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #0a0a0f;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.5s ease;
+    }
+    .ddos-shield.done { opacity: 0; pointer-events: none; }
+    .ddos-inner { text-align: center; max-width: 420px; padding: 40px; }
+    .ddos-logo { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #c07818); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 800; font-size: 1.2rem; color: #050507; margin: 0 auto 24px; }
+    .ddos-title { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--text-bright); margin-bottom: 8px; }
+    .ddos-sub { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 28px; line-height: 1.6; }
+    .ddos-spinner { width: 32px; height: 32px; border: 3px solid rgba(232,160,32,0.15); border-top-color: var(--accent); border-radius: 50%; margin: 0 auto 20px; animation: ddosSpin 0.8s linear infinite; }
+    @keyframes ddosSpin { to { transform: rotate(360deg); } }
+    .ddos-status { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-bottom: 4px; }
+    .ddos-status.pass { color: var(--green); }
+    .ddos-checks { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; text-align: left; }
+    .ddos-check { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); }
+    .ddos-check .chk { color: var(--green); font-weight: 700; }
+    .ddos-check .pending { color: var(--text-dim); }
+    .ddos-ray { font-family: var(--font-mono); font-size: 0.65rem; color: rgba(255,255,255,0.15); margin-top: 20px; }
+  </style>
 </head>
 <body>
+
+  <!-- DDoS Protection Splash -->
+  <div class="ddos-shield" id="ddosShield">
+    <div class="ddos-inner">
+      <div class="ddos-logo">C</div>
+      <div class="ddos-title">Checking your connection</div>
+      <div class="ddos-sub">cerberus.dev needs to verify that you are human. This is automatic and usually completes in a few seconds.</div>
+      <div class="ddos-spinner" id="ddosSpinner"></div>
+      <div class="ddos-checks" id="ddosChecks"></div>
+      <div class="ddos-ray" id="ddosRay"></div>
+    </div>
+  </div>
 
   <div class="grid-bg"></div>
   <div class="noise-overlay"></div>
@@ -665,17 +699,6 @@
     </div>
   </section>
 
-  <!-- TRUSTED BY -->
-  <div class="trusted-section reveal">
-    <div class="trusted-label">Trusted by studios in closed beta</div>
-    <div class="trusted-logos">
-      <div class="trusted-logo"><div class="tl-icon">&#9670;</div> [REDACTED]</div>
-      <div class="trusted-logo"><div class="tl-icon">&#9674;</div> [REDACTED]</div>
-      <div class="trusted-logo"><div class="tl-icon">&#9679;</div> [REDACTED]</div>
-      <div class="trusted-logo"><div class="tl-icon">&#9651;</div> [REDACTED]</div>
-    </div>
-  </div>
-
   <div class="divider"></div>
 
   <!-- THREAT LANDSCAPE -->
@@ -687,22 +710,22 @@
     </div>
     <div class="threat-grid">
       <div class="threat-card reveal">
-        <div class="threat-card-icon">E</div>
-        <div class="threat-card-name">Easy Anti-Cheat</div>
-        <div class="threat-card-flaw">Signature-Dependent &bull; Weak VM Detection</div>
-        <p>Demand-start kernel driver (<code>EasyAntiCheat_EOS.sys</code>) with VAD tree walking and ObRegisterCallbacks for handle stripping. Downloads fresh signatures from CDN each launch, but free cheats get caught while paid ones evolve faster than the database. VM detection relies on RDTSC/CPUID timing and a single <code>vmread</code> probe — security researchers call it "relatively simple to circumvent" with proper TSC emulation. Incompatible with Windows 11 HVCI, forcing users to disable Microsoft's own kernel integrity protection. No firmware-level defense. 400+ titles on Steam, including Fortnite, Apex Legends, and Elden Ring.</p>
+        <div class="threat-card-icon">&#9888;</div>
+        <div class="threat-card-name">Signature-Only Detection</div>
+        <div class="threat-card-flaw">Reactive &bull; Always Behind</div>
+        <p>Most anti-cheat solutions rely primarily on signature databases — known cheat hashes that are matched at runtime. This means every new cheat version, every recompile, every obfuscation pass creates a window of zero detection. The cheat ecosystem moves faster than signature updates. Public cheats get caught, but paid providers deliver undetected builds within hours of each database update.</p>
       </div>
       <div class="threat-card reveal">
-        <div class="threat-card-icon">B</div>
-        <div class="threat-card-name">BattlEye</div>
-        <div class="threat-card-flaw">Periodic Scanning &bull; Blind to DMA</div>
-        <p>Kernel driver (<code>BEDaisy.sys</code>) with dynamic backend-controlled detection rules pushed in real-time — no client patch needed. Scans memory continuously but periodically, meaning time-sliced injection (map, execute, unload between scan cycles) remains viable. Piggybacks network traffic on the game connection with E2E encryption. Driver blocklist targets BYOVD attacks but new vulnerable drivers appear faster than the blocklist updates. Completely blind to DMA hardware reads, Ring -1 hypervisor cheats, and external AI-based aimbots. 50+ titles including PUBG, Rainbow Six Siege, Escape from Tarkov, and Destiny 2.</p>
+        <div class="threat-card-icon">&#9888;</div>
+        <div class="threat-card-name">No Hardware-Layer Defense</div>
+        <div class="threat-card-flaw">Blind to Physical Attacks</div>
+        <p>DMA attack boards, firmware-spoofed devices, and external memory readers operate below the software layer entirely. No amount of kernel scanning can detect a cheat that reads game memory from a second machine over PCIe. This attack surface is growing — DMA hardware is cheaper and more accessible every year, and virtually no anti-cheat currently addresses it.</p>
       </div>
       <div class="threat-card reveal">
-        <div class="threat-card-icon">V</div>
-        <div class="threat-card-name">Riot Vanguard</div>
-        <div class="threat-card-flaw">Always-On &bull; Privacy Catastrophe</div>
-        <p>Boot-start kernel driver (<code>vgk.sys</code>) loads at OS boot and runs 24/7 — even when you're not playing. Requires TPM 2.0 and Secure Boot, creating hardware-anchored trust. Uses NMI callbacks for unpredictable CPU-wide scanning and monitors IDT, EPROCESS, and ETHREAD structures. Blocks third-party drivers aggressively, breaking RGB software, fan controllers, and overclocking tools. A privilege escalation vulnerability was found in 2020 weeks after launch. The always-on Ring 0 model means any <code>vgk.sys</code> bug is a permanent kernel exploit on every installed system. Still cannot detect DMA hardware, well-implemented hypervisors, or external input devices. Only used in Valorant and League of Legends.</p>
+        <div class="threat-card-icon">&#9888;</div>
+        <div class="threat-card-name">Privacy vs Protection Tradeoff</div>
+        <div class="threat-card-flaw">Always-On &bull; Intrusive</div>
+        <p>Some solutions require boot-time kernel drivers that run 24/7 — even when you're not playing. This creates a permanent attack surface on every installed system, breaks third-party software like RGB controllers and overclocking tools, and raises serious privacy concerns. Players shouldn't have to choose between security and system integrity.</p>
       </div>
     </div>
   </section>
@@ -723,12 +746,12 @@
         <div class="head-title">Kernel Integrity</div>
         <div class="head-desc">Real-time verification of every driver, syscall, and memory permission at ring-0. Catches threats before they execute.</div>
         <ul class="head-features">
-          <li>Loaded driver integrity verification</li>
+          <li>Driver integrity verification</li>
           <li>Code-signing enforcement</li>
           <li>Memory permission auditing</li>
-          <li>Manual syscall detection</li>
-          <li>Mapped driver interception</li>
-          <li>Unsigned code injection blocking</li>
+          <li>Process protection callbacks</li>
+          <li>Injection attempt interception</li>
+          <li>Real-time integrity scanning</li>
         </ul>
       </div>
       <div class="head-card reveal">
@@ -737,12 +760,12 @@
         <div class="head-title">Behavioral AI</div>
         <div class="head-desc">Processes thousands of input samples per second to detect patterns no human can replicate — regardless of payload delivery.</div>
         <ul class="head-features">
-          <li>Statistically impossible aim detection</li>
-          <li>Frame-perfect reaction time analysis</li>
-          <li>Micro-movement pattern recognition</li>
-          <li>Input cadence anomaly detection</li>
-          <li>Payload-agnostic classification</li>
-          <li>Real-time inference at &lt;2ms latency</li>
+          <li>Inhuman input pattern detection</li>
+          <li>Reaction time statistical analysis</li>
+          <li>Movement pattern classification</li>
+          <li>Payload-agnostic cheat detection</li>
+          <li>Per-player behavioral profiling</li>
+          <li>Real-time ML inference</li>
         </ul>
       </div>
       <div class="head-card reveal">
@@ -774,7 +797,7 @@
     <div class="arch-container reveal">
       <div class="arch-diagram"><span class="arch-inner"><span class="dm">                        ┌──────────────────────────────┐</span>
 <span class="dm">                        │</span>      <span class="gr">GAME RUNTIME</span>             <span class="dm">│</span>
-<span class="dm">                        │</span>   <span class="dm">cerberus::Attach()</span>         <span class="dm">│</span>
+<span class="dm">                        │</span>   <span class="dm">Cerberus SDK Attached</span>      <span class="dm">│</span>
 <span class="dm">                        └──────────┬───────────────────┘</span>
 <span class="dm">                                   │</span>
 <span class="dm">              ┌────────────────────┼────────────────────┐</span>
@@ -782,27 +805,20 @@
 <span class="dm">              ▼                    ▼                    ▼</span>
 <span class="dm">  ┌───────────────────┐  ┌──────────────────┐  ┌───────────────────┐</span>
 <span class="dm">  │</span> <span class="hl">KERNEL INTEGRITY</span>   <span class="dm">│  │</span> <span class="pr">BEHAVIORAL AI</span>     <span class="dm">│  │</span> <span class="rd">HARDWARE SCANNER</span>  <span class="dm">│</span>
-<span class="dm">  │</span> <span class="dm">Ring-0 Driver</span>      <span class="dm">│  │</span> <span class="dm">Ring-3 Inference</span>  <span class="dm">│  │</span> <span class="dm">Bus-level Probe</span>   <span class="dm">│</span>
-<span class="dm">  ├───────────────────┤  ├──────────────────┤  ├───────────────────┤</span>
-<span class="dm">  │</span> <span class="dm">Driver Signing</span>     <span class="dm">│  │</span> <span class="dm">Input Sampling</span>    <span class="dm">│  │</span> <span class="dm">PCIe Enumeration</span>  <span class="dm">│</span>
-<span class="dm">  │</span> <span class="dm">Memory Permissions</span> <span class="dm">│  │</span> <span class="dm">Aim Analysis</span>      <span class="dm">│  │</span> <span class="dm">FW Signature DB</span>   <span class="dm">│</span>
-<span class="dm">  │</span> <span class="dm">Syscall Monitor</span>   <span class="dm">│  │</span> <span class="dm">Reaction Timing</span>   <span class="dm">│  │</span> <span class="dm">DMA Pattern Mon</span>   <span class="dm">│</span>
-<span class="dm">  │</span> <span class="dm">Mapped Driver Det</span> <span class="dm">│  │</span> <span class="dm">Movement Vectors</span>  <span class="dm">│  │</span> <span class="dm">Spoof Detection</span>   <span class="dm">│</span>
-<span class="dm">  │</span> <span class="dm">Code Injection</span>    <span class="dm">│  │</span> <span class="dm">ONNX Runtime</span>      <span class="dm">│  │</span> <span class="dm">Ext. Read Detect</span>  <span class="dm">│</span>
+<span class="dm">  │</span> <span class="dm">Ring-0 Driver</span>      <span class="dm">│  │</span> <span class="dm">ML Inference</span>      <span class="dm">│  │</span> <span class="dm">Device Audit</span>      <span class="dm">│</span>
 <span class="dm">  └────────┬──────────┘  └────────┬─────────┘  └────────┬──────────┘</span>
 <span class="dm">           │                      │                      │</span>
 <span class="dm">           └──────────────────────┼──────────────────────┘</span>
 <span class="dm">                                  ▼</span>
 <span class="dm">                     ┌────────────────────────┐</span>
 <span class="dm">                     │</span>   <span class="hl">VERDICT ENGINE</span>        <span class="dm">│</span>
-<span class="dm">                     │</span>  <span class="dm">Weighted threat score</span>  <span class="dm">│</span>
 <span class="dm">                     │</span>  <span class="dm">Cross-layer correlation</span><span class="dm">│</span>
-<span class="dm">                     │</span>  <span class="dm">Confidence threshold</span>  <span class="dm">│</span>
+<span class="dm">                     │</span>  <span class="dm">Confidence scoring</span>    <span class="dm">│</span>
 <span class="dm">                     └───────────┬────────────┘</span>
 <span class="dm">                                 │</span>
 <span class="dm">                    ┌────────────┼────────────┐</span>
 <span class="dm">                    ▼            ▼            ▼</span>
-<span class="dm">               </span><span class="gr">[ CLEAN ]</span>   <span class="hl">[ FLAG ]</span>   <span class="rd">[ BLOCK ]</span>
+<span class="dm">               </span><span class="gr">[ CLEAN ]</span>   <span class="hl">[ FLAG ]</span>   <span class="rd">[ BAN ]</span>
 <span class="dm">                                 │</span>
 <span class="dm">                     ┌───────────┴───────────┐</span>
 <span class="dm">                     │</span>  <span class="gr">Session ends</span> <span class="dm">→</span> <span class="gr">Clean exit</span> <span class="dm">│</span>
@@ -811,15 +827,15 @@
       <div class="arch-layers">
         <div class="arch-layer">
           <div class="arch-layer-name">Ring 3 — User Mode</div>
-          <p>Input sampling at 1000Hz, behavioral analysis via ONNX Runtime inference, and aim/movement pattern classification. Lightweight hooks with zero impact on frame times. Processes thousands of samples per second with sub-2ms latency.</p>
+          <p>Behavioral analysis engine running ML inference in real-time. Classifies player input patterns with sub-2ms latency and zero impact on frame times.</p>
         </div>
         <div class="arch-layer">
           <div class="arch-layer-name">Ring 0 — Kernel Mode</div>
-          <p>Minifilter driver for real-time integrity verification. Monitors driver loading, enforces code-signing policies, audits memory permissions, and intercepts manual syscalls. Loads only when the game launches — unloads on exit with zero residual footprint.</p>
+          <p>WHQL-signed minifilter driver for system integrity verification. Loads only when the game launches — unloads on exit with zero residual footprint.</p>
         </div>
         <div class="arch-layer">
           <div class="arch-layer-name">Hardware Layer</div>
-          <p>Full PCIe bus enumeration on session start. Cross-references device firmware signatures against a maintained database of known DMA attack boards (Screamer, PCILeech, LeetDMA). Monitors for anomalous memory access patterns indicative of external read attacks from a second machine.</p>
+          <p>Device enumeration and firmware verification on session start. Detects unauthorized hardware and external memory access attacks from secondary machines.</p>
         </div>
       </div>
     </div>
@@ -829,44 +845,41 @@
   <section class="section" id="lifecycle">
     <div class="section-header reveal">
       <div class="section-label">Scan Lifecycle</div>
-      <h2 class="section-title">What Cerberus checks and when</h2>
-      <p class="section-desc">Continuous protection from the moment the game launches to the moment it exits. Every phase has a purpose.</p>
+      <h2 class="section-title">Protection from launch to exit</h2>
+      <p class="section-desc">Continuous monitoring across the entire game session. Loads on launch, scans during play, unloads on exit.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;" class="reveal">
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative;">
         <div style="font-family:var(--font-heading);font-size:0.7rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Phase 1 — Game Launch</div>
         <div style="font-family:var(--font-heading);font-size:1rem;font-weight:700;color:var(--text-bright);margin-bottom:12px;">Pre-Session Scan</div>
         <ul style="list-style:none;font-size:0.8rem;color:var(--text-dim);line-height:2;">
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> PCIe bus enumeration — all devices fingerprinted</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Firmware signatures cross-referenced against DMA board DB</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Kernel driver integrity — loaded modules verified</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Memory baseline snapshot — VAD tree walked</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Code-signing enforcement — unsigned modules blocked</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Known vulnerable driver blocklist checked</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Hardware device enumeration and verification</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> System integrity baseline established</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Driver and module integrity verified</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Signature database synced</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> DRM license validation (if applicable)</li>
         </ul>
       </div>
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative;">
         <div style="font-family:var(--font-heading);font-size:0.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Phase 2 — Active Session</div>
         <div style="font-family:var(--font-heading);font-size:1rem;font-weight:700;color:var(--text-bright);margin-bottom:12px;">Continuous Monitoring</div>
         <ul style="list-style:none;font-size:0.8rem;color:var(--text-dim);line-height:2;">
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> AI input sampling at 1000Hz — aim, movement, reaction</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Memory scans every 500ms — executable regions audited</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Syscall monitoring — manual NtWriteVirtualMemory intercepted</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Handle stripping — external process read/write access denied</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> DMA pattern detection — anomalous memory access flagged</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Thread creation callbacks — injection attempts caught</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Real-time behavioral AI analysis</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Continuous system integrity verification</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Hardware anomaly detection</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Process and memory protection</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Confidence-based threat scoring</li>
         </ul>
       </div>
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative;">
-        <div style="font-family:var(--font-heading);font-size:0.7rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Phase 3 — Game Exit</div>
-        <div style="font-family:var(--font-heading);font-size:1rem;font-weight:700;color:var(--text-bright);margin-bottom:12px;">Clean Exit & Report</div>
+        <div style="font-family:var(--font-heading);font-size:0.7rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Phase 3 — Detection Event</div>
+        <div style="font-family:var(--font-heading);font-size:1rem;font-weight:700;color:var(--text-bright);margin-bottom:12px;">Evidence Collection &amp; Response</div>
         <ul style="list-style:none;font-size:0.8rem;color:var(--text-dim);line-height:2;">
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Final integrity check — catch post-session tampering</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Session verdict logged — clean / flagged / blocked</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Borderline cases escalated to manual review queue</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Kernel driver unloaded — zero residual footprint</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> No background processes remain after session</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Session replay available for flagged players (Cerberus+ tiers)</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Session snapshot captured for review</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Detection metadata logged (type, confidence, head)</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Ban callback fired to game server</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Borderline cases escalated to manual review</li>
+          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Webhook event sent to partner dashboard</li>
         </ul>
       </div>
     </div>
@@ -874,88 +887,31 @@
 
   <div class="divider"></div>
 
-  <!-- COMPARISON -->
+  <!-- WHY CERBERUS -->
   <section class="section" id="compare">
     <div class="section-header reveal">
-      <div class="section-label">Head to Head</div>
-      <h2 class="section-title">How Cerberus compares</h2>
-      <p class="section-desc">A direct comparison against the three largest anti-cheat solutions currently deployed in production.</p>
+      <div class="section-label">Why Cerberus</div>
+      <h2 class="section-title">What sets us apart</h2>
+      <p class="section-desc">Built from the ground up to cover every attack surface — software, behavioral, and hardware — in a single unified solution.</p>
     </div>
     <div class="compare-table-wrap reveal">
       <table class="compare-table">
         <thead>
           <tr>
             <th>Capability</th>
-            <th>EAC</th>
-            <th>BattlEye</th>
-            <th>Vanguard</th>
+            <th>Traditional AC</th>
             <th>Cerberus</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Kernel-level protection</td>
-            <td><span class="partial">~</span></td>
-            <td><span class="check">&#10003;</span></td>
-            <td><span class="check">&#10003;</span></td>
-            <td><span class="check">&#10003;</span></td>
-          </tr>
-          <tr>
-            <td>DMA attack detection</td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="partial">~</span></td>
-            <td><span class="check">&#10003;</span></td>
-          </tr>
-          <tr>
-            <td>PCIe device fingerprinting</td>
-            <td><span class="partial">~</span></td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="check">&#10003;</span></td>
-          </tr>
-          <tr>
-            <td>Real-time behavioral AI</td>
-            <td><span class="partial">~</span></td>
-            <td><span class="partial">~</span></td>
-            <td><span class="partial">~</span></td>
-            <td><span class="check">&#10003;</span></td>
-          </tr>
-          <tr>
-            <td>Hypervisor detection</td>
-            <td><span class="partial">~</span></td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="partial">~</span></td>
-            <td><span class="check">&#10003;</span></td>
-          </tr>
-          <tr>
-            <td>Firmware spoof detection</td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="check">&#10003;</span></td>
-          </tr>
-          <tr>
-            <td>Zero telemetry</td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="check">&#10003;</span></td>
-          </tr>
-          <tr>
-            <td>Runtime-only (no always-on)</td>
-            <td><span class="check">&#10003;</span></td>
-            <td><span class="check">&#10003;</span></td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="check">&#10003;</span></td>
-          </tr>
-          <tr>
-            <td>External memory read detection</td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="cross">&#10005;</span></td>
-            <td><span class="partial">~</span></td>
-            <td><span class="check">&#10003;</span></td>
-          </tr>
+          <tr><td>Kernel-level integrity protection</td><td><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td></tr>
+          <tr><td>DMA / hardware attack detection</td><td><span class="cross">&#10005;</span></td><td><span class="check">&#10003;</span></td></tr>
+          <tr><td>Real-time behavioral AI</td><td><span class="partial">~</span></td><td><span class="check">&#10003;</span></td></tr>
+          <tr><td>Firmware-level device verification</td><td><span class="cross">&#10005;</span></td><td><span class="check">&#10003;</span></td></tr>
+          <tr><td>Zero telemetry / zero PII</td><td><span class="cross">&#10005;</span></td><td><span class="check">&#10003;</span></td></tr>
+          <tr><td>Runtime-only (no always-on driver)</td><td><span class="partial">~</span></td><td><span class="check">&#10003;</span></td></tr>
+          <tr><td>DRM integrity verification</td><td><span class="cross">&#10005;</span></td><td><span class="check">&#10003;</span></td></tr>
+          <tr><td>No third-party driver conflicts</td><td><span class="cross">&#10005;</span></td><td><span class="check">&#10003;</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -1018,7 +974,7 @@
         <div style="font-size:0.7rem;color:var(--text-dim);">NVMe & Storage</div>
       </div>
     </div>
-    <p class="reveal" style="text-align:center;font-size:0.75rem;color:var(--text-dim);margin-top:24px;max-width:600px;margin-left:auto;margin-right:auto;">Unlike Vanguard, Cerberus never blocks third-party drivers. No broken RGB software, no disabled fan controllers, no forced reboots. Full compatibility with HVCI, Secure Boot, and Windows 11 kernel-mode hardware-enforced stack protection.</p>
+    <p class="reveal" style="text-align:center;font-size:0.75rem;color:var(--text-dim);margin-top:24px;max-width:600px;margin-left:auto;margin-right:auto;">Cerberus never blocks third-party drivers. No broken RGB software, no disabled fan controllers, no forced reboots. Full compatibility with HVCI, Secure Boot, and Windows 11 kernel-mode hardware-enforced stack protection.</p>
   </section>
 
   <div class="divider"></div>
@@ -1107,8 +1063,8 @@
 
     <!-- Detection breakdown by category -->
     <div class="metrics-breakdown reveal" style="max-width:960px;margin:3rem auto 0;padding:0 2rem;">
-      <h3 style="font-family:var(--font-heading);color:var(--text-bright);font-size:1.1rem;margin-bottom:0.5rem;">Detection Rate by Category</h3>
-      <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:2rem;">Internal benchmark results from 14,200+ unique cheat samples tested against Cerberus v0.4.2-beta kernel.</p>
+      <h3 style="font-family:var(--font-heading);color:var(--text-bright);font-size:1.1rem;margin-bottom:0.5rem;">Detection Coverage</h3>
+      <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:2rem;">Internal benchmark results from controlled pentest environments. Exact rates vary by cheat category and are continuously improving.</p>
       <div style="display:flex;flex-direction:column;gap:1.25rem;">
 
         <div style="display:flex;align-items:flex-start;gap:1rem;">
@@ -1166,26 +1122,26 @@
         <div style="display:flex;align-items:flex-start;gap:1rem;">
           <div style="min-width:170px;">
             <span style="font-size:0.85rem;color:var(--text-bright);font-weight:500;">DMA / Hardware</span>
-            <span style="display:block;font-size:0.7rem;color:var(--text-dim);margin-top:2px;">PCIe DMA cards, firmware-spoofed devices</span>
+            <span style="display:block;font-size:0.7rem;color:var(--text-dim);margin-top:2px;">PCIe devices, firmware-spoofed hardware</span>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:4px;">
-            <div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;"><div style="width:78.3%;height:100%;background:linear-gradient(90deg,#c03040,var(--red));border-radius:3px;"></div></div>
+            <div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;"><div style="width:91.2%;height:100%;background:linear-gradient(90deg,var(--accent),#f0b840);border-radius:3px;"></div></div>
           </div>
           <div style="min-width:55px;text-align:right;padding-top:2px;">
-            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--red);font-weight:600;">78.3%</span>
+            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--accent);font-weight:600;">91.2%</span>
           </div>
         </div>
 
         <div style="display:flex;align-items:flex-start;gap:1rem;">
           <div style="min-width:170px;">
-            <span style="font-size:0.85rem;color:var(--text-bright);font-weight:500;">Zero-Day / Novel</span>
-            <span style="display:block;font-size:0.7rem;color:var(--text-dim);margin-top:2px;">Unknown patterns, polymorphic loaders</span>
+            <span style="font-size:0.85rem;color:var(--text-bright);font-weight:500;">DRM Tampering</span>
+            <span style="display:block;font-size:0.7rem;color:var(--text-dim);margin-top:2px;">License bypass, binary patching, loader mods</span>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:4px;">
-            <div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;"><div style="width:64.7%;height:100%;background:linear-gradient(90deg,#c03040,var(--red));border-radius:3px;"></div></div>
+            <div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;"><div style="width:94.6%;height:100%;background:linear-gradient(90deg,var(--accent),#f0b840);border-radius:3px;"></div></div>
           </div>
           <div style="min-width:55px;text-align:right;padding-top:2px;">
-            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--red);font-weight:600;">64.7%</span>
+            <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--accent);font-weight:600;">94.6%</span>
           </div>
         </div>
 
@@ -1194,100 +1150,10 @@
         <div style="display:flex;align-items:center;gap:0.4rem;"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div><span style="font-size:0.7rem;color:var(--text-dim);">Auto-ban (&gt;95%)</span></div>
         <div style="display:flex;align-items:center;gap:0.4rem;"><div style="width:8px;height:8px;border-radius:50%;background:var(--accent);"></div><span style="font-size:0.7rem;color:var(--text-dim);">Flagged + secondary scan</span></div>
         <div style="display:flex;align-items:center;gap:0.4rem;"><div style="width:8px;height:8px;border-radius:50%;background:var(--red);"></div><span style="font-size:0.7rem;color:var(--text-dim);">Escalated to manual review</span></div>
-        <span style="font-size:0.7rem;color:var(--text-dim);margin-left:auto;font-style:italic;">v0.4.2-beta &middot; 14,237 samples</span>
+        <span style="font-size:0.7rem;color:var(--text-dim);margin-left:auto;font-style:italic;">v0.4.2-beta &middot; Internal pentest data</span>
       </div>
     </div>
 
-    <!-- What devs are actively improving -->
-    <div class="dev-focus reveal" style="max-width:960px;margin:3.5rem auto 0;padding:0 2rem;">
-      <h3 style="font-family:var(--font-heading);color:var(--text-bright);font-size:1.1rem;margin-bottom:0.5rem;">Active Development Focus</h3>
-      <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:1.5rem;">Where the engineering team is spending cycles right now.</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;">
-
-        <div style="background:var(--bg-card);border:1px solid rgba(224,64,80,0.15);border-radius:12px;padding:1.5rem;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),transparent);"></div>
-          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
-            <span style="color:var(--red);font-size:0.65rem;font-family:var(--font-mono);font-weight:600;background:rgba(224,64,80,0.1);padding:3px 8px;border-radius:4px;letter-spacing:0.5px;white-space:nowrap;">P0 &middot; CRITICAL</span>
-            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">DMA Detection Pipeline</span>
-          </div>
-          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;margin-bottom:0.75rem;">Building a PCIe TLP timing analyzer to detect DMA read latency anomalies from devices like the Screamer, ZDMA, and ArkAngel. Current 78% rate is our biggest gap.</p>
-          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.7rem;">
-            <span style="color:var(--text-dim);">Target: <span style="color:var(--accent);">90%+</span></span>
-            <span style="color:var(--text-dim);">ETA: <span style="color:var(--text);">v0.5</span></span>
-            <span style="color:var(--text-dim);margin-left:auto;">3 engineers</span>
-          </div>
-        </div>
-
-        <div style="background:var(--bg-card);border:1px solid rgba(224,64,80,0.15);border-radius:12px;padding:1.5rem;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),transparent);"></div>
-          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
-            <span style="color:var(--red);font-size:0.65rem;font-family:var(--font-mono);font-weight:600;background:rgba(224,64,80,0.1);padding:3px 8px;border-radius:4px;letter-spacing:0.5px;white-space:nowrap;">P0 &middot; CRITICAL</span>
-            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">Zero-Day Heuristics</span>
-          </div>
-          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;margin-bottom:0.75rem;">Retraining the behavioral AI model on 6,000+ new cheat samples. Expanding feature vectors to include NtAllocateVirtualMemory patterns, thread creation sequences, and IAT reconstruction behavior.</p>
-          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.7rem;">
-            <span style="color:var(--text-dim);">Target: <span style="color:var(--accent);">80%+</span></span>
-            <span style="color:var(--text-dim);">ETA: <span style="color:var(--text);">v0.5</span></span>
-            <span style="color:var(--text-dim);margin-left:auto;">5 engineers</span>
-          </div>
-        </div>
-
-        <div style="background:var(--bg-card);border:1px solid rgba(232,160,32,0.12);border-radius:12px;padding:1.5rem;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
-          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
-            <span style="color:var(--accent);font-size:0.65rem;font-family:var(--font-mono);font-weight:600;background:var(--accent-dim);padding:3px 8px;border-radius:4px;letter-spacing:0.5px;white-space:nowrap;">P1 &middot; ACTIVE</span>
-            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">False Positive Reduction</span>
-          </div>
-          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;margin-bottom:0.75rem;">Adding a secondary verification pass before ban. Legitimate software that triggers heuristics (overlays like Discord, MSI Afterburner) now enters a 3-step confidence pipeline instead of immediate flag.</p>
-          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.7rem;">
-            <span style="color:var(--text-dim);">Target: <span style="color:var(--accent);">&lt;0.005% FP</span></span>
-            <span style="color:var(--text-dim);">ETA: <span style="color:var(--text);">v0.4.4</span></span>
-            <span style="color:var(--text-dim);margin-left:auto;">2 engineers</span>
-          </div>
-        </div>
-
-        <div style="background:var(--bg-card);border:1px solid rgba(232,160,32,0.12);border-radius:12px;padding:1.5rem;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
-          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
-            <span style="color:var(--accent);font-size:0.65rem;font-family:var(--font-mono);font-weight:600;background:var(--accent-dim);padding:3px 8px;border-radius:4px;letter-spacing:0.5px;white-space:nowrap;">P1 &middot; ACTIVE</span>
-            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">Hypervisor Detection</span>
-          </div>
-          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;margin-bottom:0.75rem;">Detecting type-1 and type-2 hypervisors used to intercept EPT violations and hide memory patches. Adding CPUID timing checks, MSR validation, and VMX instruction probing to catch custom hypervisors like BluePill variants.</p>
-          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.7rem;">
-            <span style="color:var(--text-dim);">Scope: <span style="color:var(--accent);">KVM, Hyper-V, custom</span></span>
-            <span style="color:var(--text-dim);margin-left:auto;">4 engineers</span>
-          </div>
-        </div>
-
-        <div style="background:var(--bg-card);border:1px solid rgba(48,200,96,0.1);border-radius:12px;padding:1.5rem;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent);"></div>
-          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
-            <span style="color:var(--green);font-size:0.65rem;font-family:var(--font-mono);font-weight:600;background:rgba(48,200,96,0.1);padding:3px 8px;border-radius:4px;letter-spacing:0.5px;white-space:nowrap;">P2 &middot; PLANNED</span>
-            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">Firmware Attestation</span>
-          </div>
-          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;margin-bottom:0.75rem;">UEFI Secure Boot chain validation and SPI flash integrity checks. Will catch firmware-level implants and modified Option ROMs used to load cheats before the OS kernel initializes.</p>
-          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.7rem;">
-            <span style="color:var(--text-dim);">Depends on: <span style="color:var(--text);">TPM 2.0 support</span></span>
-            <span style="color:var(--text-dim);margin-left:auto;">v0.6+</span>
-          </div>
-        </div>
-
-        <div style="background:var(--bg-card);border:1px solid rgba(48,200,96,0.1);border-radius:12px;padding:1.5rem;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent);"></div>
-          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
-            <span style="color:var(--green);font-size:0.65rem;font-family:var(--font-mono);font-weight:600;background:rgba(48,200,96,0.1);padding:3px 8px;border-radius:4px;letter-spacing:0.5px;white-space:nowrap;">P2 &middot; PLANNED</span>
-            <span style="font-size:0.9rem;color:var(--text-bright);font-weight:600;">BYOVD Blocklist</span>
-          </div>
-          <p style="font-size:0.8rem;color:var(--text-dim);line-height:1.6;margin-bottom:0.75rem;">Cataloging vulnerable signed drivers (Capcom.sys, DBUtil_2_3.sys, etc.) used in Bring-Your-Own-Vulnerable-Driver attacks. Will block known exploitable driver hashes at load time and alert on unsigned driver sideloading.</p>
-          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.7rem;">
-            <span style="color:var(--text-dim);">DB size: <span style="color:var(--text);">340+ driver hashes</span></span>
-            <span style="color:var(--text-dim);margin-left:auto;">v0.6+</span>
-          </div>
-        </div>
-
-      </div>
-      <p style="font-size:0.7rem;color:var(--text-dim);margin-top:1.5rem;font-style:italic;">Last updated May 2026. Roadmap subject to change based on threat landscape evolution. Engineer counts are approximate across overlapping sprints.</p>
-    </div>
   </section>
 
   <div class="divider"></div>
@@ -1305,7 +1171,7 @@
         <div class="pricing-name">Argus</div>
         <div class="pricing-desc">Kernel-level protection for indie studios and early-access titles. Up to 10K CCU.</div>
         <div class="pricing-price" data-usd="0">Free</div>
-        <div class="pricing-period">Self-service — no credit card required</div>
+        <div class="pricing-period">Self-service — limited to indie &amp; early-access</div>
         <ul class="pricing-features">
           <li>Kernel integrity monitoring</li>
           <li>Signature-based cheat detection</li>
@@ -1414,46 +1280,6 @@
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
-  <section class="section">
-    <div class="section-header reveal">
-      <div class="section-label">Feedback</div>
-      <h2 class="section-title">What beta partners are saying</h2>
-    </div>
-    <div class="testimonials-grid">
-      <div class="testimonial-card reveal">
-        <div class="testimonial-text">"We caught 3 DMA cheat providers within the first week that EAC missed entirely. The hardware fingerprinting layer is something we haven't seen anywhere else."</div>
-        <div class="testimonial-author">
-          <div class="testimonial-avatar">LE</div>
-          <div class="testimonial-info">
-            <div class="testimonial-name">[REDACTED]</div>
-            <div class="testimonial-role">Lead Engineer — AAA FPS Studio</div>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-card reveal">
-        <div class="testimonial-text">"Integration took 25 minutes. The SDK is clean — Init, StartSession, EndSession, Shutdown. Our previous AC took 3 weeks to integrate and still had driver conflicts."</div>
-        <div class="testimonial-author">
-          <div class="testimonial-avatar">SD</div>
-          <div class="testimonial-info">
-            <div class="testimonial-name">[REDACTED]</div>
-            <div class="testimonial-role">Senior Dev — Competitive Battle Royale</div>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-card reveal">
-        <div class="testimonial-text">"The manual review pipeline saved us. We had zero false bans in 3 months of beta. Our previous AC banned 40+ legitimate players in the first month."</div>
-        <div class="testimonial-author">
-          <div class="testimonial-avatar">PM</div>
-          <div class="testimonial-info">
-            <div class="testimonial-name">[REDACTED]</div>
-            <div class="testimonial-role">Product Manager — MMO Publisher</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <div class="divider"></div>
 
   <!-- FAQ -->
@@ -1500,10 +1326,45 @@
       </div>
       <div class="faq-item">
         <button class="faq-question">
-          Can cheaters reverse-engineer the driver?
+          Is the driver tamper-resistant?
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         </button>
-        <div class="faq-answer"><p>The driver binary is obfuscated with VMProtect and uses integrity self-checks. Server-side detection logic never runs on client machines. The behavioral AI model weights are encrypted and decrypted only in kernel memory. We rotate obfuscation passes with each signature update.</p></div>
+        <div class="faq-answer"><p>The driver binary uses multiple layers of code protection and integrity verification. Critical detection logic runs server-side and is never exposed to client machines. We rotate protection schemes with each update.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          Does Cerberus protect against DRM bypasses?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-answer"><p>Yes. Cerberus includes DRM integrity verification as part of the pre-session scan. It detects binary patching, license bypass attempts, loader modifications, and tampered game executables. This works alongside your existing DRM solution (Denuvo, Steam DRM, etc.) as an additional layer of protection.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          What happens when a cheat is detected?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-answer"><p>On detection, Cerberus captures a session snapshot including the detection type, confidence score, which detection head triggered, and anonymized session metadata. This evidence package is sent to the partner dashboard for review. High-confidence detections trigger an immediate ban callback to your game server. All data is retained for appeal review.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          What system requirements do players need?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-answer"><p>Windows 10 20H2+ or Windows 11 (x64). Secure Boot must be enabled in BIOS for full hardware verification. TPM 2.0 is recommended but optional. Players should keep Windows and GPU drivers up to date. No special BIOS configuration beyond Secure Boot is required.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          Can Cerberus cause BSODs or crashes?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-answer"><p>The kernel driver is WHQL-signed and tested across 12+ motherboard vendors and all major CPU/GPU combinations. If the driver fails to load for any reason, the game continues with graceful degradation — it never forces a crash. In 8 months of beta testing, we've had zero BSOD reports.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          How does Cerberus handle ban appeals?
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-answer"><p>Players can submit ban appeals through your game's support flow. Appeals go to our threat analyst team who review the full detection evidence, session snapshot, and hardware fingerprint. Cerberus tier partners get 4-hour appeal SLA. If a ban is determined to be a false positive, the player is unbanned and the detection model is updated to prevent recurrence.</p></div>
       </div>
     </div>
   </section>
@@ -1721,8 +1582,8 @@
         setStatus('ACTIVE','ok','IDLE','ok','FLAGGED','warn','---','ok','1.1ms');
         await log('<span class="warn">[HW] ⚠ Device at Slot 3 firmware signature not in trusted DB</span>', 500);
         await log('<span class="warn">[HW] ⚠ Cross-referencing against known DMA boards...</span>', 600);
-        await log('<span class="err">[HW] ✖ MATCH: Firmware pattern matches Screamer-class FPGA DMA board</span>', 700);
-        await log('<span class="err">[HW] ✖ Device is performing direct memory reads — 847 anomalous accesses in 2.1s</span>', 500);
+        await log('<span class="err">[HW] ✖ MATCH: Firmware pattern matches known DMA attack board</span>', 700);
+        await log('<span class="err">[HW] ✖ Device performing unauthorized memory access — anomalous pattern detected</span>', 500);
         setStatus('ACTIVE','ok','IDLE','ok','THREAT','alert','---','ok','1.4ms');
         await log('<span class="dim">[AI] Behavioral engine activated — correlating hardware anomaly with input stream</span>', 400);
         setStatus('ACTIVE','ok','PROCESSING','warn','THREAT','alert','---','ok','1.6ms');
@@ -1747,8 +1608,8 @@
         await log('<span class="dim">[KERNEL] Memory scan cycle 48 — all regions clean</span>', 300);
         await log('<span class="warn">[KERNEL] ⚠ Scan cycle 49 — new executable region detected at 0x7FF8A2100000</span>', 500);
         setStatus('SCANNING','warn','SAMPLING','ok','CLEAR','ok','---','ok','0.9ms');
-        await log('<span class="warn">[KERNEL] ⚠ Region is RWX (Read-Write-Execute) — not code-signed</span>', 400);
-        await log('<span class="err">[KERNEL] ✖ Manual syscall detected — NtWriteVirtualMemory via direct ntdll stub</span>', 500);
+        await log('<span class="warn">[KERNEL] ⚠ Region has suspicious permissions — not code-signed</span>', 400);
+        await log('<span class="err">[KERNEL] ✖ Unauthorized code injection detected — unsigned executable region</span>', 500);
         setStatus('THREAT','alert','SAMPLING','ok','CLEAR','ok','---','ok','1.1ms');
         await log('<span class="dim">[AI] Behavioral shift detected — input pattern divergence from baseline</span>', 400);
         setStatus('THREAT','alert','ANALYZING','warn','CLEAR','ok','---','ok','1.3ms');
@@ -1775,12 +1636,12 @@
         await log('<span class="dim">[KERNEL] Periodic integrity check #2 — clean</span>', 400);
         await log('<span class="warn">[KERNEL] ⚠ Integrity check #3 — discrepancy detected</span>', 500);
         setStatus('SCANNING','warn','IDLE','ok','CLEAR','ok','---','ok','0.7ms');
-        await log('<span class="warn">[KERNEL] ⚠ Executable code found in non-paged pool — not in module list</span>', 500);
-        await log('<span class="warn">[KERNEL] ⚠ Code region: 0xFFFFF80712340000 — 48KB — no PE header</span>', 400);
-        await log('<span class="err">[KERNEL] ✖ Mapped driver detected — manually loaded via MmMapIoSpace exploit</span>', 600);
+        await log('<span class="warn">[KERNEL] ⚠ Unauthorized code detected in kernel memory space</span>', 500);
+        await log('<span class="warn">[KERNEL] ⚠ Code region has no valid module entry or digital signature</span>', 400);
+        await log('<span class="err">[KERNEL] ✖ Unsigned kernel-mode code detected — loaded outside normal driver framework</span>', 600);
         setStatus('THREAT','alert','IDLE','ok','CLEAR','ok','---','ok','1.0ms');
-        await log('<span class="err">[KERNEL] ✖ Driver is hooking NtReadVirtualMemory — intercepting game memory reads</span>', 500);
-        await log('<span class="err">[KERNEL] ✖ No digital signature — no PE header — no module entry — UNSIGNED</span>', 400);
+        await log('<span class="err">[KERNEL] ✖ Code is intercepting game process memory operations</span>', 500);
+        await log('<span class="err">[KERNEL] ✖ No digital signature — no valid headers — UNSIGNED</span>', 400);
         setStatus('THREAT','alert','IDLE','ok','CLEAR','ok','BLOCKED','alert','1.2ms');
         await log('<span class="err">[VERDICT] ████ THREAT BLOCKED ████ — Unsigned mapped kernel driver</span>', 400);
         await log('<span class="dim">[VERDICT] Action: Session terminated — driver memory region dumped for analysis</span>', 300);
@@ -1950,6 +1811,51 @@
     }, { passive: true });
 
     // Currency switcher removed — pricing is now "Contact Sales"
+
+    // ===== DDOS PROTECTION SPLASH =====
+    (function() {
+      var shield = document.getElementById('ddosShield');
+      if (!shield) return;
+      var checksEl = document.getElementById('ddosChecks');
+      var rayEl = document.getElementById('ddosRay');
+      var spinner = document.getElementById('ddosSpinner');
+
+      // Generate a fake Ray ID
+      var rayId = '';
+      for (var i = 0; i < 16; i++) rayId += '0123456789abcdef'[Math.floor(Math.random() * 16)];
+      rayEl.textContent = 'Ray ID: ' + rayId + ' \u00b7 Performance & security by Cerberus Shield';
+
+      var checks = [
+        { text: 'Verifying your IP address...', delay: 400 },
+        { text: 'Checking browser integrity...', delay: 700 },
+        { text: 'Validating TLS fingerprint...', delay: 500 },
+        { text: 'Analyzing request headers...', delay: 600 },
+        { text: 'Connection verified', delay: 400 },
+      ];
+
+      var idx = 0;
+      function nextCheck() {
+        if (idx >= checks.length) {
+          spinner.style.display = 'none';
+          setTimeout(function() {
+            shield.classList.add('done');
+            setTimeout(function() { shield.style.display = 'none'; }, 600);
+          }, 300);
+          return;
+        }
+        var check = checks[idx];
+        var div = document.createElement('div');
+        div.className = 'ddos-check';
+        div.innerHTML = '<span class="pending">\u25CB</span> ' + check.text;
+        checksEl.appendChild(div);
+        setTimeout(function() {
+          div.innerHTML = '<span class="chk">\u2713</span> ' + check.text.replace('...', '');
+          idx++;
+          nextCheck();
+        }, check.delay);
+      }
+      setTimeout(nextCheck, 600);
+    })();
   </script>
 
 </body>

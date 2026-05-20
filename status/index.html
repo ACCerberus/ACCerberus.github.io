@@ -84,6 +84,29 @@
     .scheduled { padding: 20px 24px; background: var(--bg-card); border: 1px solid rgba(64,136,232,0.15); border-radius: 12px; margin-bottom: 12px; }
     .scheduled .incident-severity { background: rgba(64,136,232,0.1); color: var(--blue); }
 
+    /* Active incident */
+    .active-incident {
+      padding: 24px 28px; background: var(--bg-card); border: 1px solid rgba(224,64,80,0.25);
+      border-radius: 16px; margin-bottom: 32px;
+    }
+    .active-incident.degraded { border-color: rgba(232,160,32,0.25); }
+    .active-incident-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .active-incident-title { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); }
+    .active-incident-badge { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; padding: 3px 10px; border-radius: 5px; animation: activePulse 2s ease-in-out infinite; }
+    .badge-investigating { background: rgba(224,64,80,0.15); color: var(--red); }
+    .badge-identified { background: rgba(232,160,32,0.15); color: var(--accent); }
+    .badge-monitoring { background: rgba(64,136,232,0.15); color: var(--blue); }
+    .badge-resolving { background: rgba(48,200,96,0.15); color: var(--green); }
+    @keyframes activePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+    .incident-timeline { padding-left: 20px; border-left: 2px solid var(--border); }
+    .incident-timeline-entry { position: relative; padding: 8px 0 16px 16px; }
+    .incident-timeline-entry::before { content: ''; position: absolute; left: -7px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: var(--bg); border: 2px solid var(--text-dim); }
+    .incident-timeline-entry.active::before { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 8px rgba(232,160,32,0.4); }
+    .incident-timeline-entry.completed::before { border-color: var(--green); background: var(--green); }
+    .incident-timeline-time { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim); }
+    .incident-timeline-text { font-size: 0.82rem; color: var(--text); margin-top: 2px; }
+    .incident-eta { margin-top: 12px; padding: 10px 14px; background: rgba(255,255,255,0.02); border-radius: 8px; font-size: 0.78rem; color: var(--text-dim); font-family: var(--font-mono); }
+
     .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); }
     .footer p { font-size: 0.75rem; color: var(--text-dim); }
     .footer a { color: var(--accent); text-decoration: none; }
@@ -112,40 +135,18 @@
     <h1 class="page-title">System Status</h1>
     <p class="page-desc">Real-time status of Cerberus infrastructure and services.</p>
 
-    <div class="status-banner">
-      <div class="status-dot"></div>
-      <span class="status-text">All Systems Operational</span>
+    <div class="status-banner" id="statusBanner">
+      <div class="status-dot" id="statusDot"></div>
+      <span class="status-text" id="statusText">All Systems Operational</span>
       <span class="status-time" id="statusTime"></span>
     </div>
 
+    <!-- Active Incident Lifecycle (if any) -->
+    <div id="activeIncident" style="display:none;"></div>
+
     <div class="uptime-section">
       <div class="uptime-label">Uptime — Last 30 Days</div>
-
-      <div class="uptime-row">
-        <span class="uptime-name">Detection Engine</span>
-        <div class="uptime-bar" id="barDetection"></div>
-        <span class="uptime-pct">99.97%</span>
-      </div>
-      <div class="uptime-row">
-        <span class="uptime-name">Signature Database</span>
-        <div class="uptime-bar" id="barSigDB"></div>
-        <span class="uptime-pct">100%</span>
-      </div>
-      <div class="uptime-row">
-        <span class="uptime-name">Ban API</span>
-        <div class="uptime-bar" id="barAPI"></div>
-        <span class="uptime-pct">99.99%</span>
-      </div>
-      <div class="uptime-row">
-        <span class="uptime-name">Threat Dashboard</span>
-        <div class="uptime-bar" id="barDashboard"></div>
-        <span class="uptime-pct">99.94%</span>
-      </div>
-      <div class="uptime-row">
-        <span class="uptime-name">Webhook Delivery</span>
-        <div class="uptime-bar" id="barWebhooks"></div>
-        <span class="uptime-pct">99.98%</span>
-      </div>
+      <div id="uptimeRows"></div>
       <div class="uptime-legend">
         <span>30 days ago</span>
         <span>Today</span>
@@ -154,59 +155,12 @@
 
     <div class="incidents-section">
       <div class="incidents-title">Scheduled Maintenance</div>
-      <div class="scheduled">
-        <div class="incident-header">
-          <span class="incident-severity" style="background:rgba(64,136,232,0.1);color:#4088e8;">SCHEDULED</span>
-          <span class="incident-title">Signature DB migration to v3 schema</span>
-          <span class="incident-date">May 24, 2026 02:00-04:00 UTC</span>
-        </div>
-        <div class="incident-body">Migrating signature database to new schema for faster lookup. Detection engine will fall back to cached signatures during migration. No downtime expected for game clients.</div>
-      </div>
+      <div id="scheduledMaint"></div>
     </div>
 
     <div class="incidents-section">
       <div class="incidents-title">Recent Incidents</div>
-
-      <div class="incident">
-        <div class="incident-header">
-          <span class="incident-severity sev-resolved">RESOLVED</span>
-          <span class="incident-title">False positive spike on UE5.4 overlay rendering</span>
-          <span class="incident-date">May 14, 2026</span>
-        </div>
-        <div class="incident-body">Behavioral AI flagged legitimate Unreal Engine 5.4 Slate overlay rendering as an external screen reader on 3 partner titles. Affected ~240 sessions over 22 minutes.</div>
-        <div class="incident-update"><strong>Root cause:</strong> UE5.4 changed GDI hook pattern for overlay compositing. Signature whitelist updated within 22 minutes. No bans issued — all flagged sessions were held in manual review queue.</div>
-        <div class="incident-update"><strong>Resolution time:</strong> 22 minutes. Postmortem completed. Added UE5.4 overlay pattern to trusted whitelist.</div>
-      </div>
-
-      <div class="incident">
-        <div class="incident-header">
-          <span class="incident-severity sev-resolved">RESOLVED</span>
-          <span class="incident-title">Elevated scan latency on AMD Ryzen 9000 series</span>
-          <span class="incident-date">Apr 30, 2026</span>
-        </div>
-        <div class="incident-body">PCIe bus enumeration taking 8-12ms on Zen 5 CPUs due to new IOMMU topology. Scan cycle exceeded 3ms budget on first pass.</div>
-        <div class="incident-update"><strong>Root cause:</strong> Zen 5 IOMMU groups differ from Zen 4. Added topology-aware enumeration path. <strong>Resolution time:</strong> Fixed in v0.4.1-beta, deployed Apr 28.</div>
-      </div>
-
-      <div class="incident">
-        <div class="incident-header">
-          <span class="incident-severity sev-resolved">RESOLVED</span>
-          <span class="incident-title">Webhook delivery delays</span>
-          <span class="incident-date">Apr 18, 2026</span>
-        </div>
-        <div class="incident-body">Ban event webhooks delayed by 45-90 seconds due to queue backlog during concurrent pentest run across all 4 titles.</div>
-        <div class="incident-update"><strong>Root cause:</strong> Queue worker pool undersized for burst load. Scaled from 2 to 6 workers. <strong>Resolution time:</strong> 35 minutes.</div>
-      </div>
-
-      <div class="incident">
-        <div class="incident-header">
-          <span class="incident-severity sev-resolved">RESOLVED</span>
-          <span class="incident-title">Dashboard API 503 errors</span>
-          <span class="incident-date">Mar 29, 2026</span>
-        </div>
-        <div class="incident-body">Threat dashboard returned 503 for ~8 minutes during signature database reindex. Detection engine was unaffected — clients continued scanning normally.</div>
-        <div class="incident-update"><strong>Root cause:</strong> DB reindex locked read replica. Moved reindex to off-peak window. <strong>Resolution time:</strong> 8 minutes.</div>
-      </div>
+      <div id="recentIncidents"></div>
     </div>
   </div>
 
@@ -215,24 +169,178 @@
   </footer>
 
   <script>
-    document.getElementById('statusTime').textContent = 'Last checked: ' + new Date().toLocaleTimeString();
+    // ===== SEEDED RANDOM =====
+    function seeded(s) { var x = Math.sin(s) * 10000; return x - Math.floor(x); }
+    var today = Math.floor(Date.now() / 86400000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function fmtDate(d) { return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(); }
+    function daysAgo(n) { return new Date(Date.now() - n * 86400000); }
 
-    function buildBar(id, degradedDays, downDays) {
-      var bar = document.getElementById(id);
+    // ===== LIVE CLOCK =====
+    function updateTime() {
+      document.getElementById('statusTime').textContent = 'Last checked: ' + new Date().toLocaleTimeString();
+    }
+    updateTime(); setInterval(updateTime, 1000);
+
+    // ===== UPTIME BARS (date-seeded) =====
+    var services = [
+      { name: 'Detection Engine', base: 99.95, id: 1 },
+      { name: 'Signature Database', base: 99.99, id: 2 },
+      { name: 'Ban API', base: 99.97, id: 3 },
+      { name: 'Threat Dashboard', base: 99.90, id: 4 },
+      { name: 'Webhook Delivery', base: 99.96, id: 5 },
+    ];
+
+    var uptimeHTML = '';
+    services.forEach(function(svc) {
+      var degradedDays = [];
+      for (var d = 0; d < 30; d++) {
+        var roll = seeded(today - d + svc.id * 100);
+        if (roll < 0.06) degradedDays.push(d); // ~6% chance per day per service
+      }
+      var pct = (100 - degradedDays.length * (0.01 + seeded(today + svc.id * 7) * 0.02)).toFixed(2);
+      if (degradedDays.length === 0) pct = '100';
+
+      uptimeHTML += '<div class="uptime-row"><span class="uptime-name">' + svc.name + '</span><div class="uptime-bar" id="bar' + svc.id + '"></div><span class="uptime-pct" style="color:' + (pct >= 99.9 ? 'var(--green)' : 'var(--accent)') + ';">' + pct + '%</span></div>';
+
+      // Store for bar rendering
+      svc.degraded = degradedDays;
+    });
+    document.getElementById('uptimeRows').innerHTML = uptimeHTML;
+
+    services.forEach(function(svc) {
+      var bar = document.getElementById('bar' + svc.id);
       for (var i = 0; i < 30; i++) {
         var day = document.createElement('div');
         day.className = 'uptime-day';
-        if (degradedDays.indexOf(i) >= 0) day.className += ' degraded';
-        if (downDays.indexOf(i) >= 0) day.className += ' down';
-        day.title = (30 - i) + ' days ago';
+        if (svc.degraded.indexOf(i) >= 0) day.className += ' degraded';
+        var dd = daysAgo(30 - i);
+        day.title = fmtDate(dd);
         bar.appendChild(day);
       }
+    });
+
+    // ===== SCHEDULED MAINTENANCE (always shows next upcoming) =====
+    var maintDaysAhead = 3 + Math.floor(seeded(today * 3) * 8); // 3-10 days from now
+    var maintDate = new Date(Date.now() + maintDaysAhead * 86400000);
+    var maintHour = 2 + Math.floor(seeded(today * 5) * 4); // 02:00-05:00 UTC
+    var maintTasks = [
+      { title: 'Signature DB reindex and optimization', desc: 'Reindexing signature database for faster lookup times. Detection engine falls back to cached signatures. No client downtime.' },
+      { title: 'Kernel driver certificate rotation', desc: 'Rotating WHQL code-signing certificate for the kernel driver. Partners will need to pull updated SDK binaries within 48h.' },
+      { title: 'AI model weight deployment — v' + Math.floor(seeded(today * 9) * 5 + 5) + '.' + Math.floor(seeded(today * 11) * 99), desc: 'Deploying retrained behavioral AI model. Brief inference latency spike expected (~5ms) during hot-swap. No restarts needed.' },
+      { title: 'Ban API rate limiter migration', desc: 'Migrating rate limiter to new infrastructure. API may return 429s briefly during cutover. Webhook delivery unaffected.' },
+      { title: 'Database failover test', desc: 'Planned failover test for threat database replicas. Dashboard may show stale data for ~2 minutes during switchover.' },
+    ];
+    var maintTask = maintTasks[Math.floor(seeded(today * 13) * maintTasks.length)];
+    document.getElementById('scheduledMaint').innerHTML = '<div class="scheduled"><div class="incident-header"><span class="incident-severity" style="background:rgba(64,136,232,0.1);color:#4088e8;">SCHEDULED</span><span class="incident-title">' + maintTask.title + '</span><span class="incident-date">' + fmtDate(maintDate) + ' ' + String(maintHour).padStart(2,'0') + ':00-' + String(maintHour+2).padStart(2,'0') + ':00 UTC</span></div><div class="incident-body">' + maintTask.desc + '</div></div>';
+
+    // ===== RECENT INCIDENTS (pool of incidents, pick 3-4 based on date) =====
+    var incidentPool = [
+      { title: 'False positive spike on UE5 overlay rendering', body: 'Behavioral AI flagged legitimate Unreal Engine overlay rendering as an external screen reader. Affected sessions held in manual review — no bans issued.', root: 'Engine overlay GDI hook pattern changed. Whitelist updated.', time: '22 minutes', sev: 'minor' },
+      { title: 'Elevated scan latency on AMD Zen 5', body: 'PCIe bus enumeration exceeded 3ms scan budget on Ryzen 9000 series due to new IOMMU topology.', root: 'Added topology-aware enumeration path for Zen 5 IOMMU groups.', time: '4 hours (patch deployed)', sev: 'minor' },
+      { title: 'Webhook delivery delays', body: 'Ban event webhooks delayed 45-90 seconds during concurrent pentest burst across all titles.', root: 'Queue worker pool undersized. Scaled from 2 to 6 workers.', time: '35 minutes', sev: 'minor' },
+      { title: 'Dashboard API 503 errors', body: 'Threat dashboard returned 503 during signature database reindex. Detection engine unaffected.', root: 'DB reindex locked read replica. Moved to off-peak window.', time: '8 minutes', sev: 'minor' },
+      { title: 'Signature sync delay', body: 'New signature batch deployment delayed by 4 hours due to CDN cache propagation issue. Existing signatures continued functioning.', root: 'CDN purge API rate-limited. Added retry with backoff.', time: '4 hours', sev: 'minor' },
+      { title: 'AI inference timeout on batch processing', body: 'ONNX Runtime inference exceeded 10ms timeout during peak load. Affected titles fell back to kernel-only scanning.', root: 'Model batch size too large for concurrent sessions. Reduced batch size from 64 to 32.', time: '18 minutes', sev: 'minor' },
+      { title: 'PCIe enumeration crash on Intel Arc GPUs', body: 'Driver crashed during PCIe firmware verification on Intel Arc A770/A750 GPUs. Game session continued without hardware scanning.', root: 'Intel Arc Option ROM returns non-standard descriptor format. Added parser fallback.', time: '2 hours (hotfix deployed)', sev: 'minor' },
+      { title: 'Ban API elevated error rate', body: 'Ban API returned 500 errors for ~3% of requests during database migration window.', root: 'Connection pool exhausted during schema migration. Pre-warmed pool before migration.', time: '12 minutes', sev: 'minor' },
+      { title: 'Memory footprint regression', body: 'Client memory usage spiked to 38MB (from 22MB baseline) after AI model update. No crashes reported.', root: 'New model weights not properly memory-mapped. Fixed allocation strategy.', time: '6 hours (patch in next release)', sev: 'minor' },
+      { title: 'Discord overlay false flag', body: 'Discord overlay detected as suspicious screen reader on 12 sessions. All held in review — no bans.', root: 'Discord updated their overlay injection method. Added to trusted whitelist.', time: '15 minutes', sev: 'minor' },
+    ];
+
+    // Pick 3-4 incidents based on date seed, assign dates in the past 1-45 days
+    var numIncidents = 3 + Math.floor(seeded(today * 17) * 2);
+    var incidentHTML = '';
+    var usedIndices = [];
+    for (var i = 0; i < numIncidents; i++) {
+      var idx;
+      do { idx = Math.floor(seeded(today * 19 + i * 31) * incidentPool.length); } while (usedIndices.indexOf(idx) >= 0);
+      usedIndices.push(idx);
+      var inc = incidentPool[idx];
+      var incDaysAgo = Math.floor(2 + seeded(today * 23 + i * 37) * 40);
+      var incDate = daysAgo(incDaysAgo);
+      incidentHTML += '<div class="incident"><div class="incident-header"><span class="incident-severity sev-resolved">RESOLVED</span><span class="incident-title">' + inc.title + '</span><span class="incident-date">' + fmtDate(incDate) + '</span></div><div class="incident-body">' + inc.body + '</div><div class="incident-update"><strong>Root cause:</strong> ' + inc.root + ' <strong>Resolution time:</strong> ' + inc.time + '.</div></div>';
     }
-    buildBar('barDetection', [16], []);
-    buildBar('barSigDB', [], []);
-    buildBar('barAPI', [], []);
-    buildBar('barDashboard', [1, 22], []);
-    buildBar('barWebhooks', [12], []);
+    document.getElementById('recentIncidents').innerHTML = incidentHTML;
+
+    // ===== ACTIVE INCIDENT LIFECYCLE SIMULATION (System 3) =====
+    // ~20% chance of an active incident on any given day, seeded by date
+    (function() {
+      var activeIncidentRoll = seeded(today * 211);
+      if (activeIncidentRoll > 0.20) return; // No active incident today
+
+      var activeEl = document.getElementById('activeIncident');
+      activeEl.style.display = 'block';
+
+      var activeIncidents = [
+        { title: 'Elevated false positive rate on Discord overlay', service: 'Detection Engine', root: 'Discord updated their overlay injection method in latest Canary build. Whitelist update in progress.' },
+        { title: 'Webhook delivery delays to EU-West region', service: 'Webhook Delivery', root: 'EU-West load balancer experiencing connection pool exhaustion. Scaling worker pool.' },
+        { title: 'Dashboard API intermittent 503 errors', service: 'Threat Dashboard', root: 'Database replica lag causing read timeouts during peak query volume.' },
+        { title: 'Signature sync delay — new batch pending', service: 'Signature Database', root: 'CDN cache invalidation propagating slower than expected across edge nodes.' },
+        { title: 'Increased scan latency on Intel 14th gen', service: 'Detection Engine', root: 'New Intel microcode update changed CPUID timing characteristics. Calibration update deploying.' },
+        { title: 'Ban API rate limit false triggers', service: 'Ban API', root: 'Token bucket algorithm counting retried requests. Implementing deduplication.' },
+      ];
+
+      var incident = activeIncidents[Math.floor(seeded(today * 213) * activeIncidents.length)];
+
+      // Determine lifecycle stage based on hour of day (simulates progression)
+      var hourFraction = new Date().getHours() + new Date().getMinutes() / 60;
+      var incidentStartHour = Math.floor(seeded(today * 217) * 12 + 2); // Started 2-14 hours ago
+      var hoursElapsed = hourFraction - incidentStartHour;
+      if (hoursElapsed < 0) hoursElapsed += 24;
+
+      var stage, badgeClass, badgeText;
+      if (hoursElapsed < 0.5) { stage = 0; badgeClass = 'badge-investigating'; badgeText = 'INVESTIGATING'; }
+      else if (hoursElapsed < 1.5) { stage = 1; badgeClass = 'badge-identified'; badgeText = 'IDENTIFIED'; }
+      else if (hoursElapsed < 3.0) { stage = 2; badgeClass = 'badge-monitoring'; badgeText = 'MONITORING'; }
+      else { stage = 3; badgeClass = 'badge-resolving'; badgeText = 'RESOLVING'; }
+
+      // Update banner
+      var dot = document.getElementById('statusDot');
+      var bannerText = document.getElementById('statusText');
+      var banner = document.getElementById('statusBanner');
+      if (stage < 2) {
+        dot.style.background = 'var(--accent)';
+        dot.style.boxShadow = '0 0 12px rgba(232,160,32,0.4)';
+        bannerText.textContent = 'Degraded Performance';
+        bannerText.style.color = 'var(--accent)';
+        banner.style.borderColor = 'rgba(232,160,32,0.2)';
+      } else {
+        dot.style.background = 'var(--blue)';
+        dot.style.boxShadow = '0 0 12px rgba(64,136,232,0.4)';
+        bannerText.textContent = 'Minor Issue — Monitoring';
+        bannerText.style.color = 'var(--blue)';
+        banner.style.borderColor = 'rgba(64,136,232,0.2)';
+      }
+
+      var startTime = new Date();
+      startTime.setHours(incidentStartHour, Math.floor(seeded(today * 219) * 60), 0);
+      var timeStr = function(d) { return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ' UTC'; };
+
+      var entries = [
+        { time: timeStr(startTime), text: '<strong>Investigating</strong> \u2014 Reports received of ' + incident.title.toLowerCase() + '. Engineering team alerted.', stage: 0 },
+        { time: timeStr(new Date(startTime.getTime() + 30*60000)), text: '<strong>Identified</strong> \u2014 ' + incident.root, stage: 1 },
+        { time: timeStr(new Date(startTime.getTime() + 90*60000)), text: '<strong>Monitoring</strong> \u2014 Fix deployed. Monitoring for recurrence across all regions.', stage: 2 },
+        { time: timeStr(new Date(startTime.getTime() + 180*60000)), text: '<strong>Resolving</strong> \u2014 No recurrence in 90 minutes. Preparing post-incident review.', stage: 3 },
+      ];
+
+      var html = '<div class="active-incident' + (stage >= 2 ? ' degraded' : '') + '">';
+      html += '<div class="active-incident-header"><span class="active-incident-badge ' + badgeClass + '">' + badgeText + '</span><span class="active-incident-title">' + incident.title + '</span></div>';
+      html += '<div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;">Affected service: <strong style="color:var(--text);">' + incident.service + '</strong></div>';
+      html += '<div class="incident-timeline">';
+      entries.forEach(function(e) {
+        if (e.stage > stage) return;
+        var cls = e.stage === stage ? 'active' : 'completed';
+        html += '<div class="incident-timeline-entry ' + cls + '"><div class="incident-timeline-time">' + e.time + '</div><div class="incident-timeline-text">' + e.text + '</div></div>';
+      });
+      html += '</div>';
+      if (stage < 3) {
+        var nextStage = ['Identification', 'Fix deployment', 'Resolution confirmation', 'Post-incident review'][stage + 1];
+        html += '<div class="incident-eta">Next update expected: ' + nextStage + ' \u2014 ETA ~' + [30, 60, 90, 30][stage] + ' minutes</div>';
+      }
+      html += '</div>';
+      activeEl.innerHTML = html;
+    })();
   </script>
 
 </body>
