@@ -146,6 +146,8 @@
     .feed-text { font-size: 0.78rem; color: var(--text); line-height: 1.5; }
     .feed-text strong { color: var(--text-bright); font-weight: 600; }
     .feed-time { font-size: 0.65rem; color: var(--text-dim); font-family: var(--font-mono); margin-top: 2px; }
+    .copyable { cursor:pointer; border-bottom:1px dashed rgba(232,160,32,0.3); transition:color 0.2s; }
+    .copyable:hover { color:var(--accent); }
     .feed-cheat { color: var(--red); font-weight: 600; }
     .feed-game { color: var(--accent); font-weight: 500; }
 
@@ -454,6 +456,38 @@
         <thead><tr><th>Provider</th><th>Status</th><th>Method</th><th>Last Detected</th><th>Notes</th></tr></thead>
         <tbody id="providerTable"></tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- SESSION QUEUE + SIGNATURE SYNC (TODO #12 + #18) -->
+  <div class="dash-grid-2">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Manual Review Queue</div>
+          <div class="dash-card-sub">Sessions pending analyst review</div>
+        </div>
+      </div>
+      <div style="padding:16px 0;text-align:center;">
+        <div id="reviewQueueCount" style="font-family:var(--font-heading);font-size:2.4rem;font-weight:700;color:var(--accent);"></div>
+        <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">sessions pending</div>
+        <div style="margin-top:12px;height:4px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden;">
+          <div id="reviewQueueBar" style="height:100%;background:linear-gradient(90deg,var(--accent),#f0b840);border-radius:2px;transition:width 1s ease;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.65rem;color:var(--text-dim);">
+          <span>Processing rate: <span id="reviewRate">~3/min</span></span>
+          <span>Est. clear: <span id="reviewETA">--</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Signature DB Sync</div>
+          <div class="dash-card-sub">Cross-region signature distribution</div>
+        </div>
+      </div>
+      <div id="sigSyncStatus" style="padding:16px 0;"></div>
     </div>
   </div>
 
@@ -1101,12 +1135,19 @@
       }
     }
 
+    // QOL #5: Copy-to-clipboard for IDs
+    function wrapCopyable(html) {
+      return html.replace(/(BAN-[A-Z0-9]+|P-[A-Z0-9]+|CRB-[A-Z0-9-]+)/g, function(id) {
+        return '<span class="copyable" title="Click to copy" onclick="(function(e){navigator.clipboard.writeText(\'' + id + '\');var t=e.target||e.srcElement;var orig=t.textContent;t.textContent=\'Copied!\';t.style.color=\'var(--green)\';setTimeout(function(){t.textContent=orig;t.style.color=\'\';},800);})(event)">' + id + '</span>';
+      });
+    }
+
     function addFeedItem(item) {
       var div = document.createElement('div');
       div.className = 'feed-item';
       var t = item.time === '(pending)' ? new Date().toTimeString().split(' ')[0] : item.time;
       div.innerHTML = '<div class="feed-icon ' + item.icon + '">' + item.iconText + '</div>' +
-        '<div><div class="feed-text">' + item.text + '</div><div class="feed-time">' + t + '</div></div>';
+        '<div><div class="feed-text">' + wrapCopyable(item.text) + '</div><div class="feed-time">' + t + '</div></div>';
       feedEl.insertBefore(div, feedEl.firstChild);
       while (feedEl.children.length > 60) feedEl.removeChild(feedEl.lastChild);
     }
@@ -1167,6 +1208,22 @@
         { name: 'Pandora.gg', method: 'Hypervisor', status: 'undetected', note: 'Type-1 hypervisor runs below OS. CPUID timing checks catch 41% — dedicated hypervisor detection module in development.' },
         { name: 'KMBox/Vezax', method: 'Firmware DMA', status: 'partial', note: 'Custom firmware on DMA boards. TLP timing catches 67% — firmware CRC database being expanded with new hardware samples.' },
       ];
+
+      // TODO #7: Provider Status Auto-Rotation — one provider flips daily
+      var flipIdx = Math.floor(seeded(daySeed * 331) * providerData.length);
+      var flipStatuses = ['detected', 'partial', 'undetected', 'monitoring'];
+      var currentStatus = providerData[flipIdx].status;
+      var newStatus = flipStatuses[Math.floor(seeded(daySeed * 337) * flipStatuses.length)];
+      if (newStatus !== currentStatus) {
+        providerData[flipIdx].status = newStatus;
+        var flipNotes = {
+          detected: 'New signatures deployed. All known variants now covered.',
+          partial: 'Detection coverage reduced after provider update. Signatures being refreshed.',
+          undetected: 'Provider pushed new build. Analysis in progress — behavioral AI providing interim coverage.',
+          monitoring: 'Reassessing detection coverage. Samples submitted for analysis.'
+        };
+        providerData[flipIdx].note = flipNotes[newStatus] || providerData[flipIdx].note;
+      }
 
       // Shuffle detection dates based on seed
       var html = '';
@@ -1404,6 +1461,104 @@
       vhEl.innerHTML = html;
     })();
 
+    // ===== SESSION REVIEW QUEUE (TODO #12) =====
+    (function() {
+      var countEl = document.getElementById('reviewQueueCount');
+      var barEl = document.getElementById('reviewQueueBar');
+      var rateEl = document.getElementById('reviewRate');
+      var etaEl = document.getElementById('reviewETA');
+      if (!countEl) return;
+
+      // Start with seeded morning batch, decrease over time
+      var morningBatch = Math.floor(seeded(daySeed * 401) * 40) + 15;
+      var hour = new Date().getHours();
+      var elapsed = Math.max(0, hour - 6) * 60; // minutes since 6am
+      var processed = Math.floor(elapsed * (2.5 + seeded(daySeed * 403)));
+      var queue = Math.max(0, morningBatch - processed + Math.floor(seeded(daySeed * 407 + hour) * 8));
+
+      function updateQueue() {
+        countEl.textContent = queue;
+        barEl.style.width = Math.min(100, (queue / morningBatch) * 100) + '%';
+        rateEl.textContent = '~' + (2 + Math.floor(Math.random() * 3)) + '/min';
+        if (queue > 0) {
+          etaEl.textContent = Math.ceil(queue / 3) + 'min';
+        } else {
+          etaEl.textContent = 'Clear';
+          barEl.style.background = 'var(--green)';
+        }
+      }
+      updateQueue();
+
+      // Queue slowly drains
+      setInterval(function() {
+        if (queue > 0) {
+          queue -= Math.random() < 0.7 ? 1 : 0;
+          updateQueue();
+        }
+      }, 20000);
+    })();
+
+    // ===== SIGNATURE DB SYNC WAVE (TODO #18) =====
+    (function() {
+      var syncEl = document.getElementById('sigSyncStatus');
+      if (!syncEl) return;
+      var regions = ['US-EAST', 'US-WEST', 'EU-WEST', 'EU-NORTH', 'AP-EAST', 'AP-SOUTH', 'SA-EAST', 'AF-SOUTH', 'ME-CENTRAL'];
+
+      function renderSynced() {
+        var html = '<div style="display:flex;flex-direction:column;gap:6px;">';
+        regions.forEach(function(r) {
+          html += '<div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;">' +
+            '<span style="min-width:85px;color:var(--text-dim);font-family:var(--font-mono);">' + r + '</span>' +
+            '<div style="flex:1;height:3px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden;">' +
+            '<div style="width:100%;height:100%;background:var(--green);border-radius:2px;"></div></div>' +
+            '<span style="color:var(--green);font-size:0.68rem;">\u2714</span></div>';
+        });
+        html += '</div><div style="text-align:center;margin-top:10px;font-size:0.68rem;color:var(--green);">All regions synced</div>';
+        syncEl.innerHTML = html;
+      }
+
+      function runSyncAnimation() {
+        var html = '<div style="text-align:center;font-size:0.75rem;color:var(--accent);margin-bottom:10px;">Syncing signature DB across ' + regions.length + ' regions...</div>';
+        html += '<div style="display:flex;flex-direction:column;gap:6px;">';
+        regions.forEach(function(r) {
+          html += '<div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;">' +
+            '<span style="min-width:85px;color:var(--text-dim);font-family:var(--font-mono);">' + r + '</span>' +
+            '<div style="flex:1;height:3px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden;">' +
+            '<div class="sync-bar" style="width:0%;height:100%;background:var(--accent);border-radius:2px;transition:width 0.8s ease;"></div></div>' +
+            '<span class="sync-check" style="color:var(--text-dim);font-size:0.68rem;">\u2022</span></div>';
+        });
+        html += '</div>';
+        syncEl.innerHTML = html;
+
+        var bars = syncEl.querySelectorAll('.sync-bar');
+        var checks = syncEl.querySelectorAll('.sync-check');
+        var idx = 0;
+        function animateNext() {
+          if (idx >= bars.length) {
+            setTimeout(function() {
+              syncEl.querySelector('div').style.color = 'var(--green)';
+              syncEl.querySelector('div').textContent = 'All regions synced';
+            }, 500);
+            setTimeout(renderSynced, 2000);
+            // Schedule next sync
+            setTimeout(runSyncAnimation, 300000 + Math.floor(Math.random() * 300000));
+            return;
+          }
+          bars[idx].style.width = '100%';
+          bars[idx].style.background = 'var(--green)';
+          checks[idx].textContent = '\u2714';
+          checks[idx].style.color = 'var(--green)';
+          idx++;
+          setTimeout(animateNext, 400 + Math.floor(Math.random() * 600));
+        }
+        setTimeout(animateNext, 800);
+      }
+
+      renderSynced();
+      // First sync animation after 2-5 minutes
+      setTimeout(runSyncAnimation, 120000 + Math.floor(Math.random() * 180000));
+    })();
+
     // ===== BAN WAVE COUNTDOWN (TODO #6) =====
     (function() {
       var timerEl = document.getElementById('banWaveTimer');
@@ -1463,6 +1618,36 @@
         setTimeout(updateCountdown, 1000);
       }
       updateCountdown();
+    })();
+
+    // ===== QOL #7: REALISTIC ERROR STATES =====
+    // Occasionally show a brief "Connection lost, reconnecting..." banner
+    (function() {
+      function showReconnect() {
+        // 10% chance each cycle (every 3-8 minutes)
+        if (Math.random() > 0.10) {
+          setTimeout(showReconnect, 180000 + Math.floor(Math.random() * 300000));
+          return;
+        }
+        var banner = document.createElement('div');
+        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:10000;padding:10px 20px;text-align:center;font-size:0.78rem;font-weight:600;font-family:Inter,-apple-system,sans-serif;background:rgba(224,64,80,0.12);color:#e04050;border-bottom:1px solid rgba(224,64,80,0.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all 0.4s ease;';
+        banner.innerHTML = '\u26a0 Connection interrupted \u2014 reconnecting to telemetry stream...';
+        document.body.appendChild(banner);
+        // "Reconnect" after 2-4 seconds
+        setTimeout(function() {
+          banner.style.background = 'rgba(48,200,96,0.1)';
+          banner.style.borderColor = 'rgba(48,200,96,0.3)';
+          banner.style.color = '#30c860';
+          banner.innerHTML = '\u2714 Connection restored \u2014 telemetry stream active';
+          setTimeout(function() {
+            banner.style.opacity = '0';
+            setTimeout(function() { banner.remove(); }, 400);
+          }, 1500);
+        }, 2000 + Math.floor(Math.random() * 2000));
+        setTimeout(showReconnect, 300000 + Math.floor(Math.random() * 300000));
+      }
+      // First possible error after 2-5 minutes on page
+      setTimeout(showReconnect, 120000 + Math.floor(Math.random() * 180000));
     })();
   </script>
 

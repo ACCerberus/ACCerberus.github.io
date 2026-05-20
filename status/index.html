@@ -167,6 +167,17 @@
     </div>
   </div>
 
+  <!-- TODO #8: Real GitHub Commit Activity -->
+  <div style="max-width:800px;margin:0 auto 24px;padding:0 24px;">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--text-dim)"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span style="font-size:0.78rem;color:var(--text-dim);">Repository Activity</span>
+      </div>
+      <div id="ghActivity" style="font-size:0.78rem;color:var(--text-dim);font-family:var(--font-mono);">Loading...</div>
+    </div>
+  </div>
+
   <footer class="footer">
     <p>&copy; <script>document.write(new Date().getFullYear())</script> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/">Home</a> &nbsp;&middot;&nbsp; <a href="/docs/">Docs</a> &nbsp;&middot;&nbsp; <a href="/changelog/">Changelog</a></p>
   </footer>
@@ -344,6 +355,31 @@
       }
       html += '</div>';
       activeEl.innerHTML = html;
+    })();
+
+    // ===== TODO #8: REAL GITHUB COMMIT ACTIVITY =====
+    (function() {
+      var ghEl = document.getElementById('ghActivity');
+      if (!ghEl) return;
+      fetch('https://api.github.com/repos/ACCerberus/ACCerberus.github.io/commits?per_page=1')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data && data[0] && data[0].commit) {
+            var commitDate = new Date(data[0].commit.committer.date);
+            var diff = Date.now() - commitDate.getTime();
+            var mins = Math.floor(diff / 60000);
+            var timeAgo;
+            if (mins < 60) timeAgo = mins + 'm ago';
+            else if (mins < 1440) timeAgo = Math.floor(mins / 60) + 'h ago';
+            else timeAgo = Math.floor(mins / 1440) + 'd ago';
+            var msg = data[0].commit.message.split('\n')[0];
+            if (msg.length > 60) msg = msg.substring(0, 57) + '...';
+            ghEl.innerHTML = 'Last commit: <span style="color:var(--green)">' + timeAgo + '</span> &mdash; ' + msg;
+          }
+        })
+        .catch(function() {
+          ghEl.textContent = 'Unable to fetch — check github.com/ACCerberus';
+        });
     })();
   </script>
 
