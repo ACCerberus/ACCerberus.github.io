@@ -586,8 +586,8 @@
       </div>
       <div class="hero-stats">
         <div class="hero-stat">
-          <div class="hero-stat-value">3</div>
-          <div class="hero-stat-label">Detection Layers</div>
+          <div class="hero-stat-value" id="statTitles">0</div>
+          <div class="hero-stat-label">Titles in Beta Testing</div>
         </div>
         <div class="hero-stat">
           <div class="hero-stat-value" id="statThreats">0</div>
@@ -598,8 +598,8 @@
           <div class="hero-stat-label">Sessions Protected</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-value">0</div>
-          <div class="hero-stat-label">Telemetry Collected</div>
+          <div class="hero-stat-value" id="statPentests">0</div>
+          <div class="hero-stat-label">Pentest Scenarios Run</div>
         </div>
       </div>
     </div>
@@ -1417,30 +1417,37 @@
       gridObserver.observe(grid);
     });
 
-    // Live counters — persistent across visits, realistic rates for 14 partner titles
+    // Live counters — realistic for early beta with 4 test titles
     (function() {
-      var TITLES = 14; // number of active game titles
+      var TITLES = 4; // games currently in closed beta testing
+      var PENTESTS_BASE = 1247; // pentest scenarios run since launch
+
       var stored = {};
-      try { stored = JSON.parse(localStorage.getItem('cerberusStats') || '{}'); } catch(e) {}
+      try { stored = JSON.parse(localStorage.getItem('cerberusStats2') || '{}'); } catch(e) {}
 
       // Calculate time-based growth since last visit
       var lastVisit = stored.lastVisit || Date.now();
-      var elapsed = (Date.now() - lastVisit) / 1000; // seconds since last visit
-      var baseThreats = stored.threats || 847293;
-      var baseSessions = stored.sessions || 2184710;
+      var elapsed = (Date.now() - lastVisit) / 1000;
 
-      // Realistic growth rates per second across 14 titles:
-      // ~2.4 threats/sec (avg across all titles), ~18 sessions/sec
-      var threatGrowth = Math.floor(elapsed * (2.0 + Math.random() * 0.8));
-      var sessionGrowth = Math.floor(elapsed * (15 + Math.random() * 6));
+      // Early beta: ~12K threats blocked, ~34K sessions — small player pools
+      var baseThreats = stored.threats || 12847;
+      var baseSessions = stored.sessions || 34219;
+      var basePentests = stored.pentests || PENTESTS_BASE;
 
-      var threats = baseThreats + threatGrowth + Math.floor(Math.random() * 50);
-      var sessions = baseSessions + sessionGrowth + Math.floor(Math.random() * 200);
+      // Growth rates for 4 titles with ~800 concurrent testers:
+      // ~0.15 threats/sec, ~0.8 sessions/sec, ~1 pentest every 30 min
+      var threatGrowth = Math.floor(elapsed * (0.12 + Math.random() * 0.06));
+      var sessionGrowth = Math.floor(elapsed * (0.6 + Math.random() * 0.4));
+      var pentestGrowth = Math.floor(elapsed / 1800);
 
-      try { localStorage.setItem('cerberusStats', JSON.stringify({ threats: threats, sessions: sessions, lastVisit: Date.now() })); } catch(e) {}
+      var threats = baseThreats + threatGrowth + Math.floor(Math.random() * 5);
+      var sessions = baseSessions + sessionGrowth + Math.floor(Math.random() * 10);
+      var pentests = basePentests + pentestGrowth;
+
+      try { localStorage.setItem('cerberusStats2', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, lastVisit: Date.now() })); } catch(e) {}
 
       function animateCounter(el, target) {
-        var start = 0; var duration = 1500; var startTime = null;
+        var duration = 1500; var startTime = null;
         function step(ts) {
           if (!startTime) startTime = ts;
           var progress = Math.min((ts - startTime) / duration, 1);
@@ -1450,22 +1457,33 @@
         }
         requestAnimationFrame(step);
       }
+
+      var titlesEl = document.getElementById('statTitles');
       var threatEl = document.getElementById('statThreats');
       var sessionEl = document.getElementById('statSessions');
+      var pentestEl = document.getElementById('statPentests');
+
+      if (titlesEl) animateCounter(titlesEl, TITLES);
       if (threatEl) animateCounter(threatEl, threats);
       if (sessionEl) animateCounter(sessionEl, sessions);
+      if (pentestEl) animateCounter(pentestEl, pentests);
 
-      // Live tick — threats increment every 2-5s, sessions every 1-3s (realistic for 14 titles)
+      // Live tick — slow growth for small beta pool
       setInterval(function() {
-        threats += Math.floor(Math.random() * 4) + 1;
+        threats += Math.floor(Math.random() * 2) + 1;
         if (threatEl) threatEl.textContent = threats.toLocaleString();
-        try { localStorage.setItem('cerberusStats', JSON.stringify({ threats: threats, sessions: sessions, lastVisit: Date.now() })); } catch(e) {}
-      }, 2000 + Math.floor(Math.random() * 3000));
+        try { localStorage.setItem('cerberusStats2', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, lastVisit: Date.now() })); } catch(e) {}
+      }, 8000 + Math.floor(Math.random() * 7000)); // every 8-15s
       setInterval(function() {
-        sessions += Math.floor(Math.random() * 12) + 3;
+        sessions += Math.floor(Math.random() * 3) + 1;
         if (sessionEl) sessionEl.textContent = sessions.toLocaleString();
-        try { localStorage.setItem('cerberusStats', JSON.stringify({ threats: threats, sessions: sessions, lastVisit: Date.now() })); } catch(e) {}
-      }, 1000 + Math.floor(Math.random() * 2000));
+        try { localStorage.setItem('cerberusStats2', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, lastVisit: Date.now() })); } catch(e) {}
+      }, 4000 + Math.floor(Math.random() * 4000)); // every 4-8s
+      setInterval(function() {
+        pentests += 1;
+        if (pentestEl) pentestEl.textContent = pentests.toLocaleString();
+        try { localStorage.setItem('cerberusStats2', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, lastVisit: Date.now() })); } catch(e) {}
+      }, 90000 + Math.floor(Math.random() * 60000)); // every 1.5-2.5 min
     })();
 
     // ===== LIVE DEMO ENGINE =====
