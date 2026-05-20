@@ -1447,37 +1447,36 @@
       gridObserver.observe(grid);
     });
 
-    // Live counters — early beta, 4 titles, ~200 concurrent testers
+    // Live counters — early beta, 6 titles
     (function() {
-      var TITLES = 4;
+      var TITLES = 6;
 
-      var stored = {};
-      try { stored = JSON.parse(localStorage.getItem('cerberusStats3') || '{}'); } catch(e) {}
+      var stored = null;
+      try { stored = JSON.parse(localStorage.getItem('cerberusStats4')); } catch(e) {}
 
-      var lastVisit = stored.lastVisit || Date.now();
-      var elapsed = (Date.now() - lastVisit) / 1000;
+      var threats, sessions, pentests;
 
-      // Realistic base numbers for a product ~7 months into closed beta
-      var baseThreats = stored.threats || 12847;
-      var baseSessions = stored.sessions || 34219;
-      var basePentests = stored.pentests || 1247;
-
-      // Offline growth — extremely slow
-      // ~1 threat every 45s avg (cheaters are rare in small pools)
-      // ~1 session every 15s avg (players joining across 4 titles)
-      // ~1 pentest every 8 min (automated CI pipeline runs)
-      var threatGrowth = Math.floor(elapsed / 45);
-      var sessionGrowth = Math.floor(elapsed / 15);
-      var pentestGrowth = Math.floor(elapsed / 480);
-
-      var threats = baseThreats + threatGrowth;
-      var sessions = baseSessions + sessionGrowth;
-      var pentests = basePentests + pentestGrowth;
+      if (stored && stored.ts) {
+        var elapsed = (Date.now() - stored.ts) / 1000;
+        // Continue exactly where we left off + growth while away
+        threats = stored.threats + Math.floor(elapsed / 45);
+        sessions = stored.sessions + Math.floor(elapsed / 15);
+        pentests = stored.pentests + Math.floor(elapsed / 480);
+      } else {
+        // First ever visit — realistic starting numbers
+        threats = 12847;
+        sessions = 34219;
+        pentests = 1247;
+      }
 
       function save() {
-        try { localStorage.setItem('cerberusStats3', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, lastVisit: Date.now() })); } catch(e) {}
+        try { localStorage.setItem('cerberusStats4', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, ts: Date.now() })); } catch(e) {}
       }
       save();
+
+      // Save on close/refresh so numbers pick up exactly where they left off
+      window.addEventListener('beforeunload', save);
+      document.addEventListener('visibilitychange', function() { if (document.hidden) save(); });
 
       function animateCounter(el, target) {
         var duration = 1500; var startTime = null;
