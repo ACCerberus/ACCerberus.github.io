@@ -176,6 +176,79 @@
     });
   }
 
+  // ─── QOL #2: COMMAND PALETTE (Ctrl+K) ───
+  function initCommandPalette() {
+    var pages = [
+      { name: 'Home', desc: 'Main landing page', url: '/' },
+      { name: 'Analytics Dashboard', desc: 'Live threat monitoring', url: '/analytics/' },
+      { name: 'Status Page', desc: 'System health & uptime', url: '/status/' },
+      { name: 'Changelog', desc: 'Version history & updates', url: '/changelog/' },
+      { name: 'Documentation', desc: 'SDK integration guides', url: '/docs/' },
+      { name: 'API Reference', desc: 'REST API endpoints', url: '/api/' },
+      { name: 'SDK Download', desc: 'Download SDK package', url: '/sdk/' },
+      { name: 'Blog', desc: 'Threat reports & engineering', url: '/blog/' },
+      { name: 'Team', desc: 'Engineering team', url: '/team/' },
+    ];
+
+    var overlay = null;
+
+    function open() {
+      if (overlay) return;
+      overlay = document.createElement('div');
+      overlay.id = 'cmdPalette';
+      overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);display:flex;align-items:flex-start;justify-content:center;padding-top:20vh;backdrop-filter:blur(4px);';
+      overlay.innerHTML = '<div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.1);border-radius:14px;width:480px;max-width:90vw;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.6);">' +
+        '<div style="padding:16px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:10px;">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7084" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
+        '<input id="cmdInput" type="text" placeholder="Search pages, actions..." style="flex:1;background:none;border:none;outline:none;color:#eef0f4;font-family:Inter,-apple-system,sans-serif;font-size:0.9rem;" autocomplete="off"/>' +
+        '<span style="font-size:0.6rem;color:#6b7084;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;">ESC</span></div>' +
+        '<div id="cmdResults" style="max-height:300px;overflow-y:auto;"></div></div>';
+      document.body.appendChild(overlay);
+
+      var input = document.getElementById('cmdInput');
+      var results = document.getElementById('cmdResults');
+      input.focus();
+
+      function render(query) {
+        var q = (query || '').toLowerCase();
+        var matches = pages.filter(function (p) {
+          return p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
+        });
+        results.innerHTML = matches.map(function (p, i) {
+          var active = i === 0 ? 'background:rgba(232,160,32,0.08);' : '';
+          return '<a href="' + p.url + '" style="display:flex;align-items:center;gap:12px;padding:12px 16px;text-decoration:none;transition:background 0.15s;' + active + '" ' +
+            'onmouseover="this.style.background=\'rgba(232,160,32,0.08)\'" onmouseout="this.style.background=\'\'">' +
+            '<div style="width:32px;height:32px;border-radius:8px;background:rgba(232,160,32,0.1);display:flex;align-items:center;justify-content:center;color:#e8a020;font-size:0.75rem;font-weight:700;">' + p.name[0] + '</div>' +
+            '<div><div style="color:#eef0f4;font-size:0.82rem;font-weight:500;">' + p.name + '</div>' +
+            '<div style="color:#6b7084;font-size:0.7rem;">' + p.desc + '</div></div></a>';
+        }).join('');
+      }
+      render('');
+
+      input.addEventListener('input', function () { render(input.value); });
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
+        if (e.key === 'Enter') {
+          var first = results.querySelector('a');
+          if (first) { first.click(); close(); }
+        }
+      });
+      overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+    }
+
+    function close() {
+      if (overlay) { overlay.remove(); overlay = null; }
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        if (overlay) close(); else open();
+      }
+      if (e.key === 'Escape' && overlay) close();
+    });
+  }
+
   // ─── TOAST NOTIFICATIONS ON ALL PAGES ───
   // Extends toast system site-wide (previously only on index.html)
   function initToasts() {
@@ -240,11 +313,13 @@
       fetchState();
       initPageTransitions();
       initToasts();
+      initCommandPalette();
     });
   } else {
     fetchState();
     initPageTransitions();
     initToasts();
+    initCommandPalette();
   }
 
 })();
