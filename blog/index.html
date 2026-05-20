@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog &amp; Security Advisories - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Developer blog, security advisories, threat reports, and engineering updates from the Cerberus Anti-Cheat team." />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --bg-card-hover: #0e0e15;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15); --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c07818);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507;
+    }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+
+    /* PAGE */
+    .container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 120px 24px 80px; }
+
+    .page-header { margin-bottom: 48px; }
+    .page-title {
+      font-family: var(--font-heading); font-size: 2.4rem; font-weight: 800;
+      color: var(--text-bright); letter-spacing: -1.2px; margin-bottom: 10px;
+    }
+    .page-desc { font-size: 0.95rem; color: var(--text-dim); max-width: 520px; }
+
+    /* FILTER TABS */
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 40px; }
+    .filter-btn {
+      padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border);
+      background: transparent; color: var(--text-dim); font-family: var(--font); font-size: 0.78rem;
+      font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .filter-btn:hover { border-color: rgba(255,255,255,0.15); color: var(--text-bright); }
+    .filter-btn.active { background: var(--accent-dim); border-color: rgba(232,160,32,0.4); color: var(--accent); }
+
+    /* POSTS GRID */
+    .posts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    /* CARD */
+    .post-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      overflow: hidden; cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      display: flex; flex-direction: column;
+    }
+    .post-card:hover { border-color: rgba(255,255,255,0.12); background: var(--bg-card-hover); transform: translateY(-2px); }
+    .post-card.expanded { grid-column: 1 / -1; transform: none; cursor: default; }
+    .post-card.expanded:hover { transform: none; }
+
+    .card-body { padding: 24px 26px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+
+    .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .cat-badge {
+      font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0;
+    }
+    .cat-threat    { background: rgba(224,64,80,0.1);   color: var(--red);    border: 1px solid rgba(224,64,80,0.2);   }
+    .cat-advisory  { background: rgba(224,64,80,0.15);  color: var(--red);    border: 1px solid rgba(224,64,80,0.3);   }
+    .cat-engineering { background: rgba(64,136,232,0.1); color: var(--blue);  border: 1px solid rgba(64,136,232,0.2);  }
+    .cat-milestone { background: rgba(232,160,32,0.1);  color: var(--accent); border: 1px solid rgba(232,160,32,0.2); }
+    .cat-casestudy { background: rgba(136,96,232,0.1);  color: var(--purple); border: 1px solid rgba(136,96,232,0.2); }
+
+    .sev-badge {
+      font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 3px; letter-spacing: 0.5px;
+    }
+    .sev-critical { background: rgba(224,64,80,0.2); color: #ff6070; border: 1px solid rgba(224,64,80,0.4); }
+    .sev-high     { background: rgba(232,120,0,0.15); color: #e87820; border: 1px solid rgba(232,120,0,0.3); }
+    .sev-medium   { background: rgba(232,160,32,0.12); color: var(--accent); border: 1px solid rgba(232,160,32,0.25); }
+
+    .card-date { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); }
+    .reading-time { font-size: 0.72rem; color: var(--text-dim); margin-left: auto; white-space: nowrap; }
+
+    .card-title {
+      font-family: var(--font-heading); font-size: 1.08rem; font-weight: 700;
+      color: var(--text-bright); line-height: 1.35; letter-spacing: -0.3px;
+    }
+    .post-card.expanded .card-title { font-size: 1.35rem; }
+
+    .card-excerpt { font-size: 0.83rem; color: var(--text); line-height: 1.65; }
+
+    .card-footer { display: flex; align-items: center; gap: 10px; padding: 14px 26px; border-top: 1px solid var(--border); }
+    .author-avatar {
+      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 700; font-family: var(--font-heading);
+    }
+    .author-name { font-size: 0.78rem; color: var(--text-dim); font-weight: 500; }
+    .expand-hint { font-size: 0.72rem; color: var(--text-dim); margin-left: auto; opacity: 0.7; }
+    .post-card:not(.expanded):hover .expand-hint { color: var(--accent); opacity: 1; }
+
+    /* FULL POST CONTENT (shown when expanded) */
+    .post-full { display: none; padding: 0 26px 28px; }
+    .post-card.expanded .post-full { display: block; }
+
+    .post-full p { font-size: 0.88rem; color: var(--text); line-height: 1.75; margin-bottom: 18px; }
+    .post-full p:last-of-type { margin-bottom: 0; }
+
+    .post-stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px; margin: 20px 0 24px;
+    }
+    .stat-box {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 16px;
+    }
+    .stat-box-value { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: var(--text-bright); letter-spacing: -0.5px; }
+    .stat-box-label { font-size: 0.72rem; color: var(--text-dim); margin-top: 2px; }
+
+    .advisory-meta {
+      background: rgba(224,64,80,0.04); border: 1px solid rgba(224,64,80,0.15);
+      border-radius: 10px; padding: 16px 20px; margin: 20px 0;
+    }
+    .advisory-meta table { width: 100%; border-collapse: collapse; }
+    .advisory-meta td { font-size: 0.82rem; padding: 5px 0; vertical-align: top; }
+    .advisory-meta td:first-child { color: var(--text-dim); width: 140px; font-weight: 500; }
+    .advisory-meta td:last-child { color: var(--text-bright); font-family: var(--font-mono); font-size: 0.78rem; }
+
+    .timeline-list { list-style: none; margin: 20px 0; }
+    .timeline-list li {
+      display: flex; gap: 14px; align-items: flex-start;
+      font-size: 0.82rem; color: var(--text); padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .timeline-list li:last-child { border-bottom: none; }
+    .tl-date { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); flex-shrink: 0; min-width: 120px; }
+
+    .category-bar { margin: 20px 0; }
+    .category-bar-item { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .category-bar-label { font-size: 0.78rem; color: var(--text-dim); width: 110px; flex-shrink: 0; }
+    .category-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.04); border-radius: 3px; overflow: hidden; }
+    .category-bar-fill { height: 100%; border-radius: 3px; }
+    .category-bar-pct { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim); width: 36px; text-align: right; }
+
+    .post-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+    .post-tag {
+      font-size: 0.7rem; color: var(--text-dim); background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border); border-radius: 4px; padding: 3px 10px;
+    }
+
+    .collapse-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 24px; padding: 8px 16px; border-radius: 8px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text-dim); font-family: var(--font); font-size: 0.78rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .collapse-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* FOOTER */
+    .footer { position: relative; z-index: 1; padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); margin-top: 40px; }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 700px) {
+      .nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .posts-grid { grid-template-columns: 1fr; }
+      .post-card.expanded { grid-column: auto; }
+      .page-title { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/changelog/">Changelog</a>
+      <a href="/status/">Status</a>
+      <a href="/analytics/">Analytics</a>
+      <a href="/team/">Team</a>
+      <a href="/blog/" class="active">Blog</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Blog &amp; Advisories</h1>
+      <p class="page-desc">Threat reports, security advisories, engineering updates, and detection milestones from the Cerberus team.</p>
+    </div>
+
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-filter="all">All Posts</button>
+      <button class="filter-btn" data-filter="threat">Threat Reports</button>
+      <button class="filter-btn" data-filter="advisory">Security Advisories</button>
+      <button class="filter-btn" data-filter="engineering">Engineering</button>
+      <button class="filter-btn" data-filter="milestone">Milestones</button>
+      <button class="filter-btn" data-filter="casestudy">Case Studies</button>
+    </div>
+
+    <div class="posts-grid" id="postsGrid"></div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; <script>document.write(new Date().getFullYear())</script> Cerberus Team. All rights reserved.
+    &nbsp;&middot;&nbsp; <a href="/">Home</a>
+    &nbsp;&middot;&nbsp; <a href="/docs/">Docs</a>
+    &nbsp;&middot;&nbsp; <a href="/changelog/">Changelog</a>
+    &nbsp;&middot;&nbsp; <a href="/status/">Status</a></p>
+  </footer>
+
+  <script>
+    // =====================================================================
+    // SEEDED RANDOM
+    // =====================================================================
+    function seeded(s) { var x = Math.sin(s) * 10000; return x - Math.floor(x); }
+    var today = Math.floor(Date.now() / 86400000);
+
+    function seedInt(seed, min, max) { return min + Math.floor(seeded(seed) * (max - min + 1)); }
+    function seedPick(seed, arr) { return arr[Math.floor(seeded(seed) * arr.length)]; }
+
+    var MONTHS_LONG  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    function fmtDate(daysSinceEpoch) {
+      var d = new Date(daysSinceEpoch * 86400000);
+      return MONTHS_SHORT[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
+    function monthYear(daysSinceEpoch) {
+      var d = new Date(daysSinceEpoch * 86400000);
+      return MONTHS_LONG[d.getMonth()] + ' ' + d.getFullYear();
+    }
+    function prevMonthYear(daysSinceEpoch) {
+      var d = new Date(daysSinceEpoch * 86400000);
+      var m = d.getMonth() - 1;
+      var y = d.getFullYear();
+      if (m < 0) { m = 11; y--; }
+      return MONTHS_LONG[m] + ' ' + y;
+    }
+    function isoDate(daysSinceEpoch) {
+      var d = new Date(daysSinceEpoch * 86400000);
+      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
+
+    // =====================================================================
+    // DATA POOLS
+    // =====================================================================
+    var AUTHORS = [
+      { name: 'Alex Chen',      initials: 'AC', color: '#4088e8', bg: 'rgba(64,136,232,0.15)' },
+      { name: 'Sarah Mitchell', initials: 'SM', color: '#30c860', bg: 'rgba(48,200,96,0.15)'  },
+      { name: 'James Park',     initials: 'JP', color: '#8860e8', bg: 'rgba(136,96,232,0.15)' },
+      { name: 'Maria Santos',   initials: 'MS', color: '#e8a020', bg: 'rgba(232,160,32,0.15)' },
+      { name: 'David Kim',      initials: 'DK', color: '#e04050', bg: 'rgba(224,64,80,0.15)'  },
+    ];
+
+    var CHEAT_TYPES = ['aimbot','ESP / wallhack','DMA reader','kernel driver','recoil script','triggerbot','HWID spoofer','radar hack','speed exploit','backtrack module','stream-proof overlay','silent aim'];
+    var GAME_TITLES = ['[REDACTED]','[REDACTED] Studios title','a major tactical shooter','a top-tier battle royale','a competitive FPS'];
+    var CVE_COMPONENTS = ['kernel driver','IOCTL handler','memory scanner','signature verifier','session token validator','hardware fingerprint collector','driver communication channel'];
+    var CVE_FIXES = ['input length validation','bounds checking on all IOCTL buffers','privilege-level verification before dispatch','session token expiry enforcement','cryptographic signature verification','rate limiting on driver requests'];
+    var ENG_TOPICS = [
+      { title: 'How We Reduced Scan Latency by 40%',          metric: 'scan latency',       unit: 'ms',  before: [4.8, 6.2], after: [2.4, 3.1], emoji: '' },
+      { title: 'Cutting False Positives in Half with ML',     metric: 'false positive rate', unit: '%',   before: [0.8, 1.4], after: [0.2, 0.5], emoji: '' },
+      { title: 'Scaling to 500,000 Concurrent Sessions',      metric: 'memory per session',  unit: 'MB',  before: [2.1, 3.4], after: [0.8, 1.2], emoji: '' },
+      { title: 'Building a Sub-2ms Behavioral AI Pipeline',   metric: 'inference latency',   unit: 'ms',  before: [8.0, 12.4], after: [1.6, 2.1], emoji: '' },
+      { title: 'Rearchitecting Our Signature Database',       metric: 'lookup time',         unit: 'ms',  before: [1.8, 2.9], after: [0.3, 0.7], emoji: '' },
+      { title: 'How We Automated 80% of Ban Appeals',         metric: 'manual review time',  unit: 'min', before: [14, 22], after: [2, 4], emoji: '' },
+    ];
+    var PARTNER_RESULTS = [72, 78, 81, 86, 89, 91, 94, 96];
+    var PARTNER_TIMES   = [3, 4, 5, 6, 8];
+
+    var MILESTONE_SIGS  = [5000, 6000, 7500, 8000, 10000, 12000, 15000];
+    var MILESTONE_BANS  = ['1 million','2 million','5 million','10 million'];
+
+    var SEVERITIES = [
+      { label: 'CRITICAL', cls: 'sev-critical' },
+      { label: 'HIGH',     cls: 'sev-high'     },
+      { label: 'MEDIUM',   cls: 'sev-medium'   },
+    ];
+
+    // =====================================================================
+    // POST GENERATORS
+    // =====================================================================
+
+    function genThreat(daySeed, postDate) {
+      var s = daySeed;
+      var author = AUTHORS[seedInt(s+1, 0, AUTHORS.length-1)];
+      var totalDet = seedInt(s+2, 180000, 2800000);
+      var detRate  = (seeded(s+3) * 0.8 + 99.0).toFixed(2);
+      var newSigs  = seedInt(s+4, 120, 680);
+      var topType  = seedPick(s+5, CHEAT_TYPES);
+      var topType2 = seedPick(s+6, CHEAT_TYPES);
+      while (topType2 === topType) topType2 = seedPick(s+60, CHEAT_TYPES);
+      var dmaPct   = seedInt(s+7, 4, 22);
+      var dmaDir   = seeded(s+8) > 0.45 ? 'up' : 'down';
+      var dmaDelta = seedInt(s+9, 3, 19);
+      var kernPct  = seedInt(s+10, 8, 28);
+      var aimbotPct= seedInt(s+11, 18, 38);
+      var espPct   = seedInt(s+12, 14, 30);
+      var hwSpoof  = seedInt(s+13, 5, 14);
+      var other    = 100 - dmaPct - kernPct - aimbotPct - espPct - hwSpoof;
+      if (other < 2) other = 2;
+      var waveSize = seedInt(s+14, 800, 12000);
+      var waveHrs  = seedInt(s+15, 2, 72);
+      var newProv  = seedInt(s+16, 2, 9);
+      var mon = monthYear(postDate);
+      var prevMon = prevMonthYear(postDate);
+      var title = mon + ' Threat Landscape Report';
+
+      var p1 = 'The ' + mon + ' threat landscape report covers ' + totalDet.toLocaleString() + ' total detections across all partner titles, with an overall detection rate of ' + detRate + '%. Our signature database received ' + newSigs + ' new entries this cycle, bringing the total to ' + seedInt(s+17, 4500, 15000).toLocaleString() + ' tracked cheat signatures.';
+      var p2 = 'Aimbot variants remained the most prevalent cheat category at ' + aimbotPct + '% of all detections, followed by ESP and wallhack overlays at ' + espPct + '%. DMA-based attacks accounted for ' + dmaPct + '% of detections and were ' + dmaDir + ' ' + dmaDelta + '% compared to ' + prevMon + ' — a trend we attribute to ' + (dmaDir === 'up' ? 'new low-cost PCIe DMA boards entering the market and improved bypass toolkits targeting our hardware scanner' : 'our v0.4.x hardware fingerprinting improvements and updated PCIe timing heuristics') + '. Kernel-mode driver cheats represented ' + kernPct + '% of the threat volume, with HWID spoofers at ' + hwSpoof + '%.';
+      var p3 = 'Our behavioral AI engine flagged a coordinated wave of ' + waveSize.toLocaleString() + ' accounts within ' + waveHrs + ' hours, suspected to be an organized boosting ring operating across ' + seedInt(s+18, 2, 7) + ' partner titles. All flagged accounts were forwarded to partner studios for review. Response time from detection to partner notification averaged ' + seedInt(s+19, 4, 28) + ' minutes.';
+      var p4 = 'We added detection coverage for ' + newProv + ' previously untracked cheat providers this month, and issued ' + seedInt(s+20, 1, 4) + ' emergency signature pushes in response to new loader variants. Our false positive rate held at ' + (seeded(s+21) * 0.08 + 0.04).toFixed(3) + '% — below our SLA target of 0.1%. Looking ahead, we expect continued pressure on hardware-level detection vectors as DMA tool kits grow more accessible.';
+      var p5 = 'Partner studios reported a ' + seedInt(s+22, 12, 41) + '% reduction in player-submitted cheat reports compared to ' + prevMon + ', consistent with our detection coverage improvements. We continue to expand our behavioral baseline dataset, which now includes over ' + seedInt(s+23, 1, 8) + ' billion input events for model training and anomaly calibration.';
+
+      return {
+        type: 'threat', catClass: 'cat-threat', catLabel: 'THREAT REPORT',
+        title: title, author: author, date: fmtDate(postDate), readTime: seedInt(s+24, 5, 8),
+        excerpt: p1,
+        tags: ['threat-report', 'monthly', 'detections', 'aimbot', 'DMA'],
+        sevBadge: null,
+        statsBoxes: [
+          { value: totalDet.toLocaleString(), label: 'Total Detections' },
+          { value: detRate + '%', label: 'Detection Rate' },
+          { value: '+' + newSigs, label: 'New Signatures' },
+          { value: topType, label: 'Top Cheat Type' },
+        ],
+        categoryBreakdown: [
+          { label: 'Aimbot',       pct: aimbotPct, color: 'var(--red)' },
+          { label: 'ESP/Wallhack', pct: espPct,    color: 'var(--blue)' },
+          { label: 'Kernel Driver',pct: kernPct,   color: 'var(--purple)' },
+          { label: 'DMA Reader',   pct: dmaPct,    color: 'var(--accent)' },
+          { label: 'HWID Spoofer', pct: hwSpoof,   color: 'var(--green)' },
+          { label: 'Other',        pct: Math.max(other, 2), color: 'var(--text-dim)' },
+        ],
+        body: [p1, p2, p3, p4, p5],
+        timeline: null,
+      };
+    }
+
+    function genAdvisory(daySeed, postDate) {
+      var s = daySeed + 200;
+      var author = AUTHORS[seedInt(s+1, 0, AUTHORS.length-1)];
+      var cveYear = new Date(postDate * 86400000).getFullYear();
+      var cveNum  = seedInt(s+2, 1000, 9999);
+      var sev     = SEVERITIES[seedInt(s+3, 0, SEVERITIES.length-1)];
+      var comp    = seedPick(s+4, CVE_COMPONENTS);
+      var fix     = seedPick(s+5, CVE_FIXES);
+      var affectedVer = 'v0.' + seedInt(s+6, 2, 4) + '.' + seedInt(s+7, 0, 3) + ' - v0.' + seedInt(s+8, 3, 4) + '.' + seedInt(s+9, 0, 2);
+      var patchedVer  = 'v0.' + seedInt(s+10, 4, 4) + '.' + seedInt(s+11, 1, 3) + '-beta.' + seedInt(s+12, 100, 999);
+      var reportDays  = seedInt(s+13, 7, 45);
+      var patchDays   = seedInt(s+14, 3, 14);
+      var discDays    = seedInt(s+15, 30, 90);
+      var reportDate  = postDate - discDays - patchDays - reportDays;
+      var patchDate   = postDate - discDays - patchDays;
+      var disclDate   = postDate;
+      var cvssScore   = sev.label === 'CRITICAL' ? (seeded(s+16) * 1.0 + 9.0).toFixed(1) : sev.label === 'HIGH' ? (seeded(s+16) * 1.5 + 7.0).toFixed(1) : (seeded(s+16) * 1.9 + 4.0).toFixed(1);
+      var reporter    = seedPick(s+17, ['an independent security researcher', 'a partner studio security team', 'our internal red team', 'a third-party penetration testing firm', 'a bug bounty participant']);
+      var title = 'CVE-' + cveYear + '-' + cveNum + ': ' + comp.charAt(0).toUpperCase() + comp.slice(1) + ' exploit mitigation';
+
+      var p1 = 'Cerberus Anti-Cheat has patched a ' + sev.label.toLowerCase() + '-severity vulnerability (CVE-' + cveYear + '-' + cveNum + ', CVSS ' + cvssScore + ') in the ' + comp + '. The issue was reported to our security team by ' + reporter + ' on ' + fmtDate(reportDate) + ' and was patched within ' + patchDays + ' days of confirmation.';
+      var p2 = 'The vulnerability allowed a carefully crafted payload to bypass ' + comp + ' validation by exploiting insufficient ' + fix + '. In a worst-case scenario, a local attacker with kernel-mode execution access could leverage this to interfere with driver operation. No evidence of in-the-wild exploitation was found during our forensic review of partner telemetry.';
+      var p3 = 'The fix was deployed in ' + patchedVer + ' and applies ' + fix + ' across all affected code paths. Partners running affected versions were notified privately ' + seedInt(s+18, 5, 14) + ' days before this public disclosure and should have already applied the update via automatic signature sync. Manual update instructions are available in the partner documentation.';
+      var p4 = 'We thank ' + reporter + ' for responsible disclosure. As part of our commitment to coordinated disclosure, we observed a ' + discDays + '-day embargo period to allow all partners to update before this advisory was published. Partners with questions should contact security@cerberus-ac.com.';
+
+      return {
+        type: 'advisory', catClass: 'cat-advisory', catLabel: 'SECURITY ADVISORY',
+        title: title, author: author, date: fmtDate(postDate), readTime: seedInt(s+19, 3, 6),
+        excerpt: p1,
+        tags: ['CVE-' + cveYear + '-' + cveNum, 'security', 'patch', 'disclosure'],
+        sevBadge: sev,
+        statsBoxes: null,
+        categoryBreakdown: null,
+        body: [p1, p2, p3, p4],
+        advisoryMeta: [
+          { k: 'CVE ID',           v: 'CVE-' + cveYear + '-' + cveNum },
+          { k: 'CVSS Score',       v: cvssScore + ' (' + sev.label + ')' },
+          { k: 'Component',        v: comp },
+          { k: 'Affected Versions',v: affectedVer },
+          { k: 'Patched Version',  v: patchedVer },
+          { k: 'Vector',           v: 'Local / Kernel' },
+        ],
+        timeline: [
+          { date: fmtDate(reportDate), event: 'Vulnerability reported by ' + reporter },
+          { date: fmtDate(reportDate + Math.floor(patchDays * 0.3)), event: 'Confirmed and triaged by Cerberus security team' },
+          { date: fmtDate(patchDate),  event: 'Patch developed and merged to ' + patchedVer },
+          { date: fmtDate(patchDate + patchDays), event: 'Patch deployed to all active partners' },
+          { date: fmtDate(disclDate),  event: 'Public advisory issued after ' + discDays + '-day embargo' },
+        ],
+      };
+    }
+
+    function genEngineering(daySeed, postDate) {
+      var s = daySeed + 400;
+      var author = AUTHORS[seedInt(s+1, 0, AUTHORS.length-1)];
+      var topic = ENG_TOPICS[seedInt(s+2, 0, ENG_TOPICS.length-1)];
+      var beforeVal = (seeded(s+3) * (topic.before[1] - topic.before[0]) + topic.before[0]).toFixed(1);
+      var afterVal  = (seeded(s+4) * (topic.after[1] - topic.after[0]) + topic.after[0]).toFixed(1);
+      var improvePct= Math.round((1 - parseFloat(afterVal) / parseFloat(beforeVal)) * 100);
+      var sessCount = seedInt(s+5, 80000, 500000);
+      var teamSize  = seedInt(s+6, 2, 6);
+      var sprintWks = seedInt(s+7, 3, 10);
+
+      var p1 = 'A team of ' + teamSize + ' engineers spent ' + sprintWks + ' weeks rearchitecting our ' + topic.metric + ' pipeline. The result: average ' + topic.metric + ' dropped from ' + beforeVal + topic.unit + ' to ' + afterVal + topic.unit + ' — a ' + Math.abs(improvePct) + '% improvement measured across a sample of ' + sessCount.toLocaleString() + ' live sessions.';
+      var p2 = 'The core bottleneck was identified using internal profiling tooling we built around Windows ETW traces and custom kernel-mode performance counters. We found that ' + seedInt(s+8, 30, 60) + '% of time was being spent in a serial section that had grown organically over the course of our v0.2 and v0.3 development sprints. The fix involved restructuring the work into a lock-free pipeline with per-CPU work queues and a batched commit phase, eliminating the contention point entirely.';
+      var p3 = 'One key insight was that we were over-sampling in low-risk session states. By adding a lightweight session risk classifier that runs every ' + seedInt(s+9, 100, 500) + 'ms, we can throttle scan frequency for sessions with no anomaly history while maintaining full-rate scanning for flagged players. This alone accounted for roughly ' + seedInt(s+10, 20, 45) + '% of the overall improvement.';
+      var p4 = 'We validated the changes against our full regression suite of ' + seedInt(s+11, 200, 800) + ' test scenarios and ran a ' + seedInt(s+12, 48, 168) + '-hour soak test on shadow traffic before rolling to production. Peak memory usage in the scan engine dropped from ' + (seeded(s+13) * 8 + 18).toFixed(0) + 'MB to ' + (seeded(s+14) * 4 + 10).toFixed(0) + 'MB, giving us additional headroom for future feature development.';
+      var p5 = 'These changes shipped in v0.' + seedInt(s+15, 3, 4) + '.' + seedInt(s+16, 1, 3) + '-beta and have been running in production for ' + seedInt(s+17, 2, 8) + ' weeks without incident. The architecture document has been updated in the internal wiki, and we are planning a follow-up optimization pass targeting ' + seedPick(s+18, ['hardware fingerprint collection', 'behavioral model retraining throughput', 'signature database indexing', 'kernel scan cycle scheduling']) + ' in the next sprint cycle.';
+
+      return {
+        type: 'engineering', catClass: 'cat-engineering', catLabel: 'ENGINEERING',
+        title: topic.title, author: author, date: fmtDate(postDate), readTime: seedInt(s+19, 6, 10),
+        excerpt: p1,
+        tags: ['engineering', 'performance', 'architecture', topic.metric.replace(/\s+/g, '-')],
+        sevBadge: null,
+        statsBoxes: [
+          { value: beforeVal + topic.unit, label: topic.metric + ' (before)' },
+          { value: afterVal + topic.unit,  label: topic.metric + ' (after)'  },
+          { value: Math.abs(improvePct) + '%', label: 'improvement' },
+          { value: sessCount.toLocaleString(), label: 'sessions sampled' },
+        ],
+        categoryBreakdown: null,
+        body: [p1, p2, p3, p4, p5],
+        timeline: null,
+        advisoryMeta: null,
+      };
+    }
+
+    function genMilestone(daySeed, postDate) {
+      var s = daySeed + 600;
+      var author = AUTHORS[seedInt(s+1, 0, AUTHORS.length-1)];
+      var sigCount = MILESTONE_SIGS[seedInt(s+2, 0, MILESTONE_SIGS.length-1)];
+      var banCount = MILESTONE_BANS[seedInt(s+3, 0, MILESTONE_BANS.length-1)];
+      var partners = seedInt(s+4, 8, 32);
+      var titles   = seedInt(s+5, 12, 48);
+      var coverage = seedInt(s+6, 85, 99);
+      var title = 'Cerberus Surpasses ' + sigCount.toLocaleString() + ' Detection Signatures';
+
+      var p1 = 'Today we are marking a milestone: our detection signature database has crossed ' + sigCount.toLocaleString() + ' unique entries, covering cheat tools, loaders, injectors, kernel drivers, and hardware fingerprints from every major provider in the ecosystem. This represents ' + seedInt(s+7, 18, 48) + ' months of continuous research and ' + seedInt(s+8, 2, 6) + ' dedicated signature analysts.';
+      var p2 = 'Our ' + sigCount.toLocaleString() + '-signature milestone corresponds to ' + coverage + '% coverage of the actively-used cheat tools across our partner network, based on telemetry from ' + titles + ' integrated titles and ' + partners + ' partner studios. Since our first signature database launch in v0.2.1, we have grown from 1,200 entries to ' + sigCount.toLocaleString() + ' — a ' + Math.round((sigCount / 1200 - 1) * 100) + '% expansion.';
+      var p3 = 'Cumulative bans issued through the Cerberus platform have now exceeded ' + banCount + ' accounts. Of these, ' + seedInt(s+9, 60, 82) + '% were triggered by signature matches, ' + seedInt(s+10, 10, 25) + '% by behavioral AI anomaly thresholds, and the remainder by hardware fingerprint flags. The multi-layer approach ensures that even zero-day tools that evade signature scanning are caught by our behavioral and hardware detection heads.';
+      var p4 = 'Looking ahead, our next milestone target is ' + (sigCount * seedInt(s+11, 1, 2) + seedInt(s+12, 500, 3000)).toLocaleString() + ' signatures. We are expanding our research coverage to include mobile platforms and increasing our automated signature generation pipeline capacity from ' + seedInt(s+13, 80, 200) + ' to ' + seedInt(s+14, 250, 600) + ' new signatures per week.';
+      var p5 = 'We want to thank our partner studios, our security research community, and the analysts who contribute to the signature database daily. The breadth of our coverage is only possible through collaborative threat intelligence sharing across the anti-cheat ecosystem.';
+
+      return {
+        type: 'milestone', catClass: 'cat-milestone', catLabel: 'MILESTONE',
+        title: title, author: author, date: fmtDate(postDate), readTime: seedInt(s+15, 3, 5),
+        excerpt: p1,
+        tags: ['milestone', 'signatures', 'detection', 'coverage'],
+        sevBadge: null,
+        statsBoxes: [
+          { value: sigCount.toLocaleString(), label: 'Total Signatures' },
+          { value: banCount,                  label: 'Cumulative Bans'  },
+          { value: partners,                  label: 'Partner Studios'  },
+          { value: coverage + '%',            label: 'Cheat Coverage'   },
+        ],
+        categoryBreakdown: null,
+        body: [p1, p2, p3, p4, p5],
+        timeline: null,
+        advisoryMeta: null,
+      };
+    }
+
+    function genCaseStudy(daySeed, postDate) {
+      var s = daySeed + 800;
+      var author = AUTHORS[seedInt(s+1, 0, AUTHORS.length-1)];
+      var result  = PARTNER_RESULTS[seedInt(s+2, 0, PARTNER_RESULTS.length-1)];
+      var intWeeks= PARTNER_TIMES[seedInt(s+3, 0, PARTNER_TIMES.length-1)];
+      var players = seedInt(s+4, 50000, 800000);
+      var banWave = seedInt(s+5, 2000, 40000);
+      var tickets = seedInt(s+6, 30, 80);
+      var quote   = seedPick(s+7, [
+        'Our cheat report queue dropped by ' + result + '% in the first two weeks. The integration was smoother than anything we\'d tried before.',
+        'Cerberus caught patterns we had never seen before. The behavioral layer in particular flagged a coordinated boosting ring we would have completely missed.',
+        'The SDK took our backend team ' + intWeeks + ' weeks to integrate, including full testing. The documentation was excellent.',
+        'We were skeptical at first, but the false positive rate has been below 0.1% — our support team has seen a significant reduction in unwarranted ban appeals.',
+        'Since going live with Cerberus, our ranked mode has seen measurable rank distribution improvements. Players report a noticeably fairer experience.'
+      ]);
+      var title = 'How ' + seedPick(s+8, GAME_TITLES) + ' reduced cheating by ' + result + '%';
+
+      var p1 = 'This case study covers the integration of Cerberus Anti-Cheat into a partner studio\'s live competitive title, which had been struggling with escalating cheat report volume affecting player retention. The studio requested anonymization of their title and team, so all identifying details have been redacted per our standard case study policy.';
+      var p2 = 'The integration took ' + intWeeks + ' weeks end-to-end, including SDK setup, webhook configuration, partner dashboard onboarding, and a staged rollout to ' + Math.round(players / 1000) + 'k active players. In the first 30 days post-launch, Cerberus issued ' + banWave.toLocaleString() + ' bans across the partner\'s player base — primarily targeting accounts that had evaded the studio\'s previous detection solution.';
+      var p3 = '"' + quote + '" — Partner Engineering Lead (name withheld)';
+      var p4 = 'Cheat-related support tickets dropped by ' + tickets + '% within 60 days of full deployment. Player-submitted reports of suspected cheaters declined by ' + result + '%, consistent with actual cheat prevalence reduction rather than reporting fatigue. Rank distribution data shared by the partner showed a measurable narrowing of the top percentile anomaly cluster — a reliable proxy metric for aimbotting prevalence.';
+      var p5 = 'The partner has since expanded their Cerberus integration to cover an additional ' + seedInt(s+9, 1, 3) + ' titles in their portfolio. They report ongoing detection coverage as the primary value driver, with the behavioral AI layer flagging novel cheat variants before signature coverage is available — in some cases by ' + seedInt(s+10, 12, 96) + ' hours or more.';
+
+      return {
+        type: 'casestudy', catClass: 'cat-casestudy', catLabel: 'CASE STUDY',
+        title: title, author: author, date: fmtDate(postDate), readTime: seedInt(s+11, 4, 7),
+        excerpt: p1,
+        tags: ['case-study', 'partner', 'results', 'integration'],
+        sevBadge: null,
+        statsBoxes: [
+          { value: result + '%',              label: 'Cheat Reduction'   },
+          { value: intWeeks + ' weeks',       label: 'Integration Time'  },
+          { value: banWave.toLocaleString(),  label: 'Initial Bans Issued' },
+          { value: tickets + '%',             label: 'Ticket Reduction'  },
+        ],
+        categoryBreakdown: null,
+        body: [p1, p2, p3, p4, p5],
+        timeline: null,
+        advisoryMeta: null,
+      };
+    }
+
+    var POST_GENERATORS = [genThreat, genAdvisory, genEngineering, genMilestone, genCaseStudy];
+    // Weighted: threat(3), advisory(2), engineering(2), milestone(1), casestudy(2)
+    var POST_TYPE_WEIGHTS = [0, 0, 0, 1, 1, 2, 2, 3, 4, 4];
+
+    // =====================================================================
+    // GENERATE POSTS (one per ~5-7 days, seeded, most recent 10)
+    // =====================================================================
+    var posts = [];
+    var scanDay = today;
+    var postCount = 0;
+
+    while (postCount < 10 && scanDay > today - 400) {
+      var intervalSeed = scanDay * 31 + 7;
+      var interval = 5 + Math.floor(seeded(intervalSeed) * 3); // 5-7 days
+      if (seeded(scanDay * 13 + 3) < (1 / interval)) {
+        // Post on this day
+        var typeSeed  = scanDay * 97 + 11;
+        var typeIdx   = POST_TYPE_WEIGHTS[Math.floor(seeded(typeSeed) * POST_TYPE_WEIGHTS.length)];
+        var generator = POST_GENERATORS[typeIdx];
+        var postSeed  = scanDay * 1000 + typeIdx * 100;
+        posts.push(generator(postSeed, scanDay));
+        postCount++;
+      }
+      scanDay--;
+    }
+
+    // Guarantee variety in the first 5 posts — ensure no two adjacent posts are same type
+    // (already fairly varied by seed, but we can shuffle types a little)
+    // The seeded approach naturally distributes well — no extra fix needed.
+
+    // =====================================================================
+    // RENDER
+    // =====================================================================
+    var activeFilter = 'all';
+
+    function renderPosts() {
+      var grid = document.getElementById('postsGrid');
+      var filtered = activeFilter === 'all' ? posts : posts.filter(function(p) { return p.type === activeFilter; });
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-dim);font-size:0.88rem;">No posts in this category yet.</div>';
+        return;
+      }
+      grid.innerHTML = filtered.map(function(post, idx) {
+        return renderCard(post, idx);
+      }).join('');
+
+      // Attach click handlers
+      grid.querySelectorAll('.post-card').forEach(function(card) {
+        card.addEventListener('click', function(e) {
+          if (e.target.classList.contains('collapse-btn') || e.target.closest('.collapse-btn')) return;
+          if (card.classList.contains('expanded')) return;
+          // Collapse any currently expanded
+          var expanded = grid.querySelector('.post-card.expanded');
+          if (expanded) {
+            expanded.classList.remove('expanded');
+          }
+          card.classList.add('expanded');
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      });
+      grid.querySelectorAll('.collapse-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var card = btn.closest('.post-card');
+          card.classList.remove('expanded');
+        });
+      });
+    }
+
+    function renderCard(post, idx) {
+      var metaHtml = '<div class="card-meta">';
+      metaHtml += '<span class="cat-badge ' + post.catClass + '">' + post.catLabel + '</span>';
+      if (post.sevBadge) metaHtml += '<span class="sev-badge ' + post.sevBadge.cls + '">' + post.sevBadge.label + '</span>';
+      metaHtml += '<span class="card-date">' + post.date + '</span>';
+      metaHtml += '<span class="reading-time">' + post.readTime + ' min read</span>';
+      metaHtml += '</div>';
+
+      var statsHtml = '';
+      if (post.statsBoxes) {
+        statsHtml += '<div class="post-stats">';
+        post.statsBoxes.forEach(function(st) {
+          statsHtml += '<div class="stat-box"><div class="stat-box-value">' + st.value + '</div><div class="stat-box-label">' + st.label + '</div></div>';
+        });
+        statsHtml += '</div>';
+      }
+
+      var catBarHtml = '';
+      if (post.categoryBreakdown) {
+        catBarHtml += '<div class="category-bar">';
+        post.categoryBreakdown.forEach(function(cat) {
+          catBarHtml += '<div class="category-bar-item"><span class="category-bar-label">' + cat.label + '</span><div class="category-bar-track"><div class="category-bar-fill" style="width:' + cat.pct + '%;background:' + cat.color + ';"></div></div><span class="category-bar-pct">' + cat.pct + '%</span></div>';
+        });
+        catBarHtml += '</div>';
+      }
+
+      var advisoryHtml = '';
+      if (post.advisoryMeta) {
+        advisoryHtml += '<div class="advisory-meta"><table>';
+        post.advisoryMeta.forEach(function(row) {
+          advisoryHtml += '<tr><td>' + row.k + '</td><td>' + row.v + '</td></tr>';
+        });
+        advisoryHtml += '</table></div>';
+      }
+
+      var timelineHtml = '';
+      if (post.timeline) {
+        timelineHtml += '<ul class="timeline-list">';
+        post.timeline.forEach(function(ev) {
+          timelineHtml += '<li><span class="tl-date">' + ev.date + '</span><span>' + ev.event + '</span></li>';
+        });
+        timelineHtml += '</ul>';
+      }
+
+      var bodyHtml = post.body.map(function(para) {
+        return '<p>' + para + '</p>';
+      }).join('');
+
+      var tagsHtml = '<div class="post-tags">' + post.tags.map(function(t) { return '<span class="post-tag">#' + t + '</span>'; }).join('') + '</div>';
+
+      return '<div class="post-card" data-type="' + post.type + '">' +
+        '<div class="card-body">' +
+          metaHtml +
+          '<div class="card-title">' + post.title + '</div>' +
+          '<div class="card-excerpt">' + post.excerpt + '</div>' +
+        '</div>' +
+        '<div class="post-full">' +
+          statsHtml +
+          advisoryHtml +
+          catBarHtml +
+          timelineHtml +
+          '<div style="margin-top:8px;">' + bodyHtml + '</div>' +
+          tagsHtml +
+          '<button class="collapse-btn">&#8593; Collapse post</button>' +
+        '</div>' +
+        '<div class="card-footer">' +
+          '<div class="author-avatar" style="background:' + post.author.bg + ';color:' + post.author.color + ';">' + post.author.initials + '</div>' +
+          '<span class="author-name">' + post.author.name + '</span>' +
+          '<span class="expand-hint">Click to read full post</span>' +
+        '</div>' +
+      '</div>';
+    }
+
+    // Filter buttons
+    document.getElementById('filterBar').addEventListener('click', function(e) {
+      var btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      renderPosts();
+    });
+
+    // Initial render
+    renderPosts();
+  </script>
+
+</body>
+</html>

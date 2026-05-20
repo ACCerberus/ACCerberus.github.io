@@ -617,6 +617,20 @@
     .ddos-check { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); }
     .ddos-check .chk { color: var(--green); font-weight: 700; }
     .ddos-check .pending { color: var(--text-dim); }
+    /* NOTIFICATION TOASTS */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+    .toast { pointer-events: auto; padding: 12px 18px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; font-size: 0.78rem; color: var(--text); max-width: 360px; display: flex; align-items: flex-start; gap: 10px; animation: toastIn 0.3s ease; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+    .toast.out { animation: toastOut 0.3s ease forwards; }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes toastOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(40px); } }
+    .toast-icon { flex-shrink: 0; width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; margin-top: 1px; }
+    .toast-icon-block { background: rgba(224,64,80,0.15); color: var(--red); }
+    .toast-icon-ok { background: rgba(48,200,96,0.15); color: var(--green); }
+    .toast-icon-info { background: rgba(232,160,32,0.15); color: var(--accent); }
+    .toast-text { line-height: 1.4; }
+    .toast-text strong { color: var(--text-bright); }
+    .toast-time { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-dim); margin-top: 3px; }
+
     .ddos-vpn-warn {
       margin-top: 18px; padding: 14px 18px; border-radius: 10px; text-align: left;
       background: rgba(224,64,80,0.08); border: 1px solid rgba(224,64,80,0.25);
@@ -646,6 +660,9 @@
     </div>
   </div>
 
+  <!-- NOTIFICATION TOASTS -->
+  <div class="toast-container" id="toastContainer"></div>
+
   <div class="grid-bg"></div>
   <div class="noise-overlay"></div>
   <div class="scan-line"></div>
@@ -662,7 +679,10 @@
       <a href="#demo">Demo</a>
       <a href="#pricing">Pricing</a>
       <a href="/docs/">Docs</a>
+      <a href="/api/">API</a>
+      <a href="/sdk/">SDK</a>
       <a href="/changelog/">Changelog</a>
+      <a href="/blog/">Blog</a>
       <a href="/status/">Status</a>
       <a href="/team/">Team</a>
       <a href="/analytics/">Analytics</a>
@@ -1387,17 +1407,27 @@
   <section class="cta-section" id="access">
     <h2 class="reveal">Ready to secure<br/>your <span>game?</span></h2>
     <p class="reveal">Cerberus is currently in closed early access. Request access for your studio.</p>
-    <div class="cta-actions reveal">
-      <a href="mailto:cerberus@arsenalrx.dev" class="btn-primary">
-        Request Access
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-      <a href="/docs/" class="btn-secondary">
-        Read the Docs
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v16M18 4v16M6 12h12M6 4h12M6 20h12"/></svg>
-      </a>
+    <div class="reveal" id="accessFormWrap" style="max-width:480px;margin:32px auto 0;">
+      <form id="accessForm" action="https://formspree.io/f/xpwdgvjk" method="POST" style="display:flex;flex-direction:column;gap:12px;">
+        <input type="text" name="studio" placeholder="Studio Name" required style="padding:12px 16px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);font-size:0.85rem;" />
+        <input type="email" name="email" placeholder="Work Email" required style="padding:12px 16px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);font-size:0.85rem;" />
+        <select name="engine" style="padding:12px 16px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:0.85rem;">
+          <option value="">Game Engine (optional)</option>
+          <option>Unreal Engine 5</option>
+          <option>Unity 6</option>
+          <option>Custom Engine</option>
+          <option>Other</option>
+        </select>
+        <textarea name="message" rows="3" placeholder="Tell us about your title (optional)" style="padding:12px 16px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);font-size:0.85rem;resize:vertical;"></textarea>
+        <button type="submit" class="btn-primary" style="justify-content:center;border:none;cursor:pointer;font-family:var(--font);">Request Early Access</button>
+      </form>
+      <div id="accessSuccess" style="display:none;text-align:center;padding:32px;">
+        <div style="font-size:2rem;color:var(--green);margin-bottom:12px;">&check;</div>
+        <div style="font-family:var(--font-heading);font-size:1.1rem;color:var(--text-bright);margin-bottom:8px;">Request Submitted</div>
+        <p style="font-size:0.85rem;color:var(--text-dim);">We'll review your application and get back to you within 48 hours.</p>
+      </div>
     </div>
-    <p class="cta-note">Cerberus is in active development. Features and specifications are subject to change.</p>
+    <p class="cta-note" style="margin-top:20px;">Cerberus is in active development. Features and specifications are subject to change.</p>
   </section>
 
   <!-- FOOTER -->
@@ -1406,7 +1436,10 @@
     <p>Three heads. Three layers. Nothing gets past the gate.</p>
     <div style="display:flex;justify-content:center;gap:24px;margin-top:16px;flex-wrap:wrap;">
       <a href="/docs/">Documentation</a>
+      <a href="/api/">API Reference</a>
+      <a href="/sdk/">SDK</a>
       <a href="/changelog/">Changelog</a>
+      <a href="/blog/">Blog</a>
       <a href="/status/">Status</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
@@ -1837,20 +1870,34 @@
       for (var i = 0; i < 16; i++) rayId += '0123456789abcdef'[Math.floor(Math.random() * 16)];
       rayEl.textContent = 'Ray ID: ' + rayId + ' \u00b7 Performance & security by Cerberus Shield';
 
-      // Fetch real IP info from ipwho.is (free, HTTPS, no key needed)
+      // Fetch real IP info from ipapi.is (free, HTTPS, has VPN/proxy/Tor detection)
       var ipData = null;
       var ipFetched = false;
-      fetch('https://ipwho.is/')
+      fetch('https://api.ipapi.is/')
         .then(function(r) { return r.json(); })
-        .then(function(data) { ipData = data; ipFetched = true; })
-        .catch(function() { ipFetched = true; }); // fail silently, continue without
+        .then(function(data) {
+          // Normalize the response to a common format
+          ipData = {
+            ip: data.ip,
+            isVPN: data.is_vpn || false,
+            isProxy: data.is_proxy || false,
+            isTor: data.is_tor || false,
+            isDatacenter: data.is_datacenter || false,
+            company: data.company ? data.company.name : 'Unknown',
+            companyType: data.company ? data.company.type : 'unknown',
+            asn: data.asn ? data.asn.asn : 'N/A',
+            country: data.location ? data.location.country : '',
+            city: data.location ? data.location.city : '',
+            region: data.location ? data.location.state : '',
+          };
+          ipFetched = true;
+        })
+        .catch(function() { ipFetched = true; });
 
       function maskIP(ip) {
         if (!ip) return 'unknown';
-        // Partially mask the IP for display
         var parts = ip.split('.');
         if (parts.length === 4) return parts[0] + '.' + parts[1] + '.***.' + parts[3];
-        // IPv6 — just show first segment
         return ip.split(':').slice(0, 3).join(':') + ':***';
       }
 
@@ -1858,14 +1905,13 @@
       var idx = 0;
       var checks = [
         { text: 'Resolving IP address...', run: function(div, next) {
-          // Wait for IP API response (up to 3s)
           var waited = 0;
           var poll = setInterval(function() {
             waited += 100;
-            if (ipFetched || waited > 3000) {
+            if (ipFetched || waited > 4000) {
               clearInterval(poll);
               if (ipData && ipData.ip) {
-                div.innerHTML = '<span class="chk">\u2713</span> IP verified: ' + maskIP(ipData.ip) + ' \u00b7 ' + (ipData.country || 'Unknown') + ', ' + (ipData.city || '');
+                div.innerHTML = '<span class="chk">\u2713</span> IP verified: ' + maskIP(ipData.ip) + ' \u00b7 ' + (ipData.country || 'Unknown') + (ipData.city ? ', ' + ipData.city : '');
               } else {
                 div.innerHTML = '<span class="chk">\u2713</span> IP resolved';
               }
@@ -1877,14 +1923,14 @@
         { text: 'Validating TLS fingerprint...', delay: 500 },
         { text: 'Scanning for VPN / proxy / Tor...', run: function(div, next) {
           setTimeout(function() {
-            var isVPN = ipData && ipData.security && (ipData.security.vpn || ipData.security.proxy || ipData.security.tor);
-            var isHosting = ipData && ipData.security && ipData.security.hosting;
-            if (isVPN || isHosting) {
+            var isAnon = ipData && (ipData.isVPN || ipData.isProxy || ipData.isTor);
+            var isDC = ipData && ipData.isDatacenter;
+            if (isAnon || isDC) {
               var threats = [];
-              if (ipData.security.vpn) threats.push('VPN');
-              if (ipData.security.proxy) threats.push('Proxy');
-              if (ipData.security.tor) threats.push('Tor');
-              if (ipData.security.hosting) threats.push('Datacenter/Hosting');
+              if (ipData.isVPN) threats.push('VPN');
+              if (ipData.isProxy) threats.push('Proxy');
+              if (ipData.isTor) threats.push('Tor');
+              if (ipData.isDatacenter) threats.push('Datacenter');
               div.innerHTML = '<span style="color:var(--red);font-weight:700;">\u2717</span> <span style="color:var(--red);">' + threats.join(' + ') + ' detected</span>';
 
               spinner.style.display = 'none';
@@ -1898,29 +1944,27 @@
                 '<div class="ddos-vpn-detail">' +
                 'IP: <span>' + maskIP(ipData.ip) + '</span><br/>' +
                 'Type: <span style="color:var(--red);">' + threats.join(', ') + '</span><br/>' +
-                'ISP: <span>' + (ipData.connection && ipData.connection.isp || 'Unknown') + '</span><br/>' +
-                'Location: <span>' + (ipData.city || '') + ', ' + (ipData.region || '') + ', ' + (ipData.country || '') + '</span><br/>' +
-                'ASN: <span>' + (ipData.connection && ipData.connection.asn || 'N/A') + '</span><br/><br/>' +
+                'ISP: <span>' + (ipData.company || 'Unknown') + '</span><br/>' +
+                'Location: <span>' + (ipData.city || '') + (ipData.region ? ', ' + ipData.region : '') + (ipData.country ? ', ' + ipData.country : '') + '</span><br/>' +
+                'ASN: <span>' + (ipData.asn || 'N/A') + '</span><br/><br/>' +
                 '<span style="color:var(--red);">Cerberus Anti-Cheat requires a direct connection. Disconnect your VPN, proxy, or Tor client and try again.</span>' +
                 '</div>' +
                 '<button id="ddosRetryBtn" style="margin-top:14px;width:100%;padding:12px;border-radius:8px;background:var(--accent);color:#050507;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);">Disconnect VPN & Retry</button>';
 
               document.getElementById('ddosRetryBtn').addEventListener('click', function() {
-                // Re-check by reloading
                 location.reload();
               });
-              // Do NOT call next() — blocks here, does not dismiss
-              return;
+              return; // Block — do not call next()
             } else {
               div.innerHTML = '<span class="chk">\u2713</span> No VPN / proxy / Tor detected';
-              if (ipData && ipData.connection) {
+              if (ipData) {
                 vpnWarnEl.style.display = 'block';
                 vpnWarnEl.className = 'ddos-vpn-warn warn-ok';
                 vpnWarnEl.innerHTML = '<div class="ddos-vpn-title vpn-good">\u2713 Connection Verified</div>' +
                   '<div class="ddos-vpn-detail">' +
                   'IP: <span>' + maskIP(ipData.ip) + '</span><br/>' +
-                  'ISP: <span>' + (ipData.connection.isp || 'Unknown') + '</span><br/>' +
-                  'Location: <span>' + (ipData.city || '') + ', ' + (ipData.country || '') + '</span><br/>' +
+                  'ISP: <span>' + (ipData.company || 'Unknown') + '</span><br/>' +
+                  'Location: <span>' + (ipData.city || '') + (ipData.country ? ', ' + ipData.country : '') + '</span><br/>' +
                   'Type: <span style="color:var(--green);">Direct connection \u2014 no anonymization detected</span>' +
                   '</div>';
               }
@@ -1958,6 +2002,81 @@
         }
       }
       setTimeout(nextCheck, 500);
+    })();
+
+    // ===== NOTIFICATION TOAST SYSTEM =====
+    (function() {
+      var container = document.getElementById('toastContainer');
+      if (!container) return;
+
+      var toastMessages = [
+        { icon: 'block', text: '<strong>Ban wave deployed</strong> — ' },
+        { icon: 'ok', text: '<strong>Signature DB synced</strong> — all regions up to date' },
+        { icon: 'info', text: '<strong>New detection rule</strong> — behavioral pattern #' },
+        { icon: 'block', text: '<strong>DMA board blocked</strong> — firmware fingerprint matched' },
+        { icon: 'ok', text: '<strong>Kernel integrity</strong> — scan cycle completed, all modules verified' },
+        { icon: 'info', text: '<strong>SDK update</strong> — v0.4.3-beta available for partners' },
+        { icon: 'block', text: '<strong>HWID ban</strong> — spoof attempt detected and flagged' },
+        { icon: 'ok', text: '<strong>Uptime milestone</strong> — 99.97% availability this month' },
+        { icon: 'info', text: '<strong>Threat intel</strong> — new loader variant catalogued' },
+        { icon: 'block', text: '<strong>Injection blocked</strong> — manual map attempt intercepted' },
+        { icon: 'ok', text: '<strong>AI model update</strong> — v2.7 deployed across all instances' },
+        { icon: 'info', text: '<strong>Partner onboarded</strong> — new title integrated successfully' },
+      ];
+
+      function showToast() {
+        var msg = toastMessages[Math.floor(Math.random() * toastMessages.length)];
+        var text = msg.text;
+        if (text.indexOf('Ban wave') !== -1) text += Math.floor(Math.random() * 180 + 20) + ' accounts across ' + Math.floor(Math.random() * 4 + 2) + ' regions';
+        if (text.indexOf('pattern #') !== -1) text += 'BP-' + Math.floor(Math.random() * 9000 + 1000) + ' added to ruleset';
+        var toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = '<div class="toast-icon toast-icon-' + msg.icon + '">' + (msg.icon === 'block' ? 'X' : msg.icon === 'ok' ? '\u2713' : '!') + '</div><div class="toast-text">' + text + '<div class="toast-time">' + new Date().toLocaleTimeString() + '</div></div>';
+        container.appendChild(toast);
+        setTimeout(function() { toast.classList.add('out'); }, 5000);
+        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 5300);
+        // Keep max 3 toasts visible
+        while (container.children.length > 3) container.removeChild(container.firstChild);
+      }
+
+      // First toast after 15-30s, then every 30-90s
+      setTimeout(function() {
+        showToast();
+        setInterval(function() {
+          if (Math.random() < 0.7) showToast();
+        }, Math.floor(Math.random() * 60000 + 30000));
+      }, Math.floor(Math.random() * 15000 + 15000));
+    })();
+
+    // ===== EMAIL FORM HANDLER =====
+    (function() {
+      var form = document.getElementById('accessForm');
+      var successDiv = document.getElementById('accessSuccess');
+      if (!form || !successDiv) return;
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = form.querySelector('button[type="submit"]');
+        btn.textContent = 'Submitting...';
+        btn.disabled = true;
+
+        fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        }).then(function(r) {
+          if (r.ok) {
+            form.style.display = 'none';
+            successDiv.style.display = 'block';
+          } else {
+            btn.textContent = 'Error — Try Again';
+            btn.disabled = false;
+          }
+        }).catch(function() {
+          btn.textContent = 'Error — Try Again';
+          btn.disabled = false;
+        });
+      });
     })();
   </script>
 

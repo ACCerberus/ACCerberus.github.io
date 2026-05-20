@@ -292,7 +292,10 @@
     <div class="nav-links">
       <a href="/">Home</a>
       <a href="/docs/">Docs</a>
+      <a href="/api/">API</a>
+      <a href="/sdk/">SDK</a>
       <a href="/changelog/">Changelog</a>
+      <a href="/blog/">Blog</a>
       <a href="/status/">Status</a>
       <a href="/analytics/" class="active">Analytics</a>
       <a href="/team/">Team</a>
@@ -540,17 +543,75 @@
       g.flags24 = g.threats - g.bans24;
     });
 
-    // Render games table
-    var gameHTML = '';
-    games.forEach(function(g) {
-      var statusClass = g.status === 'live' ? 'game-status-live' : 'game-status-beta';
-      var statusLabel = g.status === 'live' ? 'Live' : 'Beta';
-      gameHTML += '<tr><td><div style="font-weight:600;color:var(--text-bright);">' + g.name + '</div><div style="font-size:0.6rem;color:var(--text-dim);margin-top:1px;">' + g.code + ' \u00b7 ' + g.genre + ' \u00b7 ' + g.engine + ' \u00b7 <span style="color:var(--accent);">' + g.version + '</span></div></td>' +
-        '<td><span class="game-status ' + statusClass + '"><span class="game-status-dot"></span>' + statusLabel + '</span></td>' +
-        '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + g.threats.toLocaleString() + '</td>' +
-        '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + g.ccu.toLocaleString() + '</td></tr>';
-    });
-    document.getElementById('gameTable').innerHTML = gameHTML;
+    // Initial render of games table (dynamic updates handled by setInterval above)
+    renderGameTable();
+
+    // ===== DYNAMIC SERVER INSTANCE UPDATES =====
+    var allServerNames = [
+      'PRD-US-EAST-01','PRD-US-EAST-02','PRD-US-WEST-01','PRD-US-WEST-02','PRD-US-CENTRAL-01',
+      'PRD-EU-WEST-01','PRD-EU-WEST-02','PRD-EU-WEST-03','PRD-EU-NORTH-01','PRD-EU-CENTRAL-01',
+      'PRD-ASIA-SE-01','PRD-ASIA-EAST-01','PRD-ASIA-EAST-02','PRD-OCE-01','PRD-SA-EAST-01',
+      'STG-US-EAST-01','STG-EU-WEST-01','STG-ASIA-SE-01','STG-OCE-01','DEV-INTERNAL-01'
+    ];
+    var allGenres = ['Tactical FPS','Battle Royale','FPS','MMO','Extraction Shooter','Survival','Arena Shooter','Racing','Open World','Sandbox'];
+    var allEngines = ['UE5.4','UE5.3','Unity 6','Custom','Godot 4','CryEngine 5.7'];
+
+    function renderGameTable() {
+      var html = '';
+      games.forEach(function(g) {
+        var statusClass, statusLabel;
+        if (g.status === 'restarting') { statusClass = 'game-status-beta'; statusLabel = 'Restarting'; }
+        else if (g.status === 'starting') { statusClass = 'game-status-beta'; statusLabel = 'Starting'; }
+        else if (g.status === 'beta') { statusClass = 'game-status-beta'; statusLabel = 'Beta'; }
+        else { statusClass = 'game-status-live'; statusLabel = 'Live'; }
+        html += '<tr><td><div style="font-weight:600;color:var(--text-bright);">' + g.name + '</div><div style="font-size:0.6rem;color:var(--text-dim);margin-top:1px;">' + g.code + ' \u00b7 ' + g.genre + ' \u00b7 ' + g.engine + ' \u00b7 <span style="color:var(--accent);">' + g.version + '</span></div></td>' +
+          '<td><span class="game-status ' + statusClass + '"><span class="game-status-dot"></span>' + statusLabel + '</span></td>' +
+          '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + g.threats.toLocaleString() + '</td>' +
+          '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + (g.status === 'restarting' ? '---' : g.ccu.toLocaleString()) + '</td></tr>';
+      });
+      document.getElementById('gameTable').innerHTML = html;
+    }
+
+    // Update server instance CCUs and statuses at random intervals
+    setInterval(function() {
+      games.forEach(function(g) {
+        if (g.status === 'restarting') {
+          // 40% chance to come back online each tick
+          if (Math.random() < 0.4) { g.status = 'live'; g.ccu = Math.floor(50 + Math.random() * 200); }
+          return;
+        }
+        if (g.status === 'starting') {
+          g.status = 'live'; g.ccu = Math.floor(30 + Math.random() * 100);
+          return;
+        }
+        // Fluctuate CCU by -8% to +8%
+        var delta = Math.floor(g.ccu * (Math.random() * 0.16 - 0.08));
+        g.ccu = Math.max(10, g.ccu + delta);
+        // Slowly increment threats
+        if (Math.random() < 0.3) g.threats += Math.floor(Math.random() * 3 + 1);
+        // Rare restart event (~1% per tick)
+        if (Math.random() < 0.01 && g.status === 'live') { g.status = 'restarting'; }
+      });
+      // Very rare: new server comes online (~0.5% per tick, max 10 servers)
+      if (Math.random() < 0.005 && games.length < 10) {
+        var usedNames = games.map(function(g) { return g.name; });
+        var available = allServerNames.filter(function(n) { return usedNames.indexOf(n) === -1; });
+        if (available.length > 0) {
+          var newName = available[Math.floor(Math.random() * available.length)];
+          games.push({
+            name: newName,
+            code: 'CRB-' + String(Math.floor(Math.random() * 9000 + 1000)),
+            genre: allGenres[Math.floor(Math.random() * allGenres.length)],
+            status: 'starting',
+            tier: newName.indexOf('STG') === 0 ? 'aegis' : 'cerberus',
+            engine: allEngines[Math.floor(Math.random() * allEngines.length)],
+            version: 'v0.4.3-rc1',
+            threats: 0, ccu: 0, bans24: 0, flags24: 0
+          });
+        }
+      }
+      renderGameTable();
+    }, 8000 + Math.floor(Math.random() * 7000));
 
     // ===== TIME-OF-DAY TRAFFIC MULTIPLIER (System 2) =====
     // Realistic global gaming traffic curve — peaks follow Asia, EU, NA timezones
@@ -847,20 +908,20 @@
       { provider: 'AimStar', cheats: ['Aimbot v3.2', 'ESP Overlay', 'Triggerbot'], method: 'Internal' },
       { provider: 'NeverLose', cheats: ['Rage Aimbot', 'Wallhack', 'Backtrack'], method: 'Manual Map' },
       { provider: 'Skeet/Gamesense', cheats: ['Legit Aimbot', 'Chams ESP', 'Auto-Strafe'], method: 'Injector' },
-      { provider: 'Ringzer0', cheats: ['DMA Aimbot', 'DMA Radar', 'DMA ESP'], method: 'DMA PCIe' },
+      { provider: 'Iniuria', cheats: ['DMA Aimbot', 'DMA Radar', 'DMA ESP'], method: 'DMA PCIe' },
       { provider: 'Phantom Overlay', cheats: ['External ESP', 'Pixel Bot', 'Screen Reader'], method: 'External' },
-      { provider: 'Project Starter', cheats: ['Kernel Aimbot', 'Driver ESP'], method: 'Mapped Driver' },
+      { provider: 'Project Infinity', cheats: ['Kernel Aimbot', 'Driver ESP'], method: 'Mapped Driver' },
       { provider: 'Private Build', cheats: ['Custom Aimbot', 'Modified Chams', 'Speed Patch'], method: 'Unknown' },
       { provider: 'Interium', cheats: ['Rage Aimbot', 'Anti-Aim', 'Exploits'], method: 'Internal' },
-      { provider: 'FatAim', cheats: ['Legit Aim', 'Glow ESP', 'Recoil Control'], method: 'Injector' },
+      { provider: 'Spirthack', cheats: ['Legit Aim', 'Glow ESP', 'Recoil Control'], method: 'Injector' },
       { provider: 'Unknown/Custom', cheats: ['Modified Loader', 'Custom Shellcode', 'Polymorphic Stub'], method: 'Unknown' },
-      { provider: 'Clarity.gg', cheats: ['Silent Aim', 'Bone ESP', 'No-Recoil'], method: 'Internal' },
-      { provider: 'NoRecoil.pro', cheats: ['Recoil Script', 'Aim Smoothing', 'Input Macro'], method: 'External' },
-      { provider: 'ZeroDay.cc', cheats: ['Kernel Exploit', 'Driver Mapper', 'HWID Spoof'], method: 'Mapped Driver' },
-      { provider: 'DarkMatter', cheats: ['DRM Bypass', 'License Patcher', 'Binary Injector'], method: 'Loader' },
-      { provider: 'KernelForge', cheats: ['Ring-0 Aimbot', 'Kernel ESP', 'Callback Remover'], method: 'BYOVD' },
-      { provider: 'GhostWare', cheats: ['Stream-Proof ESP', 'Silent Aim', 'No-Recoil'], method: 'Internal' },
-      { provider: 'HexCheat', cheats: ['Memory Editor', 'Speed Hack', 'Teleport'], method: 'External' },
+      { provider: 'Fatality', cheats: ['Silent Aim', 'Bone ESP', 'No-Recoil'], method: 'Internal' },
+      { provider: 'Cronus Zen', cheats: ['Recoil Script', 'Aim Assist Abuse', 'Rapid Fire Macro'], method: 'USB Device' },
+      { provider: 'Onetap', cheats: ['Kernel Exploit', 'Driver Mapper', 'HWID Spoof'], method: 'Mapped Driver' },
+      { provider: 'Aimware', cheats: ['Rage Aimbot', 'Anti-Aim', 'Resolver'], method: 'Loader' },
+      { provider: 'EngineOwning', cheats: ['Ring-0 Aimbot', 'Kernel ESP', 'Callback Remover'], method: 'BYOVD' },
+      { provider: 'Nixware', cheats: ['Stream-Proof ESP', 'Silent Aim', 'No-Recoil'], method: 'Internal' },
+      { provider: 'xhook.gg', cheats: ['Memory Editor', 'Speed Hack', 'Teleport'], method: 'External' },
     ];
 
     // ===== ARMS RACE NARRATIVE (System 4) =====
@@ -1038,21 +1099,21 @@
         { name: 'AimStar', method: 'Internal Injection', status: 'detected', note: 'All known variants covered. Signature match + behavioral correlation.' },
         { name: 'NeverLose', method: 'Manual Map', status: 'detected', note: 'Loader obfuscation bypassed. Memory pattern + IAT reconstruction detected.' },
         { name: 'Skeet/Gamesense', method: 'Injector', status: 'detected', note: 'Invite-only provider. All public and leaked builds covered.' },
-        { name: 'Ringzer0', method: 'DMA PCIe', status: 'partial', note: 'Known boards detected via TLP timing. Custom firmware variants under active research — hardware team expanding fingerprint DB.' },
+        { name: 'Iniuria', method: 'DMA PCIe', status: 'partial', note: 'Known boards detected via TLP timing. Custom firmware variants under active research — hardware team expanding fingerprint DB.' },
         { name: 'Phantom Overlay', method: 'External Overlay', status: 'detected', note: 'Screen reader detection + pixel analysis correlation.' },
-        { name: 'Project Starter', method: 'Mapped Driver', status: 'detected', note: 'Kernel integrity scan detects unsigned driver code in kernel space.' },
-        { name: 'Clarity.gg', method: 'Internal', status: 'detected', note: 'Behavioral AI detects aim pattern. Signature DB covers all versions.' },
-        { name: 'KernelForge', method: 'BYOVD', status: 'detected', note: 'Vulnerable driver blocklist + callback integrity verification.' },
-        { name: 'DarkMatter', method: 'DRM Bypass / Loader', status: 'detected', note: 'Binary integrity check + license validation interception detected.' },
-        { name: 'GhostWare', method: 'Stream-Proof Internal', status: 'undetected', note: 'v3.1 uses novel stream-proof rendering. Team is developing overlay fingerprint analysis — expected coverage in next patch cycle.' },
-        { name: 'ZeroDay.cc', method: 'Kernel Exploit', status: 'undetected', note: 'Uses unpublished kernel exploit chain. Coordinating with Microsoft MSRC for vuln disclosure. Behavioral AI flags 73% of users.' },
-        { name: 'HexCheat', method: 'External Memory Edit', status: 'detected', note: 'Memory access pattern anomaly detection. All public builds covered.' },
+        { name: 'Project Infinity', method: 'Mapped Driver', status: 'detected', note: 'Kernel integrity scan detects unsigned driver code in kernel space.' },
+        { name: 'Fatality', method: 'Internal', status: 'detected', note: 'Behavioral AI detects aim pattern. Signature DB covers all versions.' },
+        { name: 'EngineOwning', method: 'BYOVD', status: 'detected', note: 'Vulnerable driver blocklist + callback integrity verification.' },
+        { name: 'Onetap', method: 'Loader / Injector', status: 'detected', note: 'Binary integrity check + loader pattern recognition. All public configs covered.' },
+        { name: 'Nixware', method: 'Stream-Proof Internal', status: 'undetected', note: 'v4.2 uses novel stream-proof rendering. Team is developing overlay fingerprint analysis — expected coverage in next patch cycle.' },
+        { name: 'xhook.gg', method: 'Kernel Exploit', status: 'undetected', note: 'Uses unpublished kernel exploit chain. Coordinating with Microsoft MSRC for vuln disclosure. Behavioral AI flags 73% of users.' },
+        { name: 'Aimware', method: 'External Memory Edit', status: 'detected', note: 'Memory access pattern anomaly detection. All public builds and legacy versions covered.' },
         { name: 'Private/Custom Builds', method: 'Various', status: 'monitoring', note: 'Behavioral AI layer catches ~94% of unknown/custom cheats without signatures.' },
         { name: 'Interium', method: 'Internal', status: 'detected', note: 'Rage features trigger instant behavioral detection. All configs covered.' },
-        { name: 'FatAim', method: 'Injector', status: 'detected', note: 'Injection method + aim smoothing pattern detected via AI layer.' },
-        { name: 'NoRecoil.pro', method: 'External Script', status: 'partial', note: 'Hardware macro variants harder to distinguish from human input. AI team training new model on 1,200 macro samples — ETA 2 weeks.' },
-        { name: 'ShadowAim', method: 'Hypervisor', status: 'undetected', note: 'Type-1 hypervisor runs below OS. CPUID timing checks catch 41% — dedicated hypervisor detection module in development.' },
-        { name: 'EliteCheats', method: 'Firmware DMA', status: 'partial', note: 'Custom firmware on modified NIC. TLP timing catches 67% — firmware CRC database being expanded with new samples.' },
+        { name: 'Spirthack', method: 'Injector', status: 'detected', note: 'Injection method + aim smoothing pattern detected via AI layer.' },
+        { name: 'Cronus Zen', method: 'USB Hardware Device', status: 'partial', note: 'Hardware macro variants harder to distinguish from human input. AI team training new model on 1,200+ macro samples — ETA 2 weeks.' },
+        { name: 'Pandora.gg', method: 'Hypervisor', status: 'undetected', note: 'Type-1 hypervisor runs below OS. CPUID timing checks catch 41% — dedicated hypervisor detection module in development.' },
+        { name: 'KMBox/Vezax', method: 'Firmware DMA', status: 'partial', note: 'Custom firmware on DMA boards. TLP timing catches 67% — firmware CRC database being expanded with new hardware samples.' },
       ];
 
       // Shuffle detection dates based on seed
