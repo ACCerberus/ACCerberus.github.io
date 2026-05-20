@@ -217,6 +217,7 @@
     .det-detected { background: rgba(48,200,96,0.1); color: var(--green); }
     .det-partial { background: rgba(232,160,32,0.1); color: var(--accent); }
     .det-monitoring { background: rgba(64,136,232,0.1); color: var(--blue); }
+    .det-undetected { background: rgba(224,64,80,0.1); color: var(--red); }
     .provider-note { font-size: 0.68rem; color: var(--text-dim); margin-top: 2px; line-height: 1.4; }
 
     /* REPORT BUG BUTTON */
@@ -1025,19 +1026,21 @@
         { name: 'AimStar', method: 'Internal Injection', status: 'detected', note: 'All known variants covered. Signature match + behavioral correlation.' },
         { name: 'NeverLose', method: 'Manual Map', status: 'detected', note: 'Loader obfuscation bypassed. Memory pattern + IAT reconstruction detected.' },
         { name: 'Skeet/Gamesense', method: 'Injector', status: 'detected', note: 'Invite-only provider. All public and leaked builds covered.' },
-        { name: 'Ringzer0', method: 'DMA PCIe', status: 'detected', note: 'Hardware fingerprinting catches DMA boards. TLP timing analysis active.' },
+        { name: 'Ringzer0', method: 'DMA PCIe', status: 'partial', note: 'Known boards detected via TLP timing. Custom firmware variants under active research — hardware team expanding fingerprint DB.' },
         { name: 'Phantom Overlay', method: 'External Overlay', status: 'detected', note: 'Screen reader detection + pixel analysis correlation.' },
         { name: 'Project Starter', method: 'Mapped Driver', status: 'detected', note: 'Kernel integrity scan detects unsigned driver code in kernel space.' },
         { name: 'Clarity.gg', method: 'Internal', status: 'detected', note: 'Behavioral AI detects aim pattern. Signature DB covers all versions.' },
         { name: 'KernelForge', method: 'BYOVD', status: 'detected', note: 'Vulnerable driver blocklist + callback integrity verification.' },
         { name: 'DarkMatter', method: 'DRM Bypass / Loader', status: 'detected', note: 'Binary integrity check + license validation interception detected.' },
-        { name: 'GhostWare', method: 'Stream-Proof Internal', status: 'partial', note: 'v2.x fully detected. v3.1 evasion under analysis — behavioral AI catches 89%.' },
-        { name: 'ZeroDay.cc', method: 'Kernel Exploit', status: 'partial', note: 'Known exploit chains patched. Monitoring for new 0-day variants.' },
+        { name: 'GhostWare', method: 'Stream-Proof Internal', status: 'undetected', note: 'v3.1 uses novel stream-proof rendering. Team is developing overlay fingerprint analysis — expected coverage in next patch cycle.' },
+        { name: 'ZeroDay.cc', method: 'Kernel Exploit', status: 'undetected', note: 'Uses unpublished kernel exploit chain. Coordinating with Microsoft MSRC for vuln disclosure. Behavioral AI flags 73% of users.' },
         { name: 'HexCheat', method: 'External Memory Edit', status: 'detected', note: 'Memory access pattern anomaly detection. All public builds covered.' },
         { name: 'Private/Custom Builds', method: 'Various', status: 'monitoring', note: 'Behavioral AI layer catches ~94% of unknown/custom cheats without signatures.' },
         { name: 'Interium', method: 'Internal', status: 'detected', note: 'Rage features trigger instant behavioral detection. All configs covered.' },
         { name: 'FatAim', method: 'Injector', status: 'detected', note: 'Injection method + aim smoothing pattern detected via AI layer.' },
-        { name: 'NoRecoil.pro', method: 'External Script', status: 'detected', note: 'Input cadence analysis detects recoil scripts within 30 seconds.' },
+        { name: 'NoRecoil.pro', method: 'External Script', status: 'partial', note: 'Hardware macro variants harder to distinguish from human input. AI team training new model on 1,200 macro samples — ETA 2 weeks.' },
+        { name: 'ShadowAim', method: 'Hypervisor', status: 'undetected', note: 'Type-1 hypervisor runs below OS. CPUID timing checks catch 41% — dedicated hypervisor detection module in development.' },
+        { name: 'EliteCheats', method: 'Firmware DMA', status: 'partial', note: 'Custom firmware on modified NIC. TLP timing catches 67% — firmware CRC database being expanded with new samples.' },
       ];
 
       // Shuffle detection dates based on seed
@@ -1046,8 +1049,10 @@
         var daysAgo = Math.floor(seeded(daySeed * 223 + i * 13) * 14) + 1;
         var detDate = new Date(Date.now() - daysAgo * 86400000);
         var dateStr = detDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        var statusClass = p.status === 'detected' ? 'det-detected' : p.status === 'partial' ? 'det-partial' : 'det-monitoring';
-        var statusLabel = p.status === 'detected' ? 'DETECTED' : p.status === 'partial' ? 'PARTIAL' : 'MONITORING';
+        var statusMap = { detected: ['det-detected','DETECTED'], partial: ['det-partial','PARTIAL'], monitoring: ['det-monitoring','MONITORING'], undetected: ['det-undetected','UNDETECTED'] };
+        var sm = statusMap[p.status] || statusMap.monitoring;
+        var statusClass = sm[0];
+        var statusLabel = sm[1];
         html += '<tr><td>' + p.name + '</td><td><span class="det-status ' + statusClass + '">' + statusLabel + '</span></td><td style="font-family:var(--font-mono);font-size:0.72rem;">' + p.method + '</td><td style="font-family:var(--font-mono);font-size:0.72rem;">' + dateStr + '</td><td><div class="provider-note">' + p.note + '</div></td></tr>';
       });
       document.getElementById('providerTable').innerHTML = html;
