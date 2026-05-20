@@ -40,20 +40,44 @@
     .page-title { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: var(--text-bright); letter-spacing: -1px; margin-bottom: 8px; }
     .page-desc { font-size: 1rem; color: var(--text-dim); margin-bottom: 48px; }
 
+    /* Roadmap */
+    .roadmap { margin-bottom: 56px; padding: 28px 32px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; }
+    .roadmap-title { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .roadmap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .roadmap-item { padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: rgba(255,255,255,0.01); }
+    .roadmap-item-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .roadmap-item-name { font-size: 0.82rem; font-weight: 600; color: var(--text-bright); }
+    .roadmap-item-eta { font-family: var(--font-mono); font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+    .eta-progress { background: rgba(48,200,96,0.1); color: var(--green); }
+    .eta-planned { background: rgba(64,136,232,0.1); color: var(--blue); }
+    .eta-research { background: rgba(136,96,232,0.1); color: var(--purple); }
+    .roadmap-item-desc { font-size: 0.75rem; color: var(--text-dim); }
+    .roadmap-bar { height: 3px; background: rgba(255,255,255,0.04); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+    .roadmap-bar-fill { height: 100%; border-radius: 2px; }
+
+    /* Phase labels */
+    .phase-label { font-family: var(--font-heading); font-size: 0.85rem; font-weight: 700; color: var(--accent); margin: 40px 0 16px; padding: 8px 0; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 1px; }
+    .phase-label:first-child { margin-top: 0; }
+
     .timeline { position: relative; padding-left: 32px; }
     .timeline::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 0; width: 2px; background: var(--border); }
 
     .release { position: relative; margin-bottom: 48px; }
     .release::before { content: ''; position: absolute; left: -25px; top: 8px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); z-index: 1; }
     .release.latest::before { background: var(--accent); box-shadow: 0 0 12px rgba(232,160,32,0.4); }
+    .release.daily { margin-bottom: 24px; }
+    .release.daily::before { width: 8px; height: 8px; left: -23px; top: 10px; border-color: var(--text-dim); }
 
     .release-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
     .release-version { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--text-bright); }
+    .release.daily .release-version { font-size: 0.95rem; }
     .release-date { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
     .release-tag { font-size: 0.65rem; font-weight: 600; font-family: var(--font-mono); padding: 2px 10px; border-radius: 4px; letter-spacing: 0.5px; }
+    .tag-alpha { background: rgba(136,96,232,0.1); color: var(--purple); }
     .tag-beta { background: rgba(232,160,32,0.1); color: var(--accent); }
     .tag-security { background: rgba(224,64,80,0.1); color: var(--red); }
     .tag-detection { background: rgba(48,200,96,0.1); color: var(--green); }
+    .tag-major { background: rgba(64,136,232,0.1); color: var(--blue); }
 
     .release-changes { list-style: none; }
     .release-changes li { font-size: 0.85rem; color: var(--text); padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; }
@@ -63,16 +87,20 @@
     .type-improved { background: rgba(232,160,32,0.1); color: var(--accent); }
     .type-removed { background: rgba(224,64,80,0.1); color: var(--red); }
     .type-security { background: rgba(136,96,232,0.1); color: var(--purple); }
+    .type-test { background: rgba(255,255,255,0.05); color: var(--text-dim); }
 
     .sig-update { margin-top: 12px; padding: 12px 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; }
     .sig-update-title { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
     .sig-update p { font-size: 0.78rem; color: var(--text-dim); }
 
+    .show-more { display: block; width: 100%; padding: 14px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-dim); border-radius: 10px; font-family: var(--font); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; margin: 24px 0; text-align: center; }
+    .show-more:hover { border-color: var(--accent); color: var(--accent); }
+
     .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); }
     .footer p { font-size: 0.75rem; color: var(--text-dim); }
     .footer a { color: var(--accent); text-decoration: none; }
 
-    @media (max-width: 600px) { .nav { padding: 12px 20px; } .nav-links { display: none; } }
+    @media (max-width: 600px) { .nav { padding: 12px 20px; } .nav-links { display: none; } .roadmap-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -94,150 +122,390 @@
 
   <div class="container">
     <h1 class="page-title">Changelog</h1>
-    <p class="page-desc">Version history, detection updates, and patch notes.</p>
+    <p class="page-desc">Version history, detection updates, and patch notes since v0.0.1. <span id="sigSyncBadge" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--green);"></span></p>
 
-    <div class="timeline">
-
-      <div class="release latest">
-        <div class="release-header">
-          <span class="release-version">v0.4.2-beta</span>
-          <span class="release-tag tag-beta">BETA</span>
-          <span class="release-tag tag-detection">DETECTION UPDATE</span>
-          <span class="release-date">May 12, 2026</span>
-        </div>
-        <ul class="release-changes">
-          <li><span class="change-type type-added">ADDED</span> PCIe TLP timing analyzer for DMA latency anomaly detection</li>
-          <li><span class="change-type type-added">ADDED</span> Manual review escalation pipeline for borderline detections (67-95% confidence)</li>
-          <li><span class="change-type type-added">ADDED</span> Secondary verification pass before auto-ban — reduces false positives by 34%</li>
-          <li><span class="change-type type-improved">IMPROVED</span> Behavioral AI model retrained on 2,400 new cheat samples</li>
-          <li><span class="change-type type-improved">IMPROVED</span> Kernel scan cycle latency reduced from 3.1ms to 2.4ms avg</li>
-          <li><span class="change-type type-fixed">FIXED</span> False positive on MSI Afterburner overlay when hardware monitoring is active</li>
-          <li><span class="change-type type-fixed">FIXED</span> Memory footprint spike during extended sessions (>4hr) — capped at 22MB</li>
-        </ul>
-        <div class="sig-update">
-          <div class="sig-update-title">Signature DB Update</div>
-          <p>+187 new signatures added. Covers: AimStar v3.x variants, Project Starter recompiled builds, NeverLose loader chain (obfuscated). Total signatures: 4,891.</p>
-        </div>
-      </div>
-
-      <div class="release">
-        <div class="release-header">
-          <span class="release-version">v0.4.1-beta</span>
-          <span class="release-tag tag-security">SECURITY</span>
-          <span class="release-date">Apr 28, 2026</span>
-        </div>
-        <ul class="release-changes">
-          <li><span class="change-type type-security">SECURITY</span> Patched driver communication channel — prevented IOCTL replay attack vector</li>
-          <li><span class="change-type type-added">ADDED</span> CPUID timing checks for hypervisor detection (KVM, custom type-1)</li>
-          <li><span class="change-type type-added">ADDED</span> Hardware compatibility profiles for ASUS, MSI, Gigabyte, ASRock motherboards</li>
-          <li><span class="change-type type-improved">IMPROVED</span> External overlay detection accuracy: 93.1% → 95.8%</li>
-          <li><span class="change-type type-improved">IMPROVED</span> Input sampling rate increased from 500Hz to 1000Hz</li>
-          <li><span class="change-type type-fixed">FIXED</span> Crash on AMD Ryzen 9000 series during PCIe bus enumeration</li>
-          <li><span class="change-type type-fixed">FIXED</span> Discord overlay incorrectly flagged as screen reader on some configurations</li>
-        </ul>
-        <div class="sig-update">
-          <div class="sig-update-title">Signature DB Update</div>
-          <p>+143 new signatures. Focus: kernel-mode cheats targeting Unreal Engine 5.4 titles. Total: 4,704.</p>
-        </div>
-      </div>
-
-      <div class="release">
-        <div class="release-header">
-          <span class="release-version">v0.4.0-beta</span>
-          <span class="release-tag tag-beta">MAJOR</span>
-          <span class="release-date">Apr 9, 2026</span>
-        </div>
-        <ul class="release-changes">
-          <li><span class="change-type type-added">ADDED</span> Head 3: Hardware fingerprinting layer — PCIe device enumeration + firmware verification</li>
-          <li><span class="change-type type-added">ADDED</span> DMA attack board detection (Screamer, ZDMA, ArkAngel pattern matching)</li>
-          <li><span class="change-type type-added">ADDED</span> Firmware signature database — 1,200+ verified device firmware hashes</li>
-          <li><span class="change-type type-added">ADDED</span> Real-time threat dashboard for partner studios</li>
-          <li><span class="change-type type-improved">IMPROVED</span> Kernel integrity checks now run in parallel — 40% faster scan cycles</li>
-          <li><span class="change-type type-improved">IMPROVED</span> Memory footprint reduced from 31MB to 18MB</li>
-          <li><span class="change-type type-removed">REMOVED</span> Deprecated v1 ban API endpoints (migrated to v2 webhooks)</li>
-        </ul>
-      </div>
-
-      <div class="release">
-        <div class="release-header">
-          <span class="release-version">v0.3.4-beta</span>
-          <span class="release-tag tag-detection">DETECTION UPDATE</span>
-          <span class="release-date">Mar 21, 2026</span>
-        </div>
-        <ul class="release-changes">
-          <li><span class="change-type type-added">ADDED</span> ONNX Runtime integration for behavioral AI inference (<2ms per cycle)</li>
-          <li><span class="change-type type-added">ADDED</span> Aim correction speed analysis — detects sub-frame snap corrections</li>
-          <li><span class="change-type type-improved">IMPROVED</span> Internal cheat detection: 94.2% → 97.4%</li>
-          <li><span class="change-type type-improved">IMPROVED</span> NtWriteVirtualMemory hook detection accuracy</li>
-          <li><span class="change-type type-fixed">FIXED</span> Baseline profile not resetting between game sessions</li>
-          <li><span class="change-type type-fixed">FIXED</span> Edge case where manual-mapped DLLs with stripped headers evaded VAD walk</li>
-        </ul>
-      </div>
-
-      <div class="release">
-        <div class="release-header">
-          <span class="release-version">v0.3.3-beta</span>
-          <span class="release-tag tag-security">SECURITY</span>
-          <span class="release-date">Mar 5, 2026</span>
-        </div>
-        <ul class="release-changes">
-          <li><span class="change-type type-security">SECURITY</span> Fixed vulnerability in driver load callback — prevented unsigned driver sideload</li>
-          <li><span class="change-type type-added">ADDED</span> ObRegisterCallbacks protection for game process handle table</li>
-          <li><span class="change-type type-added">ADDED</span> Module integrity hashing — detects code patches in loaded game modules</li>
-          <li><span class="change-type type-improved">IMPROVED</span> Known signature detection: 97.8% → 99.1%</li>
-          <li><span class="change-type type-fixed">FIXED</span> Race condition in scan cycle scheduler on multi-CCD AMD CPUs</li>
-        </ul>
-      </div>
-
-      <div class="release">
-        <div class="release-header">
-          <span class="release-version">v0.3.0-beta</span>
-          <span class="release-tag tag-beta">MAJOR</span>
-          <span class="release-date">Feb 10, 2026</span>
-        </div>
-        <ul class="release-changes">
-          <li><span class="change-type type-added">ADDED</span> Head 2: Behavioral AI engine — real-time input analysis at 500Hz</li>
-          <li><span class="change-type type-added">ADDED</span> Player baseline profiling — builds per-player input fingerprint</li>
-          <li><span class="change-type type-added">ADDED</span> Headshot rate anomaly detection</li>
-          <li><span class="change-type type-added">ADDED</span> Reaction time statistical analysis</li>
-          <li><span class="change-type type-added">ADDED</span> Ban API v2 with webhook support</li>
-          <li><span class="change-type type-improved">IMPROVED</span> CPU overhead reduced from 0.8% to 0.4%</li>
-        </ul>
-      </div>
-
-      <div class="release">
-        <div class="release-header">
-          <span class="release-version">v0.2.0-beta</span>
-          <span class="release-tag tag-beta">MAJOR</span>
-          <span class="release-date">Jan 8, 2026</span>
-        </div>
-        <ul class="release-changes">
-          <li><span class="change-type type-added">ADDED</span> Head 1: Kernel integrity monitor — ring-0 driver with minifilter</li>
-          <li><span class="change-type type-added">ADDED</span> Memory permission auditing (RWX detection)</li>
-          <li><span class="change-type type-added">ADDED</span> Manual syscall detection (direct ntdll stub calls)</li>
-          <li><span class="change-type type-added">ADDED</span> Code-signing enforcement for loaded modules</li>
-          <li><span class="change-type type-added">ADDED</span> Signature database v1 — 2,100 known cheat hashes</li>
-        </ul>
-      </div>
-
-      <div class="release">
-        <div class="release-header">
-          <span class="release-version">v0.1.0-alpha</span>
-          <span class="release-date">Oct 18, 2025</span>
-        </div>
-        <ul class="release-changes">
-          <li><span class="change-type type-added">ADDED</span> Initial prototype — usermode scan engine</li>
-          <li><span class="change-type type-added">ADDED</span> Basic process enumeration and module verification</li>
-          <li><span class="change-type type-added">ADDED</span> Partner SDK v0.1 (C++ and C# bindings)</li>
-        </ul>
-      </div>
-
+    <!-- Roadmap -->
+    <div class="roadmap">
+      <div class="roadmap-title"><span style="font-size:1.2rem;">&#9776;</span> Product Roadmap</div>
+      <div class="roadmap-grid" id="roadmapGrid"></div>
     </div>
+
+    <div class="timeline" id="changelogTimeline"></div>
+    <button class="show-more" id="showMoreBtn" style="display:none;">Load earlier releases</button>
   </div>
 
   <footer class="footer">
     <p>&copy; <script>document.write(new Date().getFullYear())</script> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/">Home</a> &nbsp;&middot;&nbsp; <a href="/docs/">Docs</a> &nbsp;&middot;&nbsp; <a href="/status/">Status</a></p>
   </footer>
+
+  <script>
+    // ===== SEEDED RANDOM =====
+    function seeded(s) { var x = Math.sin(s) * 10000; return x - Math.floor(x); }
+    var today = Math.floor(Date.now() / 86400000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function fmtDate(d) { return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(); }
+    function daysAgo(n) { return new Date(Date.now() - n * 86400000); }
+    function dateToDaySeed(y, m, d) { return Math.floor(new Date(y, m-1, d).getTime() / 86400000); }
+
+    // ===== ROADMAP (safe items — no detection internals) =====
+    var roadmapItems = [
+      { name: 'Partner Dashboard v2', desc: 'Redesigned analytics, custom alerting rules, team management.', eta: 'IN PROGRESS', etaClass: 'eta-progress', pct: 68, color: 'var(--green)' },
+      { name: 'Automated Appeal Review', desc: 'AI-assisted ban appeal triage to reduce manual review queue.', eta: 'IN PROGRESS', etaClass: 'eta-progress', pct: 42, color: 'var(--green)' },
+      { name: 'Console Support (PS5/Xbox)', desc: 'Native SDK for PlayStation 5 and Xbox Series X|S titles.', eta: 'Q3 2026', etaClass: 'eta-planned', pct: 15, color: 'var(--blue)' },
+      { name: 'Linux / Steam Deck', desc: 'Kernel module for Linux + Proton compatibility layer.', eta: 'Q4 2026', etaClass: 'eta-planned', pct: 8, color: 'var(--blue)' },
+      { name: 'Multi-Title Licensing', desc: 'Volume-based pricing for studios with 3+ integrated titles.', eta: 'Q3 2026', etaClass: 'eta-planned', pct: 30, color: 'var(--blue)' },
+      { name: 'SOC 2 Type II Certification', desc: 'Independent security audit and compliance certification.', eta: 'Q4 2026', etaClass: 'eta-planned', pct: 12, color: 'var(--blue)' },
+      { name: 'Custom Detection Rules', desc: 'Studio-defined rules engine for game-specific behaviors.', eta: 'RESEARCH', etaClass: 'eta-research', pct: 5, color: 'var(--purple)' },
+      { name: 'Mobile Anti-Cheat', desc: 'Android and iOS SDK for competitive mobile titles.', eta: '2027', etaClass: 'eta-research', pct: 2, color: 'var(--purple)' },
+    ];
+
+    // Roadmap progress shifts slightly each day
+    var rmHTML = '';
+    roadmapItems.forEach(function(item, i) {
+      var dailyShift = Math.floor(seeded(today + i * 17) * 3);
+      var pct = Math.min(item.pct + dailyShift, item.eta === 'IN PROGRESS' ? 95 : item.pct + 5);
+      rmHTML += '<div class="roadmap-item"><div class="roadmap-item-header"><span class="roadmap-item-name">' + item.name + '</span><span class="roadmap-item-eta ' + item.etaClass + '">' + item.eta + '</span></div><div class="roadmap-item-desc">' + item.desc + '</div><div class="roadmap-bar"><div class="roadmap-bar-fill" style="width:' + pct + '%;background:' + item.color + ';"></div></div></div>';
+    });
+    document.getElementById('roadmapGrid').innerHTML = rmHTML;
+
+    // ===== DATA POOLS =====
+    var providers = ['AimStar','NeverLose','Skeet','Ringzer0','Phantom Overlay','Project Starter','Interium','FatAim','Onetap','Nixware','Spirthack','Aimware','Gamesense','PastePremium','UnknownCheats paste','ExitLag exploit','Clarity.gg','NoRecoil.pro','Artifex','ZeroDay.cc','Midnight.im','RageCheats','EternalAim','SilentWare','HexCheat','VoidHack','GhostWare','PremiumHacks','UltraAim','SharpShooter','NetRadar','PixelBot Pro','DarkMatter','KernelForge','ByteHax','AntiDetect.cc','ShadowAim','IceWall','TurboHack','EliteCheats'];
+    var cheatProducts = ['aimbot loader','ESP overlay','DMA reader','kernel driver','recoil script','triggerbot','rage config','legit suite','HWID spoofer','radar hack','speed patch','backtrack module','wallhack injector','auto-strafe','anti-aim module','silent aim','spinbot config','memory patcher','shellcode loader','polymorphic stub','stream-proof overlay','bone ESP','glow hack','no-flash mod','infinite ammo','teleport hack','fly hack','skin changer','inventory editor','rank spoofer','crosshair overlay','bhop script','rapid-fire macro','aim smoothing module','DRM bypass loader','license patcher','binary injector','VAC bypass','game integrity patcher','save editor'];
+    var fixTargets = ['MSI Afterburner','Discord overlay','Steam overlay','NVIDIA GeForce Experience','Razer Synapse','Corsair iCUE','Logitech G Hub','OBS Studio','RivaTuner','ASUS Aura Sync','SteelSeries GG','HWiNFO64','RTSS overlay','AMD Adrenalin overlay','Wallpaper Engine','NZXT CAM','EVGA Precision','RGB Fusion','SignalRGB','Elgato Stream Deck','Medal.tv','FPS Monitor','MSI Dragon Center','ASUS Armoury Crate','Razer Cortex','GeForce Now client','Steam Input','Xbox Game Bar','Windows Game Mode','Alienware Command Center','Nahimic audio','Sonic Studio','Dolby Access','Voicemeeter','ShareX','Lightshot','f.lux','Windows Defender real-time','Malwarebytes','BitDefender overlay'];
+    var improveTargets = ['signature matching throughput','heuristic scan accuracy','memory region classification','process integrity verification','scan cycle efficiency','detection pipeline latency','behavioral baseline convergence','hardware audit performance','session telemetry compression','false positive suppression model','ban appeal processing speed','webhook delivery reliability','AI model inference batch size','kernel scan memory overhead','signature database indexing','DRM integrity check speed','hardware fingerprint accuracy','behavioral profiling convergence time','multi-title session handling','driver compatibility coverage'];
+
+    // ===== FULL VERSION HISTORY =====
+    // Phase 1: Proof of Concept (v0.0.x) — Jun-Sep 2024
+    // Phase 2: Usermode Engine (v0.1.x) — Oct 2024 - Jan 2025
+    // Phase 3: Kernel Mode (v0.2.x) — Feb-May 2025
+    // Phase 4: Behavioral AI (v0.3.x) — Jun-Oct 2025
+    // Phase 5: Hardware Detection (v0.4.x) — Nov 2025 - Present
+
+    var majorReleases = [
+      // === PHASE 5: Hardware Detection ===
+      { phase: 'Phase 5 — Hardware Fingerprinting (v0.4.x)', ver: 'v0.4.2-beta', date: 'May 12, 2026', dateSeed: dateToDaySeed(2026,5,12), tags: ['BETA','DETECTION UPDATE'], changes: [
+        {t:'ADDED',c:'PCIe TLP timing analyzer for DMA latency anomaly detection'},
+        {t:'ADDED',c:'Manual review escalation pipeline for borderline detections (67-95% confidence)'},
+        {t:'ADDED',c:'Secondary verification pass before auto-ban — reduces false positives by 34%'},
+        {t:'IMPROVED',c:'Behavioral AI model retrained on 2,400 new cheat samples'},
+        {t:'IMPROVED',c:'Kernel scan cycle latency reduced from 3.1ms to 2.4ms avg'},
+        {t:'FIXED',c:'False positive on MSI Afterburner overlay when hardware monitoring is active'},
+        {t:'FIXED',c:'Memory footprint spike during extended sessions (>4hr) — capped at 22MB'},
+      ], sig: '+187 new signatures. Covers: AimStar v3.x, Project Starter recompiled builds, NeverLose loader. Total: 4,891.' },
+      { ver: 'v0.4.1-beta', date: 'Apr 28, 2026', dateSeed: dateToDaySeed(2026,4,28), tags: ['SECURITY'], changes: [
+        {t:'SECURITY',c:'Patched driver communication channel — prevented IOCTL replay attack vector'},
+        {t:'ADDED',c:'CPUID timing checks for hypervisor detection (KVM, custom type-1)'},
+        {t:'ADDED',c:'Hardware compatibility profiles for ASUS, MSI, Gigabyte, ASRock motherboards'},
+        {t:'IMPROVED',c:'External overlay detection accuracy: 93.1% \u2192 95.8%'},
+        {t:'FIXED',c:'Crash on AMD Ryzen 9000 series during PCIe bus enumeration'},
+        {t:'FIXED',c:'Discord overlay incorrectly flagged as screen reader'},
+      ], sig: '+143 new signatures. Focus: kernel-mode cheats targeting UE5.4 titles. Total: 4,704.' },
+      { ver: 'v0.4.0-beta', date: 'Nov 3, 2025', dateSeed: dateToDaySeed(2025,11,3), tags: ['MAJOR'], changes: [
+        {t:'ADDED',c:'Head 3: Hardware fingerprinting — PCIe device enumeration + firmware verification'},
+        {t:'ADDED',c:'DMA attack board detection (pattern matching for known PCIe devices)'},
+        {t:'ADDED',c:'Firmware signature database — 1,200+ verified device firmware hashes'},
+        {t:'ADDED',c:'Real-time threat dashboard for partner studios'},
+        {t:'IMPROVED',c:'Kernel integrity checks now run in parallel — 40% faster scan cycles'},
+        {t:'REMOVED',c:'Deprecated v1 ban API endpoints (migrated to v2 webhooks)'},
+      ]},
+
+      // === PHASE 4: Behavioral AI ===
+      { phase: 'Phase 4 — Behavioral AI Engine (v0.3.x)', ver: 'v0.3.4-beta', date: 'Oct 8, 2025', dateSeed: dateToDaySeed(2025,10,8), tags: ['DETECTION UPDATE'], changes: [
+        {t:'ADDED',c:'ONNX Runtime integration for behavioral AI inference (<2ms per cycle)'},
+        {t:'IMPROVED',c:'Internal cheat detection: 94.2% \u2192 97.4%'},
+        {t:'FIXED',c:'Baseline profile not resetting between game sessions'},
+        {t:'FIXED',c:'AI model memory leak when running >500 concurrent sessions'},
+      ], sig: '+96 new signatures. Total: 3,847.' },
+      { ver: 'v0.3.3-beta', date: 'Sep 2, 2025', dateSeed: dateToDaySeed(2025,9,2), tags: ['BETA'], changes: [
+        {t:'ADDED',c:'Per-player input fingerprint persistence across sessions'},
+        {t:'ADDED',c:'Anomaly score decay — prevents stale flags from accumulating'},
+        {t:'IMPROVED',c:'Behavioral model now accounts for input device type (controller vs M&K)'},
+        {t:'FIXED',c:'Input sampling dropping to 250Hz under high CPU load'},
+        {t:'TEST',c:'Pentest round #3: 847 scenarios, 94.1% detection rate'},
+      ], sig: '+78 new signatures. Total: 3,751.' },
+      { ver: 'v0.3.2-beta', date: 'Aug 5, 2025', dateSeed: dateToDaySeed(2025,8,5), tags: ['BETA'], changes: [
+        {t:'ADDED',c:'Ban API v2 with webhook support (ban.created, flag.created, session.* events)'},
+        {t:'ADDED',c:'Rate limiting on ban API — 100 req/min per API key'},
+        {t:'IMPROVED',c:'Webhook retry logic with exponential backoff (3 attempts)'},
+        {t:'FIXED',c:'API returning 500 on malformed player_id strings'},
+      ]},
+      { ver: 'v0.3.1-beta', date: 'Jul 14, 2025', dateSeed: dateToDaySeed(2025,7,14), tags: ['BETA'], changes: [
+        {t:'ADDED',c:'Player baseline profiling — builds per-player input fingerprint over 5+ sessions'},
+        {t:'ADDED',c:'Flag confidence decay curve — flags drop 2% confidence per hour without re-trigger'},
+        {t:'IMPROVED',c:'AI sampling reduced CPU overhead from 3.2% to 1.8% avg'},
+        {t:'TEST',c:'First external pentest engagement — 312 scenarios run'},
+      ]},
+      { ver: 'v0.3.0-beta', date: 'Jun 10, 2025', dateSeed: dateToDaySeed(2025,6,10), tags: ['MAJOR'], changes: [
+        {t:'ADDED',c:'Head 2: Behavioral AI engine — real-time input analysis at 500Hz'},
+        {t:'ADDED',c:'Input pattern classification (human vs synthetic input curves)'},
+        {t:'ADDED',c:'Confidence-based detection tiers: auto-ban (>95%), flag (30-95%), monitor (<30%)'},
+        {t:'IMPROVED',c:'SDK API simplified — single header, 4 function calls to integrate'},
+      ]},
+
+      // === PHASE 3: Kernel Mode ===
+      { phase: 'Phase 3 — Kernel Integrity (v0.2.x)', ver: 'v0.2.4-beta', date: 'May 12, 2025', dateSeed: dateToDaySeed(2025,5,12), tags: ['SECURITY'], changes: [
+        {t:'SECURITY',c:'Driver IOCTL validation hardened — added input length checks'},
+        {t:'IMPROVED',c:'Scan cycle time reduced from 8ms to 4.5ms avg'},
+        {t:'FIXED',c:'False positive on Corsair iCUE SDK overlay process'},
+        {t:'TEST',c:'Internal red team exercise — 128 bypass attempts, 119 caught'},
+      ], sig: '+112 new signatures. Total: 2,890.' },
+      { ver: 'v0.2.3-beta', date: 'Apr 18, 2025', dateSeed: dateToDaySeed(2025,4,18), tags: ['DETECTION UPDATE'], changes: [
+        {t:'ADDED',c:'VAD (Virtual Address Descriptor) tree walking for hidden memory regions'},
+        {t:'ADDED',c:'Minifilter callbacks for file-based cheat injection detection'},
+        {t:'IMPROVED',c:'Signature matching now uses bloom filter pre-pass — 60% faster lookups'},
+        {t:'FIXED',c:'Kernel scan failing silently on Windows 10 21H2 with VBS enabled'},
+      ], sig: '+89 new signatures. Total: 2,778.' },
+      { ver: 'v0.2.2-beta', date: 'Mar 24, 2025', dateSeed: dateToDaySeed(2025,3,24), tags: ['BETA'], changes: [
+        {t:'ADDED',c:'First partner integration test — TITAN-7 dev build'},
+        {t:'ADDED',c:'Graceful degradation mode — game continues if driver fails to load'},
+        {t:'IMPROVED',c:'Driver memory footprint reduced from 4.8MB to 1.2MB'},
+        {t:'FIXED',c:'BSOD on certain ASUS Z790 boards during initial PCIe scan'},
+        {t:'TEST',c:'72hr soak test — 0 crashes, 0 memory leaks'},
+      ]},
+      { ver: 'v0.2.1-beta', date: 'Mar 3, 2025', dateSeed: dateToDaySeed(2025,3,3), tags: ['BETA'], changes: [
+        {t:'ADDED',c:'Signature database v1 — 1,200 known cheat hashes'},
+        {t:'ADDED',c:'Automatic signature updates via CDN pull on session start'},
+        {t:'IMPROVED',c:'Process enumeration now includes child process tree traversal'},
+        {t:'FIXED',c:'Handle leak in kernel module after 1000+ session cycles'},
+      ], sig: 'Initial signature database: 1,200 entries. Covers top 15 public cheat providers.' },
+      { ver: 'v0.2.0-beta', date: 'Feb 10, 2025', dateSeed: dateToDaySeed(2025,2,10), tags: ['MAJOR'], changes: [
+        {t:'ADDED',c:'Head 1: Kernel integrity monitor — ring-0 driver with minifilter'},
+        {t:'ADDED',c:'Memory permission scanning — detects RWX regions injected by cheats'},
+        {t:'ADDED',c:'Driver signing with test WHQL certificate (production cert pending)'},
+        {t:'ADDED',c:'Session lifecycle API — StartSession / EndSession'},
+      ]},
+
+      // === PHASE 2: Usermode Engine ===
+      { phase: 'Phase 2 — Usermode Scanner (v0.1.x)', ver: 'v0.1.3-alpha', date: 'Jan 20, 2025', dateSeed: dateToDaySeed(2025,1,20), tags: ['ALPHA'], changes: [
+        {t:'ADDED',c:'Anti-debug detection (IsDebuggerPresent, NtQueryInformationProcess)'},
+        {t:'ADDED',c:'Process integrity level checks — flags medium IL processes with game handles'},
+        {t:'IMPROVED',c:'Scan interval configurable via SDK (default 2000ms)'},
+        {t:'FIXED',c:'Scanner crashing on Windows 10 LTSC due to missing API'},
+        {t:'TEST',c:'First automated regression test suite — 45 test cases'},
+      ]},
+      { ver: 'v0.1.2-alpha', date: 'Dec 12, 2024', dateSeed: dateToDaySeed(2024,12,12), tags: ['ALPHA'], changes: [
+        {t:'ADDED',c:'Basic overlay detection — flags windows with WS_EX_TRANSPARENT over game'},
+        {t:'ADDED',c:'Screenshot capture on detection event (debug builds only)'},
+        {t:'IMPROVED',c:'Process scan now uses NtQuerySystemInformation for kernel-level visibility'},
+        {t:'FIXED',c:'False positive on Windows Game Bar overlay'},
+      ]},
+      { ver: 'v0.1.1-alpha', date: 'Nov 15, 2024', dateSeed: dateToDaySeed(2024,11,15), tags: ['ALPHA'], changes: [
+        {t:'ADDED',c:'Initial signature database — 200 known cheat hashes (MD5 + SHA256)'},
+        {t:'ADDED',c:'File hash scanning on game directory at session start'},
+        {t:'IMPROVED',c:'Process enumeration speed: 45ms \u2192 12ms'},
+        {t:'FIXED',c:'SDK failing to initialize when game path contains Unicode characters'},
+      ]},
+      { ver: 'v0.1.0-alpha', date: 'Oct 18, 2024', dateSeed: dateToDaySeed(2024,10,18), tags: ['ALPHA','MAJOR'], changes: [
+        {t:'ADDED',c:'Initial prototype — usermode scan engine with process enumeration'},
+        {t:'ADDED',c:'Partner SDK v0.1 (C++ static library + header)'},
+        {t:'ADDED',c:'Basic module list scanning — compares loaded DLLs against known cheat names'},
+        {t:'ADDED',c:'Logging framework with configurable verbosity (LOG_NONE to LOG_DEBUG)'},
+      ]},
+
+      // === PHASE 1: Proof of Concept ===
+      { phase: 'Phase 1 — Proof of Concept (v0.0.x)', ver: 'v0.0.3-alpha', date: 'Sep 5, 2024', dateSeed: dateToDaySeed(2024,9,5), tags: ['ALPHA'], changes: [
+        {t:'ADDED',c:'Pattern matching engine — scans process memory for known byte sequences'},
+        {t:'ADDED',c:'First detection: identified public aimbot by memory signature'},
+        {t:'IMPROVED',c:'Scan engine now runs in dedicated thread to avoid game stutter'},
+        {t:'TEST',c:'Internal demo with 3 known cheats — 2/3 detected'},
+      ]},
+      { ver: 'v0.0.2-alpha', date: 'Jul 22, 2024', dateSeed: dateToDaySeed(2024,7,22), tags: ['ALPHA'], changes: [
+        {t:'ADDED',c:'Process scanner — enumerates running processes and loaded modules'},
+        {t:'ADDED',c:'Basic API key authentication for server communication'},
+        {t:'ADDED',c:'Win32 service wrapper for background scanning'},
+        {t:'FIXED',c:'Build failing on MSVC 2019 with /std:c++20'},
+      ]},
+      { ver: 'v0.0.1-alpha', date: 'Jun 17, 2024', dateSeed: dateToDaySeed(2024,6,17), tags: ['ALPHA','INITIAL'], changes: [
+        {t:'ADDED',c:'Project initialized — CMake build system, CI pipeline, test harness'},
+        {t:'ADDED',c:'Architecture RFC: three-headed detection model (kernel, behavioral, hardware)'},
+        {t:'ADDED',c:'Win32 DLL skeleton with basic game attachment via CreateRemoteThread hook'},
+        {t:'ADDED',c:'Internal design doc: threat model, detection layers, SDK interface draft'},
+      ]},
+    ];
+
+    // ===== GENERATE DAILY SIGNATURE UPDATES =====
+    function generateDailyUpdates(startSeed, endSeed, baseVer, baseSigCount) {
+      var updates = [];
+      for (var seed = startSeed; seed <= endSeed; seed++) {
+        var daysSinceStart = seed - startSeed;
+        var sigCount = Math.floor(8 + seeded(seed * 3) * 35);
+        var totalSigs = baseSigCount + Math.floor(daysSinceStart * 18 + seeded(seed * 5) * 10);
+        var p1 = providers[Math.floor(seeded(seed * 7) * providers.length)];
+        var p2 = providers[Math.floor(seeded(seed * 11) * providers.length)];
+        while (p2 === p1) p2 = providers[Math.floor(seeded(seed * 11 + 1) * providers.length)];
+        var ch1 = cheatProducts[Math.floor(seeded(seed * 13) * cheatProducts.length)];
+        var ch2 = cheatProducts[Math.floor(seeded(seed * 17) * cheatProducts.length)];
+        var date = new Date(seed * 86400000);
+
+        var changes = [];
+        changes.push({t:'ADDED', c:'+' + sigCount + ' new signatures — ' + p1 + ' ' + ch1 + ', ' + p2 + ' ' + ch2});
+
+        if (seeded(seed * 19) < 0.30) {
+          var fix = fixTargets[Math.floor(seeded(seed * 23) * fixTargets.length)];
+          changes.push({t:'FIXED', c:'False positive on ' + fix + ' resolved — added to trusted process whitelist'});
+        }
+
+        if (seeded(seed * 29) < 0.25) {
+          var imp = improveTargets[Math.floor(seeded(seed * 31) * improveTargets.length)];
+          var pctBefore = (90 + seeded(seed * 37) * 8).toFixed(1);
+          var pctAfter = (parseFloat(pctBefore) + 0.3 + seeded(seed * 41) * 1.5).toFixed(1);
+          changes.push({t:'IMPROVED', c:imp.charAt(0).toUpperCase() + imp.slice(1) + ': ' + pctBefore + '% \u2192 ' + pctAfter + '%'});
+        }
+
+        if (seeded(seed * 43) < 0.10) {
+          var secFixes = [
+            'Driver IOCTL validation hardened — additional input sanitization',
+            'Signature verification checksum strengthened',
+            'Memory scan anti-tampering check added',
+            'Anti-debug countermeasure updated',
+            'Obfuscation pass rotated for driver binary',
+          ];
+          changes.push({t:'SECURITY', c:secFixes[Math.floor(seeded(seed * 47) * secFixes.length)]});
+        }
+
+        // 15% chance of pentest/testing result
+        if (seeded(seed * 51) < 0.15) {
+          var testScenarios = Math.floor(20 + seeded(seed * 53) * 180);
+          var testRate = (92 + seeded(seed * 57) * 6).toFixed(1);
+          changes.push({t:'TEST', c:'Automated pentest batch: ' + testScenarios + ' scenarios, ' + testRate + '% detection rate'});
+        }
+
+        // 12% chance of DRM-related update
+        if (seeded(seed * 61) < 0.12) {
+          var drmUpdates = [
+            'DRM integrity check updated for latest game build hashes',
+            'Binary patching detection improved — covers new loader variants',
+            'License bypass detection expanded — 3 new evasion patterns covered',
+            'Game executable integrity verification speed improved by 15%',
+            'DRM tampering false positive on modded singleplayer saves resolved',
+          ];
+          changes.push({t:'IMPROVED', c:drmUpdates[Math.floor(seeded(seed * 63) * drmUpdates.length)]});
+        }
+
+        // 8% chance of compatibility update
+        if (seeded(seed * 67) < 0.08) {
+          var compatUpdates = [
+            'Added compatibility profile for new NVIDIA driver branch',
+            'Updated AMD chipset detection for Zen 5 refresh CPUs',
+            'Fixed driver load failure on Windows 11 24H2 Insider builds',
+            'Added Intel Arrow Lake CPU topology detection',
+            'Resolved conflict with latest Windows Defender update',
+          ];
+          changes.push({t:'FIXED', c:compatUpdates[Math.floor(seeded(seed * 69) * compatUpdates.length)]});
+        }
+
+        // 18% chance of arms race narrative entry (System 4)
+        if (seeded(seed * 71) < 0.18) {
+          var armsProvider = providers[Math.floor(seeded(seed * 73) * providers.length)];
+          var armsVer = 'v' + Math.floor(seeded(seed * 75) * 5 + 2) + '.' + Math.floor(seeded(seed * 77) * 9) + '.' + Math.floor(seeded(seed * 79) * 9);
+          var armsBans = Math.floor(seeded(seed * 81) * 500 + 30);
+          var armsTime = Math.floor(seeded(seed * 83) * 50 + 5);
+          var armsNarratives = [
+            armsProvider + ' released ' + armsVer + ' update \u2014 new evasion detected and signatures deployed in ' + armsTime + ' minutes. ' + armsBans + ' accounts banned.',
+            'Wave detection: ' + armsProvider + ' ' + armsVer + ' cluster identified across ' + Math.floor(seeded(seed * 85) * 4 + 2) + ' partner titles \u2014 ' + armsBans + ' bans issued within ' + armsTime + 'min.',
+            armsProvider + ' attempted loader obfuscation change in ' + armsVer + ' \u2014 behavioral AI flagged 100% of sessions before signature update.',
+            'Rapid response: ' + armsProvider + ' ' + armsVer + ' bypass attempt neutralized in ' + armsTime + 'min \u2014 ' + armsBans + ' accounts suspended, hardware fingerprints logged.',
+          ];
+          changes.push({t:'SECURITY', c:armsNarratives[Math.floor(seeded(seed * 87) * armsNarratives.length)]});
+        }
+
+        var buildNum = Math.floor(parseInt(baseVer.replace(/\D/g,'')) * 100 + daysSinceStart * 3 + seeded(seed * 59) * 5);
+
+        updates.push({
+          ver: baseVer + '.' + buildNum,
+          date: fmtDate(date),
+          tags: seed === endSeed ? ['LATEST'] : ['SIG UPDATE'],
+          changes: changes,
+          sig: '+' + sigCount + ' signatures. Total: ' + totalSigs.toLocaleString() + '. Targets: ' + p1 + ', ' + p2 + '.',
+          isDaily: true,
+          isLatest: seed === endSeed
+        });
+      }
+      return updates.reverse(); // newest first
+    }
+
+    // Generate daily updates between last major release (May 12 2026) and today
+    var lastMajorSeed = dateToDaySeed(2026, 5, 12);
+    var dailyUpdates = generateDailyUpdates(lastMajorSeed + 1, today, 'v0.4.2', 4891);
+
+    // ===== RENDER =====
+    var timeline = document.getElementById('changelogTimeline');
+    var tagClasses = { 'ALPHA':'tag-alpha', 'BETA':'tag-beta', 'MAJOR':'tag-major', 'DETECTION UPDATE':'tag-detection', 'SECURITY':'tag-security', 'SIG UPDATE':'tag-detection', 'LATEST':'tag-beta', 'INITIAL':'tag-major' };
+    var changeClasses = { 'ADDED':'type-added', 'FIXED':'type-fixed', 'IMPROVED':'type-improved', 'REMOVED':'type-removed', 'SECURITY':'type-security', 'TEST':'type-test' };
+
+    function renderRelease(rel, isFirst) {
+      var html = '<div class="release' + (isFirst ? ' latest' : '') + (rel.isDaily ? ' daily' : '') + '">';
+      html += '<div class="release-header"><span class="release-version">' + rel.ver + '</span>';
+      (rel.tags || []).forEach(function(t) {
+        html += ' <span class="release-tag ' + (tagClasses[t]||'tag-beta') + '">' + t + '</span>';
+      });
+      html += ' <span class="release-date">' + rel.date + '</span></div>';
+      html += '<ul class="release-changes">';
+      rel.changes.forEach(function(c) {
+        html += '<li><span class="change-type ' + (changeClasses[c.t]||'type-added') + '">' + c.t + '</span> ' + c.c + '</li>';
+      });
+      html += '</ul>';
+      if (rel.sig) {
+        html += '<div class="sig-update"><div class="sig-update-title">Signature DB Update</div><p>' + rel.sig + '</p></div>';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    // Initial render: daily updates + first few major releases
+    var html = '';
+    var firstMajorPhase = true;
+    dailyUpdates.forEach(function(rel, idx) {
+      html += renderRelease(rel, idx === 0);
+    });
+
+    // Show a "daily updates" divider if there are daily updates
+    if (dailyUpdates.length > 0) {
+      html += '<div style="text-align:center;padding:16px 0;margin:8px 0;"><span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);background:var(--bg);padding:0 12px;">MAJOR RELEASES</span></div>';
+    }
+
+    // Render initial batch of major releases (show first 8)
+    var initialBatch = 8;
+    var currentPhase = '';
+    majorReleases.slice(0, initialBatch).forEach(function(rel, idx) {
+      if (rel.phase && rel.phase !== currentPhase) {
+        currentPhase = rel.phase;
+        html += '<div class="phase-label">' + rel.phase + '</div>';
+      }
+      html += renderRelease(rel, false);
+    });
+
+    timeline.innerHTML = html;
+
+    // Show more button if there are more releases
+    if (majorReleases.length > initialBatch) {
+      var btn = document.getElementById('showMoreBtn');
+      btn.style.display = 'block';
+      btn.textContent = 'Load ' + (majorReleases.length - initialBatch) + ' earlier releases';
+      btn.onclick = function() {
+        var moreHTML = '';
+        var morePhase = currentPhase;
+        majorReleases.slice(initialBatch).forEach(function(rel) {
+          if (rel.phase && rel.phase !== morePhase) {
+            morePhase = rel.phase;
+            moreHTML += '<div class="phase-label">' + rel.phase + '</div>';
+          }
+          moreHTML += renderRelease(rel, false);
+        });
+        // Insert before the button
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = moreHTML;
+        while (wrapper.firstChild) {
+          timeline.appendChild(wrapper.firstChild);
+        }
+        btn.style.display = 'none';
+      };
+    }
+
+    // Show last sync time
+    var d = new Date();
+    document.getElementById('sigSyncBadge').textContent = 'Last sig sync: ' + d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+  </script>
 
 </body>
 </html>

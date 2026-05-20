@@ -142,6 +142,7 @@
       <div class="sidebar-section">
         <div class="sidebar-label">API</div>
         <a href="#ban-api">Ban API</a>
+        <a href="#evidence">Detection Evidence</a>
         <a href="#webhooks">Webhooks</a>
         <a href="#events">Event Types</a>
       </div>
@@ -190,13 +191,28 @@ config.<span class="fn">banCallback</span>  = OnPlayerBanned;
 <span class="fn">Cerberus_Shutdown</span>();</div>
 
       <h2 id="requirements">System Requirements</h2>
+
+      <h3>Developer / Studio Requirements</h3>
       <ul>
-        <li>Windows 10 20H2+ or Windows 11 (x64)</li>
-        <li>Secure Boot enabled (recommended for Head 3)</li>
-        <li>TPM 2.0 (optional — enables firmware attestation in v0.6+)</li>
-        <li>Visual Studio 2019+ or compatible C++ compiler</li>
-        <li>.NET 6.0+ for C# bindings</li>
+        <li>Visual Studio 2019+ or compatible C++ compiler (MSVC v142+)</li>
+        <li>.NET 6.0+ for C# bindings (Unity integration)</li>
+        <li>Unreal Engine 5.1+ for UE plugin</li>
+        <li>Partner dashboard account + API key</li>
       </ul>
+
+      <h3>Player / End-User Requirements</h3>
+      <p>Players running games protected by Cerberus need:</p>
+      <ul>
+        <li><strong>OS:</strong> Windows 10 20H2+ or Windows 11 (x64 only)</li>
+        <li><strong>BIOS — Secure Boot:</strong> Must be <strong>enabled</strong>. Required for hardware verification (Head 3). Check: <code>msinfo32</code> → "Secure Boot State" should show "On"</li>
+        <li><strong>BIOS — TPM 2.0:</strong> Recommended (enables firmware attestation in v0.6+). Most modern systems have this enabled by default</li>
+        <li><strong>Windows Update:</strong> System must be on a supported Windows build. Outdated builds may fail driver signature verification</li>
+        <li><strong>GPU Drivers:</strong> Up to date. Outdated GPU drivers can trigger false positives on overlay detection</li>
+        <li><strong>No unsigned drivers:</strong> Systems with test-signing mode enabled (<code>bcdedit /set testsigning on</code>) will be flagged</li>
+        <li><strong>Virtualization:</strong> Running inside a VM (VirtualBox, VMware, Hyper-V) is not supported for competitive multiplayer. Cerberus will detect and flag virtualized environments</li>
+      </ul>
+
+      <div class="callout callout-warn">Players do NOT need to change any BIOS settings beyond enabling Secure Boot. No manual TPM configuration, no VT-x/AMD-V changes, no special setup. If Secure Boot is already on (default on most PCs sold after 2016), the player is ready.</div>
 
       <h2 id="installation">Installation</h2>
       <p>Add the SDK to your project:</p>
@@ -328,6 +344,31 @@ cerberus-sdk-v0.4.2-beta-win64.zip
     <span class="str">"hardware_fingerprint"</span>: <span class="str">"hw_a1b2c3d4e5f6"</span>
   }
 }</div>
+
+      <h2 id="evidence">Detection Evidence</h2>
+      <p>When Cerberus detects a cheat, it captures a structured evidence package for review. This data is stored on the Cerberus backend and accessible through your partner dashboard.</p>
+
+      <h3>What is collected on detection</h3>
+      <table class="param-table">
+        <tr><th>Data</th><th>Scope</th><th>Description</th></tr>
+        <tr><td>Detection type</td><td>Always</td><td>Which head triggered (KERNEL, AI, HW) and the specific detection category (e.g., AIMBOT, INJECTION, DMA_READ)</td></tr>
+        <tr><td>Confidence score</td><td>Always</td><td>0.0-1.0 float representing detection certainty. Auto-ban threshold: 0.95+</td></tr>
+        <tr><td>Session snapshot</td><td>Always</td><td>Anonymized session metadata: game ID, session duration, region, SDK version</td></tr>
+        <tr><td>Hardware fingerprint</td><td>Head 3</td><td>Hashed device identifiers for ban evasion tracking. No PII — hardware IDs are one-way hashed</td></tr>
+        <tr><td>Memory region info</td><td>Kernel</td><td>Address range, permissions (RWX), and module association of suspicious memory regions. Game memory content is NOT captured</td></tr>
+        <tr><td>Behavioral profile</td><td>AI</td><td>Statistical summary: aim correction speed, reaction time distribution, headshot rate deviation from player baseline</td></tr>
+        <tr><td>Device audit log</td><td>Head 3</td><td>List of enumerated PCIe devices and firmware verification results. Used to identify DMA boards</td></tr>
+      </table>
+
+      <div class="callout callout-info">Cerberus never captures game memory contents, screenshots, keystrokes, browsing data, or any PII. All hardware identifiers are one-way hashed before transmission. Evidence is retained for 90 days (configurable per partner) to support ban appeals.</div>
+
+      <h3>Where evidence is stored</h3>
+      <p>Detection evidence is processed locally on the player's machine and only the structured metadata is sent to the Cerberus API over TLS 1.3. Raw memory dumps or input recordings are never transmitted. Partners can access evidence through:</p>
+      <ul>
+        <li><strong>Partner Dashboard</strong> — visual timeline of detection events with evidence viewer</li>
+        <li><strong>Ban API</strong> — <code>GET /api/v2/bans/{id}/evidence</code> returns the full evidence package as JSON</li>
+        <li><strong>Webhooks</strong> — <code>ban.created</code> events include a summary; full evidence available via API</li>
+      </ul>
 
       <h2 id="events">Event Types</h2>
       <table class="param-table">
