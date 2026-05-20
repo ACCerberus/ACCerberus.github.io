@@ -59,7 +59,7 @@
   // ─── 10. DYNAMIC THREAT LEVEL BANNER ───
   var bannerConfig = {
     LOW:      { bg: 'rgba(48,200,96,0.12)',  border: 'rgba(48,200,96,0.3)',  color: '#30c860', text: 'All Clear', icon: '\u2714', show: false },
-    MODERATE: { bg: 'rgba(232,160,32,0.10)', border: 'rgba(232,160,32,0.3)', color: '#e8a020', text: 'Elevated Activity', icon: '\u26a0', show: true },
+    MODERATE: { bg: 'rgba(232,160,32,0.10)', border: 'rgba(232,160,32,0.3)', color: '#e8a020', text: 'Elevated Activity', icon: '\u26a0', show: false },
     ELEVATED: { bg: 'rgba(232,140,40,0.14)', border: 'rgba(232,140,40,0.4)', color: '#e88c28', text: 'Elevated Threat Level', icon: '\u26a0', show: true },
     HIGH:     { bg: 'rgba(224,64,80,0.14)',   border: 'rgba(224,64,80,0.4)',  color: '#e04050', text: 'Active Threat — Monitoring Engaged', icon: '\u26d4', show: true }
   };
