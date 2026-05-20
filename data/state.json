@@ -1,0 +1,20 @@
+{
+  "lastUpdate": "2026-05-19T00:00:00Z",
+  "signatureDb": 4891,
+  "totalBans": 2847291,
+  "engineVersion": "v0.4.2-beta",
+  "buildNumber": 2847,
+  "uptimePercent": 99.97,
+  "lastIncident": "2026-05-14T08:22:00Z",
+  "activeSessions": 4218,
+  "regionsOnline": 9,
+  "providersCovered": 15,
+  "falsePositiveRate": 0.003,
+  "avgScanLatency": 0.42,
+  "dailyDetections": 1847,
+  "weeklyBanWaves": 3,
+  "pendingReviews": 12,
+  "signatureQueue": 7,
+  "threatLevel": "MODERATE",
+  "notes": []
+}
