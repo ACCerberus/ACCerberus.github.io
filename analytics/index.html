@@ -565,26 +565,34 @@
     var todMult = todMultipliers[hourNow] * (isWeekend ? 1.35 : 1.0);
 
     // ===== STAT CARDS (with localStorage persistence + cumulative history) =====
-    var baseThreats24 = 0;
-    games.forEach(function(g) { baseThreats24 += g.threats; });
-    var baseCCU = 0;
-    games.forEach(function(g) { baseCCU += g.ccu; });
+    // Realistic base numbers for an anti-cheat with 6 active titles
+    var dailyBaseThreats = Math.floor(1400 + seeded(daySeed * 121) * 600); // 1400-2000 threats/day base
+    var dailyBaseCCU = Math.floor(4200 + seeded(daySeed * 123) * 2800); // 4200-7000 CCU base
 
     // Apply time-of-day multiplier to CCU
-    baseCCU = Math.floor(baseCCU * todMult);
+    dailyBaseCCU = Math.floor(dailyBaseCCU * todMult);
 
-    // Persist counters across page refreshes
-    var statsKey = 'cerberusAnalytics_' + daySeed;
+    // Persist counters across page refreshes — use a single key that survives across days
+    var statsKey = 'cerberusAnalytics_v2';
     var saved = null;
     try { saved = JSON.parse(localStorage.getItem(statsKey)); } catch(e) {}
-    if (saved && saved.day === daySeed) {
+
+    var totalThreats24, totalCCU;
+    if (saved && saved.ts) {
       var elapsed = Math.floor((Date.now() - saved.ts) / 1000);
-      var extraThreats = Math.floor(elapsed / 15);
-      var totalThreats24 = saved.threats + extraThreats;
-      var totalCCU = saved.ccu + Math.floor((Math.random() - 0.5) * 20);
+      // If same day, continue from saved values + elapsed growth
+      if (saved.day === daySeed) {
+        totalThreats24 = saved.threats + Math.floor(elapsed / 12); // ~5 threats/min
+        totalCCU = saved.ccu + Math.floor((Math.random() - 0.5) * 30);
+      } else {
+        // New day — carry forward a realistic 24h total from yesterday, start fresh accumulation
+        totalThreats24 = dailyBaseThreats + Math.floor(elapsed / 12);
+        totalCCU = dailyBaseCCU;
+      }
     } else {
-      var totalThreats24 = baseThreats24;
-      var totalCCU = baseCCU;
+      // First ever visit — start with realistic numbers
+      totalThreats24 = dailyBaseThreats;
+      totalCCU = dailyBaseCCU;
     }
 
     // ===== CUMULATIVE 30-DAY HISTORY (System 5) =====
@@ -613,6 +621,10 @@
       } catch(e) {}
     }
     saveStats();
+
+    // Save on page close/refresh so numbers persist exactly
+    window.addEventListener('beforeunload', saveStats);
+    document.addEventListener('visibilitychange', function() { if (document.hidden) saveStats(); });
 
     // Compute real vs-yesterday and vs-last-week deltas
     var vsYesterday = yesterdayData ? ((totalThreats24 - yesterdayData.threats) / Math.max(yesterdayData.threats, 1) * 100).toFixed(1) : null;
