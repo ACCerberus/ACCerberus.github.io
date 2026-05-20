@@ -533,12 +533,12 @@
 
     // ===== PARTNER TITLES (server instances) =====
     var games = [
-      { name: 'PRD-US-EAST-01', code: 'CRB-0117', genre: 'Tactical FPS', status: 'live', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.2-b2847' },
-      { name: 'PRD-EU-WEST-03', code: 'CRB-0243', genre: 'Battle Royale', status: 'live', tier: 'cerberus', engine: 'UE5.3', version: 'v0.4.2-b2847' },
-      { name: 'STG-ASIA-SE-01', code: 'CRB-0389', genre: 'FPS', status: 'beta', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.3-rc1' },
-      { name: 'PRD-US-WEST-02', code: 'CRB-0412', genre: 'MMO', status: 'live', tier: 'aegis', engine: 'Custom', version: 'v0.4.2-b2847' },
-      { name: 'PRD-EU-NORTH-01', code: 'CRB-0518', genre: 'Extraction Shooter', status: 'live', tier: 'cerberus', engine: 'UE5.3', version: 'v0.4.2-b2847' },
-      { name: 'STG-OCE-01', code: 'CRB-0604', genre: 'Survival', status: 'beta', tier: 'aegis', engine: 'Unity 6', version: 'v0.4.3-rc1' },
+      { name: 'PRD-US-EAST-01', code: 'CRB-0117', genre: 'Tactical FPS', status: 'live', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.2.0b-b2847' },
+      { name: 'PRD-EU-WEST-03', code: 'CRB-0243', genre: 'Battle Royale', status: 'live', tier: 'cerberus', engine: 'UE5.3', version: 'v0.4.2.0b-b2847' },
+      { name: 'STG-ASIA-SE-01', code: 'CRB-0389', genre: 'FPS', status: 'beta', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.3.0rc-b2851' },
+      { name: 'PRD-US-WEST-02', code: 'CRB-0412', genre: 'MMO', status: 'live', tier: 'aegis', engine: 'Custom', version: 'v0.4.2.0b-b2847' },
+      { name: 'PRD-EU-NORTH-01', code: 'CRB-0518', genre: 'Extraction Shooter', status: 'live', tier: 'cerberus', engine: 'UE5.3', version: 'v0.4.2.0b-b2847' },
+      { name: 'STG-OCE-01', code: 'CRB-0604', genre: 'Survival', status: 'beta', tier: 'aegis', engine: 'Unity 6', version: 'v0.4.3.0rc-b2851' },
     ];
 
     // Generate consistent daily stats per game
@@ -614,7 +614,7 @@
             status: 'starting',
             tier: newName.indexOf('STG') === 0 ? 'aegis' : 'cerberus',
             engine: allEngines[Math.floor(Math.random() * allEngines.length)],
-            version: 'v0.4.3-rc1',
+            version: 'v0.4.3.0rc-b2851',
             threats: 0, ccu: 0, bans24: 0, flags24: 0
           });
         }
@@ -1228,7 +1228,7 @@
       var vhEl = document.getElementById('versionHistory');
       var versions = [
         {
-          ver: 'v0.4.2-beta', date: 'May 12, 2026', tag: 'CURRENT', tagClass: 'vh-tag-active',
+          ver: 'v0.4.2.0b', date: 'May 12, 2026', tag: 'CURRENT', tagClass: 'vh-tag-active',
           stats: { totalBans: 12847, totalDetections: 18432, falsePositives: 14, avgLatency: '2.1ms', sigCount: 4891, pentests: 1247 },
           findings: [
             'DMA attack detection rate improved to 91.2% with TLP timing analysis',
@@ -1250,7 +1250,7 @@
           ]
         },
         {
-          ver: 'v0.4.1-beta', date: 'Apr 28, 2026', tag: 'PREVIOUS', tagClass: 'vh-tag-prev',
+          ver: 'v0.4.1.0b', date: 'Apr 28, 2026', tag: 'PREVIOUS', tagClass: 'vh-tag-prev',
           stats: { totalBans: 10212, totalDetections: 14891, falsePositives: 23, avgLatency: '2.6ms', sigCount: 4704, pentests: 984 },
           findings: [
             'IOCTL replay attack vector discovered during internal security audit',
@@ -1270,7 +1270,7 @@
           ]
         },
         {
-          ver: 'v0.4.0-beta', date: 'Nov 3, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
+          ver: 'v0.4.0.0b', date: 'Nov 3, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
           stats: { totalBans: 6847, totalDetections: 9823, falsePositives: 41, avgLatency: '3.8ms', sigCount: 3847, pentests: 628 },
           findings: [
             'Hardware fingerprinting (Head 3) provides decisive evidence for DMA attacks',
@@ -1290,7 +1290,7 @@
           ]
         },
         {
-          ver: 'v0.3.0-beta', date: 'Jun 10, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
+          ver: 'v0.3.0.0b', date: 'Jun 10, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
           stats: { totalBans: 3241, totalDetections: 5102, falsePositives: 67, avgLatency: '5.2ms', sigCount: 2890, pentests: 312 },
           findings: [
             'Behavioral AI (Head 2) detects aim patterns invisible to signature-only scanning',
@@ -1310,7 +1310,7 @@
           ]
         },
         {
-          ver: 'v0.2.0-beta', date: 'Feb 10, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
+          ver: 'v0.2.0.0b', date: 'Feb 10, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
           stats: { totalBans: 847, totalDetections: 1423, falsePositives: 89, avgLatency: '8.1ms', sigCount: 1200, pentests: 128 },
           findings: [
             'Kernel integrity monitoring (Head 1) catches injected drivers invisible to usermode',
