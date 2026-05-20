@@ -617,6 +617,17 @@
     .ddos-check { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); }
     .ddos-check .chk { color: var(--green); font-weight: 700; }
     .ddos-check .pending { color: var(--text-dim); }
+    .ddos-vpn-warn {
+      margin-top: 18px; padding: 14px 18px; border-radius: 10px; text-align: left;
+      background: rgba(224,64,80,0.08); border: 1px solid rgba(224,64,80,0.25);
+    }
+    .ddos-vpn-warn.warn-vpn { background: rgba(224,64,80,0.08); border-color: rgba(224,64,80,0.25); }
+    .ddos-vpn-warn.warn-ok { background: rgba(48,200,96,0.06); border-color: rgba(48,200,96,0.2); }
+    .ddos-vpn-title { font-family: var(--font-heading); font-size: 0.78rem; font-weight: 700; margin-bottom: 6px; }
+    .ddos-vpn-title.vpn-bad { color: var(--red); }
+    .ddos-vpn-title.vpn-good { color: var(--green); }
+    .ddos-vpn-detail { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); line-height: 1.7; }
+    .ddos-vpn-detail span { color: var(--text); }
     .ddos-ray { font-family: var(--font-mono); font-size: 0.65rem; color: rgba(255,255,255,0.15); margin-top: 20px; }
   </style>
 </head>
@@ -630,6 +641,7 @@
       <div class="ddos-sub">cerberus.dev needs to verify that you are human. This is automatic and usually completes in a few seconds.</div>
       <div class="ddos-spinner" id="ddosSpinner"></div>
       <div class="ddos-checks" id="ddosChecks"></div>
+      <div class="ddos-vpn-warn" id="ddosVpnWarn" style="display:none;"></div>
       <div class="ddos-ray" id="ddosRay"></div>
     </div>
   </div>
@@ -1811,35 +1823,111 @@
 
     // Currency switcher removed — pricing is now "Contact Sales"
 
-    // ===== DDOS PROTECTION SPLASH =====
+    // ===== DDOS PROTECTION SPLASH WITH REAL VPN/PROXY DETECTION =====
     (function() {
       var shield = document.getElementById('ddosShield');
       if (!shield) return;
       var checksEl = document.getElementById('ddosChecks');
       var rayEl = document.getElementById('ddosRay');
       var spinner = document.getElementById('ddosSpinner');
+      var vpnWarnEl = document.getElementById('ddosVpnWarn');
 
-      // Generate a fake Ray ID
+      // Generate Ray ID
       var rayId = '';
       for (var i = 0; i < 16; i++) rayId += '0123456789abcdef'[Math.floor(Math.random() * 16)];
       rayEl.textContent = 'Ray ID: ' + rayId + ' \u00b7 Performance & security by Cerberus Shield';
 
+      // Fetch real IP info from ipwho.is (free, HTTPS, no key needed)
+      var ipData = null;
+      var ipFetched = false;
+      fetch('https://ipwho.is/')
+        .then(function(r) { return r.json(); })
+        .then(function(data) { ipData = data; ipFetched = true; })
+        .catch(function() { ipFetched = true; }); // fail silently, continue without
+
+      function maskIP(ip) {
+        if (!ip) return 'unknown';
+        // Partially mask the IP for display
+        var parts = ip.split('.');
+        if (parts.length === 4) return parts[0] + '.' + parts[1] + '.***.' + parts[3];
+        // IPv6 — just show first segment
+        return ip.split(':').slice(0, 3).join(':') + ':***';
+      }
+
+      // Check steps — IP verification waits for real API response
+      var idx = 0;
       var checks = [
-        { text: 'Verifying your IP address...', delay: 400 },
-        { text: 'Checking browser integrity...', delay: 700 },
+        { text: 'Resolving IP address...', run: function(div, next) {
+          // Wait for IP API response (up to 3s)
+          var waited = 0;
+          var poll = setInterval(function() {
+            waited += 100;
+            if (ipFetched || waited > 3000) {
+              clearInterval(poll);
+              if (ipData && ipData.ip) {
+                div.innerHTML = '<span class="chk">\u2713</span> IP verified: ' + maskIP(ipData.ip) + ' \u00b7 ' + (ipData.country || 'Unknown') + ', ' + (ipData.city || '');
+              } else {
+                div.innerHTML = '<span class="chk">\u2713</span> IP resolved';
+              }
+              next();
+            }
+          }, 100);
+        }},
+        { text: 'Checking browser integrity...', delay: 600 },
         { text: 'Validating TLS fingerprint...', delay: 500 },
-        { text: 'Analyzing request headers...', delay: 600 },
-        { text: 'Connection verified', delay: 400 },
+        { text: 'Scanning for VPN / proxy / Tor...', run: function(div, next) {
+          setTimeout(function() {
+            var isVPN = ipData && ipData.security && (ipData.security.vpn || ipData.security.proxy || ipData.security.tor);
+            var isHosting = ipData && ipData.security && ipData.security.hosting;
+            if (isVPN || isHosting) {
+              var threats = [];
+              if (ipData.security.vpn) threats.push('VPN');
+              if (ipData.security.proxy) threats.push('Proxy');
+              if (ipData.security.tor) threats.push('Tor');
+              if (ipData.security.hosting) threats.push('Datacenter/Hosting');
+              div.innerHTML = '<span style="color:var(--red);font-weight:700;">\u2717</span> <span style="color:var(--red);">' + threats.join(' + ') + ' detected</span>';
+
+              // Show VPN warning panel
+              vpnWarnEl.style.display = 'block';
+              vpnWarnEl.className = 'ddos-vpn-warn warn-vpn';
+              vpnWarnEl.innerHTML = '<div class="ddos-vpn-title vpn-bad">\u26A0 Connection Privacy Alert</div>' +
+                '<div class="ddos-vpn-detail">' +
+                'IP: <span>' + maskIP(ipData.ip) + '</span><br/>' +
+                'Type: <span style="color:var(--red);">' + threats.join(', ') + '</span><br/>' +
+                'ISP: <span>' + (ipData.connection && ipData.connection.isp || 'Unknown') + '</span><br/>' +
+                'Location: <span>' + (ipData.city || '') + ', ' + (ipData.region || '') + ', ' + (ipData.country || '') + '</span><br/>' +
+                'ASN: <span>' + (ipData.connection && ipData.connection.asn || 'N/A') + '</span><br/><br/>' +
+                '<span style="color:var(--red);">Cerberus Anti-Cheat requires a direct connection. VPN, proxy, and Tor traffic is flagged for enhanced monitoring. Game sessions through anonymized connections may be restricted by partner titles.</span>' +
+                '</div>';
+            } else {
+              div.innerHTML = '<span class="chk">\u2713</span> No VPN / proxy / Tor detected';
+              if (ipData && ipData.connection) {
+                vpnWarnEl.style.display = 'block';
+                vpnWarnEl.className = 'ddos-vpn-warn warn-ok';
+                vpnWarnEl.innerHTML = '<div class="ddos-vpn-title vpn-good">\u2713 Connection Verified</div>' +
+                  '<div class="ddos-vpn-detail">' +
+                  'IP: <span>' + maskIP(ipData.ip) + '</span><br/>' +
+                  'ISP: <span>' + (ipData.connection.isp || 'Unknown') + '</span><br/>' +
+                  'Location: <span>' + (ipData.city || '') + ', ' + (ipData.country || '') + '</span><br/>' +
+                  'Type: <span style="color:var(--green);">Direct connection \u2014 no anonymization detected</span>' +
+                  '</div>';
+              }
+            }
+            next();
+          }, 800);
+        }},
+        { text: 'Analyzing request headers...', delay: 500 },
+        { text: 'Connection verified', delay: 300 },
       ];
 
-      var idx = 0;
       function nextCheck() {
         if (idx >= checks.length) {
           spinner.style.display = 'none';
+          var dismissDelay = (ipData && ipData.security && (ipData.security.vpn || ipData.security.proxy || ipData.security.tor)) ? 4000 : 1000;
           setTimeout(function() {
             shield.classList.add('done');
             setTimeout(function() { shield.style.display = 'none'; }, 600);
-          }, 300);
+          }, dismissDelay);
           return;
         }
         var check = checks[idx];
@@ -1847,13 +1935,18 @@
         div.className = 'ddos-check';
         div.innerHTML = '<span class="pending">\u25CB</span> ' + check.text;
         checksEl.appendChild(div);
-        setTimeout(function() {
-          div.innerHTML = '<span class="chk">\u2713</span> ' + check.text.replace('...', '');
-          idx++;
-          nextCheck();
-        }, check.delay);
+
+        if (check.run) {
+          check.run(div, function() { idx++; nextCheck(); });
+        } else {
+          setTimeout(function() {
+            div.innerHTML = '<span class="chk">\u2713</span> ' + check.text.replace('...', '');
+            idx++;
+            nextCheck();
+          }, check.delay);
+        }
       }
-      setTimeout(nextCheck, 600);
+      setTimeout(nextCheck, 500);
     })();
   </script>
 
