@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Cerberus SDK integration guide, API reference, and configuration docs." />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084; --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8;
+      --font: 'Inter', -apple-system, sans-serif; --font-heading: 'Sora', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), #c07818); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507; }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+
+    .layout { display: flex; max-width: 1100px; margin: 0 auto; padding-top: 80px; min-height: 100vh; }
+    .sidebar {
+      width: 240px; flex-shrink: 0; padding: 32px 24px; border-right: 1px solid var(--border);
+      position: sticky; top: 80px; height: calc(100vh - 80px); overflow-y: auto;
+    }
+    .sidebar-section { margin-bottom: 24px; }
+    .sidebar-label { font-size: 0.7rem; font-weight: 700; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+    .sidebar a { display: block; font-size: 0.82rem; color: var(--text-dim); text-decoration: none; padding: 5px 0; transition: color 0.2s; }
+    .sidebar a:hover, .sidebar a.active { color: var(--text-bright); }
+
+    .content { flex: 1; padding: 40px 48px 80px; max-width: 760px; }
+    .content h1 { font-family: var(--font-heading); font-size: 2rem; font-weight: 800; color: var(--text-bright); letter-spacing: -1px; margin-bottom: 8px; }
+    .content .subtitle { font-size: 1rem; color: var(--text-dim); margin-bottom: 40px; }
+    .content h2 { font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700; color: var(--text-bright); margin: 40px 0 16px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .content h2:first-of-type { border-top: none; padding-top: 0; }
+    .content h3 { font-family: var(--font-heading); font-size: 1rem; font-weight: 600; color: var(--text-bright); margin: 24px 0 12px; }
+    .content p { font-size: 0.88rem; color: var(--text); margin-bottom: 16px; line-height: 1.7; }
+    .content ul { margin-bottom: 16px; padding-left: 20px; }
+    .content li { font-size: 0.85rem; color: var(--text); margin-bottom: 6px; }
+
+    .code-block {
+      background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 10px;
+      padding: 20px 24px; margin: 16px 0 24px; overflow-x: auto;
+      font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.8; color: var(--text);
+    }
+    .code-block .kw { color: var(--blue); } /* keywords */
+    .code-block .fn { color: var(--accent); } /* function names */
+    .code-block .str { color: var(--green); } /* strings */
+    .code-block .cmt { color: var(--text-dim); font-style: italic; } /* comments */
+    .code-block .num { color: #e8a020; } /* numbers */
+    .code-block .type { color: #8860e8; } /* types */
+
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      border-bottom: none; border-radius: 10px 10px 0 0;
+      padding: 8px 16px; margin-top: 16px;
+    }
+    .code-header + .code-block { border-radius: 0 0 10px 10px; margin-top: 0; }
+    .code-lang { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); }
+
+    .callout {
+      padding: 16px 20px; border-radius: 10px; margin: 16px 0 24px;
+      font-size: 0.82rem; line-height: 1.6;
+    }
+    .callout-info { background: rgba(64,136,232,0.08); border-left: 3px solid var(--blue); color: var(--text); }
+    .callout-warn { background: rgba(232,160,32,0.08); border-left: 3px solid var(--accent); color: var(--text); }
+
+    .param-table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 0.82rem; }
+    .param-table th { text-align: left; padding: 8px 12px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+    .param-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+    .param-table td:first-child { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); white-space: nowrap; }
+    .param-table td:nth-child(2) { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
+
+    .endpoint { display: flex; align-items: center; gap: 10px; margin: 16px 0 8px; }
+    .method { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 4px; }
+    .method-get { background: rgba(48,200,96,0.1); color: var(--green); }
+    .method-post { background: rgba(64,136,232,0.1); color: var(--blue); }
+    .endpoint-path { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-bright); }
+
+    .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 800px) {
+      .nav { padding: 12px 20px; } .nav-links { display: none; }
+      .sidebar { display: none; }
+      .content { padding: 32px 24px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/docs/" class="active">Docs</a>
+      <a href="/changelog/">Changelog</a>
+      <a href="/status/">Status</a>
+      <a href="/analytics/">Analytics</a>
+      <a href="/team/">Team</a>
+    </div>
+  </nav>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Getting Started</div>
+        <a href="#quickstart" class="active">Quick Start</a>
+        <a href="#requirements">Requirements</a>
+        <a href="#installation">Installation</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">SDK Reference</div>
+        <a href="#init">Initialization</a>
+        <a href="#config">Configuration</a>
+        <a href="#callbacks">Callbacks</a>
+        <a href="#session">Session Lifecycle</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">API</div>
+        <a href="#ban-api">Ban API</a>
+        <a href="#webhooks">Webhooks</a>
+        <a href="#events">Event Types</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Guides</div>
+        <a href="#unreal">Unreal Engine</a>
+        <a href="#unity">Unity</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </aside>
+
+    <main class="content">
+      <h1>Cerberus SDK Documentation</h1>
+      <p class="subtitle">Integrate Cerberus anti-cheat into your game in under 30 minutes.</p>
+
+      <h2 id="quickstart">Quick Start</h2>
+      <p>Cerberus ships as a single static library (<code>cerberus_sdk.lib</code>) and a header file. The SDK handles all communication with the Cerberus kernel driver — your game code only needs to initialize, start a session, and listen for callbacks.</p>
+
+      <div class="callout callout-info">Cerberus is currently in closed beta. You'll need an API key from your partner dashboard to initialize the SDK.</div>
+
+      <div class="code-header"><span class="code-lang">C++ — Minimal integration</span></div>
+      <div class="code-block"><span class="cmt">// 1. Include the SDK header</span>
+<span class="kw">#include</span> <span class="str">"cerberus_sdk.h"</span>
+
+<span class="cmt">// 2. Initialize on game launch</span>
+<span class="type">CerberusConfig</span> config = {};
+config.<span class="fn">apiKey</span>       = <span class="str">"crb_live_xxxxxxxxxxxxxxxx"</span>;
+config.<span class="fn">gameId</span>       = <span class="str">"your-game-id"</span>;
+config.<span class="fn">enableAI</span>     = <span class="kw">true</span>;   <span class="cmt">// Head 2: Behavioral AI</span>
+config.<span class="fn">enableHW</span>     = <span class="kw">true</span>;   <span class="cmt">// Head 3: Hardware fingerprinting</span>
+config.<span class="fn">banCallback</span>  = OnPlayerBanned;
+
+<span class="type">CerberusResult</span> result = <span class="fn">Cerberus_Init</span>(&config);
+<span class="kw">if</span> (result != <span class="num">CERBERUS_OK</span>) {
+    <span class="cmt">// Handle init failure — game can still run (graceful degradation)</span>
+    Log(<span class="str">"Cerberus init failed: %d"</span>, result);
+}
+
+<span class="cmt">// 3. Start session when player joins match</span>
+<span class="fn">Cerberus_StartSession</span>(playerId, matchId);
+
+<span class="cmt">// 4. End session when match ends</span>
+<span class="fn">Cerberus_EndSession</span>();
+
+<span class="cmt">// 5. Shutdown on game exit</span>
+<span class="fn">Cerberus_Shutdown</span>();</div>
+
+      <h2 id="requirements">System Requirements</h2>
+      <ul>
+        <li>Windows 10 20H2+ or Windows 11 (x64)</li>
+        <li>Secure Boot enabled (recommended for Head 3)</li>
+        <li>TPM 2.0 (optional — enables firmware attestation in v0.6+)</li>
+        <li>Visual Studio 2019+ or compatible C++ compiler</li>
+        <li>.NET 6.0+ for C# bindings</li>
+      </ul>
+
+      <h2 id="installation">Installation</h2>
+      <p>Add the SDK to your project:</p>
+      <div class="code-header"><span class="code-lang">Shell</span></div>
+      <div class="code-block"><span class="cmt"># Download the SDK package (provided via partner dashboard)</span>
+cerberus-sdk-v0.4.2-beta-win64.zip
+
+<span class="cmt"># Contents:</span>
+├── include/
+│   └── cerberus_sdk.h
+├── lib/
+│   ├── cerberus_sdk.lib      <span class="cmt"># Static library (Release)</span>
+│   └── cerberus_sdk_d.lib    <span class="cmt"># Debug build</span>
+├── bin/
+│   └── cerberus_driver.sys   <span class="cmt"># Kernel driver (signed)</span>
+└── docs/
+    └── integration_guide.pdf</div>
+
+      <h2 id="init">Initialization</h2>
+      <h3>CerberusConfig</h3>
+      <table class="param-table">
+        <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+        <tr><td>apiKey</td><td>const char*</td><td>Your API key from the partner dashboard. Required.</td></tr>
+        <tr><td>gameId</td><td>const char*</td><td>Unique game identifier. Required.</td></tr>
+        <tr><td>enableAI</td><td>bool</td><td>Enable Head 2 (behavioral AI). Default: true. Aegis+ tier required.</td></tr>
+        <tr><td>enableHW</td><td>bool</td><td>Enable Head 3 (hardware fingerprinting). Default: true. Cerberus+ tier required.</td></tr>
+        <tr><td>scanInterval</td><td>uint32_t</td><td>Kernel scan interval in ms. Default: 2000. Min: 500.</td></tr>
+        <tr><td>aiSampleRate</td><td>uint32_t</td><td>Input sampling rate in Hz. Default: 1000. Range: 250-2000.</td></tr>
+        <tr><td>banCallback</td><td>CerberusBanFn</td><td>Called when a player is banned mid-session.</td></tr>
+        <tr><td>flagCallback</td><td>CerberusFlagFn</td><td>Called when a player is flagged for review (optional).</td></tr>
+        <tr><td>logLevel</td><td>CerberusLogLevel</td><td>LOG_NONE, LOG_ERROR, LOG_WARN, LOG_INFO, LOG_DEBUG.</td></tr>
+      </table>
+
+      <h2 id="config">Configuration</h2>
+      <p>Cerberus can be configured at runtime. Common patterns:</p>
+      <div class="code-header"><span class="code-lang">C++</span></div>
+      <div class="code-block"><span class="cmt">// Disable hardware scanning for singleplayer modes</span>
+<span class="fn">Cerberus_SetOption</span>(<span class="num">CERBERUS_OPT_HW_SCAN</span>, <span class="kw">false</span>);
+
+<span class="cmt">// Lower scan frequency for menu screens (save CPU)</span>
+<span class="fn">Cerberus_SetOption</span>(<span class="num">CERBERUS_OPT_SCAN_INTERVAL</span>, <span class="num">5000</span>);
+
+<span class="cmt">// Enable enhanced monitoring for ranked matches</span>
+<span class="fn">Cerberus_SetOption</span>(<span class="num">CERBERUS_OPT_AI_SAMPLE_RATE</span>, <span class="num">2000</span>);
+<span class="fn">Cerberus_SetOption</span>(<span class="num">CERBERUS_OPT_SCAN_INTERVAL</span>, <span class="num">500</span>);</div>
+
+      <h2 id="callbacks">Callbacks</h2>
+      <div class="code-header"><span class="code-lang">C++</span></div>
+      <div class="code-block"><span class="kw">void</span> <span class="fn">OnPlayerBanned</span>(<span class="kw">const</span> <span class="type">CerberusBanEvent</span>* event) {
+    <span class="cmt">// event->playerId   — the banned player</span>
+    <span class="cmt">// event->reason     — CERBERUS_BAN_AIMBOT, _DMA, _INJECTION, etc.</span>
+    <span class="cmt">// event->confidence — 0.0 to 1.0</span>
+    <span class="cmt">// event->details    — human-readable description</span>
+
+    Log(<span class="str">"Player %s banned: %s (%.1f%% confidence)"</span>,
+        event-><span class="fn">playerId</span>,
+        event-><span class="fn">details</span>,
+        event-><span class="fn">confidence</span> * <span class="num">100.0</span>);
+
+    <span class="cmt">// Kick the player from the match</span>
+    Game_KickPlayer(event-><span class="fn">playerId</span>, <span class="str">"Anti-cheat violation detected"</span>);
+}
+
+<span class="kw">void</span> <span class="fn">OnPlayerFlagged</span>(<span class="kw">const</span> <span class="type">CerberusFlagEvent</span>* event) {
+    <span class="cmt">// Player flagged but NOT banned — under enhanced monitoring</span>
+    <span class="cmt">// event->confidence will be between 0.30 and 0.95</span>
+    <span class="cmt">// No action needed — Cerberus handles escalation internally</span>
+    Analytics_Track(<span class="str">"cerberus_flag"</span>, event-><span class="fn">playerId</span>);
+}</div>
+
+      <h2 id="session">Session Lifecycle</h2>
+      <div class="callout callout-warn">Always call <code>Cerberus_EndSession()</code> when a match ends. Orphaned sessions consume monitoring resources and may trigger false stale-session alerts.</div>
+      <p>Typical flow:</p>
+      <div class="code-block"><span class="fn">Cerberus_Init</span>()          <span class="cmt">// Game launch — loads driver</span>
+  ├─ <span class="fn">Cerberus_StartSession</span>() <span class="cmt">// Match start — begins scanning</span>
+  │   ├─ <span class="cmt">... gameplay ...</span>
+  │   ├─ <span class="cmt">Ban/Flag callbacks fire if needed</span>
+  │   └─ <span class="fn">Cerberus_EndSession</span>()  <span class="cmt">// Match end — stops scanning</span>
+  ├─ <span class="fn">Cerberus_StartSession</span>() <span class="cmt">// Next match...</span>
+  │   └─ <span class="fn">Cerberus_EndSession</span>()
+  └─ <span class="fn">Cerberus_Shutdown</span>()     <span class="cmt">// Game exit — unloads driver</span></div>
+
+      <h2 id="ban-api">Ban API</h2>
+      <p>Query and manage bans via the REST API. All endpoints require your API key in the <code>Authorization</code> header.</p>
+
+      <div class="endpoint">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/api/v2/bans</span>
+      </div>
+      <p>List recent bans for your game.</p>
+
+      <div class="code-header"><span class="code-lang">Response (200 OK)</span></div>
+      <div class="code-block">{
+  <span class="str">"bans"</span>: [
+    {
+      <span class="str">"id"</span>: <span class="str">"ban_8f2a1b3c"</span>,
+      <span class="str">"player_id"</span>: <span class="str">"steam_76561198012345678"</span>,
+      <span class="str">"reason"</span>: <span class="str">"AIMBOT"</span>,
+      <span class="str">"confidence"</span>: <span class="num">0.992</span>,
+      <span class="str">"detection_head"</span>: <span class="str">"AI"</span>,
+      <span class="str">"hardware_id"</span>: <span class="str">"hw_a1b2c3d4e5f6"</span>,
+      <span class="str">"timestamp"</span>: <span class="str">"2026-05-19T14:32:01Z"</span>,
+      <span class="str">"session_id"</span>: <span class="str">"ses_9d8e7f6a"</span>
+    }
+  ],
+  <span class="str">"total"</span>: <span class="num">847</span>,
+  <span class="str">"page"</span>: <span class="num">1</span>
+}</div>
+
+      <div class="endpoint">
+        <span class="method method-post">POST</span>
+        <span class="endpoint-path">/api/v2/bans/{ban_id}/appeal</span>
+      </div>
+      <p>Submit a ban appeal for manual review. Returns the review ticket ID.</p>
+
+      <h2 id="webhooks">Webhooks</h2>
+      <p>Cerberus sends real-time webhook events to your configured endpoint. Configure webhooks in your partner dashboard.</p>
+
+      <div class="code-header"><span class="code-lang">Webhook payload — ban.created</span></div>
+      <div class="code-block">{
+  <span class="str">"event"</span>: <span class="str">"ban.created"</span>,
+  <span class="str">"timestamp"</span>: <span class="str">"2026-05-19T14:32:01Z"</span>,
+  <span class="str">"data"</span>: {
+    <span class="str">"ban_id"</span>: <span class="str">"ban_8f2a1b3c"</span>,
+    <span class="str">"player_id"</span>: <span class="str">"steam_76561198012345678"</span>,
+    <span class="str">"reason"</span>: <span class="str">"DMA_EXTERNAL_READ"</span>,
+    <span class="str">"confidence"</span>: <span class="num">0.997</span>,
+    <span class="str">"heads_triggered"</span>: [<span class="str">"KERNEL"</span>, <span class="str">"HW"</span>],
+    <span class="str">"hardware_fingerprint"</span>: <span class="str">"hw_a1b2c3d4e5f6"</span>
+  }
+}</div>
+
+      <h2 id="events">Event Types</h2>
+      <table class="param-table">
+        <tr><th>Event</th><th>Trigger</th><th>Description</th></tr>
+        <tr><td>ban.created</td><td>Auto-ban</td><td>Player banned with >95% confidence</td></tr>
+        <tr><td>ban.appealed</td><td>Player action</td><td>Ban appeal submitted</td></tr>
+        <tr><td>flag.created</td><td>Threshold</td><td>Player flagged (30-95% confidence), under enhanced monitoring</td></tr>
+        <tr><td>flag.escalated</td><td>Auto</td><td>Flag escalated to manual review after re-analysis</td></tr>
+        <tr><td>flag.cleared</td><td>Auto/Manual</td><td>Flag cleared — player confirmed clean</td></tr>
+        <tr><td>session.start</td><td>SDK call</td><td>Cerberus session started for a player</td></tr>
+        <tr><td>session.end</td><td>SDK call</td><td>Session ended cleanly</td></tr>
+        <tr><td>hw.anomaly</td><td>Head 3</td><td>Unrecognized or suspicious hardware detected</td></tr>
+      </table>
+
+      <h2 id="unreal">Unreal Engine Integration</h2>
+      <p>For Unreal Engine projects, use the Cerberus plugin instead of the raw SDK:</p>
+      <div class="code-block"><span class="cmt">// In your .Build.cs</span>
+PublicDependencyModuleNames.Add(<span class="str">"CerberusSDK"</span>);
+
+<span class="cmt">// In your GameInstance or GameMode</span>
+<span class="kw">#include</span> <span class="str">"CerberusSubsystem.h"</span>
+
+<span class="kw">void</span> <span class="type">AMyGameMode</span>::<span class="fn">BeginPlay</span>() {
+    <span class="type">UCerberusSubsystem</span>* Cerberus = GetGameInstance()-><span class="fn">GetSubsystem</span>&lt;<span class="type">UCerberusSubsystem</span>&gt;();
+    Cerberus-><span class="fn">StartSession</span>(PlayerState-><span class="fn">GetUniqueId</span>(), MatchId);
+}</div>
+
+      <h2 id="unity">Unity Integration</h2>
+      <div class="code-header"><span class="code-lang">C# — Unity</span></div>
+      <div class="code-block"><span class="kw">using</span> Cerberus.SDK;
+
+<span class="kw">public class</span> <span class="type">AntiCheatManager</span> : <span class="type">MonoBehaviour</span> {
+    <span class="kw">void</span> <span class="fn">Start</span>() {
+        <span class="type">CerberusSDK</span>.<span class="fn">Init</span>(<span class="kw">new</span> <span class="type">CerberusConfig</span> {
+            ApiKey = <span class="str">"crb_live_xxxxxxxxxxxxxxxx"</span>,
+            GameId = <span class="str">"your-game-id"</span>,
+            OnBan = <span class="fn">HandleBan</span>,
+            OnFlag = <span class="fn">HandleFlag</span>
+        });
+    }
+
+    <span class="kw">void</span> <span class="fn">HandleBan</span>(<span class="type">BanEvent</span> e) {
+        Debug.Log($<span class="str">"Player {e.PlayerId} banned: {e.Reason} ({e.Confidence:P0})"</span>);
+        NetworkManager.Singleton.<span class="fn">DisconnectClient</span>(e.PlayerId);
+    }
+
+    <span class="kw">void</span> <span class="fn">OnDestroy</span>() => <span class="type">CerberusSDK</span>.<span class="fn">Shutdown</span>();
+}</div>
+
+      <h2 id="faq">FAQ</h2>
+
+      <h3>Does Cerberus run at boot?</h3>
+      <p>No. The kernel driver loads only when your game launches and unloads when it exits. Cerberus has zero presence on the system outside of active game sessions.</p>
+
+      <h3>What happens if a player is falsely banned?</h3>
+      <p>Detections below the 95% confidence threshold are never auto-banned — they go to manual review. If a ban is appealed, our threat analyst team reviews the full session replay within 4 hours (Cerberus tier SLA). False positive rate is currently 0.012%.</p>
+
+      <h3>Does Cerberus collect player data?</h3>
+      <p>No PII is ever collected. Cerberus processes hardware IDs, input patterns, and memory state locally. Only detection events (ban/flag) with anonymized session metadata are sent to the API. Zero telemetry — we don't know what games your players play, how long they play, or anything else.</p>
+
+      <h3>What kernel access does Cerberus need?</h3>
+      <p>The driver requires kernel-mode access (ring-0) to monitor memory permissions, detect mapped drivers, and enumerate PCIe devices. The driver is Microsoft WHQL-signed and undergoes third-party security audits quarterly.</p>
+
+      <h3>Can I use Cerberus for singleplayer games?</h3>
+      <p>Yes, but it's designed for competitive multiplayer. For singleplayer, you can use Head 1 only (kernel integrity) at the free Argus tier to prevent save file tampering or achievement exploits.</p>
+
+      <h3>What engines are supported?</h3>
+      <p>Cerberus works with any Windows game that can link a C++ or C# library. We have first-class plugins for Unreal Engine 5.x and Unity 2022+. Custom engine integration takes ~30 minutes with the raw SDK.</p>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; <script>document.write(new Date().getFullYear())</script> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/">Home</a> &nbsp;&middot;&nbsp; <a href="/changelog/">Changelog</a> &nbsp;&middot;&nbsp; <a href="/status/">Status</a></p>
+  </footer>
+
+</body>
+</html>
