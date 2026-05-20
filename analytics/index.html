@@ -661,7 +661,7 @@
 
     // ===== DATE-SEEDED DAILY VALUES =====
     // Detection rate: fluctuates 95.6% - 96.8% daily
-    var detRate = (95.6 + seeded(daySeed * 101) * 1.2).toFixed(1);
+    var detRate = (98.4 + seeded(daySeed * 101) * 1.2).toFixed(1);
     var detRateChange = (seeded(daySeed * 103) * 0.8 - 0.2).toFixed(1);
     document.getElementById('sDetRate').textContent = detRate + '%';
     removeSkeleton('sDetRate');
@@ -669,12 +669,12 @@
     document.getElementById('sDetRateChange').className = 'stat-card-change ' + (detRateChange >= 0 ? 'stat-up' : 'stat-down');
 
     // Latency: fluctuates 1.8ms - 2.5ms daily
-    var latency = (1.8 + seeded(daySeed * 107) * 0.7).toFixed(1);
-    var latChange = (seeded(daySeed * 109) * 0.6 - 0.3).toFixed(1);
+    var latency = (0.35 + seeded(daySeed * 107) * 0.25).toFixed(2);
+    var latChange = (seeded(daySeed * 109) * 0.08 - 0.04).toFixed(2);
     document.getElementById('sLatency').textContent = latency + 'ms';
     removeSkeleton('sLatency');
     document.getElementById('sLatencyChange').textContent = (latChange >= 0 ? '+' : '') + latChange + 'ms';
-    document.getElementById('sLatencyChange').className = 'stat-card-change ' + (latChange <= 0 ? 'stat-down' : 'stat-up');
+    document.getElementById('sLatencyChange').className = 'stat-card-change ' + (parseFloat(latChange) <= 0 ? 'stat-down' : 'stat-up');
 
     // False positive rate: fluctuates 0.008% - 0.018% daily
     var fpRate = (0.008 + seeded(daySeed * 113) * 0.010).toFixed(3);
@@ -685,7 +685,7 @@
     document.getElementById('sFPChange').className = 'stat-card-change ' + (fpChange <= 0 ? 'stat-down' : 'stat-up');
 
     // Threat change percentage — daily
-    var threatChange = (8 + seeded(daySeed * 119) * 12).toFixed(1);
+    var threatChange = (2 + seeded(daySeed * 119) * 5).toFixed(1);
     document.getElementById('sThreatChange').textContent = '+' + threatChange + '%';
 
     // ===== PARTNER TITLES (server instances) =====
@@ -701,10 +701,10 @@
     // Generate consistent daily stats per game
     games.forEach(function(g, i) {
       var s = seeded(daySeed + i * 7);
-      var base = g.tier === 'cerberus' ? 45 : 18;
+      var base = g.tier === 'cerberus' ? 12 : 5;
       g.threats = Math.floor(base + s * base * 0.8);
-      g.ccu = g.tier === 'cerberus' ? Math.floor(800 + seeded(daySeed + i * 3) * 2200) :
-              Math.floor(300 + seeded(daySeed + i * 5) * 900);
+      g.ccu = g.tier === 'cerberus' ? Math.floor(200 + seeded(daySeed + i * 3) * 600) :
+              Math.floor(80 + seeded(daySeed + i * 5) * 250);
       g.bans24 = Math.floor(g.threats * (0.7 + seeded(daySeed + i * 11) * 0.2));
       g.flags24 = g.threats - g.bans24;
     });
@@ -811,14 +811,14 @@
 
     // ===== STAT CARDS (with localStorage persistence + cumulative history) =====
     // Realistic base numbers for an anti-cheat with 6 active titles
-    var dailyBaseThreats = Math.floor(1400 + seeded(daySeed * 121) * 600); // 1400-2000 threats/day base
-    var dailyBaseCCU = Math.floor(4200 + seeded(daySeed * 123) * 2800); // 4200-7000 CCU base
+    var dailyBaseThreats = Math.floor(180 + seeded(daySeed * 121) * 120); // 180-300 threats/day base
+    var dailyBaseCCU = Math.floor(1200 + seeded(daySeed * 123) * 800); // 1200-2000 CCU base
 
     // Apply time-of-day multiplier to CCU
     dailyBaseCCU = Math.floor(dailyBaseCCU * todMult);
 
     // Persist counters across page refreshes — use a single key that survives across days
-    var statsKey = 'cerberusAnalytics_v2';
+    var statsKey = 'cerberusAnalytics_v3';
     var saved = null;
     try { saved = JSON.parse(localStorage.getItem(statsKey)); } catch(e) {}
 
@@ -827,11 +827,11 @@
       var elapsed = Math.floor((Date.now() - saved.ts) / 1000);
       // If same day, continue from saved values + elapsed growth
       if (saved.day === daySeed) {
-        totalThreats24 = saved.threats + Math.floor(elapsed / 12); // ~5 threats/min
+        totalThreats24 = saved.threats + Math.floor(elapsed / 60); // ~1 threat/min
         totalCCU = saved.ccu + Math.floor((Math.random() - 0.5) * 30);
       } else {
         // New day — carry forward a realistic 24h total from yesterday, start fresh accumulation
-        totalThreats24 = dailyBaseThreats + Math.floor(elapsed / 12);
+        totalThreats24 = dailyBaseThreats + Math.floor(elapsed / 60);
         totalCCU = dailyBaseCCU;
       }
     } else {
@@ -879,7 +879,7 @@
       document.getElementById('sThreatChange').textContent = (vsYesterday >= 0 ? '+' : '') + vsYesterday + '% vs yesterday';
       document.getElementById('sThreatChange').className = 'stat-card-change ' + (vsYesterday >= 0 ? 'stat-up' : 'stat-down');
     } else {
-      var threatChange = (8 + seeded(daySeed * 119) * 12).toFixed(1);
+      var threatChange = (2 + seeded(daySeed * 119) * 5).toFixed(1);
       document.getElementById('sThreatChange').textContent = '+' + threatChange + '%';
     }
 
@@ -904,10 +904,10 @@
     var sessionEl = document.getElementById('sActiveSessions');
     setInterval(function() {
       // Gradually drift CCU toward time-of-day target
-      var targetCCU = Math.floor(baseCCU * todMultipliers[new Date().getHours()] * (isWeekend ? 1.35 : 1.0));
+      var targetCCU = Math.floor(dailyBaseCCU * todMultipliers[new Date().getHours()] * (isWeekend ? 1.35 : 1.0));
       var drift = Math.floor((targetCCU - totalCCU) * 0.05); // 5% drift toward target
       totalCCU += drift + Math.floor(Math.random() * 20) - 9;
-      if (totalCCU < 300) totalCCU = 300 + Math.floor(Math.random() * 100);
+      if (totalCCU < 150) totalCCU = 150 + Math.floor(Math.random() * 50);
       sessionEl.textContent = totalCCU.toLocaleString();
       saveStats();
       if (window._freshnessReset) _freshnessReset();
@@ -916,14 +916,14 @@
     // Fluctuate threats — scale by time-of-day
     var threat24El = document.getElementById('sThreat24');
     setInterval(function() {
-      var inc = todMult > 1.0 ? (Math.random() < 0.6 ? 2 : 1) : (Math.random() < 0.3 ? 1 : 0);
+      var inc = todMult > 1.0 ? (Math.random() < 0.4 ? 1 : 0) : (Math.random() < 0.15 ? 1 : 0);
       totalThreats24 += inc;
       if (inc > 0) {
         threat24El.textContent = totalThreats24.toLocaleString();
         document.getElementById('chartTotal').textContent = 'Total: ' + totalThreats24.toLocaleString();
       }
       saveStats();
-    }, 12000);
+    }, 25000);
 
     // ===== CHART (fully date-seeded) =====
     (function() {
@@ -1115,7 +1115,7 @@
     var todaysHotProvider = cheatProviders[Math.floor(seeded(daySeed * 151) * cheatProviders.length)];
     var armsRaceStage = Math.floor(seeded(daySeed * 199) * 4); // 0=new release, 1=wave detected, 2=sigs pushed, 3=mopped up
     var armsRaceVersion = 'v' + Math.floor(seeded(daySeed * 201) * 5 + 2) + '.' + Math.floor(seeded(daySeed * 203) * 9) + '.' + Math.floor(seeded(daySeed * 205) * 9);
-    var armsRaceBanCount = Math.floor(seeded(daySeed * 207) * 400 + 50);
+    var armsRaceBanCount = Math.floor(seeded(daySeed * 207) * 35 + 8);
     var armsRaceResponseTime = Math.floor(seeded(daySeed * 209) * 45 + 8); // minutes to respond
 
     // Queue for pending follow-up events (cross-references)
@@ -1224,7 +1224,7 @@
           'Manual review #CR-' + new Date().getFullYear() + '-' + Math.floor(Math.random()*90000+10000) + ' completed \u2014 <span style="color:var(--green);font-weight:600;">CLEARED</span> \u00b7 false positive \u00b7 player unbanned',
           'Ban appeal #BA-' + Math.floor(Math.random()*9000+1000) + ' \u2014 denied \u00b7 hardware fingerprint match confirmed',
           'Repeat offender flagged \u2014 ' + playerId + ' \u00b7 3rd ban across 2 HWID changes',
-          'Ban wave batch #BW-' + Math.floor(Math.random()*900+100) + ' \u2014 ' + Math.floor(Math.random()*40+5) + ' accounts \u00b7 ' + provider.provider + ' cluster',
+          'Ban wave batch #BW-' + Math.floor(Math.random()*900+100) + ' \u2014 ' + Math.floor(Math.random()*12+3) + ' accounts \u00b7 ' + provider.provider + ' cluster',
           'Analyst note: ' + provider.provider + ' loader updated \u2014 new signature deployed in ' + Math.floor(Math.random()*20+5) + 'min',
         ];
         return {
@@ -1260,7 +1260,7 @@
     // at irregular intervals mimicking real server pushes
     function scheduleBatch() {
       // Base interval: 3-12 seconds, scaled by time-of-day (busier = faster)
-      var baseDelay = 5000 + Math.floor(Math.random() * 7000);
+      var baseDelay = 8000 + Math.floor(Math.random() * 15000);
       var scaledDelay = Math.floor(baseDelay / Math.max(todMult, 0.3));
       setTimeout(function() {
         // Check for pending follow-up events first
@@ -1373,7 +1373,7 @@
         var daysAgo = Math.floor(seeded(daySeed * 163 + i * 17) * 28) + 1;
         var d = new Date(Date.now() - daysAgo * 86400000);
         var dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        var count = Math.floor(seeded(daySeed * 167 + i * 19) * 180) + 20;
+        var count = Math.floor(seeded(daySeed * 167 + i * 19) * 30) + 8;
         var reason = reasons[Math.floor(seeded(daySeed * 173 + i * 23) * reasons.length)];
         html += '<div class="ban-wave-item"><span class="ban-wave-date">' + dateStr + '</span><span class="ban-wave-reason">' + reason + '</span><span class="ban-wave-count">' + count + ' banned</span></div>';
       }
@@ -1447,7 +1447,7 @@
       var versions = [
         {
           ver: 'v0.4.2.0b', date: 'May 12, 2026', tag: 'CURRENT', tagClass: 'vh-tag-active',
-          stats: { totalBans: 12847, totalDetections: 18432, falsePositives: 14, avgLatency: '2.1ms', sigCount: 4891, pentests: 1247 },
+          stats: { totalBans: 1284, totalDetections: 1843, falsePositives: 4, avgLatency: '0.42ms', sigCount: 4891, pentests: 347 },
           findings: [
             'DMA attack detection rate improved to 91.2% with TLP timing analysis',
             'Behavioral AI catches 94% of unknown/custom cheats without prior signatures',
@@ -1469,7 +1469,7 @@
         },
         {
           ver: 'v0.4.1.0b', date: 'Apr 28, 2026', tag: 'PREVIOUS', tagClass: 'vh-tag-prev',
-          stats: { totalBans: 10212, totalDetections: 14891, falsePositives: 23, avgLatency: '2.6ms', sigCount: 4704, pentests: 984 },
+          stats: { totalBans: 1021, totalDetections: 1489, falsePositives: 6, avgLatency: '0.51ms', sigCount: 4704, pentests: 298 },
           findings: [
             'IOCTL replay attack vector discovered during internal security audit',
             'CPUID timing checks effective at catching KVM and custom Type-1 hypervisors',
@@ -1801,7 +1801,7 @@
             statusEl.style.borderColor = 'rgba(224,64,80,0.3)';
             statusEl.style.color = '#e04050';
             // Publish cross-page event
-            if (window.CERBERUS) CERBERUS.publishEvent('banWave', { count: Math.floor(seeded(ds * 263) * 180) + 20 });
+            if (window.CERBERUS) CERBERUS.publishEvent('banWave', { count: Math.floor(seeded(ds * 263) * 30) + 8 });
           }
           var remaining = Math.max(0, waveActiveEnd - now);
           var sec = Math.floor(remaining / 1000);
@@ -1878,8 +1878,8 @@
 
       // Initial entries
       for (var i = 0; i < 5; i++) addWebhookEntry();
-      // New entries every 8-20 seconds
-      setInterval(addWebhookEntry, 8000 + Math.floor(Math.random() * 12000));
+      // New entries every 15-40 seconds
+      setInterval(addWebhookEntry, 15000 + Math.floor(Math.random() * 25000));
     })();
 
     // ===== QOL #7: REALISTIC ERROR STATES =====

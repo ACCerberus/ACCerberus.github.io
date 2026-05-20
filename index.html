@@ -687,6 +687,22 @@
           <div class="hero-stat-label">Pentest Scenarios Run</div>
         </div>
       </div>
+      <!-- System Pulse — live data from heartbeat -->
+      <div id="systemPulse" style="margin-top:32px;display:flex;justify-content:center;gap:24px;flex-wrap:wrap;opacity:0;transition:opacity 0.6s;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div id="pulseIndicator" style="width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-dot 2s ease-in-out infinite;"></div>
+          <span style="font-size:0.72rem;color:var(--text-dim);font-family:var(--font-mono);">Engine <span id="pulseVersion">--</span></span>
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-dim);font-family:var(--font-mono);">
+          Sigs: <span id="pulseSigs" style="color:var(--text);">--</span>
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-dim);font-family:var(--font-mono);">
+          Regions: <span id="pulseRegions" style="color:var(--text);">--</span>/9 online
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-dim);font-family:var(--font-mono);">
+          Last sync: <span id="pulseSync" style="color:var(--text);">--</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1457,25 +1473,25 @@
       var TITLES = 6;
 
       var stored = null;
-      try { stored = JSON.parse(localStorage.getItem('cerberusStats5')); } catch(e) {}
+      try { stored = JSON.parse(localStorage.getItem('cerberusStats6')); } catch(e) {}
 
       var threats, sessions, pentests;
 
       // Default base numbers (overridden by state.json when available)
-      var baseBans = 2847291;
+      var baseBans = 124847;
 
       if (stored && stored.ts) {
         var elapsed = (Date.now() - stored.ts) / 1000;
-        threats = stored.threats + Math.floor(elapsed / 45);
-        sessions = stored.sessions + Math.floor(elapsed / 15);
-        pentests = stored.pentests + Math.floor(elapsed / 480);
+        threats = stored.threats + Math.floor(elapsed / 120);
+        sessions = stored.sessions + Math.floor(elapsed / 45);
+        pentests = stored.pentests + Math.floor(elapsed / 900);
       } else {
         threats = baseBans;
-        sessions = 34219;
-        pentests = 1247;
+        sessions = 8412;
+        pentests = 347;
       }
 
-      // TODO #2: Pull base from state.json so counter stays consistent with heartbeat
+      // Pull base from state.json so counter stays consistent with heartbeat
       if (window.CERBERUS && CERBERUS.stateReady) {
         CERBERUS.stateReady.then(function(state) {
           if (state && state.totalBans && (!stored || !stored.ts)) {
@@ -1483,11 +1499,28 @@
             if (threatEl) threatEl.textContent = threats.toLocaleString();
             save();
           }
+          // Populate system pulse bar
+          var pulseEl = document.getElementById('systemPulse');
+          if (pulseEl && state) {
+            var vEl = document.getElementById('pulseVersion');
+            var sEl = document.getElementById('pulseSigs');
+            var rEl = document.getElementById('pulseRegions');
+            var tEl = document.getElementById('pulseSync');
+            if (vEl) vEl.textContent = state.engineVersion || '--';
+            if (sEl) sEl.textContent = (state.signatureDb || 0).toLocaleString();
+            if (rEl) rEl.textContent = state.regionsOnline || '--';
+            if (tEl && state.lastUpdate) {
+              var d = new Date(state.lastUpdate);
+              var ago = Math.floor((Date.now() - d.getTime()) / 60000);
+              tEl.textContent = ago < 60 ? ago + 'min ago' : Math.floor(ago / 60) + 'h ago';
+            }
+            pulseEl.style.opacity = '1';
+          }
         });
       }
 
       function save() {
-        try { localStorage.setItem('cerberusStats5', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, ts: Date.now() })); } catch(e) {}
+        try { localStorage.setItem('cerberusStats6', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, ts: Date.now() })); } catch(e) {}
       }
       save();
 
@@ -1521,25 +1554,25 @@
         threats += 1;
         if (threatEl) threatEl.textContent = threats.toLocaleString();
         save();
-        setTimeout(tickThreat, 30000 + Math.floor(Math.random() * 60000));
+        setTimeout(tickThreat, 60000 + Math.floor(Math.random() * 120000));
       }
-      setTimeout(tickThreat, 20000 + Math.floor(Math.random() * 40000));
+      setTimeout(tickThreat, 45000 + Math.floor(Math.random() * 90000));
 
       function tickSession() {
         sessions += 1;
         if (sessionEl) sessionEl.textContent = sessions.toLocaleString();
         save();
-        setTimeout(tickSession, 10000 + Math.floor(Math.random() * 15000));
+        setTimeout(tickSession, 25000 + Math.floor(Math.random() * 35000));
       }
-      setTimeout(tickSession, 8000 + Math.floor(Math.random() * 12000));
+      setTimeout(tickSession, 20000 + Math.floor(Math.random() * 30000));
 
       function tickPentest() {
         pentests += 1;
         if (pentestEl) pentestEl.textContent = pentests.toLocaleString();
         save();
-        setTimeout(tickPentest, 300000 + Math.floor(Math.random() * 420000));
+        setTimeout(tickPentest, 600000 + Math.floor(Math.random() * 600000));
       }
-      setTimeout(tickPentest, 180000 + Math.floor(Math.random() * 300000));
+      setTimeout(tickPentest, 400000 + Math.floor(Math.random() * 500000));
     })();
 
     // ===== DETECTION RATE DRIFT (TODO #5) =====

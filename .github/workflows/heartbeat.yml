@@ -34,10 +34,10 @@ jobs:
 
           # Increment values realistically — sigs must ONLY go up (never down)
           NEW_SIGS=$((SIGS + RANDOM % 8 + 1))
-          NEW_BANS=$((BANS + RANDOM % 400 + 50))
-          NEW_DETECTIONS=$((1200 + RANDOM % 900))
+          NEW_BANS=$((BANS + RANDOM % 25 + 3))
+          NEW_DETECTIONS=$((150 + RANDOM % 200))
           NEW_LATENCY=$(echo "scale=2; 0.3 + $(echo "$RANDOM % 20" | bc) / 100" | bc)
-          NEW_REVIEWS=$((RANDOM % 18 + 3))
+          NEW_REVIEWS=$((RANDOM % 8 + 1))
           NEW_SIG_QUEUE=$((RANDOM % 12))
 
           # Vary threat level by time
@@ -47,16 +47,16 @@ jobs:
 
           # Determine active sessions based on time of day (UTC)
           if [ "$HOUR" -ge 14 ] && [ "$HOUR" -le 22 ]; then
-            SESSIONS=$((4000 + RANDOM % 3000))
+            SESSIONS=$((1800 + RANDOM % 1200))
           elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 14 ]; then
-            SESSIONS=$((2500 + RANDOM % 2000))
+            SESSIONS=$((900 + RANDOM % 800))
           else
-            SESSIONS=$((1200 + RANDOM % 1500))
+            SESSIONS=$((400 + RANDOM % 600))
           fi
 
           # Weekend boost
           if [ "$DAY" -ge 6 ]; then
-            SESSIONS=$((SESSIONS * 135 / 100))
+            SESSIONS=$((SESSIONS * 120 / 100))
           fi
 
           # Update state.json — preserve engineVersion and buildNumber exactly
