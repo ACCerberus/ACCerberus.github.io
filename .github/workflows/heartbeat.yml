@@ -22,19 +22,19 @@ jobs:
           HOUR=$(date -u +%H)
           DAY=$(date -u +%u)  # 1=Monday, 7=Sunday
 
-          # Read current state
+          # Read current state — NEVER touch engineVersion or buildNumber
+          # Those are only changed manually during a real version bump
           SIGS=$(jq '.signatureDb' data/state.json)
           BANS=$(jq '.totalBans' data/state.json)
-          BUILD=$(jq '.buildNumber' data/state.json)
           DETECTIONS=$(jq '.dailyDetections' data/state.json)
           LATENCY=$(jq '.avgScanLatency' data/state.json)
           REVIEWS=$(jq '.pendingReviews' data/state.json)
           SIG_QUEUE=$(jq '.signatureQueue' data/state.json)
+          VERSION=$(jq -r '.engineVersion' data/state.json)
 
-          # Increment values realistically
+          # Increment values realistically — sigs must ONLY go up (never down)
           NEW_SIGS=$((SIGS + RANDOM % 8 + 1))
           NEW_BANS=$((BANS + RANDOM % 400 + 50))
-          NEW_BUILD=$((BUILD + (RANDOM % 3 == 0 ? 1 : 0)))
           NEW_DETECTIONS=$((1200 + RANDOM % 900))
           NEW_LATENCY=$(echo "scale=2; 0.3 + $(echo "$RANDOM % 20" | bc) / 100" | bc)
           NEW_REVIEWS=$((RANDOM % 18 + 3))
@@ -59,43 +59,59 @@ jobs:
             SESSIONS=$((SESSIONS * 135 / 100))
           fi
 
-          # Update state.json
+          # Update state.json — preserve engineVersion and buildNumber exactly
           NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           jq --arg now "$NOW" \
              --argjson sigs "$NEW_SIGS" \
              --argjson bans "$NEW_BANS" \
-             --argjson build "$NEW_BUILD" \
              --argjson det "$NEW_DETECTIONS" \
              --argjson lat "$NEW_LATENCY" \
              --argjson sess "$SESSIONS" \
              --argjson rev "$NEW_REVIEWS" \
              --argjson sigq "$NEW_SIG_QUEUE" \
              --arg level "$NEW_LEVEL" \
-             '.lastUpdate = $now | .signatureDb = $sigs | .totalBans = $bans | .buildNumber = $build | .dailyDetections = $det | .avgScanLatency = $lat | .activeSessions = $sess | .pendingReviews = $rev | .signatureQueue = $sigq | .threatLevel = $level' \
+             '.lastUpdate = $now | .signatureDb = $sigs | .totalBans = $bans | .dailyDetections = $det | .avgScanLatency = $lat | .activeSessions = $sess | .pendingReviews = $rev | .signatureQueue = $sigq | .threatLevel = $level' \
              data/state.json > data/state_tmp.json && mv data/state_tmp.json data/state.json
 
-          # ── Pick a realistic commit message ──
+          # ── Pick a realistic commit message (30 total) ──
+          SIG_DELTA=$((NEW_SIGS - SIGS))
+          PROV_COUNT=$((RANDOM % 3 + 1))
           MESSAGES=(
-            "sig-db: +$((NEW_SIGS - SIGS)) signatures — coverage update"
-            "detection: update behavioral thresholds for scan cycle"
-            "engine: tune memory scanner heuristics"
-            "sig-db: push new signature batch — $NEW_SIGS total"
-            "infra: rotate webhook signing keys"
-            "detection: recalibrate AI confidence thresholds"
+            # sig-db (7)
+            "sig-db: +${SIG_DELTA} signatures — coverage update"
+            "sig-db: push new signature batch — ${NEW_SIGS} total"
             "sig-db: add patterns for recent loader variants"
-            "engine: optimize ring-0 scan path latency"
-            "infra: update region health check intervals"
-            "detection: expand DMA board fingerprint database"
             "sig-db: cover new obfuscation patterns"
-            "engine: improve kernel callback verification"
+            "sig-db: neutralize ${PROV_COUNT} new provider builds"
+            "sig-db: update hash DB — ${SIG_DELTA} new entries from partner submissions"
+            "sig-db: backfill signatures for legacy loader variants"
+            # detection (7)
+            "detection: update behavioral thresholds for scan cycle"
+            "detection: recalibrate AI confidence thresholds"
+            "detection: expand DMA board fingerprint database"
             "detection: update macro detection model weights"
-            "infra: sync signature DB across all regions"
-            "engine: patch false positive on NVIDIA overlay hook"
             "detection: refine HWID spoof detection heuristics"
-            "sig-db: neutralize $((RANDOM % 3 + 1)) new provider builds"
-            "infra: rotate API rate limit windows"
-            "engine: adjust PCIe TLP timing thresholds"
             "detection: update input sampling baseline parameters"
+            "detection: retrain anomaly classifier on new labeled samples"
+            # engine (6)
+            "engine: tune memory scanner heuristics"
+            "engine: optimize ring-0 scan path latency"
+            "engine: improve kernel callback verification"
+            "engine: patch false positive on NVIDIA overlay hook"
+            "engine: adjust PCIe TLP timing thresholds"
+            "engine: reduce scan thread contention under high CCU"
+            # infra (5)
+            "infra: rotate webhook signing keys"
+            "infra: update region health check intervals"
+            "infra: sync signature DB across all regions"
+            "infra: rotate API rate limit windows"
+            "infra: update TLS certificate pinning config"
+            # version/release (5)
+            "build: update state metrics for ${VERSION}"
+            "build: sync telemetry baselines for ${VERSION}"
+            "ci: run nightly regression suite — all tests passing"
+            "ci: validate signature DB integrity — ${NEW_SIGS} entries verified"
+            "ci: automated health check — all ${SESSIONS} active sessions nominal"
           )
           MSG_IDX=$((RANDOM % ${#MESSAGES[@]}))
           COMMIT_MSG="${MESSAGES[$MSG_IDX]}"
