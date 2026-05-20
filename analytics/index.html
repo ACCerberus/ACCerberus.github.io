@@ -380,6 +380,14 @@
     </div>
   </div>
 
+  <!-- #74: DATA FRESHNESS INDICATOR -->
+  <div style="max-width:1300px;margin:0 auto 6px;padding:0 24px;position:relative;z-index:1;display:flex;align-items:center;gap:8px;">
+    <div id="freshnessIndicator" style="display:flex;align-items:center;gap:6px;font-size:0.65rem;font-family:var(--font-mono);color:var(--text-dim);">
+      <div id="freshnessDot" style="width:6px;height:6px;border-radius:50%;background:var(--green);"></div>
+      <span id="freshnessText">Updated just now</span>
+    </div>
+  </div>
+
   <!-- BAN WAVE COUNTDOWN (TODO #6) -->
   <div id="banWaveCountdown" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
@@ -559,6 +567,19 @@
         <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--green);font-weight:600;">0 confirmed FPs in <span id="fpDaysClean">--</span> days</span>
         <span style="font-size:0.68rem;color:var(--text-dim);padding:3px 10px;border-radius:4px;background:rgba(48,200,96,0.08);border:1px solid rgba(48,200,96,0.15);color:var(--green);">CLEAN</span>
       </div>
+    </div>
+  </div>
+
+  <!-- TODO #20: WEBHOOK EVENT LOG -->
+  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Recent Webhooks</div>
+          <div class="dash-card-sub">Partner endpoint delivery log</div>
+        </div>
+      </div>
+      <div id="webhookLog" style="max-height:180px;overflow-y:auto;font-family:var(--font-mono);font-size:0.68rem;"></div>
     </div>
   </div>
 
@@ -889,6 +910,7 @@
       if (totalCCU < 300) totalCCU = 300 + Math.floor(Math.random() * 100);
       sessionEl.textContent = totalCCU.toLocaleString();
       saveStats();
+      if (window._freshnessReset) _freshnessReset();
     }, 5000);
 
     // Fluctuate threats — scale by time-of-day
@@ -1557,6 +1579,26 @@
       vhEl.innerHTML = html;
     })();
 
+    // ===== #74: DATA FRESHNESS INDICATOR =====
+    (function() {
+      var dotEl = document.getElementById('freshnessDot');
+      var textEl = document.getElementById('freshnessText');
+      if (!dotEl) return;
+      var lastUpdate = Date.now();
+      // Reset freshness when data ticks happen
+      document.addEventListener('cerberus:dataUpdate', function() { lastUpdate = Date.now(); });
+      setInterval(function() {
+        var ago = Math.floor((Date.now() - lastUpdate) / 1000);
+        if (ago < 5) { textEl.textContent = 'Updated just now'; dotEl.style.background = 'var(--green)'; }
+        else if (ago < 30) { textEl.textContent = 'Updated ' + ago + 's ago'; dotEl.style.background = 'var(--green)'; }
+        else if (ago < 60) { textEl.textContent = 'Updated ' + ago + 's ago'; dotEl.style.background = 'var(--accent)'; }
+        else { textEl.textContent = 'Updated ' + Math.floor(ago / 60) + 'm ago'; dotEl.style.background = 'var(--red)'; }
+      }, 1000);
+      // Trigger freshness reset from stat updates
+      var origAnimateValue = animateValue;
+      window._freshnessReset = function() { lastUpdate = Date.now(); };
+    })();
+
     // ===== TODO #22: HARDWARE FINGERPRINT DB GROWTH =====
     (function() {
       var fpEl = document.getElementById('hwFpCount');
@@ -1789,6 +1831,55 @@
         setTimeout(updateCountdown, 1000);
       }
       updateCountdown();
+    })();
+
+    // ===== TODO #20: WEBHOOK EVENT LOG =====
+    (function() {
+      var logEl = document.getElementById('webhookLog');
+      if (!logEl) return;
+      var endpoints = [
+        { name: '[REDACTED] Studios', url: 'https://hooks.r*****d.gg/cerberus' },
+        { name: 'Partner #2', url: 'https://api.p2.internal/webhooks/ac' },
+        { name: 'Partner #3', url: 'https://ingest.p3-analytics.io/v2' },
+        { name: 'QA Pipeline', url: 'https://ci.cerberusac.dev/hooks/qa' },
+      ];
+      var events = ['ban.created', 'detection.new', 'session.flagged', 'wave.started', 'wave.completed', 'signature.synced'];
+      var statuses = [
+        { code: 200, text: '200 OK', color: 'var(--green)', weight: 75 },
+        { code: 202, text: '202 Accepted', color: 'var(--green)', weight: 15 },
+        { code: 503, text: '503 Retry', color: 'var(--red)', weight: 7 },
+        { code: 408, text: '408 Timeout', color: 'var(--red)', weight: 3 },
+      ];
+
+      function pickStatus() {
+        var r = Math.random() * 100, cum = 0;
+        for (var i = 0; i < statuses.length; i++) { cum += statuses[i].weight; if (r < cum) return statuses[i]; }
+        return statuses[0];
+      }
+
+      function addWebhookEntry() {
+        var ep = endpoints[Math.floor(Math.random() * endpoints.length)];
+        var ev = events[Math.floor(Math.random() * events.length)];
+        var st = pickStatus();
+        var lat = Math.floor(Math.random() * 180) + 20;
+        var time = new Date().toTimeString().split(' ')[0];
+        var row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);opacity:0;transition:opacity 0.3s;';
+        row.innerHTML = '<span style="color:var(--text-dim);min-width:65px;">' + time + '</span>' +
+          '<span style="color:var(--accent);min-width:120px;">POST</span>' +
+          '<span style="color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + ep.url + '">' + ep.name + '</span>' +
+          '<span style="min-width:80px;">' + ev + '</span>' +
+          '<span style="color:' + st.color + ';min-width:75px;">' + st.text + '</span>' +
+          '<span style="color:var(--text-dim);min-width:45px;">' + lat + 'ms</span>';
+        logEl.insertBefore(row, logEl.firstChild);
+        requestAnimationFrame(function() { row.style.opacity = '1'; });
+        while (logEl.children.length > 20) logEl.removeChild(logEl.lastChild);
+      }
+
+      // Initial entries
+      for (var i = 0; i < 5; i++) addWebhookEntry();
+      // New entries every 8-20 seconds
+      setInterval(addWebhookEntry, 8000 + Math.floor(Math.random() * 12000));
     })();
 
     // ===== QOL #7: REALISTIC ERROR STATES =====
