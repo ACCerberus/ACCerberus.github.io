@@ -641,21 +641,39 @@
     var allGenres = ['Tactical FPS','Battle Royale','FPS','MMO','Extraction Shooter','Survival','Arena Shooter','Racing','Open World','Sandbox'];
     var allEngines = ['UE5.4','UE5.3','Unity 6','Custom','Godot 4','CryEngine 5.7'];
 
+    // TODO #16: Track last event time per instance
+    var instanceLastEvent = {};
+    games.forEach(function(g) { instanceLastEvent[g.code] = Date.now() - Math.floor(Math.random() * 30000); });
+
     function renderGameTable() {
       var html = '';
+      var now = Date.now();
       games.forEach(function(g) {
         var statusClass, statusLabel;
         if (g.status === 'restarting') { statusClass = 'game-status-beta'; statusLabel = 'Restarting'; }
         else if (g.status === 'starting') { statusClass = 'game-status-beta'; statusLabel = 'Starting'; }
         else if (g.status === 'beta') { statusClass = 'game-status-beta'; statusLabel = 'Beta'; }
         else { statusClass = 'game-status-live'; statusLabel = 'Live'; }
-        html += '<tr><td><div style="font-weight:600;color:var(--text-bright);">' + g.name + '</div><div style="font-size:0.6rem;color:var(--text-dim);margin-top:1px;">' + g.code + ' \u00b7 ' + g.genre + ' \u00b7 ' + g.engine + ' \u00b7 <span style="color:var(--accent);">' + g.version + '</span></div></td>' +
+        var lastEvt = instanceLastEvent[g.code] || now;
+        var secsAgo = Math.floor((now - lastEvt) / 1000);
+        var lastEvtStr = secsAgo < 60 ? secsAgo + 's ago' : Math.floor(secsAgo / 60) + 'm ago';
+        html += '<tr><td><div style="font-weight:600;color:var(--text-bright);">' + g.name + '</div><div style="font-size:0.6rem;color:var(--text-dim);margin-top:1px;">' + g.code + ' \u00b7 ' + g.genre + ' \u00b7 ' + g.engine + ' \u00b7 <span style="color:var(--accent);">' + g.version + '</span> \u00b7 last detection: <span style="color:var(--green);">' + lastEvtStr + '</span></div></td>' +
           '<td><span class="game-status ' + statusClass + '"><span class="game-status-dot"></span>' + statusLabel + '</span></td>' +
           '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + g.threats.toLocaleString() + '</td>' +
           '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + (g.status === 'restarting' ? '---' : g.ccu.toLocaleString()) + '</td></tr>';
       });
       document.getElementById('gameTable').innerHTML = html;
     }
+
+    // Update last event timestamps every few seconds
+    setInterval(function() {
+      games.forEach(function(g) {
+        if (g.status !== 'restarting' && Math.random() < 0.3) {
+          instanceLastEvent[g.code] = Date.now();
+        }
+      });
+      renderGameTable();
+    }, 8000);
 
     // Update server instance CCUs and statuses at random intervals
     setInterval(function() {
