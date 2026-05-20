@@ -113,7 +113,10 @@
     <div class="nav-links">
       <a href="/">Home</a>
       <a href="/docs/">Docs</a>
+      <a href="/api/">API</a>
+      <a href="/sdk/">SDK</a>
       <a href="/changelog/" class="active">Changelog</a>
+      <a href="/blog/">Blog</a>
       <a href="/status/">Status</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
@@ -169,7 +172,7 @@
     document.getElementById('roadmapGrid').innerHTML = rmHTML;
 
     // ===== DATA POOLS =====
-    var providers = ['AimStar','NeverLose','Skeet','Ringzer0','Phantom Overlay','Project Starter','Interium','FatAim','Onetap','Nixware','Spirthack','Aimware','Gamesense','PastePremium','UnknownCheats paste','ExitLag exploit','Clarity.gg','NoRecoil.pro','Artifex','ZeroDay.cc','Midnight.im','RageCheats','EternalAim','SilentWare','HexCheat','VoidHack','GhostWare','PremiumHacks','UltraAim','SharpShooter','NetRadar','PixelBot Pro','DarkMatter','KernelForge','ByteHax','AntiDetect.cc','ShadowAim','IceWall','TurboHack','EliteCheats'];
+    var providers = ['AimStar','NeverLose','Skeet','Iniuria','Phantom Overlay','Project Infinity','Interium','Spirthack','Onetap','Nixware','Fatality','Aimware','Gamesense','EngineOwning','UnknownCheats paste','Cronus Zen','xhook.gg','Pandora.gg','Artifex','Midnight.im','RageCheats','EternalAim','SilentWare','KMBox/Vezax','VoidHack','PremiumHacks','UltraAim','SharpShooter','NetRadar','PixelBot Pro','ByteHax','AntiDetect.cc','IceWall','TurboHack','Memstar','ExternalAC','PasteHacks','LegitBot.cc','NexusCheats','VapeCheats'];
     var cheatProducts = ['aimbot loader','ESP overlay','DMA reader','kernel driver','recoil script','triggerbot','rage config','legit suite','HWID spoofer','radar hack','speed patch','backtrack module','wallhack injector','auto-strafe','anti-aim module','silent aim','spinbot config','memory patcher','shellcode loader','polymorphic stub','stream-proof overlay','bone ESP','glow hack','no-flash mod','infinite ammo','teleport hack','fly hack','skin changer','inventory editor','rank spoofer','crosshair overlay','bhop script','rapid-fire macro','aim smoothing module','DRM bypass loader','license patcher','binary injector','VAC bypass','game integrity patcher','save editor'];
     var fixTargets = ['MSI Afterburner','Discord overlay','Steam overlay','NVIDIA GeForce Experience','Razer Synapse','Corsair iCUE','Logitech G Hub','OBS Studio','RivaTuner','ASUS Aura Sync','SteelSeries GG','HWiNFO64','RTSS overlay','AMD Adrenalin overlay','Wallpaper Engine','NZXT CAM','EVGA Precision','RGB Fusion','SignalRGB','Elgato Stream Deck','Medal.tv','FPS Monitor','MSI Dragon Center','ASUS Armoury Crate','Razer Cortex','GeForce Now client','Steam Input','Xbox Game Bar','Windows Game Mode','Alienware Command Center','Nahimic audio','Sonic Studio','Dolby Access','Voicemeeter','ShareX','Lightshot','f.lux','Windows Defender real-time','Malwarebytes','BitDefender overlay'];
     var improveTargets = ['signature matching throughput','heuristic scan accuracy','memory region classification','process integrity verification','scan cycle efficiency','detection pipeline latency','behavioral baseline convergence','hardware audit performance','session telemetry compression','false positive suppression model','ban appeal processing speed','webhook delivery reliability','AI model inference batch size','kernel scan memory overhead','signature database indexing','DRM integrity check speed','hardware fingerprint accuracy','behavioral profiling convergence time','multi-title session handling','driver compatibility coverage'];
@@ -191,7 +194,7 @@
         {t:'IMPROVED',c:'Kernel scan cycle latency reduced from 3.1ms to 2.4ms avg'},
         {t:'FIXED',c:'False positive on MSI Afterburner overlay when hardware monitoring is active'},
         {t:'FIXED',c:'Memory footprint spike during extended sessions (>4hr) — capped at 22MB'},
-      ], sig: '+187 new signatures. Covers: AimStar v3.x, Project Starter recompiled builds, NeverLose loader. Total: 4,891.' },
+      ], sig: '+187 new signatures. Covers: AimStar v3.x, Project Infinity recompiled builds, NeverLose loader. Total: 4,891.' },
       { ver: 'v0.4.1-beta', date: 'Apr 28, 2026', dateSeed: dateToDaySeed(2026,4,28), tags: ['SECURITY'], changes: [
         {t:'SECURITY',c:'Patched driver communication channel — prevented IOCTL replay attack vector'},
         {t:'ADDED',c:'CPUID timing checks for hypervisor detection (KVM, custom type-1)'},
