@@ -286,12 +286,20 @@
     // DATA POOLS
     // =====================================================================
     var AUTHORS = [
-      { name: 'Alex Chen',      initials: 'AC', color: '#4088e8', bg: 'rgba(64,136,232,0.15)' },
-      { name: 'Sarah Mitchell', initials: 'SM', color: '#30c860', bg: 'rgba(48,200,96,0.15)'  },
-      { name: 'James Park',     initials: 'JP', color: '#8860e8', bg: 'rgba(136,96,232,0.15)' },
-      { name: 'Maria Santos',   initials: 'MS', color: '#e8a020', bg: 'rgba(232,160,32,0.15)' },
-      { name: 'David Kim',      initials: 'DK', color: '#e04050', bg: 'rgba(224,64,80,0.15)'  },
+      { name: 'nvoronov',    initials: 'NV', color: '#4088e8', bg: 'rgba(64,136,232,0.15)', role: 'Lead Developer' },
+      { name: 'dkrasov',     initials: 'DK', color: '#30c860', bg: 'rgba(48,200,96,0.15)',  role: 'Kernel Engineering' },
+      { name: 's.nakamura',  initials: 'SN', color: '#8860e8', bg: 'rgba(136,96,232,0.15)', role: 'AI & Behavioral' },
+      { name: 'ArsenalRX',   initials: 'AX', color: '#e8a020', bg: 'rgba(232,160,32,0.15)', role: 'Threat Research' },
+      { name: 'lweber',      initials: 'LW', color: '#e04050', bg: 'rgba(224,64,80,0.15)',  role: 'SDK & Integration' },
     ];
+    // Map post types to relevant team members
+    var AUTHOR_MAP = {
+      threat:    [2, 3],    // s.nakamura, ArsenalRX
+      advisory:  [1, 0],    // dkrasov, nvoronov
+      eng:       [0, 2],    // nvoronov, s.nakamura
+      milestone: [3, 4],    // ArsenalRX, lweber
+      partner:   [4, 0],    // lweber, nvoronov
+    };
 
     var CHEAT_TYPES = ['aimbot','ESP / wallhack','DMA reader','kernel driver','recoil script','triggerbot','HWID spoofer','radar hack','speed exploit','backtrack module','stream-proof overlay','silent aim'];
     var GAME_TITLES = ['[REDACTED]','[REDACTED] Studios title','a major tactical shooter','a top-tier battle royale','a competitive FPS'];
@@ -323,7 +331,8 @@
 
     function genThreat(daySeed, postDate) {
       var s = daySeed;
-      var author = AUTHORS[seedInt(s+1, 0, AUTHORS.length-1)];
+      var pool = AUTHOR_MAP.threat;
+      var author = AUTHORS[pool[seedInt(s+1, 0, pool.length-1)]];
       var totalDet = seedInt(s+2, 180000, 2800000);
       var detRate  = (seeded(s+3) * 0.8 + 99.0).toFixed(2);
       var newSigs  = seedInt(s+4, 120, 680);
@@ -379,7 +388,8 @@
 
     function genAdvisory(daySeed, postDate) {
       var s = daySeed + 200;
-      var author = AUTHORS[seedInt(s+1, 0, AUTHORS.length-1)];
+      var pool = AUTHOR_MAP.advisory;
+      var author = AUTHORS[pool[seedInt(s+1, 0, pool.length-1)]];
       var cveYear = new Date(postDate * 86400000).getFullYear();
       var cveNum  = seedInt(s+2, 1000, 9999);
       var sev     = SEVERITIES[seedInt(s+3, 0, SEVERITIES.length-1)];
@@ -431,7 +441,8 @@
 
     function genEngineering(daySeed, postDate) {
       var s = daySeed + 400;
-      var author = AUTHORS[seedInt(s+1, 0, AUTHORS.length-1)];
+      var pool = AUTHOR_MAP.eng;
+      var author = AUTHORS[pool[seedInt(s+1, 0, pool.length-1)]];
       var topic = ENG_TOPICS[seedInt(s+2, 0, ENG_TOPICS.length-1)];
       var beforeVal = (seeded(s+3) * (topic.before[1] - topic.before[0]) + topic.before[0]).toFixed(1);
       var afterVal  = (seeded(s+4) * (topic.after[1] - topic.after[0]) + topic.after[0]).toFixed(1);
@@ -467,7 +478,8 @@
 
     function genMilestone(daySeed, postDate) {
       var s = daySeed + 600;
-      var author = AUTHORS[seedInt(s+1, 0, AUTHORS.length-1)];
+      var pool = AUTHOR_MAP.milestone;
+      var author = AUTHORS[pool[seedInt(s+1, 0, pool.length-1)]];
       var sigCount = MILESTONE_SIGS[seedInt(s+2, 0, MILESTONE_SIGS.length-1)];
       var banCount = MILESTONE_BANS[seedInt(s+3, 0, MILESTONE_BANS.length-1)];
       var partners = seedInt(s+4, 8, 32);
@@ -502,7 +514,8 @@
 
     function genCaseStudy(daySeed, postDate) {
       var s = daySeed + 800;
-      var author = AUTHORS[seedInt(s+1, 0, AUTHORS.length-1)];
+      var pool = AUTHOR_MAP.partner;
+      var author = AUTHORS[pool[seedInt(s+1, 0, pool.length-1)]];
       var result  = PARTNER_RESULTS[seedInt(s+2, 0, PARTNER_RESULTS.length-1)];
       var intWeeks= PARTNER_TIMES[seedInt(s+3, 0, PARTNER_TIMES.length-1)];
       var players = seedInt(s+4, 50000, 800000);
@@ -678,7 +691,7 @@
         '</div>' +
         '<div class="card-footer">' +
           '<div class="author-avatar" style="background:' + post.author.bg + ';color:' + post.author.color + ';">' + post.author.initials + '</div>' +
-          '<span class="author-name">' + post.author.name + '</span>' +
+          '<span class="author-name">' + post.author.name + (post.author.role ? ' <span style="color:var(--text-dim);font-weight:400;font-size:0.68rem;">\u00b7 ' + post.author.role + '</span>' : '') + '</span>' +
           '<span class="expand-hint">Click to read full post</span>' +
         '</div>' +
       '</div>';
