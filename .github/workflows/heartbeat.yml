@@ -121,7 +121,7 @@ jobs:
       - name: Commit and push
         run: |
           git config user.name "cerberus-bot"
-          git config user.email "cerberus-bot@cerberus.dev"
+          git config user.email "cerberus-bot@cerberusac.dev"
           git add data/state.json
 
           # Check if there are changes
