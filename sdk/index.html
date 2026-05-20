@@ -354,7 +354,7 @@
       <div class="release-hero-top">
         <div class="release-version-block">
           <div class="release-version-label">Current Release</div>
-          <div class="release-version-num">v0.4.2<span style="font-size:1.4rem;color:var(--accent);font-weight:600;">-beta</span></div>
+          <div class="release-version-num">v0.4.2.0<span style="font-size:1.4rem;color:var(--accent);font-weight:600;">b</span></div>
           <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
             <span class="release-tag">BETA</span>
             <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-dim);">Released May 12, 2026</span>
@@ -375,7 +375,7 @@
         </div>
         <div class="release-stat">
           <div class="release-stat-label">Archive</div>
-          <div class="release-stat-value">cerberus-sdk-v0.4.2-beta-win64.zip</div>
+          <div class="release-stat-value">cerberus-sdk-v0.4.2.0b-win64.zip</div>
         </div>
         <div class="release-stat">
           <div class="release-stat-label">Platform</div>
@@ -397,7 +397,7 @@
     <!-- SDK COMPONENTS -->
     <div class="section-header">
       <div class="section-title">SDK Components</div>
-      <div class="section-subtitle">Everything included in the cerberus-sdk-v0.4.2-beta-win64.zip archive</div>
+      <div class="section-subtitle">Everything included in the cerberus-sdk-v0.4.2.0b-win64.zip archive</div>
     </div>
     <div class="components-grid" style="margin-bottom:40px;">
 
@@ -433,7 +433,7 @@
         <div class="component-desc">Step-by-step PDF covering build setup, API key provisioning, session lifecycle, and error handling.</div>
         <div class="component-meta">
           <span class="component-badge badge-pdf">PDF</span>
-          <span class="component-size">CerberusSDK-IntegrationGuide-v0.4.2.pdf &middot; 1.2 MB</span>
+          <span class="component-size">CerberusSDK-IntegrationGuide-v0.4.2.0b.pdf &middot; 1.2 MB</span>
         </div>
       </div>
 
@@ -592,7 +592,7 @@
     <div style="margin-bottom:40px;">
       <button id="archiveToggle" onclick="toggleArchive()" style="width:100%;padding:12px 20px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);font-family:var(--font);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all 0.2s;">
         <span><span style="margin-right:8px;">&#9660;</span> Archived Versions <span style="font-size:0.7rem;color:var(--text-dim);margin-left:8px;" id="archiveCount"></span></span>
-        <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);">v0.1.0 — v0.3.4</span>
+        <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);">v0.1.0.0a — v0.3.4.0b</span>
       </button>
       <div id="archiveWrap" style="display:none;margin-top:4px;">
         <div class="version-table-wrap">
@@ -695,7 +695,7 @@
     // ===== VERSION HISTORY DATA =====
     var versions = [
       {
-        ver: 'v0.4.2-beta',
+        ver: 'v0.4.2.0b',
         date: 'May 12, 2026',
         size: '4.8 MB',
         changes: 'PCIe TLP timing analyzer, manual review escalation pipeline, secondary verification pass, 34% false positive reduction.',
@@ -703,7 +703,7 @@
         current: true
       },
       {
-        ver: 'v0.4.1-beta',
+        ver: 'v0.4.1.0b',
         date: 'Apr 28, 2026',
         size: '4.6 MB',
         changes: 'IOCTL replay attack patch, CPUID timing checks, hardware compatibility profiles, overlay detection 95.8%.',
@@ -711,7 +711,7 @@
         current: false
       },
       {
-        ver: 'v0.4.0-beta',
+        ver: 'v0.4.0.0b',
         date: 'Nov 3, 2025',
         size: '4.3 MB',
         changes: 'Major: hardware fingerprinting head, DMA board detection, firmware signature DB (1,200+ hashes), real-time dashboard.',
@@ -719,7 +719,7 @@
         current: false
       },
       {
-        ver: 'v0.3.4-beta',
+        ver: 'v0.3.4.0b',
         date: 'Oct 8, 2025',
         size: '3.9 MB',
         changes: 'ONNX Runtime integration, behavioral AI 97.4% accuracy, session memory leak fix, AI overhead 1.8%.',
@@ -727,7 +727,7 @@
         current: false
       },
       {
-        ver: 'v0.3.0-beta',
+        ver: 'v0.3.0.0b',
         date: 'Jun 10, 2025',
         size: '3.4 MB',
         changes: 'Major: behavioral AI engine, 500Hz input analysis, confidence-based detection tiers, simplified SDK API.',
@@ -735,7 +735,7 @@
         current: false
       },
       {
-        ver: 'v0.2.0-beta',
+        ver: 'v0.2.0.0b',
         date: 'Feb 10, 2025',
         size: '2.8 MB',
         changes: 'Major: kernel integrity monitor, ring-0 driver, RWX region scanning, WHQL-signed driver, session lifecycle API.',
@@ -743,7 +743,7 @@
         current: false
       },
       {
-        ver: 'v0.1.0-alpha',
+        ver: 'v0.1.0.0a',
         date: 'Oct 18, 2024',
         size: '1.1 MB',
         changes: 'Initial release: usermode scan engine, process enumeration, DLL blocklist, SDK C++ static library v0.1.',

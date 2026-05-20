@@ -186,7 +186,7 @@
 
     var majorReleases = [
       // === PHASE 5: Hardware Detection ===
-      { phase: 'Phase 5 — Hardware Fingerprinting (v0.4.x)', ver: 'v0.4.2-beta', date: 'May 12, 2026', dateSeed: dateToDaySeed(2026,5,12), tags: ['BETA','DETECTION UPDATE'], changes: [
+      { phase: 'Phase 5 — Hardware Fingerprinting (v0.4.x)', ver: 'v0.4.2.0b', date: 'May 12, 2026', dateSeed: dateToDaySeed(2026,5,12), tags: ['BETA','DETECTION UPDATE'], changes: [
         {t:'ADDED',c:'PCIe TLP timing analyzer for DMA latency anomaly detection'},
         {t:'ADDED',c:'Manual review escalation pipeline for borderline detections (67-95% confidence)'},
         {t:'ADDED',c:'Secondary verification pass before auto-ban — reduces false positives by 34%'},
@@ -195,7 +195,7 @@
         {t:'FIXED',c:'False positive on MSI Afterburner overlay when hardware monitoring is active'},
         {t:'FIXED',c:'Memory footprint spike during extended sessions (>4hr) — capped at 22MB'},
       ], sig: '+187 new signatures. Covers: AimStar v3.x, Project Infinity recompiled builds, NeverLose loader. Total: 4,891.' },
-      { ver: 'v0.4.1-beta', date: 'Apr 28, 2026', dateSeed: dateToDaySeed(2026,4,28), tags: ['SECURITY'], changes: [
+      { ver: 'v0.4.1.0b', date: 'Apr 28, 2026', dateSeed: dateToDaySeed(2026,4,28), tags: ['SECURITY'], changes: [
         {t:'SECURITY',c:'Patched driver communication channel — prevented IOCTL replay attack vector'},
         {t:'ADDED',c:'CPUID timing checks for hypervisor detection (KVM, custom type-1)'},
         {t:'ADDED',c:'Hardware compatibility profiles for ASUS, MSI, Gigabyte, ASRock motherboards'},
@@ -203,7 +203,7 @@
         {t:'FIXED',c:'Crash on AMD Ryzen 9000 series during PCIe bus enumeration'},
         {t:'FIXED',c:'Discord overlay incorrectly flagged as screen reader'},
       ], sig: '+143 new signatures. Focus: kernel-mode cheats targeting UE5.4 titles. Total: 4,704.' },
-      { ver: 'v0.4.0-beta', date: 'Nov 3, 2025', dateSeed: dateToDaySeed(2025,11,3), tags: ['MAJOR'], changes: [
+      { ver: 'v0.4.0.0b', date: 'Nov 3, 2025', dateSeed: dateToDaySeed(2025,11,3), tags: ['MAJOR'], changes: [
         {t:'ADDED',c:'Head 3: Hardware fingerprinting — PCIe device enumeration + firmware verification'},
         {t:'ADDED',c:'DMA attack board detection (pattern matching for known PCIe devices)'},
         {t:'ADDED',c:'Firmware signature database — 1,200+ verified device firmware hashes'},
@@ -213,32 +213,32 @@
       ]},
 
       // === PHASE 4: Behavioral AI ===
-      { phase: 'Phase 4 — Behavioral AI Engine (v0.3.x)', ver: 'v0.3.4-beta', date: 'Oct 8, 2025', dateSeed: dateToDaySeed(2025,10,8), tags: ['DETECTION UPDATE'], changes: [
+      { phase: 'Phase 4 — Behavioral AI Engine (v0.3.x)', ver: 'v0.3.4.0b', date: 'Oct 8, 2025', dateSeed: dateToDaySeed(2025,10,8), tags: ['DETECTION UPDATE'], changes: [
         {t:'ADDED',c:'ONNX Runtime integration for behavioral AI inference (<2ms per cycle)'},
         {t:'IMPROVED',c:'Internal cheat detection: 94.2% \u2192 97.4%'},
         {t:'FIXED',c:'Baseline profile not resetting between game sessions'},
         {t:'FIXED',c:'AI model memory leak when running >500 concurrent sessions'},
       ], sig: '+96 new signatures. Total: 3,847.' },
-      { ver: 'v0.3.3-beta', date: 'Sep 2, 2025', dateSeed: dateToDaySeed(2025,9,2), tags: ['BETA'], changes: [
+      { ver: 'v0.3.3.0b', date: 'Sep 2, 2025', dateSeed: dateToDaySeed(2025,9,2), tags: ['BETA'], changes: [
         {t:'ADDED',c:'Per-player input fingerprint persistence across sessions'},
         {t:'ADDED',c:'Anomaly score decay — prevents stale flags from accumulating'},
         {t:'IMPROVED',c:'Behavioral model now accounts for input device type (controller vs M&K)'},
         {t:'FIXED',c:'Input sampling dropping to 250Hz under high CPU load'},
         {t:'TEST',c:'Pentest round #3: 847 scenarios, 94.1% detection rate'},
       ], sig: '+78 new signatures. Total: 3,751.' },
-      { ver: 'v0.3.2-beta', date: 'Aug 5, 2025', dateSeed: dateToDaySeed(2025,8,5), tags: ['BETA'], changes: [
+      { ver: 'v0.3.2.0b', date: 'Aug 5, 2025', dateSeed: dateToDaySeed(2025,8,5), tags: ['BETA'], changes: [
         {t:'ADDED',c:'Ban API v2 with webhook support (ban.created, flag.created, session.* events)'},
         {t:'ADDED',c:'Rate limiting on ban API — 100 req/min per API key'},
         {t:'IMPROVED',c:'Webhook retry logic with exponential backoff (3 attempts)'},
         {t:'FIXED',c:'API returning 500 on malformed player_id strings'},
       ]},
-      { ver: 'v0.3.1-beta', date: 'Jul 14, 2025', dateSeed: dateToDaySeed(2025,7,14), tags: ['BETA'], changes: [
+      { ver: 'v0.3.1.0b', date: 'Jul 14, 2025', dateSeed: dateToDaySeed(2025,7,14), tags: ['BETA'], changes: [
         {t:'ADDED',c:'Player baseline profiling — builds per-player input fingerprint over 5+ sessions'},
         {t:'ADDED',c:'Flag confidence decay curve — flags drop 2% confidence per hour without re-trigger'},
         {t:'IMPROVED',c:'AI sampling reduced CPU overhead from 3.2% to 1.8% avg'},
         {t:'TEST',c:'First external pentest engagement — 312 scenarios run'},
       ]},
-      { ver: 'v0.3.0-beta', date: 'Jun 10, 2025', dateSeed: dateToDaySeed(2025,6,10), tags: ['MAJOR'], changes: [
+      { ver: 'v0.3.0.0b', date: 'Jun 10, 2025', dateSeed: dateToDaySeed(2025,6,10), tags: ['MAJOR'], changes: [
         {t:'ADDED',c:'Head 2: Behavioral AI engine — real-time input analysis at 500Hz'},
         {t:'ADDED',c:'Input pattern classification (human vs synthetic input curves)'},
         {t:'ADDED',c:'Confidence-based detection tiers: auto-ban (>95%), flag (30-95%), monitor (<30%)'},
@@ -246,32 +246,32 @@
       ]},
 
       // === PHASE 3: Kernel Mode ===
-      { phase: 'Phase 3 — Kernel Integrity (v0.2.x)', ver: 'v0.2.4-beta', date: 'May 12, 2025', dateSeed: dateToDaySeed(2025,5,12), tags: ['SECURITY'], changes: [
+      { phase: 'Phase 3 — Kernel Integrity (v0.2.x)', ver: 'v0.2.4.0b', date: 'May 12, 2025', dateSeed: dateToDaySeed(2025,5,12), tags: ['SECURITY'], changes: [
         {t:'SECURITY',c:'Driver IOCTL validation hardened — added input length checks'},
         {t:'IMPROVED',c:'Scan cycle time reduced from 8ms to 4.5ms avg'},
         {t:'FIXED',c:'False positive on Corsair iCUE SDK overlay process'},
         {t:'TEST',c:'Internal red team exercise — 128 bypass attempts, 119 caught'},
       ], sig: '+112 new signatures. Total: 2,890.' },
-      { ver: 'v0.2.3-beta', date: 'Apr 18, 2025', dateSeed: dateToDaySeed(2025,4,18), tags: ['DETECTION UPDATE'], changes: [
+      { ver: 'v0.2.3.0b', date: 'Apr 18, 2025', dateSeed: dateToDaySeed(2025,4,18), tags: ['DETECTION UPDATE'], changes: [
         {t:'ADDED',c:'VAD (Virtual Address Descriptor) tree walking for hidden memory regions'},
         {t:'ADDED',c:'Minifilter callbacks for file-based cheat injection detection'},
         {t:'IMPROVED',c:'Signature matching now uses bloom filter pre-pass — 60% faster lookups'},
         {t:'FIXED',c:'Kernel scan failing silently on Windows 10 21H2 with VBS enabled'},
       ], sig: '+89 new signatures. Total: 2,778.' },
-      { ver: 'v0.2.2-beta', date: 'Mar 24, 2025', dateSeed: dateToDaySeed(2025,3,24), tags: ['BETA'], changes: [
+      { ver: 'v0.2.2.0b', date: 'Mar 24, 2025', dateSeed: dateToDaySeed(2025,3,24), tags: ['BETA'], changes: [
         {t:'ADDED',c:'First partner integration test — TITAN-7 dev build'},
         {t:'ADDED',c:'Graceful degradation mode — game continues if driver fails to load'},
         {t:'IMPROVED',c:'Driver memory footprint reduced from 4.8MB to 1.2MB'},
         {t:'FIXED',c:'BSOD on certain ASUS Z790 boards during initial PCIe scan'},
         {t:'TEST',c:'72hr soak test — 0 crashes, 0 memory leaks'},
       ]},
-      { ver: 'v0.2.1-beta', date: 'Mar 3, 2025', dateSeed: dateToDaySeed(2025,3,3), tags: ['BETA'], changes: [
+      { ver: 'v0.2.1.0b', date: 'Mar 3, 2025', dateSeed: dateToDaySeed(2025,3,3), tags: ['BETA'], changes: [
         {t:'ADDED',c:'Signature database v1 — 1,200 known cheat hashes'},
         {t:'ADDED',c:'Automatic signature updates via CDN pull on session start'},
         {t:'IMPROVED',c:'Process enumeration now includes child process tree traversal'},
         {t:'FIXED',c:'Handle leak in kernel module after 1000+ session cycles'},
       ], sig: 'Initial signature database: 1,200 entries. Covers top 15 public cheat providers.' },
-      { ver: 'v0.2.0-beta', date: 'Feb 10, 2025', dateSeed: dateToDaySeed(2025,2,10), tags: ['MAJOR'], changes: [
+      { ver: 'v0.2.0.0b', date: 'Feb 10, 2025', dateSeed: dateToDaySeed(2025,2,10), tags: ['MAJOR'], changes: [
         {t:'ADDED',c:'Head 1: Kernel integrity monitor — ring-0 driver with minifilter'},
         {t:'ADDED',c:'Memory permission scanning — detects RWX regions injected by cheats'},
         {t:'ADDED',c:'Driver signing with test WHQL certificate (production cert pending)'},
@@ -279,26 +279,26 @@
       ]},
 
       // === PHASE 2: Usermode Engine ===
-      { phase: 'Phase 2 — Usermode Scanner (v0.1.x)', ver: 'v0.1.3-alpha', date: 'Jan 20, 2025', dateSeed: dateToDaySeed(2025,1,20), tags: ['ALPHA'], changes: [
+      { phase: 'Phase 2 — Usermode Scanner (v0.1.x)', ver: 'v0.1.3.0a', date: 'Jan 20, 2025', dateSeed: dateToDaySeed(2025,1,20), tags: ['ALPHA'], changes: [
         {t:'ADDED',c:'Anti-debug detection (IsDebuggerPresent, NtQueryInformationProcess)'},
         {t:'ADDED',c:'Process integrity level checks — flags medium IL processes with game handles'},
         {t:'IMPROVED',c:'Scan interval configurable via SDK (default 2000ms)'},
         {t:'FIXED',c:'Scanner crashing on Windows 10 LTSC due to missing API'},
         {t:'TEST',c:'First automated regression test suite — 45 test cases'},
       ]},
-      { ver: 'v0.1.2-alpha', date: 'Dec 12, 2024', dateSeed: dateToDaySeed(2024,12,12), tags: ['ALPHA'], changes: [
+      { ver: 'v0.1.2.0a', date: 'Dec 12, 2024', dateSeed: dateToDaySeed(2024,12,12), tags: ['ALPHA'], changes: [
         {t:'ADDED',c:'Basic overlay detection — flags windows with WS_EX_TRANSPARENT over game'},
         {t:'ADDED',c:'Screenshot capture on detection event (debug builds only)'},
         {t:'IMPROVED',c:'Process scan now uses NtQuerySystemInformation for kernel-level visibility'},
         {t:'FIXED',c:'False positive on Windows Game Bar overlay'},
       ]},
-      { ver: 'v0.1.1-alpha', date: 'Nov 15, 2024', dateSeed: dateToDaySeed(2024,11,15), tags: ['ALPHA'], changes: [
+      { ver: 'v0.1.1.0a', date: 'Nov 15, 2024', dateSeed: dateToDaySeed(2024,11,15), tags: ['ALPHA'], changes: [
         {t:'ADDED',c:'Initial signature database — 200 known cheat hashes (MD5 + SHA256)'},
         {t:'ADDED',c:'File hash scanning on game directory at session start'},
         {t:'IMPROVED',c:'Process enumeration speed: 45ms \u2192 12ms'},
         {t:'FIXED',c:'SDK failing to initialize when game path contains Unicode characters'},
       ]},
-      { ver: 'v0.1.0-alpha', date: 'Oct 18, 2024', dateSeed: dateToDaySeed(2024,10,18), tags: ['ALPHA','MAJOR'], changes: [
+      { ver: 'v0.1.0.0a', date: 'Oct 18, 2024', dateSeed: dateToDaySeed(2024,10,18), tags: ['ALPHA','MAJOR'], changes: [
         {t:'ADDED',c:'Initial prototype — usermode scan engine with process enumeration'},
         {t:'ADDED',c:'Partner SDK v0.1 (C++ static library + header)'},
         {t:'ADDED',c:'Basic module list scanning — compares loaded DLLs against known cheat names'},
@@ -306,19 +306,19 @@
       ]},
 
       // === PHASE 1: Proof of Concept ===
-      { phase: 'Phase 1 — Proof of Concept (v0.0.x)', ver: 'v0.0.3-alpha', date: 'Sep 5, 2024', dateSeed: dateToDaySeed(2024,9,5), tags: ['ALPHA'], changes: [
+      { phase: 'Phase 1 — Proof of Concept (v0.0.x)', ver: 'v0.0.3.0a', date: 'Sep 5, 2024', dateSeed: dateToDaySeed(2024,9,5), tags: ['ALPHA'], changes: [
         {t:'ADDED',c:'Pattern matching engine — scans process memory for known byte sequences'},
         {t:'ADDED',c:'First detection: identified public aimbot by memory signature'},
         {t:'IMPROVED',c:'Scan engine now runs in dedicated thread to avoid game stutter'},
         {t:'TEST',c:'Internal demo with 3 known cheats — 2/3 detected'},
       ]},
-      { ver: 'v0.0.2-alpha', date: 'Jul 22, 2024', dateSeed: dateToDaySeed(2024,7,22), tags: ['ALPHA'], changes: [
+      { ver: 'v0.0.2.0a', date: 'Jul 22, 2024', dateSeed: dateToDaySeed(2024,7,22), tags: ['ALPHA'], changes: [
         {t:'ADDED',c:'Process scanner — enumerates running processes and loaded modules'},
         {t:'ADDED',c:'Basic API key authentication for server communication'},
         {t:'ADDED',c:'Win32 service wrapper for background scanning'},
         {t:'FIXED',c:'Build failing on MSVC 2019 with /std:c++20'},
       ]},
-      { ver: 'v0.0.1-alpha', date: 'Jun 17, 2024', dateSeed: dateToDaySeed(2024,6,17), tags: ['ALPHA','INITIAL'], changes: [
+      { ver: 'v0.0.1.0a', date: 'Jun 17, 2024', dateSeed: dateToDaySeed(2024,6,17), tags: ['ALPHA','INITIAL'], changes: [
         {t:'ADDED',c:'Project initialized — CMake build system, CI pipeline, test harness'},
         {t:'ADDED',c:'Architecture RFC: three-headed detection model (kernel, behavioral, hardware)'},
         {t:'ADDED',c:'Win32 DLL skeleton with basic game attachment via CreateRemoteThread hook'},
@@ -429,7 +429,7 @@
 
     // Generate daily updates between last major release (May 12 2026) and today
     var lastMajorSeed = dateToDaySeed(2026, 5, 12);
-    var dailyUpdates = generateDailyUpdates(lastMajorSeed + 1, today, 'v0.4.2', 4891);
+    var dailyUpdates = generateDailyUpdates(lastMajorSeed + 1, today, 'v0.4.2.0b', 4891);
 
     // ===== RENDER =====
     var timeline = document.getElementById('changelogTimeline');
