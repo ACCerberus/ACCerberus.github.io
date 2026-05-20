@@ -1808,13 +1808,19 @@
           timerEl.textContent = 'WAVE IN PROGRESS';
           timerEl.style.color = '#e04050';
         } else if (waveFired && now >= waveActiveEnd) {
-          // Wave completed
+          // Wave completed — show when it ran and countdown to next
+          var waveTimeStr = waveTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           statusEl.textContent = 'COMPLETED';
           statusEl.style.background = 'rgba(48,200,96,0.1)';
           statusEl.style.borderColor = 'rgba(48,200,96,0.2)';
           statusEl.style.color = '#30c860';
-          timerEl.textContent = 'NEXT WAVE TOMORROW';
-          timerEl.style.color = '#30c860';
+          // Calculate next wave (tomorrow same seeded time)
+          var tomorrow = new Date(waveTime.getTime() + 86400000);
+          var diff = Math.max(0, tomorrow - now);
+          var hh = Math.floor(diff / 3600000);
+          var mm = Math.floor((diff % 3600000) / 60000);
+          timerEl.textContent = 'Executed ' + waveTimeStr + ' \u00b7 next in ~' + hh + 'h ' + mm + 'm';
+          timerEl.style.color = 'var(--text-dim)';
           return; // stop updating
         } else {
           // Countdown to wave
