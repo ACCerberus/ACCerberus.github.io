@@ -1887,18 +1887,30 @@
               if (ipData.security.hosting) threats.push('Datacenter/Hosting');
               div.innerHTML = '<span style="color:var(--red);font-weight:700;">\u2717</span> <span style="color:var(--red);">' + threats.join(' + ') + ' detected</span>';
 
-              // Show VPN warning panel
+              spinner.style.display = 'none';
+              document.querySelector('.ddos-title').textContent = 'Access Blocked';
+              document.querySelector('.ddos-title').style.color = 'var(--red)';
+              document.querySelector('.ddos-sub').textContent = 'Anonymized connections are not permitted.';
+
               vpnWarnEl.style.display = 'block';
               vpnWarnEl.className = 'ddos-vpn-warn warn-vpn';
-              vpnWarnEl.innerHTML = '<div class="ddos-vpn-title vpn-bad">\u26A0 Connection Privacy Alert</div>' +
+              vpnWarnEl.innerHTML = '<div class="ddos-vpn-title vpn-bad">\u26A0 Connection Blocked</div>' +
                 '<div class="ddos-vpn-detail">' +
                 'IP: <span>' + maskIP(ipData.ip) + '</span><br/>' +
                 'Type: <span style="color:var(--red);">' + threats.join(', ') + '</span><br/>' +
                 'ISP: <span>' + (ipData.connection && ipData.connection.isp || 'Unknown') + '</span><br/>' +
                 'Location: <span>' + (ipData.city || '') + ', ' + (ipData.region || '') + ', ' + (ipData.country || '') + '</span><br/>' +
                 'ASN: <span>' + (ipData.connection && ipData.connection.asn || 'N/A') + '</span><br/><br/>' +
-                '<span style="color:var(--red);">Cerberus Anti-Cheat requires a direct connection. VPN, proxy, and Tor traffic is flagged for enhanced monitoring. Game sessions through anonymized connections may be restricted by partner titles.</span>' +
-                '</div>';
+                '<span style="color:var(--red);">Cerberus Anti-Cheat requires a direct connection. Disconnect your VPN, proxy, or Tor client and try again.</span>' +
+                '</div>' +
+                '<button id="ddosRetryBtn" style="margin-top:14px;width:100%;padding:12px;border-radius:8px;background:var(--accent);color:#050507;border:none;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font);">Disconnect VPN & Retry</button>';
+
+              document.getElementById('ddosRetryBtn').addEventListener('click', function() {
+                // Re-check by reloading
+                location.reload();
+              });
+              // Do NOT call next() — blocks here, does not dismiss
+              return;
             } else {
               div.innerHTML = '<span class="chk">\u2713</span> No VPN / proxy / Tor detected';
               if (ipData && ipData.connection) {
@@ -1923,11 +1935,10 @@
       function nextCheck() {
         if (idx >= checks.length) {
           spinner.style.display = 'none';
-          var dismissDelay = (ipData && ipData.security && (ipData.security.vpn || ipData.security.proxy || ipData.security.tor)) ? 4000 : 1000;
           setTimeout(function() {
             shield.classList.add('done');
             setTimeout(function() { shield.style.display = 'none'; }, 600);
-          }, dismissDelay);
+          }, 1000);
           return;
         }
         var check = checks[idx];
