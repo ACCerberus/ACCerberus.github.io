@@ -709,9 +709,6 @@
       g.flags24 = g.threats - g.bans24;
     });
 
-    // Initial render of games table (dynamic updates handled by setInterval above)
-    renderGameTable();
-
     // ===== DYNAMIC SERVER INSTANCE UPDATES =====
     var allServerNames = [
       'PRD-US-EAST-01','PRD-US-EAST-02','PRD-US-WEST-01','PRD-US-WEST-02','PRD-US-CENTRAL-01',
@@ -722,9 +719,12 @@
     var allGenres = ['Tactical FPS','Battle Royale','FPS','MMO','Extraction Shooter','Survival','Arena Shooter','Racing','Open World','Sandbox'];
     var allEngines = ['UE5.4','UE5.3','Unity 6','Custom','Godot 4','CryEngine 5.7'];
 
-    // TODO #16: Track last event time per instance
+    // Track last event time per instance
     var instanceLastEvent = {};
     games.forEach(function(g) { instanceLastEvent[g.code] = Date.now() - Math.floor(Math.random() * 30000); });
+
+    // Initial render of games table
+    renderGameTable();
 
     function renderGameTable() {
       var html = '';
