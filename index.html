@@ -1417,34 +1417,37 @@
       gridObserver.observe(grid);
     });
 
-    // Live counters — realistic for early beta with 4 test titles
+    // Live counters — early beta, 4 titles, ~200 concurrent testers
     (function() {
-      var TITLES = 4; // games currently in closed beta testing
-      var PENTESTS_BASE = 1247; // pentest scenarios run since launch
+      var TITLES = 4;
 
       var stored = {};
-      try { stored = JSON.parse(localStorage.getItem('cerberusStats2') || '{}'); } catch(e) {}
+      try { stored = JSON.parse(localStorage.getItem('cerberusStats3') || '{}'); } catch(e) {}
 
-      // Calculate time-based growth since last visit
       var lastVisit = stored.lastVisit || Date.now();
       var elapsed = (Date.now() - lastVisit) / 1000;
 
-      // Early beta: ~12K threats blocked, ~34K sessions — small player pools
+      // Realistic base numbers for a product ~7 months into closed beta
       var baseThreats = stored.threats || 12847;
       var baseSessions = stored.sessions || 34219;
-      var basePentests = stored.pentests || PENTESTS_BASE;
+      var basePentests = stored.pentests || 1247;
 
-      // Growth rates for 4 titles with ~800 concurrent testers:
-      // ~0.15 threats/sec, ~0.8 sessions/sec, ~1 pentest every 30 min
-      var threatGrowth = Math.floor(elapsed * (0.12 + Math.random() * 0.06));
-      var sessionGrowth = Math.floor(elapsed * (0.6 + Math.random() * 0.4));
-      var pentestGrowth = Math.floor(elapsed / 1800);
+      // Offline growth — extremely slow
+      // ~1 threat every 45s avg (cheaters are rare in small pools)
+      // ~1 session every 15s avg (players joining across 4 titles)
+      // ~1 pentest every 8 min (automated CI pipeline runs)
+      var threatGrowth = Math.floor(elapsed / 45);
+      var sessionGrowth = Math.floor(elapsed / 15);
+      var pentestGrowth = Math.floor(elapsed / 480);
 
-      var threats = baseThreats + threatGrowth + Math.floor(Math.random() * 5);
-      var sessions = baseSessions + sessionGrowth + Math.floor(Math.random() * 10);
+      var threats = baseThreats + threatGrowth;
+      var sessions = baseSessions + sessionGrowth;
       var pentests = basePentests + pentestGrowth;
 
-      try { localStorage.setItem('cerberusStats2', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, lastVisit: Date.now() })); } catch(e) {}
+      function save() {
+        try { localStorage.setItem('cerberusStats3', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, lastVisit: Date.now() })); } catch(e) {}
+      }
+      save();
 
       function animateCounter(el, target) {
         var duration = 1500; var startTime = null;
@@ -1463,27 +1466,38 @@
       var sessionEl = document.getElementById('statSessions');
       var pentestEl = document.getElementById('statPentests');
 
-      if (titlesEl) animateCounter(titlesEl, TITLES);
+      if (titlesEl) { titlesEl.textContent = TITLES; }
       if (threatEl) animateCounter(threatEl, threats);
       if (sessionEl) animateCounter(sessionEl, sessions);
       if (pentestEl) animateCounter(pentestEl, pentests);
 
-      // Live tick — slow growth for small beta pool
-      setInterval(function() {
-        threats += Math.floor(Math.random() * 2) + 1;
+      // Live ticks — very slow, irregular intervals to feel real
+      // Threats: +1 every 30-90 seconds (most sessions are clean)
+      function tickThreat() {
+        threats += 1;
         if (threatEl) threatEl.textContent = threats.toLocaleString();
-        try { localStorage.setItem('cerberusStats2', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, lastVisit: Date.now() })); } catch(e) {}
-      }, 8000 + Math.floor(Math.random() * 7000)); // every 8-15s
-      setInterval(function() {
-        sessions += Math.floor(Math.random() * 3) + 1;
+        save();
+        setTimeout(tickThreat, 30000 + Math.floor(Math.random() * 60000));
+      }
+      setTimeout(tickThreat, 20000 + Math.floor(Math.random() * 40000));
+
+      // Sessions: +1 every 10-25 seconds (players joining/leaving)
+      function tickSession() {
+        sessions += 1;
         if (sessionEl) sessionEl.textContent = sessions.toLocaleString();
-        try { localStorage.setItem('cerberusStats2', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, lastVisit: Date.now() })); } catch(e) {}
-      }, 4000 + Math.floor(Math.random() * 4000)); // every 4-8s
-      setInterval(function() {
+        save();
+        setTimeout(tickSession, 10000 + Math.floor(Math.random() * 15000));
+      }
+      setTimeout(tickSession, 8000 + Math.floor(Math.random() * 12000));
+
+      // Pentests: +1 every 5-12 minutes (automated test suites)
+      function tickPentest() {
         pentests += 1;
         if (pentestEl) pentestEl.textContent = pentests.toLocaleString();
-        try { localStorage.setItem('cerberusStats2', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, lastVisit: Date.now() })); } catch(e) {}
-      }, 90000 + Math.floor(Math.random() * 60000)); // every 1.5-2.5 min
+        save();
+        setTimeout(tickPentest, 300000 + Math.floor(Math.random() * 420000));
+      }
+      setTimeout(tickPentest, 180000 + Math.floor(Math.random() * 300000));
     })();
 
     // ===== LIVE DEMO ENGINE =====
