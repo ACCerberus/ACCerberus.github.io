@@ -2,13 +2,8 @@ name: Cerberus Heartbeat
 
 on:
   schedule:
-    # Runs every 4-6 hours (GitHub Actions cron is UTC)
-    # 02:00, 06:30, 11:00, 15:30, 20:00 UTC — spread across the day
-    - cron: '0 2 * * *'
-    - cron: '30 6 * * *'
-    - cron: '0 11 * * *'
-    - cron: '30 15 * * *'
-    - cron: '0 20 * * *'
+    # Runs every 2 hours — 12 commits/day, ~360/month
+    - cron: '0 */2 * * *'
   workflow_dispatch: # Allow manual trigger
 
 permissions:
