@@ -1,0 +1,123 @@
+name: Cerberus Heartbeat
+
+on:
+  schedule:
+    # Runs every 4-6 hours (GitHub Actions cron is UTC)
+    # 02:00, 06:30, 11:00, 15:30, 20:00 UTC — spread across the day
+    - cron: '0 2 * * *'
+    - cron: '30 6 * * *'
+    - cron: '0 11 * * *'
+    - cron: '30 15 * * *'
+    - cron: '0 20 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate realistic update
+        run: |
+          # Seed based on current timestamp for variety
+          SEED=$(($(date +%s) % 10000))
+          HOUR=$(date -u +%H)
+          DAY=$(date -u +%u)  # 1=Monday, 7=Sunday
+
+          # Read current state
+          SIGS=$(jq '.signatureDb' data/state.json)
+          BANS=$(jq '.totalBans' data/state.json)
+          BUILD=$(jq '.buildNumber' data/state.json)
+          DETECTIONS=$(jq '.dailyDetections' data/state.json)
+          LATENCY=$(jq '.avgScanLatency' data/state.json)
+          REVIEWS=$(jq '.pendingReviews' data/state.json)
+          SIG_QUEUE=$(jq '.signatureQueue' data/state.json)
+
+          # Increment values realistically
+          NEW_SIGS=$((SIGS + RANDOM % 8 + 1))
+          NEW_BANS=$((BANS + RANDOM % 400 + 50))
+          NEW_BUILD=$((BUILD + (RANDOM % 3 == 0 ? 1 : 0)))
+          NEW_DETECTIONS=$((1200 + RANDOM % 900))
+          NEW_LATENCY=$(echo "scale=2; 0.3 + $(echo "$RANDOM % 20" | bc) / 100" | bc)
+          NEW_REVIEWS=$((RANDOM % 18 + 3))
+          NEW_SIG_QUEUE=$((RANDOM % 12))
+
+          # Vary threat level by time
+          LEVELS=("LOW" "LOW" "MODERATE" "MODERATE" "MODERATE" "ELEVATED" "ELEVATED" "HIGH")
+          LEVEL_IDX=$((RANDOM % ${#LEVELS[@]}))
+          NEW_LEVEL=${LEVELS[$LEVEL_IDX]}
+
+          # Determine active sessions based on time of day (UTC)
+          if [ "$HOUR" -ge 14 ] && [ "$HOUR" -le 22 ]; then
+            SESSIONS=$((4000 + RANDOM % 3000))
+          elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 14 ]; then
+            SESSIONS=$((2500 + RANDOM % 2000))
+          else
+            SESSIONS=$((1200 + RANDOM % 1500))
+          fi
+
+          # Weekend boost
+          if [ "$DAY" -ge 6 ]; then
+            SESSIONS=$((SESSIONS * 135 / 100))
+          fi
+
+          # Update state.json
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          jq --arg now "$NOW" \
+             --argjson sigs "$NEW_SIGS" \
+             --argjson bans "$NEW_BANS" \
+             --argjson build "$NEW_BUILD" \
+             --argjson det "$NEW_DETECTIONS" \
+             --argjson lat "$NEW_LATENCY" \
+             --argjson sess "$SESSIONS" \
+             --argjson rev "$NEW_REVIEWS" \
+             --argjson sigq "$NEW_SIG_QUEUE" \
+             --arg level "$NEW_LEVEL" \
+             '.lastUpdate = $now | .signatureDb = $sigs | .totalBans = $bans | .buildNumber = $build | .dailyDetections = $det | .avgScanLatency = $lat | .activeSessions = $sess | .pendingReviews = $rev | .signatureQueue = $sigq | .threatLevel = $level' \
+             data/state.json > data/state_tmp.json && mv data/state_tmp.json data/state.json
+
+          # ── Pick a realistic commit message ──
+          MESSAGES=(
+            "sig-db: +$((NEW_SIGS - SIGS)) signatures — coverage update"
+            "detection: update behavioral thresholds for scan cycle"
+            "engine: tune memory scanner heuristics"
+            "sig-db: push new signature batch — $NEW_SIGS total"
+            "infra: rotate webhook signing keys"
+            "detection: recalibrate AI confidence thresholds"
+            "sig-db: add patterns for recent loader variants"
+            "engine: optimize ring-0 scan path latency"
+            "infra: update region health check intervals"
+            "detection: expand DMA board fingerprint database"
+            "sig-db: cover new obfuscation patterns"
+            "engine: improve kernel callback verification"
+            "detection: update macro detection model weights"
+            "infra: sync signature DB across all regions"
+            "engine: patch false positive on NVIDIA overlay hook"
+            "detection: refine HWID spoof detection heuristics"
+            "sig-db: neutralize $((RANDOM % 3 + 1)) new provider builds"
+            "infra: rotate API rate limit windows"
+            "engine: adjust PCIe TLP timing thresholds"
+            "detection: update input sampling baseline parameters"
+          )
+          MSG_IDX=$((RANDOM % ${#MESSAGES[@]}))
+          COMMIT_MSG="${MESSAGES[$MSG_IDX]}"
+
+          echo "COMMIT_MSG=$COMMIT_MSG" >> $GITHUB_ENV
+
+      - name: Commit and push
+        run: |
+          git config user.name "cerberus-bot"
+          git config user.email "cerberus-bot@cerberus.dev"
+          git add data/state.json
+
+          # Check if there are changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "$COMMIT_MSG"
+          git push

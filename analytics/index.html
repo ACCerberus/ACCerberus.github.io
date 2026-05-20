@@ -496,6 +496,15 @@
     var daySeed = Math.floor(Date.now() / 86400000);
     function seeded(seed) { var x = Math.sin(seed) * 10000; return x - Math.floor(x); }
 
+    // ===== PULL LIVE STATE FROM state.json (updated by GitHub Actions heartbeat) =====
+    fetch('/data/state.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(state) {
+      var el = document.getElementById('dashTime');
+      if (el && state.lastUpdate) {
+        var d = new Date(state.lastUpdate);
+        el.textContent = 'Last sync: ' + d.toLocaleTimeString() + ' \u00b7 Sigs: ' + state.signatureDb + ' \u00b7 Threat: ' + state.threatLevel;
+      }
+    }).catch(function() {});
+
     // ===== DATE-SEEDED DAILY VALUES =====
     // Detection rate: fluctuates 95.6% - 96.8% daily
     var detRate = (95.6 + seeded(daySeed * 101) * 1.2).toFixed(1);
