@@ -96,13 +96,12 @@
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
       padding: 20px 22px; position: relative;
     }
-    .stat-card-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .stat-card-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     .stat-card-value {
       font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text-bright);
     }
     .stat-card-change {
-      position: absolute; top: 20px; right: 22px; font-size: 0.68rem; font-weight: 600;
-      padding: 2px 8px; border-radius: 4px;
+      font-size: 0.62rem; font-weight: 600; padding: 2px 6px; border-radius: 4px; flex-shrink: 0;
     }
     .stat-up { background: rgba(48,200,96,0.1); color: var(--green); }
     .stat-down { background: rgba(224,64,80,0.1); color: var(--red); }
@@ -258,29 +257,24 @@
   <!-- STAT CARDS -->
   <div class="stat-row">
     <div class="stat-card">
-      <div class="stat-card-label">Threats Blocked (24h)</div>
+      <div class="stat-card-label"><span>Threats Blocked (24h)</span><span class="stat-card-change stat-up" id="sThreatChange">+12.4%</span></div>
       <div class="stat-card-value" id="sThreat24">0</div>
-      <div class="stat-card-change stat-up" id="sThreatChange">+12.4%</div>
     </div>
     <div class="stat-card">
-      <div class="stat-card-label">Active Sessions</div>
+      <div class="stat-card-label"><span>Active Sessions</span><span class="stat-card-change stat-up">LIVE</span></div>
       <div class="stat-card-value" id="sActiveSessions">0</div>
-      <div class="stat-card-change stat-up">LIVE</div>
     </div>
     <div class="stat-card">
-      <div class="stat-card-label">Detection Rate</div>
+      <div class="stat-card-label"><span>Detection Rate</span><span class="stat-card-change stat-up">+0.4%</span></div>
       <div class="stat-card-value" id="sDetRate">96.2%</div>
-      <div class="stat-card-change stat-up">+0.4%</div>
     </div>
     <div class="stat-card">
-      <div class="stat-card-label">Avg Latency</div>
+      <div class="stat-card-label"><span>Avg Latency</span><span class="stat-card-change stat-down">-0.3ms</span></div>
       <div class="stat-card-value" id="sLatency">2.1ms</div>
-      <div class="stat-card-change stat-down">-0.3ms</div>
     </div>
     <div class="stat-card">
-      <div class="stat-card-label">False Positive Rate</div>
+      <div class="stat-card-label"><span>False Positive Rate</span><span class="stat-card-change stat-down">-0.003%</span></div>
       <div class="stat-card-value" id="sFalsePos">0.012%</div>
-      <div class="stat-card-change stat-down">-0.003%</div>
     </div>
   </div>
 
