@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Meet the engineers and security researchers behind Cerberus." />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --bg-card-hover: #0e0e15;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15); --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font); background: var(--bg); color: var(--text);
+      line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c07818);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507;
+    }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 160px 24px 80px; text-align: center; position: relative; z-index: 1;
+    }
+    .page-header-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 12px;
+    }
+    .page-header h1 {
+      font-family: var(--font-heading); font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800; color: var(--text-bright); letter-spacing: -1.5px; margin-bottom: 16px;
+    }
+    .page-header p { font-size: 1rem; color: var(--text-dim); max-width: 520px; margin: 0 auto; }
+
+    /* STATS BAR */
+    .stats-bar {
+      display: flex; justify-content: center; gap: 48px; padding: 32px 24px;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      position: relative; z-index: 1; max-width: 800px; margin: 0 auto 60px;
+    }
+    .stat-item { text-align: center; }
+    .stat-value { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+    /* LEADERSHIP */
+    .section { max-width: 1100px; margin: 0 auto; padding: 60px 24px; position: relative; z-index: 1; }
+    .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+    .section-title { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; color: var(--text-bright); letter-spacing: -0.5px; margin-bottom: 40px; }
+
+    .lead-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 80px; }
+    .lead-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 32px; transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .lead-card:hover { border-color: rgba(232,160,32,0.15); transform: translateY(-4px); }
+    .lead-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent); opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .lead-card:hover::after { opacity: 1; }
+    .lead-avatar {
+      width: 56px; height: 56px; border-radius: 14px; margin-bottom: 20px;
+      background: var(--accent-dim); display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 1.1rem; color: var(--accent);
+    }
+    .lead-name { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: var(--text-bright); margin-bottom: 4px; }
+    .lead-role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
+    .lead-bio { font-size: 0.82rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 16px; }
+    .lead-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .lead-tag {
+      padding: 3px 10px; border-radius: 12px; font-size: 0.68rem; font-weight: 500;
+      background: rgba(255,255,255,0.02); color: var(--text-dim); border: 1px solid var(--border);
+    }
+
+    /* DEPARTMENT GRID */
+    .dept-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 80px; }
+    .dept-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 28px 32px; transition: all 0.3s;
+    }
+    .dept-card:hover { border-color: rgba(232,160,32,0.1); }
+    .dept-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .dept-icon {
+      width: 40px; height: 40px; border-radius: 10px; display: flex;
+      align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+    }
+    .dept-icon-kernel { background: rgba(232,160,32,0.1); }
+    .dept-icon-ai { background: rgba(136,96,232,0.1); }
+    .dept-icon-hw { background: rgba(64,136,232,0.1); }
+    .dept-icon-sec { background: rgba(224,64,80,0.1); }
+    .dept-icon-sdk { background: rgba(48,200,96,0.1); }
+    .dept-icon-qa { background: rgba(232,160,32,0.1); }
+    .dept-name { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); }
+    .dept-count { font-size: 0.72rem; color: var(--text-dim); }
+    .dept-desc { font-size: 0.82rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 16px; }
+    .dept-members { display: flex; flex-wrap: wrap; gap: 8px; }
+    .dept-member {
+      display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+      border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+    }
+    .dept-member-avatar {
+      width: 24px; height: 24px; border-radius: 6px; background: var(--accent-dim);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6rem; font-weight: 700; color: var(--accent);
+    }
+    .dept-member-name { font-size: 0.75rem; color: var(--text); font-weight: 500; }
+    .dept-member-title { font-size: 0.65rem; color: var(--text-dim); }
+
+    /* HIRING BANNER */
+    .hiring-banner {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 48px; text-align: center; position: relative; z-index: 1;
+      max-width: 800px; margin: 0 auto 80px;
+    }
+    .hiring-badge {
+      display: inline-block; padding: 4px 16px; border-radius: 20px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+      background: rgba(48,200,96,0.1); color: var(--green); border: 1px solid rgba(48,200,96,0.3);
+      margin-bottom: 16px; animation: hiringPulse 2s ease-in-out infinite;
+    }
+    @keyframes hiringPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(48,200,96,0.2); }
+      50% { box-shadow: 0 0 0 8px rgba(48,200,96,0); }
+    }
+    .hiring-banner h3 {
+      font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700;
+      color: var(--text-bright); margin-bottom: 12px;
+    }
+    .hiring-banner p { font-size: 0.88rem; color: var(--text-dim); margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .hiring-roles { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+    .hiring-role {
+      padding: 6px 16px; border-radius: 8px; font-size: 0.78rem; font-weight: 500;
+      background: rgba(255,255,255,0.02); color: var(--text); border: 1px solid var(--border);
+    }
+    .btn-hire {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
+      background: var(--accent); color: #050507; text-decoration: none; border: none; cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn-hire:hover { background: #d09018; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(232,160,32,0.3); }
+
+    /* FOOTER */
+    .footer {
+      padding: 40px 24px; text-align: center; border-top: 1px solid var(--border);
+      position: relative; z-index: 1;
+    }
+    .footer-brand { font-family: var(--font-heading); font-weight: 700; font-size: 1rem; color: var(--text-bright); margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    .divider { width: 60px; height: 2px; background: var(--accent); margin: 0 auto; opacity: 0.3; }
+    .dept-expand {
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px;
+      border-radius: 8px; background: rgba(232,160,32,0.06); border: 1px solid rgba(232,160,32,0.15);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .dept-expand:hover { background: rgba(232,160,32,0.12); border-color: rgba(232,160,32,0.25); }
+    .dept-expand .dept-member-avatar { background: rgba(232,160,32,0.15); }
+    .dept-expand .dept-member-name { font-size: 0.75rem; color: var(--accent); font-weight: 600; }
+    .dept-hidden { display: none; }
+    .dept-hidden.expanded { display: flex; }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .lead-grid { grid-template-columns: 1fr; }
+      .dept-grid { grid-template-columns: 1fr; }
+      .stats-bar { flex-wrap: wrap; gap: 24px; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 600px) { .nav { padding: 12px 20px; } }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Overview</a>
+      <a href="/team/" class="active">Team</a>
+      <a href="/analytics/">Analytics</a>
+      <a href="/#pricing">Pricing</a>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="page-header-label">Our Team</div>
+    <h1>The people behind the gate</h1>
+    <p>75+ engineers across 6 departments, united by a single mission: make cheating in competitive games technically impossible.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar reveal">
+    <div class="stat-item">
+      <div class="stat-value">78</div>
+      <div class="stat-label">Engineers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">6</div>
+      <div class="stat-label">Departments</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">14</div>
+      <div class="stat-label">Countries</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">220+</div>
+      <div class="stat-label">Combined Years</div>
+    </div>
+  </div>
+
+  <!-- LEADERSHIP -->
+  <div class="section">
+    <div class="section-label reveal">Leadership</div>
+    <div class="section-title reveal">Core team leads</div>
+    <div class="lead-grid">
+      <div class="lead-card reveal">
+        <div class="lead-avatar">NV</div>
+        <div class="lead-name">nvoronov</div>
+        <div class="lead-role">Lead Developer & System Architect</div>
+        <div class="lead-bio">Designed the three-head architecture and oversees all cross-team integration. 12 years in systems programming with prior experience building kernel-mode security products at two major endpoint protection vendors.</div>
+        <div class="lead-tags">
+          <span class="lead-tag">Architecture</span>
+          <span class="lead-tag">Systems Design</span>
+          <span class="lead-tag">C/C++</span>
+          <span class="lead-tag">Rust</span>
+        </div>
+      </div>
+      <div class="lead-card reveal">
+        <div class="lead-avatar">DK</div>
+        <div class="lead-name">dkrasov</div>
+        <div class="lead-role">Head of Kernel Engineering</div>
+        <div class="lead-bio">Former driver developer at a major security vendor. Specializes in ring-0 integrity monitoring, code-signing enforcement, and Windows kernel internals. Architected the driver verification pipeline.</div>
+        <div class="lead-tags">
+          <span class="lead-tag">Ring-0</span>
+          <span class="lead-tag">WDM/WDF</span>
+          <span class="lead-tag">C++</span>
+          <span class="lead-tag">Hypervisors</span>
+        </div>
+      </div>
+      <div class="lead-card reveal">
+        <div class="lead-avatar">SN</div>
+        <div class="lead-name">s.nakamura</div>
+        <div class="lead-role">Head of AI & Behavioral Analysis</div>
+        <div class="lead-bio">ML researcher focused on real-time anomaly detection in adversarial environments. Built the behavioral inference engine that processes input streams at sub-2ms latency. Background in competitive FPS analysis.</div>
+        <div class="lead-tags">
+          <span class="lead-tag">PyTorch</span>
+          <span class="lead-tag">ONNX Runtime</span>
+          <span class="lead-tag">Anomaly Detection</span>
+          <span class="lead-tag">Python</span>
+        </div>
+      </div>
+      <div class="lead-card reveal">
+        <div class="lead-avatar">AX</div>
+        <div class="lead-name">ArsenalRX</div>
+        <div class="lead-role">Head of Threat Research & Hardware Security</div>
+        <div class="lead-bio">Oversees both the red team and hardware security divisions. Self-taught from a young age — started by tearing apart systems at the binary level, building exploits and then building defenses against them. Leads DMA attack research, firmware reverse engineering, and coordinates threat intelligence operations across partner studios.</div>
+        <div class="lead-tags">
+          <span class="lead-tag">Red Team</span>
+          <span class="lead-tag">DMA Research</span>
+          <span class="lead-tag">Firmware RE</span>
+          <span class="lead-tag">PCIe</span>
+          <span class="lead-tag">Threat Intel</span>
+        </div>
+      </div>
+      <div class="lead-card reveal">
+        <div class="lead-avatar">LW</div>
+        <div class="lead-name">lweber</div>
+        <div class="lead-role">Head of SDK & Integration</div>
+        <div class="lead-bio">Owns the developer experience end to end. Built the C/C++ SDK, C# bindings, Unreal plugin, and Unity package. Ensures Cerberus integrates cleanly with any engine or build system in under 10 minutes.</div>
+        <div class="lead-tags">
+          <span class="lead-tag">SDK Design</span>
+          <span class="lead-tag">Unreal</span>
+          <span class="lead-tag">Unity</span>
+          <span class="lead-tag">CMake</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-bottom: 80px;"></div>
+
+    <!-- DEPARTMENTS -->
+    <div class="section-label reveal">Departments</div>
+    <div class="section-title reveal">How we're organized</div>
+    <div class="dept-grid">
+      <div class="dept-card reveal">
+        <div class="dept-header">
+          <div class="dept-icon dept-icon-kernel">&#x1F6E1;</div>
+          <div>
+            <div class="dept-name">Kernel Engineering</div>
+            <div class="dept-count">14 engineers</div>
+          </div>
+        </div>
+        <div class="dept-desc">Develops and maintains the ring-0 driver, integrity verification systems, code-signing enforcement, and memory permission auditing. Handles all kernel-mode operations across Windows builds.</div>
+        <div class="dept-members">
+          <div class="dept-member"><div class="dept-member-avatar">DK</div><div><div class="dept-member-name">dkrasov</div><div class="dept-member-title">Lead</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">AT</div><div><div class="dept-member-name">atorres</div><div class="dept-member-title">Sr. Driver Dev</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">VP</div><div><div class="dept-member-name">vpetrov</div><div class="dept-member-title">Kernel Security</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">JL</div><div><div class="dept-member-name">jliao</div><div class="dept-member-title">Integrity Monitor</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">OM</div><div><div class="dept-member-name">omueller</div><div class="dept-member-title">Minifilter Dev</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">RS</div><div><div class="dept-member-name">rsingh</div><div class="dept-member-title">Memory Audit</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">PD</div><div><div class="dept-member-name">pdimitrov</div><div class="dept-member-title">Syscall Eng.</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">CH</div><div><div class="dept-member-name">charris</div><div class="dept-member-title">Driver Dev</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">TK</div><div><div class="dept-member-name">tkuznetsov</div><div class="dept-member-title">Hypervisor Eng.</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">IN</div><div><div class="dept-member-name">inakamura</div><div class="dept-member-title">Code Signing</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">MW</div><div><div class="dept-member-name">mwong</div><div class="dept-member-title">WDM Specialist</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">LF</div><div><div class="dept-member-name">lferreira</div><div class="dept-member-title">Boot Integrity</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">AP</div><div><div class="dept-member-name">apark</div><div class="dept-member-title">Ring-0 Testing</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">GR</div><div><div class="dept-member-name">groberts</div><div class="dept-member-title">Driver QA</div></div></div>
+          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+11</div><div class="dept-member-name">Show all</div></div>
+        </div>
+      </div>
+      <div class="dept-card reveal">
+        <div class="dept-header">
+          <div class="dept-icon dept-icon-ai">&#x1F9E0;</div>
+          <div>
+            <div class="dept-name">AI & Behavioral Analysis</div>
+            <div class="dept-count">12 engineers</div>
+          </div>
+        </div>
+        <div class="dept-desc">Builds and trains the behavioral detection models. Handles real-time input analysis, anomaly classification, model optimization for sub-2ms inference, and continuous retraining against new cheat patterns.</div>
+        <div class="dept-members">
+          <div class="dept-member"><div class="dept-member-avatar">SN</div><div><div class="dept-member-name">s.nakamura</div><div class="dept-member-title">Lead</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">RH</div><div><div class="dept-member-name">rhuang</div><div class="dept-member-title">ML Engineer</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">EL</div><div><div class="dept-member-name">elindqvist</div><div class="dept-member-title">Data Scientist</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">MC</div><div><div class="dept-member-name">mcheng</div><div class="dept-member-title">ONNX Optimizer</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">AK</div><div><div class="dept-member-name">akovalenko</div><div class="dept-member-title">Pattern Analyst</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">JB</div><div><div class="dept-member-name">jbraun</div><div class="dept-member-title">Inference Eng.</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">SK</div><div><div class="dept-member-name">skato</div><div class="dept-member-title">Training Pipeline</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">PN</div><div><div class="dept-member-name">pnguyen</div><div class="dept-member-title">Feature Eng.</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">DR</div><div><div class="dept-member-name">drivera</div><div class="dept-member-title">Anomaly Models</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">IS</div><div><div class="dept-member-name">istoica</div><div class="dept-member-title">Input Sampler</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">WL</div><div><div class="dept-member-name">wlee</div><div class="dept-member-title">Model Eval</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">CT</div><div><div class="dept-member-name">ctaylor</div><div class="dept-member-title">ML Ops</div></div></div>
+          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+9</div><div class="dept-member-name">Show all</div></div>
+        </div>
+      </div>
+      <div class="dept-card reveal">
+        <div class="dept-header">
+          <div class="dept-icon dept-icon-hw">&#x1F50D;</div>
+          <div>
+            <div class="dept-name">Hardware Security</div>
+            <div class="dept-count">10 engineers</div>
+          </div>
+        </div>
+        <div class="dept-desc">Handles PCIe device enumeration, firmware signature analysis, DMA attack pattern detection, and hardware fingerprinting. Maintains the database of known malicious DMA boards and firmware variants.</div>
+        <div class="dept-members">
+          <div class="dept-member"><div class="dept-member-avatar">AX</div><div><div class="dept-member-name">ArsenalRX</div><div class="dept-member-title">Lead</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">MR</div><div><div class="dept-member-name">mradzinski</div><div class="dept-member-title">Sr. Firmware RE</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">KO</div><div><div class="dept-member-name">kokonkwo</div><div class="dept-member-title">Firmware RE</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">NB</div><div><div class="dept-member-name">nbergman</div><div class="dept-member-title">PCIe Specialist</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">HC</div><div><div class="dept-member-name">hcarter</div><div class="dept-member-title">FPGA Dev</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">YT</div><div><div class="dept-member-name">ytanaka</div><div class="dept-member-title">Bus Analyzer</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">EP</div><div><div class="dept-member-name">epavel</div><div class="dept-member-title">DMA Research</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">RB</div><div><div class="dept-member-name">rbaker</div><div class="dept-member-title">Fingerprinting</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">LS</div><div><div class="dept-member-name">lsokolov</div><div class="dept-member-title">Embedded Sec.</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">AD</div><div><div class="dept-member-name">ademir</div><div class="dept-member-title">Signal Analysis</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">JW</div><div><div class="dept-member-name">jwilson</div><div class="dept-member-title">HW Testing</div></div></div>
+          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+7</div><div class="dept-member-name">Show all</div></div>
+        </div>
+      </div>
+      <div class="dept-card reveal">
+        <div class="dept-header">
+          <div class="dept-icon dept-icon-sec">&#x1F4A0;</div>
+          <div>
+            <div class="dept-name">Threat Research & Red Team</div>
+            <div class="dept-count">18 engineers</div>
+          </div>
+        </div>
+        <div class="dept-desc">Continuously reverse-engineers emerging cheat techniques, develops internal proof-of-concept exploits, and stress-tests Cerberus defenses. Coordinates threat intelligence sharing with partner studios.</div>
+        <div class="dept-members">
+          <div class="dept-member"><div class="dept-member-avatar">AX</div><div><div class="dept-member-name">ArsenalRX</div><div class="dept-member-title">Lead</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">JC</div><div><div class="dept-member-name">jcastillo</div><div class="dept-member-title">Sr. Red Team Analyst</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">FS</div><div><div class="dept-member-name">fsvensson</div><div class="dept-member-title">Sr. RE Analyst</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">YK</div><div><div class="dept-member-name">ykim</div><div class="dept-member-title">Exploit Dev</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">NP</div><div><div class="dept-member-name">npatel</div><div class="dept-member-title">Malware Analyst</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">TO</div><div><div class="dept-member-name">tolivier</div><div class="dept-member-title">Cheat RE</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">AG</div><div><div class="dept-member-name">agomez</div><div class="dept-member-title">Vuln Research</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">BZ</div><div><div class="dept-member-name">bzhang</div><div class="dept-member-title">Loader Analysis</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">KM</div><div><div class="dept-member-name">kmorozov</div><div class="dept-member-title">Anti-Tamper</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">DH</div><div><div class="dept-member-name">dhansen</div><div class="dept-member-title">Sig. Author</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">RO</div><div><div class="dept-member-name">rosullivan</div><div class="dept-member-title">Intel Coordinator</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">MW</div><div><div class="dept-member-name">mwatanabe</div><div class="dept-member-title">Binary Analyst</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">LK</div><div><div class="dept-member-name">lkraus</div><div class="dept-member-title">Driver RE</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">SC</div><div><div class="dept-member-name">schan</div><div class="dept-member-title">Pattern Eng.</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">FI</div><div><div class="dept-member-name">fivanov</div><div class="dept-member-title">Red Team Ops</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">JR</div><div><div class="dept-member-name">jreyes</div><div class="dept-member-title">Exploit Analyst</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">PB</div><div><div class="dept-member-name">pberg</div><div class="dept-member-title">Sandbox Eng.</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">VN</div><div><div class="dept-member-name">vnguyen</div><div class="dept-member-title">Threat Analyst</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">EK</div><div><div class="dept-member-name">ekim</div><div class="dept-member-title">Cheat DB Eng.</div></div></div>
+          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+15</div><div class="dept-member-name">Show all</div></div>
+        </div>
+      </div>
+      <div class="dept-card reveal">
+        <div class="dept-header">
+          <div class="dept-icon dept-icon-sdk">&#x1F4E6;</div>
+          <div>
+            <div class="dept-name">SDK & Developer Experience</div>
+            <div class="dept-count">11 engineers</div>
+          </div>
+        </div>
+        <div class="dept-desc">Builds and maintains the public SDK, engine plugins, documentation, and integration tooling. Ensures any studio can go from zero to protected in under 10 minutes regardless of engine or build system.</div>
+        <div class="dept-members">
+          <div class="dept-member"><div class="dept-member-avatar">LW</div><div><div class="dept-member-name">lweber</div><div class="dept-member-title">Lead</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">CP</div><div><div class="dept-member-name">cpark</div><div class="dept-member-title">Unreal Plugin</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">DA</div><div><div class="dept-member-name">dandrade</div><div class="dept-member-title">Unity Integration</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">KH</div><div><div class="dept-member-name">khalil</div><div class="dept-member-title">C# Bindings</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">ST</div><div><div class="dept-member-name">sthomas</div><div class="dept-member-title">API Design</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">RM</div><div><div class="dept-member-name">rmartin</div><div class="dept-member-title">Docs Writer</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">YL</div><div><div class="dept-member-name">ylee</div><div class="dept-member-title">Godot Plugin</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">OV</div><div><div class="dept-member-name">ovoronova</div><div class="dept-member-title">CMake Tooling</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">HW</div><div><div class="dept-member-name">hwang</div><div class="dept-member-title">SDK Testing</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">JF</div><div><div class="dept-member-name">jfischer</div><div class="dept-member-title">Integration Eng.</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">NC</div><div><div class="dept-member-name">ncohen</div><div class="dept-member-title">Build Systems</div></div></div>
+          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+8</div><div class="dept-member-name">Show all</div></div>
+        </div>
+      </div>
+      <div class="dept-card reveal">
+        <div class="dept-header">
+          <div class="dept-icon dept-icon-qa">&#x1F9EA;</div>
+          <div>
+            <div class="dept-name">QA & Stability</div>
+            <div class="dept-count">13 engineers</div>
+          </div>
+        </div>
+        <div class="dept-desc">Runs automated regression testing across 200+ hardware configurations, validates kernel driver stability, monitors false-positive rates, and ensures Cerberus never degrades game performance.</div>
+        <div class="dept-members">
+          <div class="dept-member"><div class="dept-member-avatar">TM</div><div><div class="dept-member-name">tmoretti</div><div class="dept-member-title">Lead</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">BJ</div><div><div class="dept-member-name">bjensen</div><div class="dept-member-title">Test Automation</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">AZ</div><div><div class="dept-member-name">azhao</div><div class="dept-member-title">Perf Analyst</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">MK</div><div><div class="dept-member-name">mkumar</div><div class="dept-member-title">Regression Eng.</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">PS</div><div><div class="dept-member-name">pschmidt</div><div class="dept-member-title">HW Compat.</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">RG</div><div><div class="dept-member-name">rgao</div><div class="dept-member-title">False Positive QA</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">KA</div><div><div class="dept-member-name">kanderson</div><div class="dept-member-title">Load Testing</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">EO</div><div><div class="dept-member-name">eoberg</div><div class="dept-member-title">Stability Eng.</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">WC</div><div><div class="dept-member-name">wchoi</div><div class="dept-member-title">Driver Verifier</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">HT</div><div><div class="dept-member-name">hturner</div><div class="dept-member-title">Perf Benchmarks</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">DO</div><div><div class="dept-member-name">dorlova</div><div class="dept-member-title">Crash Analysis</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">ML</div><div><div class="dept-member-name">mli</div><div class="dept-member-title">CI/CD Pipeline</div></div></div>
+          <div class="dept-member dept-hidden"><div class="dept-member-avatar">SJ</div><div><div class="dept-member-name">sjacobs</div><div class="dept-member-title">Test Coverage</div></div></div>
+          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+10</div><div class="dept-member-name">Show all</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIRING -->
+  <div class="hiring-banner reveal">
+    <div class="hiring-badge" style="background:rgba(255,255,255,0.05);color:var(--text-dim);border-color:var(--border);animation:none;">APPLICATIONS CLOSED</div>
+    <h3>All positions are currently filled</h3>
+    <p>Thank you for your interest. We're not accepting new applications at this time. Check back later for future openings.</p>
+    <div class="hiring-roles">
+      <span class="hiring-role">Senior Kernel Engineer</span>
+      <span class="hiring-role">ML Engineer (Real-time)</span>
+      <span class="hiring-role">Firmware Reverse Engineer</span>
+      <span class="hiring-role">Red Team Analyst</span>
+    </div>
+    <span class="btn-hire" style="opacity:0.3;cursor:not-allowed;pointer-events:none;">
+      No Open Positions
+    </span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span></div>
+    <p>Three heads. Three layers. Nothing gets past the gate.</p>
+    <p style="margin-top: 12px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    var reveals = document.querySelectorAll('.reveal');
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(function(el) { observer.observe(el); });
+  </script>
+
+</body>
+</html>
