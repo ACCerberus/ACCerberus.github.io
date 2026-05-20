@@ -496,10 +496,7 @@
         <div id="avgLatencyLive" style="font-family:var(--font-mono);font-size:1.1rem;color:var(--green);font-weight:600;">--</div>
       </div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <button onclick="exportData('csv')" style="padding:8px 14px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);font-size:0.72rem;font-family:var(--font);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(232,160,32,0.3)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='';this.style.color='var(--text-dim)'">Export CSV</button>
-      <button onclick="exportData('json')" style="padding:8px 14px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);font-size:0.72rem;font-family:var(--font);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(232,160,32,0.3)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='';this.style.color='var(--text-dim)'">Export JSON</button>
-    </div>
+    <div></div>
   </div>
 
   <!-- SESSION QUEUE + SIGNATURE SYNC (TODO #12 + #18) -->
@@ -1628,40 +1625,6 @@
     })();
 
     // ===== QOL #9: DATA EXPORT BUTTONS =====
-    window.exportData = function(format) {
-      var data = {
-        generated: new Date().toISOString(),
-        engineVersion: (window.CERBERUS && CERBERUS.state) ? CERBERUS.state.engineVersion : 'v0.4.2.0b',
-        threats24h: parseInt(document.getElementById('sThreat24').textContent.replace(/,/g, '')) || 0,
-        activeSessions: parseInt(document.getElementById('sActiveSessions').textContent.replace(/,/g, '')) || 0,
-        detectionRate: document.getElementById('sDetRate').textContent,
-        avgLatency: document.getElementById('sLatency').textContent,
-        falsePositiveRate: document.getElementById('sFalsePos').textContent,
-        instances: games.map(function(g) { return { name: g.name, code: g.code, status: g.status, ccu: g.ccu, threats: g.threats }; })
-      };
-      var blob, filename;
-      if (format === 'json') {
-        blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        filename = 'cerberus-analytics-' + new Date().toISOString().split('T')[0] + '.json';
-      } else {
-        var csv = 'metric,value\n';
-        csv += 'generated,' + data.generated + '\n';
-        csv += 'threats_24h,' + data.threats24h + '\n';
-        csv += 'active_sessions,' + data.activeSessions + '\n';
-        csv += 'detection_rate,' + data.detectionRate + '\n';
-        csv += 'avg_latency,' + data.avgLatency + '\n';
-        csv += 'false_positive_rate,' + data.falsePositiveRate + '\n\n';
-        csv += 'instance,status,ccu,threats\n';
-        data.instances.forEach(function(i) { csv += i.name + ',' + i.status + ',' + i.ccu + ',' + i.threats + '\n'; });
-        blob = new Blob([csv], { type: 'text/csv' });
-        filename = 'cerberus-analytics-' + new Date().toISOString().split('T')[0] + '.csv';
-      }
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url; a.download = filename; a.click();
-      URL.revokeObjectURL(url);
-    };
-
     // ===== FALSE POSITIVE TRACKER (TODO #21) =====
     (function() {
       var fpEl = document.getElementById('fpDaysClean');
