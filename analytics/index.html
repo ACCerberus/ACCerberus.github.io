@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytics - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Real-time detection analytics for Cerberus Anti-Cheat Engine." />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --bg-card-hover: #0e0e15;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15); --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8; --orange: #e87830;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font); background: var(--bg); color: var(--text);
+      line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c07818);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507;
+    }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-status { display: flex; align-items: center; gap: 8px; }
+    .nav-status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: statusPulse 2s ease-in-out infinite; }
+    @keyframes statusPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(48,200,96,0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(48,200,96,0); }
+    }
+    .nav-status-text { font-size: 0.75rem; color: var(--green); font-weight: 600; font-family: var(--font-mono); }
+
+    /* DASHBOARD HEADER */
+    .dash-header {
+      padding: 100px 24px 32px; max-width: 1300px; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .dash-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .dash-header h1 {
+      font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700;
+      color: var(--text-bright); letter-spacing: -0.5px;
+    }
+    .dash-header h1 span { color: var(--accent); }
+    .dash-label { font-size: 0.7rem; color: var(--text-dim); font-weight: 500; }
+    .dash-time { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
+    .dash-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 6px; font-size: 0.68rem; font-weight: 700;
+      background: rgba(48,200,96,0.08); color: var(--green); border: 1px solid rgba(48,200,96,0.2);
+      letter-spacing: 0.5px;
+    }
+    .dash-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+    /* STAT CARDS ROW */
+    .stat-row {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+      max-width: 1300px; margin: 0 auto 20px; padding: 0 24px;
+      position: relative; z-index: 1;
+    }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px 22px; position: relative;
+    }
+    .stat-card-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .stat-card-value {
+      font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text-bright);
+    }
+    .stat-card-change {
+      position: absolute; top: 20px; right: 22px; font-size: 0.68rem; font-weight: 600;
+      padding: 2px 8px; border-radius: 4px;
+    }
+    .stat-up { background: rgba(48,200,96,0.1); color: var(--green); }
+    .stat-down { background: rgba(224,64,80,0.1); color: var(--red); }
+
+    /* MAIN GRID */
+    .dash-grid {
+      display: grid; grid-template-columns: 2fr 1fr; gap: 16px;
+      max-width: 1300px; margin: 0 auto 20px; padding: 0 24px;
+      position: relative; z-index: 1;
+    }
+    .dash-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px; overflow: hidden;
+    }
+    .dash-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .dash-card-title { font-family: var(--font-heading); font-size: 0.9rem; font-weight: 700; color: var(--text-bright); }
+    .dash-card-sub { font-size: 0.7rem; color: var(--text-dim); }
+
+    /* CHART */
+    .chart-container { position: relative; height: 220px; }
+    .chart-canvas { width: 100%; height: 100%; }
+    .chart-y-axis { position: absolute; top: 0; left: 0; bottom: 0; width: 50px; display: flex; flex-direction: column; justify-content: space-between; }
+    .chart-y-label { font-size: 0.6rem; color: var(--text-dim); font-family: var(--font-mono); text-align: right; padding-right: 8px; }
+    .chart-x-axis { display: flex; justify-content: space-between; margin-top: 8px; padding: 0 4px; }
+    .chart-x-label { font-size: 0.6rem; color: var(--text-dim); font-family: var(--font-mono); }
+
+    /* LIVE FEED */
+    .feed { max-height: 420px; overflow-y: auto; }
+    .feed::-webkit-scrollbar { width: 4px; }
+    .feed::-webkit-scrollbar-track { background: transparent; }
+    .feed::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+    .feed-item {
+      display: flex; align-items: flex-start; gap: 12px; padding: 10px 0;
+      border-bottom: 1px solid var(--border); animation: feedIn 0.3s ease;
+    }
+    @keyframes feedIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .feed-icon {
+      width: 28px; height: 28px; border-radius: 6px; display: flex;
+      align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; margin-top: 2px;
+    }
+    .feed-icon-block { background: rgba(224,64,80,0.1); color: var(--red); }
+    .feed-icon-warn { background: rgba(232,160,32,0.1); color: var(--accent); }
+    .feed-icon-ok { background: rgba(48,200,96,0.1); color: var(--green); }
+    .feed-text { font-size: 0.78rem; color: var(--text); line-height: 1.5; }
+    .feed-text strong { color: var(--text-bright); font-weight: 600; }
+    .feed-time { font-size: 0.65rem; color: var(--text-dim); font-family: var(--font-mono); margin-top: 2px; }
+    .feed-cheat { color: var(--red); font-weight: 600; }
+    .feed-game { color: var(--accent); font-weight: 500; }
+
+    /* SECOND ROW */
+    .dash-grid-3 {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+      max-width: 1300px; margin: 0 auto 20px; padding: 0 24px;
+      position: relative; z-index: 1;
+    }
+
+    /* CHEAT TYPE BREAKDOWN */
+    .cheat-bar { margin-bottom: 12px; }
+    .cheat-bar-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .cheat-bar-label { font-size: 0.75rem; color: var(--text); font-weight: 500; }
+    .cheat-bar-count { font-size: 0.72rem; color: var(--text-dim); font-family: var(--font-mono); }
+    .cheat-bar-track { height: 6px; background: rgba(255,255,255,0.03); border-radius: 3px; overflow: hidden; }
+    .cheat-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+
+    /* GAME TITLES TABLE */
+    .game-table { width: 100%; border-collapse: collapse; }
+    .game-table th {
+      text-align: left; font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase;
+      letter-spacing: 0.5px; padding: 8px 0; border-bottom: 1px solid var(--border); font-weight: 600;
+    }
+    .game-table td {
+      font-size: 0.78rem; padding: 10px 0; border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .game-table td:first-child { color: var(--text-bright); font-weight: 500; }
+    .game-status { display: inline-flex; align-items: center; gap: 4px; font-size: 0.7rem; font-weight: 600; }
+    .game-status-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .game-status-live .game-status-dot { background: var(--green); }
+    .game-status-live { color: var(--green); }
+    .game-status-beta .game-status-dot { background: var(--accent); }
+    .game-status-beta { color: var(--accent); }
+
+    /* REGION MAP */
+    .region-list { }
+    .region-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+    }
+    .region-name { font-size: 0.78rem; color: var(--text); font-weight: 500; }
+    .region-bar-wrap { flex: 1; margin: 0 16px; height: 4px; background: rgba(255,255,255,0.03); border-radius: 2px; }
+    .region-bar { height: 100%; border-radius: 2px; background: var(--accent); transition: width 1s ease; }
+    .region-pct { font-size: 0.72rem; color: var(--text-dim); font-family: var(--font-mono); min-width: 36px; text-align: right; }
+
+    /* FOOTER */
+    .footer {
+      padding: 40px 24px; text-align: center; border-top: 1px solid var(--border);
+      position: relative; z-index: 1;
+    }
+    .footer-brand { font-family: var(--font-heading); font-weight: 700; font-size: 1rem; color: var(--text-bright); margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+
+    @media (max-width: 1000px) {
+      .stat-row { grid-template-columns: repeat(3, 1fr); }
+      .dash-grid { grid-template-columns: 1fr; }
+      .dash-grid-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .stat-row { grid-template-columns: repeat(2, 1fr); }
+      .nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Overview</a>
+      <a href="/team/">Team</a>
+      <a href="/analytics/" class="active">Analytics</a>
+      <a href="/#pricing">Pricing</a>
+    </div>
+    <div class="nav-status">
+      <div class="nav-status-dot"></div>
+      <div class="nav-status-text">SYSTEMS NOMINAL</div>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <div class="dash-header">
+    <div class="dash-header-top">
+      <div>
+        <h1>Detection <span>Analytics</span></h1>
+        <div class="dash-label">Early Access Beta Dashboard — Real-time threat monitoring across all partner titles</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="dash-badge"><div class="dash-badge-dot"></div> LIVE — ALL SYSTEMS OPERATIONAL</div>
+        <div class="dash-time" id="dashTime"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card-label">Threats Blocked (24h)</div>
+      <div class="stat-card-value" id="sThreat24">0</div>
+      <div class="stat-card-change stat-up" id="sThreatChange">+12.4%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Active Sessions</div>
+      <div class="stat-card-value" id="sActiveSessions">0</div>
+      <div class="stat-card-change stat-up">LIVE</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Detection Rate</div>
+      <div class="stat-card-value" id="sDetRate">99.87%</div>
+      <div class="stat-card-change stat-up">+0.03%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Avg Latency</div>
+      <div class="stat-card-value" id="sLatency">1.4ms</div>
+      <div class="stat-card-change stat-down">-0.2ms</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">False Positive Rate</div>
+      <div class="stat-card-value" id="sFalsePos">0.003%</div>
+      <div class="stat-card-change stat-down">-0.001%</div>
+    </div>
+  </div>
+
+  <!-- MAIN: CHART + LIVE FEED -->
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Threats Blocked — Last 24 Hours</div>
+          <div class="dash-card-sub">Detections per hour across all partner titles</div>
+        </div>
+        <div class="dash-card-sub" id="chartTotal">Total: 0</div>
+      </div>
+      <div class="chart-container">
+        <canvas class="chart-canvas" id="threatChart"></canvas>
+      </div>
+      <div class="chart-x-axis" id="chartXAxis"></div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Live Detection Feed</div>
+          <div class="dash-card-sub">Real-time events across all titles</div>
+        </div>
+      </div>
+      <div class="feed" id="liveFeed"></div>
+    </div>
+  </div>
+
+  <!-- SECOND ROW: CHEAT TYPES + GAMES + REGIONS -->
+  <div class="dash-grid-3">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Cheat Type Breakdown</div>
+          <div class="dash-card-sub">Last 7 days</div>
+        </div>
+      </div>
+      <div id="cheatBars"></div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Partner Titles</div>
+          <div class="dash-card-sub">Active game integrations</div>
+        </div>
+      </div>
+      <table class="game-table">
+        <thead><tr><th>Title</th><th>Status</th><th>Threats/24h</th><th>CCU</th></tr></thead>
+        <tbody id="gameTable"></tbody>
+      </table>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Detection by Region</div>
+          <div class="dash-card-sub">Geographic distribution</div>
+        </div>
+      </div>
+      <div class="region-list" id="regionList"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span></div>
+    <p>Early access beta analytics. Data refreshes in real-time.</p>
+    <p style="margin-top: 12px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ===== TIME =====
+    function updateTime() {
+      var d = new Date();
+      document.getElementById('dashTime').textContent = 'Last updated: ' + d.toLocaleTimeString() + ' UTC' + (d.getTimezoneOffset() > 0 ? '-' : '+') + Math.abs(d.getTimezoneOffset() / 60);
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // ===== SEED-BASED RANDOM (consistent per-day) =====
+    var daySeed = Math.floor(Date.now() / 86400000);
+    function seeded(seed) { var x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+
+    // ===== GAME TITLES =====
+    var games = [
+      { name: 'REDACTED-01', genre: 'FPS', status: 'live', tier: 'cerberus' },
+      { name: 'REDACTED-02', genre: 'FPS', status: 'live', tier: 'cerberus' },
+      { name: 'REDACTED-03', genre: 'Battle Royale', status: 'live', tier: 'cerberus' },
+      { name: 'REDACTED-04', genre: 'MMO', status: 'live', tier: 'aegis' },
+      { name: 'REDACTED-05', genre: 'FPS', status: 'live', tier: 'cerberus' },
+      { name: 'REDACTED-06', genre: 'Survival', status: 'live', tier: 'aegis' },
+      { name: 'REDACTED-07', genre: 'Racing', status: 'live', tier: 'argus' },
+      { name: 'REDACTED-08', genre: 'FPS', status: 'beta', tier: 'cerberus' },
+      { name: 'REDACTED-09', genre: 'MOBA', status: 'live', tier: 'aegis' },
+      { name: 'REDACTED-10', genre: 'FPS', status: 'live', tier: 'cerberus' },
+      { name: 'REDACTED-11', genre: 'Sandbox', status: 'beta', tier: 'argus' },
+      { name: 'REDACTED-12', genre: 'Battle Royale', status: 'live', tier: 'cerberus' },
+      { name: 'REDACTED-13', genre: 'FPS', status: 'beta', tier: 'aegis' },
+      { name: 'REDACTED-14', genre: 'RPG', status: 'live', tier: 'argus' },
+    ];
+
+    // Generate consistent daily stats per game
+    games.forEach(function(g, i) {
+      var s = seeded(daySeed + i * 7);
+      var base = g.tier === 'cerberus' ? 400 : g.tier === 'aegis' ? 200 : 80;
+      g.threats = Math.floor(base + s * base * 0.6);
+      g.ccu = g.tier === 'cerberus' ? Math.floor(18000 + seeded(daySeed + i * 3) * 42000) :
+              g.tier === 'aegis' ? Math.floor(8000 + seeded(daySeed + i * 5) * 22000) :
+              Math.floor(2000 + seeded(daySeed + i * 9) * 8000);
+    });
+
+    // Render games table
+    var gameHTML = '';
+    games.forEach(function(g) {
+      var statusClass = g.status === 'live' ? 'game-status-live' : 'game-status-beta';
+      var statusLabel = g.status === 'live' ? 'Live' : 'Beta';
+      gameHTML += '<tr><td>' + g.name + ' <span style="color:var(--text-dim);font-size:0.65rem;">' + g.genre + '</span></td>' +
+        '<td><span class="game-status ' + statusClass + '"><span class="game-status-dot"></span>' + statusLabel + '</span></td>' +
+        '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + g.threats.toLocaleString() + '</td>' +
+        '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + g.ccu.toLocaleString() + '</td></tr>';
+    });
+    document.getElementById('gameTable').innerHTML = gameHTML;
+
+    // ===== STAT CARDS =====
+    var totalThreats24 = 0;
+    games.forEach(function(g) { totalThreats24 += g.threats; });
+    var totalCCU = 0;
+    games.forEach(function(g) { totalCCU += g.ccu; });
+
+    function animateValue(el, target, suffix) {
+      var start = 0; var duration = 1200; var startTime = null;
+      suffix = suffix || '';
+      function step(ts) {
+        if (!startTime) startTime = ts;
+        var p = Math.min((ts - startTime) / duration, 1);
+        var ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(ease * target).toLocaleString() + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    animateValue(document.getElementById('sThreat24'), totalThreats24);
+    animateValue(document.getElementById('sActiveSessions'), totalCCU);
+    document.getElementById('chartTotal').textContent = 'Total: ' + totalThreats24.toLocaleString();
+
+    // Fluctuate active sessions
+    var sessionEl = document.getElementById('sActiveSessions');
+    setInterval(function() {
+      totalCCU += Math.floor(Math.random() * 200) - 100;
+      sessionEl.textContent = totalCCU.toLocaleString();
+    }, 3000);
+
+    // Fluctuate threats
+    var threat24El = document.getElementById('sThreat24');
+    setInterval(function() {
+      totalThreats24 += Math.floor(Math.random() * 5) + 1;
+      threat24El.textContent = totalThreats24.toLocaleString();
+      document.getElementById('chartTotal').textContent = 'Total: ' + totalThreats24.toLocaleString();
+    }, 4000);
+
+    // ===== CHART =====
+    (function() {
+      var canvas = document.getElementById('threatChart');
+      var ctx = canvas.getContext('2d');
+      var dpr = window.devicePixelRatio || 1;
+
+      function resize() {
+        var rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Generate 24 hourly data points
+      var hourlyData = [];
+      var now = new Date();
+      var xLabels = [];
+      for (var i = 23; i >= 0; i--) {
+        var h = (now.getHours() - i + 24) % 24;
+        xLabels.push(String(h).padStart(2, '0') + ':00');
+        // More threats during peak hours (14:00-22:00 UTC)
+        var peak = (h >= 14 && h <= 22) ? 1.6 : (h >= 8 && h < 14) ? 1.0 : 0.5;
+        var base = totalThreats24 / 24;
+        hourlyData.push(Math.floor(base * peak * (0.7 + seeded(daySeed + i * 13) * 0.6)));
+      }
+
+      // Render x-axis labels
+      var xAxisEl = document.getElementById('chartXAxis');
+      for (var i = 0; i < 24; i += 4) {
+        var span = document.createElement('span');
+        span.className = 'chart-x-label';
+        span.textContent = xLabels[i];
+        xAxisEl.appendChild(span);
+      }
+
+      function draw() {
+        var w = canvas.width / dpr;
+        var h = canvas.height / dpr;
+        ctx.clearRect(0, 0, w, h);
+
+        var max = Math.max.apply(null, hourlyData) * 1.15;
+        var pts = [];
+        var step = w / (hourlyData.length - 1);
+
+        for (var i = 0; i < hourlyData.length; i++) {
+          pts.push({ x: i * step, y: h - (hourlyData[i] / max) * (h - 20) });
+        }
+
+        // Grid lines
+        ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+        ctx.lineWidth = 1;
+        for (var y = 0; y < 5; y++) {
+          var gy = 20 + (h - 20) * y / 4;
+          ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+        }
+
+        // Area fill
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (var i = 1; i < pts.length; i++) {
+          var cx = (pts[i-1].x + pts[i].x) / 2;
+          ctx.bezierCurveTo(cx, pts[i-1].y, cx, pts[i].y, pts[i].x, pts[i].y);
+        }
+        ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+        var grad = ctx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, 'rgba(232,160,32,0.15)');
+        grad.addColorStop(1, 'rgba(232,160,32,0)');
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // Line
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (var i = 1; i < pts.length; i++) {
+          var cx = (pts[i-1].x + pts[i].x) / 2;
+          ctx.bezierCurveTo(cx, pts[i-1].y, cx, pts[i].y, pts[i].x, pts[i].y);
+        }
+        ctx.strokeStyle = 'var(--accent)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Dots
+        for (var i = 0; i < pts.length; i++) {
+          ctx.beginPath();
+          ctx.arc(pts[i].x, pts[i].y, 3, 0, Math.PI * 2);
+          ctx.fillStyle = '#e8a020';
+          ctx.fill();
+        }
+      }
+      draw();
+
+      // Update last data point periodically
+      setInterval(function() {
+        hourlyData[hourlyData.length - 1] += Math.floor(Math.random() * 8) + 1;
+        draw();
+      }, 5000);
+    })();
+
+    // ===== CHEAT TYPE BREAKDOWN =====
+    var cheatTypes = [
+      { name: 'Aimbot / Aim Assist', pct: 34, color: 'var(--red)' },
+      { name: 'Wallhack / ESP', pct: 22, color: 'var(--orange)' },
+      { name: 'DMA External Read', pct: 18, color: 'var(--purple)' },
+      { name: 'Speed Hack', pct: 11, color: 'var(--blue)' },
+      { name: 'Mapped Driver / Injector', pct: 8, color: 'var(--accent)' },
+      { name: 'Macro / Input Automation', pct: 4, color: 'var(--green)' },
+      { name: 'Other / Unknown', pct: 3, color: 'var(--text-dim)' },
+    ];
+    var cheatHTML = '';
+    cheatTypes.forEach(function(c) {
+      cheatHTML += '<div class="cheat-bar">' +
+        '<div class="cheat-bar-header"><span class="cheat-bar-label">' + c.name + '</span><span class="cheat-bar-count">' + c.pct + '%</span></div>' +
+        '<div class="cheat-bar-track"><div class="cheat-bar-fill" style="width:' + c.pct + '%;background:' + c.color + ';"></div></div></div>';
+    });
+    document.getElementById('cheatBars').innerHTML = cheatHTML;
+
+    // ===== REGIONS =====
+    var regions = [
+      { name: 'Asia Pacific', pct: 38 },
+      { name: 'Europe', pct: 27 },
+      { name: 'North America', pct: 19 },
+      { name: 'South America', pct: 8 },
+      { name: 'Middle East & Africa', pct: 5 },
+      { name: 'Oceania', pct: 3 },
+    ];
+    var regHTML = '';
+    regions.forEach(function(r) {
+      regHTML += '<div class="region-item"><span class="region-name">' + r.name + '</span>' +
+        '<div class="region-bar-wrap"><div class="region-bar" style="width:' + (r.pct / 38 * 100) + '%;"></div></div>' +
+        '<span class="region-pct">' + r.pct + '%</span></div>';
+    });
+    document.getElementById('regionList').innerHTML = regHTML;
+
+    // ===== LIVE FEED =====
+    var feedEl = document.getElementById('liveFeed');
+    var cheatNames = ['Aimbot', 'Wallhack', 'ESP', 'Speed Hack', 'DMA Read', 'Driver Inject', 'Mapped Driver', 'Manual Syscall', 'Macro Bot', 'Triggerbot', 'Recoil Script', 'HWID Spoof'];
+    var gameNames = games.map(function(g) { return g.name; });
+    var regions2 = ['NA-East', 'NA-West', 'EU-West', 'EU-Central', 'Asia-SE', 'Asia-East', 'OCE', 'SA-East', 'ME-Central'];
+
+    function randomFeedItem() {
+      var type = Math.random();
+      var cheat = cheatNames[Math.floor(Math.random() * cheatNames.length)];
+      var game = gameNames[Math.floor(Math.random() * gameNames.length)];
+      var region = regions2[Math.floor(Math.random() * regions2.length)];
+      var d = new Date();
+      var time = d.toTimeString().split(' ')[0];
+
+      if (type < 0.65) {
+        return {
+          icon: 'feed-icon-block', iconText: '!',
+          text: '<span class="feed-cheat">' + cheat + '</span> detected and blocked — <span class="feed-game">' + game + '</span> <span style="color:var(--text-dim);">[' + region + ']</span>',
+          time: time
+        };
+      } else if (type < 0.85) {
+        var actions = [
+          'Hardware fingerprint mismatch flagged',
+          'Suspicious memory region detected — monitoring',
+          'Unsigned driver load attempt intercepted',
+          'Behavioral anomaly flagged — input cadence deviation',
+          'PCIe device enumeration triggered — unknown device',
+        ];
+        return {
+          icon: 'feed-icon-warn', iconText: '?',
+          text: '<strong>' + actions[Math.floor(Math.random() * actions.length)] + '</strong> — <span class="feed-game">' + game + '</span> <span style="color:var(--text-dim);">[' + region + ']</span>',
+          time: time
+        };
+      } else {
+        var okMsgs = [
+          'Session scan complete — all clean',
+          'Kernel integrity verified — 0 anomalies',
+          'PCIe bus audit passed — all devices trusted',
+          'AI model weights updated — v' + (4 + Math.floor(Math.random() * 3)) + '.' + Math.floor(Math.random() * 10) + '.' + Math.floor(Math.random() * 100),
+        ];
+        return {
+          icon: 'feed-icon-ok', iconText: '\u2713',
+          text: '<strong>' + okMsgs[Math.floor(Math.random() * okMsgs.length)] + '</strong> — <span class="feed-game">' + game + '</span>',
+          time: time
+        };
+      }
+    }
+
+    function addFeedItem(item) {
+      var div = document.createElement('div');
+      div.className = 'feed-item';
+      div.innerHTML = '<div class="feed-icon ' + item.icon + '">' + item.iconText + '</div>' +
+        '<div><div class="feed-text">' + item.text + '</div><div class="feed-time">' + item.time + '</div></div>';
+      feedEl.insertBefore(div, feedEl.firstChild);
+      // Keep max 50 items
+      while (feedEl.children.length > 50) feedEl.removeChild(feedEl.lastChild);
+    }
+
+    // Initial feed items
+    for (var i = 0; i < 12; i++) addFeedItem(randomFeedItem());
+
+    // Add new items every 2-6 seconds
+    function scheduleNext() {
+      var delay = 2000 + Math.floor(Math.random() * 4000);
+      setTimeout(function() {
+        addFeedItem(randomFeedItem());
+        scheduleNext();
+      }, delay);
+    }
+    scheduleNext();
+  </script>
+
+</body>
+</html>
