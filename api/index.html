@@ -636,7 +636,7 @@
       <!-- ══ Detections ══ -->
       <a class="section-anchor" id="detections-section"></a>
       <div class="section-title">Detections</div>
-      <p class="section-desc">Raw detection events from all three Cerberus heads. Each detection includes a confidence score, the triggering head, and structured evidence metadata.</p>
+      <p class="section-desc">Raw detection events from all four Cerberus heads. Each detection includes a confidence score, the triggering head, and structured evidence metadata.</p>
 
       <a class="section-anchor" id="ep-detections"></a>
       <div class="endpoint-card" id="card-detections">
@@ -651,7 +651,7 @@
           <table class="param-table">
             <tr><th>Query parameter</th><th>Type</th><th>Description</th></tr>
             <tr><td>limit <span class="opt-badge">optional</span></td><td>integer</td><td>Max results. Default: 50, Max: 200.</td></tr>
-            <tr><td>head <span class="opt-badge">optional</span></td><td>string</td><td>Filter by detection head: <code style="font-family:var(--font-mono);font-size:0.85em">KERNEL</code>, <code style="font-family:var(--font-mono);font-size:0.85em">AI</code>, <code style="font-family:var(--font-mono);font-size:0.85em">HW</code>.</td></tr>
+            <tr><td>head <span class="opt-badge">optional</span></td><td>string</td><td>Filter by detection head: <code style="font-family:var(--font-mono);font-size:0.85em">KERNEL</code>, <code style="font-family:var(--font-mono);font-size:0.85em">AI</code>, <code style="font-family:var(--font-mono);font-size:0.85em">HW</code>, <code style="font-family:var(--font-mono);font-size:0.85em">NET</code>.</td></tr>
             <tr><td>min_confidence <span class="opt-badge">optional</span></td><td>float</td><td>Minimum confidence threshold (0.0–1.0). Default: 0.30.</td></tr>
           </table>
           <div class="code-area">
@@ -976,7 +976,7 @@
 
       'bans-list': () => {
         const reasons = ['AIMBOT','DMA_EXTERNAL_READ','INJECTION','WALLHACK','SPEED_HACK','UNSIGNED_DRIVER'];
-        const heads   = ['AI','KERNEL','HW'];
+        const heads   = ['AI','KERNEL','HW','NET'];
         const bans = Array.from({length: rndInt(3, 5)}, (_, i) => {
           const r = rndChoice(reasons);
           const h = rndChoice(heads);

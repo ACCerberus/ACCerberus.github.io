@@ -1,1 +1,74 @@
-[]
+[
+  {
+    "version": "v0.4.2.0b",
+    "date": "2026-05-12T10:00:00Z",
+    "author": "nvoronov",
+    "entries": [
+      { "type": "added", "text": "Network Sentinel — fourth detection layer for server-side traffic analysis and cross-player correlation" },
+      { "type": "added", "text": "Cheat-ring identification engine with cross-title account linkage" },
+      { "type": "added", "text": "Matchmaking integrity scoring API endpoint" },
+      { "type": "improved", "text": "Behavioral AI: TCN-based aim analysis replaces previous CNN model — 12% accuracy improvement" },
+      { "type": "improved", "text": "Humanization bypass detection now catches jitter/noise injection patterns" },
+      { "type": "improved", "text": "Hardware layer: DMA timing-anomaly analysis supplements device enumeration" },
+      { "type": "fixed", "text": "False positive in kernel layer when certain RGB controller drivers loaded during session" },
+      { "type": "fixed", "text": "Rare crash when IOMMU attestation ran on systems with disabled VT-d" }
+    ]
+  },
+  {
+    "version": "v0.4.1.9b",
+    "date": "2026-05-05T14:00:00Z",
+    "author": "dkrasov",
+    "entries": [
+      { "type": "added", "text": "BYOVD blocklist — 340+ known vulnerable drivers blocked at load time" },
+      { "type": "added", "text": "GPU shader pipeline tamper detection (DirectX 11/12)" },
+      { "type": "added", "text": "TPM 2.0 platform integrity attestation for hardware layer" },
+      { "type": "improved", "text": "PCIe topology mapping now includes BAR region analysis" },
+      { "type": "improved", "text": "DMA board fingerprint database expanded to 89 known devices" },
+      { "type": "improved", "text": "Kernel callback integrity checks now cover all registered notification routines" },
+      { "type": "fixed", "text": "Handle table audit false flag on Windows 11 24H2 with Recall enabled" },
+      { "type": "fixed", "text": "Memory permission auditing edge case with games using large page allocations" }
+    ]
+  },
+  {
+    "version": "v0.4.1.8b",
+    "date": "2026-04-28T08:00:00Z",
+    "author": "dkrasov",
+    "entries": [
+      { "type": "added", "text": "Hypervisor-assisted memory isolation for protected game regions" },
+      { "type": "added", "text": "Syscall table tamper detection with real-time alerting" },
+      { "type": "added", "text": "PTE manipulation detection — catches page table remapping attacks" },
+      { "type": "improved", "text": "Micro-movement entropy scoring threshold tuned per game title" },
+      { "type": "improved", "text": "Cross-session behavioral drift detection window extended to 30 days" },
+      { "type": "improved", "text": "SMBIOS/ACPI table integrity checks hardened against spoof techniques" },
+      { "type": "fixed", "text": "Stealth thread detection false positive on certain Unreal Engine 5 titles" },
+      { "type": "fixed", "text": "USB HID descriptor check incorrectly flagging Wooting analog keyboards" }
+    ]
+  },
+  {
+    "version": "v0.4.1.7b",
+    "date": "2026-04-14T12:00:00Z",
+    "author": "s.nakamura",
+    "entries": [
+      { "type": "added", "text": "Account-sharing and boosting detection via behavioral fingerprint divergence" },
+      { "type": "added", "text": "Trigger-timing spectral decomposition for advanced aimbot detection" },
+      { "type": "added", "text": "Camera-movement correlation analysis module" },
+      { "type": "improved", "text": "Adaptive model retraining pipeline — models now update per game title weekly" },
+      { "type": "improved", "text": "Verdict engine cross-layer correlation now weighs Network Sentinel data" },
+      { "type": "fixed", "text": "Behavioral profiling reset not clearing properly on account transfer" },
+      { "type": "fixed", "text": "Rare timeout in ML inference when GPU acceleration unavailable" }
+    ]
+  },
+  {
+    "version": "v0.4.1.6b",
+    "date": "2026-03-31T09:00:00Z",
+    "author": "lweber",
+    "entries": [
+      { "type": "added", "text": "SDK v2.1 — new event hooks for all four detection layers" },
+      { "type": "added", "text": "Webhook delivery for real-time ban notifications with retry logic" },
+      { "type": "improved", "text": "REST API response times reduced 40% with connection pooling" },
+      { "type": "improved", "text": "Dashboard threat visualization now shows per-layer breakdown" },
+      { "type": "fixed", "text": "SDK crash on Unity 2023 LTS when session end callback fired during scene unload" },
+      { "type": "fixed", "text": "Ban API rate limiter incorrectly counting webhook retries against quota" }
+    ]
+  }
+]

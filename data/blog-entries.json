@@ -1,1 +1,56 @@
-[]
+[
+  {
+    "id": "blog-025",
+    "title": "Introducing Network Sentinel: Cerberus's Fourth Detection Layer",
+    "date": "2026-05-20T10:00:00Z",
+    "category": "Product Update",
+    "author": "nvoronov",
+    "summary": "Today we're unveiling Network Sentinel — a server-side analysis layer that detects coordinated cheating, packet manipulation, and cheat rings that no client-side system can see. Cerberus now operates across four layers simultaneously.",
+    "content": "Since launch, Cerberus has operated across three layers: kernel integrity, behavioral AI, and hardware fingerprinting. Each layer guards a different attack surface on the client machine. But there's always been a blind spot — the network.\n\nCheat developers increasingly operate at the network level. Speed hacks manipulate packet timing. Coordinated boosting rings use multiple accounts across sessions. Replay attacks feed fabricated data to game servers. None of these are visible from the client alone.\n\nNetwork Sentinel changes that. It runs entirely server-side, analyzing traffic patterns, reconciling movement data, correlating cross-player anomalies, and identifying cheat clusters. When a ban is issued on one account, Sentinel traces the hardware identity, behavioral fingerprint, and network signature to find linked accounts — even across different game titles.\n\nKey capabilities:\n- Real-time packet integrity validation\n- Server-side movement reconciliation\n- Cross-player statistical anomaly detection\n- Cheat-ring and cluster identification\n- Session replay forensic analysis\n- Encrypted payload tamper detection\n- Global threat intelligence feed\n- Matchmaking integrity scoring\n\nNetwork Sentinel is available now on the Cerberus and Olympus tiers. It requires zero client-side changes — just enable it in your dashboard."
+  },
+  {
+    "id": "blog-024",
+    "title": "How We Detect Humanized Aimbots",
+    "date": "2026-05-14T14:00:00Z",
+    "category": "Engineering",
+    "author": "s.nakamura",
+    "summary": "Modern aimbots inject noise and jitter to mimic human input. Our TCN-based behavioral engine sees through the disguise by analyzing micro-movement entropy and trigger-timing spectral patterns.",
+    "content": "The arms race in aimbot development has shifted. Raw pixel-perfect snapping is trivial to detect — so cheat developers now inject Gaussian noise, random delays, and artificial jitter to make bot-assisted aim look human. Some even use smoothing curves modeled on real player data.\n\nOur behavioral AI layer uses temporal convolutional networks (TCNs) trained on millions of input samples to decompose aim trajectories into frequency components. Human aim has characteristic spectral signatures — correction impulses at 4-8Hz from the neuromuscular system, micro-tremor patterns, and acceleration curves that follow Fitts's Law.\n\nHumanized aimbots fail at the entropy level. Even the best noise injection produces statistically regular patterns when analyzed across a 30-second window. The entropy score of genuine human input is measurably different from synthetic noise overlaid on programmatic corrections.\n\nWe also analyze trigger timing — the interval between acquiring a target and firing. Humans exhibit variable reaction times following a log-normal distribution. Aimbots, even with randomized delays, produce timing distributions with detectable artifacts: truncated tails, periodic modes, or correlation with cursor velocity.\n\nOur current humanization bypass detection rate is 94.2% at the 95% confidence threshold, with a 0.012% false positive rate. Every model update improves this as we train on newly observed cheat variants."
+  },
+  {
+    "id": "blog-023",
+    "title": "BYOVD Attacks: Why We Block Vulnerable Driver Exploits",
+    "date": "2026-05-08T09:00:00Z",
+    "category": "Threat Report",
+    "author": "dkrasov",
+    "summary": "Bring Your Own Vulnerable Driver (BYOVD) attacks abuse legitimate signed drivers with known exploits to gain kernel access. Cerberus now maintains a blocklist of 340+ vulnerable drivers and blocks them at load time.",
+    "content": "BYOVD is one of the most dangerous attack vectors in modern cheating. The attacker doesn't need to write their own kernel driver — they simply load a legitimate, Microsoft-signed driver that contains a known vulnerability, then exploit it to gain ring-0 access.\n\nPopular targets include old versions of hardware monitoring tools, GPU overclocking utilities, and even anti-cheat drivers from other vendors. Because these drivers carry valid signatures, they pass standard code-signing checks.\n\nCerberus v0.4.1.8b introduced a BYOVD blocklist — currently tracking 340+ known vulnerable drivers by hash and certificate. When our kernel integrity layer detects a blocked driver attempting to load during a game session, the load is denied and the event is flagged.\n\nWe also monitor for the behavioral signatures of BYOVD exploitation: unexpected kernel memory mapping, privilege escalation patterns, and syscall table modifications that follow known exploit chains.\n\nThis database is updated weekly from our threat research pipeline and cross-referenced with Microsoft's own recommended driver block rules."
+  },
+  {
+    "id": "blog-022",
+    "title": "DMA Timing Analysis: Catching What Device Lists Miss",
+    "date": "2026-05-01T11:00:00Z",
+    "category": "Engineering",
+    "author": "dkrasov",
+    "summary": "Traditional DMA detection relies on device enumeration. Our timing-based approach detects DMA attacks by measuring memory access latency patterns, catching even unknown hardware.",
+    "content": "DMA-based cheats use a second machine connected via PCIe to read game memory externally. Because the cheat runs on entirely separate hardware, traditional client-side anti-cheat is blind to it.\n\nMost anti-cheat vendors that attempt DMA detection rely on device enumeration — maintaining a list of known DMA boards and checking if they're present on the PCIe bus. This fails against custom or modified hardware.\n\nOur approach is different. We measure memory access timing patterns. When an external device reads memory over PCIe, it introduces measurable latency spikes — typically 200-800ns above baseline — in a pattern that correlates with the cheat's polling frequency. By sampling memory access latencies at high resolution during gameplay, we can detect the timing signature of DMA reads regardless of what hardware is performing them.\n\nCombined with IOMMU configuration attestation (detecting if DMA remapping has been disabled or misconfigured), this gives us detection coverage against both known and zero-day DMA hardware."
+  },
+  {
+    "id": "blog-021",
+    "title": "Cheat-Ring Detection: How Network Sentinel Traces Coordinated Abuse",
+    "date": "2026-04-24T16:00:00Z",
+    "category": "Case Study",
+    "author": "ArsenalRX",
+    "summary": "A single ban led Network Sentinel to uncover a coordinated boosting ring operating across 47 accounts and 3 partner titles.",
+    "content": "Last month, a routine ban flagged by our behavioral AI layer led Network Sentinel to uncover a coordinated boosting ring operating across 47 accounts and 3 partner titles.\n\nThe initial detection was straightforward — one account showed aim correction speeds 4x faster than their historical average. Our AI flagged it at 97.8% confidence, and the account was banned.\n\nNetwork Sentinel then performed its post-ban correlation sweep. It matched the banned account's hardware fingerprint fragments against our global database and found 12 other accounts that had played from the same machine within the past 90 days. Behavioral drift analysis showed 8 of those accounts had similar sudden skill jumps within a 48-hour window — consistent with the same cheat being distributed to a group.\n\nTracing the network signatures further, Sentinel identified a cluster of 47 accounts across 3 game titles that shared overlapping hardware identities, similar behavioral anomalies, and coordinated play schedules. All 47 were banned in a single wave.\n\nThis is the kind of detection that's impossible with client-side analysis alone. You need the server-side view to see the connections between accounts, sessions, and titles."
+  },
+  {
+    "id": "blog-020",
+    "title": "False Positive Engineering: How We Maintain 0.012% FP Rate",
+    "date": "2026-04-17T08:00:00Z",
+    "category": "Engineering",
+    "author": "s.nakamura",
+    "summary": "A detection system is only as good as its false positive rate. Here's how our multi-layer confidence scoring, adaptive thresholds, and manual review pipeline keep innocent players safe.",
+    "content": "Every anti-cheat faces the same fundamental tradeoff: aggressive detection catches more cheaters but risks banning innocent players. A single false positive can destroy trust in your game's competitive integrity.\n\nCerberus approaches this with layered confidence scoring. No single layer can trigger an auto-ban alone. The verdict engine requires corroboration — a kernel anomaly must correlate with behavioral evidence, or a hardware flag must align with network-level data.\n\nOur auto-ban threshold is 95% confidence from the verdict engine. Detections below this enter the manual review queue, where a threat analyst reviews the full session data within 4 hours (Cerberus tier SLA).\n\nWe also use adaptive thresholds per game title. A fighting game has legitimately faster input patterns than an RTS. A competitive FPS player's aim correction speed may be 3x faster than a casual player's. Our models account for this by maintaining per-title and per-skill-bracket baselines.\n\nThe result: 0.012% false positive rate across all partner titles, with zero confirmed false bans in the last 60 days."
+  }
+]

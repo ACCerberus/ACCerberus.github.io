@@ -354,13 +354,14 @@ cerberus-sdk-v0.4.2.0b-win64.zip
       <h3>What is collected on detection</h3>
       <table class="param-table">
         <tr><th>Data</th><th>Scope</th><th>Description</th></tr>
-        <tr><td>Detection type</td><td>Always</td><td>Which head triggered (KERNEL, AI, HW) and the specific detection category (e.g., AIMBOT, INJECTION, DMA_READ)</td></tr>
+        <tr><td>Detection type</td><td>Always</td><td>Which head triggered (KERNEL, AI, HW, NET) and the specific detection category (e.g., AIMBOT, INJECTION, DMA_READ)</td></tr>
         <tr><td>Confidence score</td><td>Always</td><td>0.0-1.0 float representing detection certainty. Auto-ban threshold: 0.95+</td></tr>
         <tr><td>Session snapshot</td><td>Always</td><td>Anonymized session metadata: game ID, session duration, region, SDK version</td></tr>
         <tr><td>Hardware fingerprint</td><td>Head 3</td><td>Hashed device identifiers for ban evasion tracking. No PII — hardware IDs are one-way hashed</td></tr>
         <tr><td>Memory region info</td><td>Kernel</td><td>Address range, permissions (RWX), and module association of suspicious memory regions. Game memory content is NOT captured</td></tr>
         <tr><td>Behavioral profile</td><td>AI</td><td>Statistical summary: aim correction speed, reaction time distribution, headshot rate deviation from player baseline</td></tr>
         <tr><td>Device audit log</td><td>Head 3</td><td>List of enumerated PCIe devices and firmware verification results. Used to identify DMA boards</td></tr>
+        <tr><td>Network anomaly report</td><td>Head 4 (NET)</td><td>Server-side traffic analysis summary: packet timing anomalies, impossible state transitions, and position desync indicators</td></tr>
       </table>
 
       <div class="callout callout-info">Cerberus never captures game memory contents, screenshots, keystrokes, browsing data, or any PII. All hardware identifiers are one-way hashed before transmission. Evidence is retained for 90 days (configurable per partner) to support ban appeals.</div>
