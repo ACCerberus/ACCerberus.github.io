@@ -360,7 +360,7 @@
   <span class="key">"eu-west"</span>:    { <span class="key">"status"</span>: <span class="s">"operational"</span>, <span class="key">"latency_ms"</span>: <span class="n">6</span>  },
   <span class="key">"ap-southeast"</span>: { <span class="key">"status"</span>: <span class="s">"operational"</span>, <span class="key">"latency_ms"</span>: <span class="n">11</span> }
 },
-<span class="key">"uptime_30d"</span>: <span class="n">99.981</span></div>
+<span class="key">"uptime_30d"</span>: <span class="n">97.8</span></div>
           </div>
           <div class="try-row">
             <button class="try-btn" onclick="tryEndpoint('status')">Try it</button>
@@ -738,7 +738,7 @@
       <span class="key">"active"</span>:     <span class="k">true</span>,
       <span class="key">"created_at"</span>: <span class="s">"2026-03-12T14:00:00Z"</span>,
       <span class="key">"last_fired"</span>: <span class="s">"2026-05-19T08:32:01Z"</span>,
-      <span class="key">"success_rate"</span>: <span class="n">99.8</span>
+      <span class="key">"success_rate"</span>: <span class="n">96.4</span>
     }
   ]
 }</div>
@@ -937,9 +937,9 @@
           'eu-west':    { status: 'operational', latency_ms: rndInt(5, 10) },
           'ap-southeast': { status: 'operational', latency_ms: rndInt(9, 16) }
         },
-        active_sessions: rndInt(14200, 19800),
-        bans_last_24h: rndInt(340, 620),
-        uptime_30d: parseFloat((99.95 + rng() * 0.049).toFixed(3)),
+        active_sessions: rndInt(380, 580),
+        bans_last_24h: rndInt(12, 38),
+        uptime_30d: parseFloat((96.5 + rng() * 2.0).toFixed(1)),
         checked_at: isoNow()
       }),
 

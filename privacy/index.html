@@ -184,7 +184,7 @@
     <h2>What gets sent to the Cerberus API</h2>
     <p>When the SDK detects a potential cheat, the following is transmitted to our backend over TLS 1.3:</p>
     <ul>
-      <li><strong>Detection events</strong> -- The type of detection (e.g., aimbot, injection, DMA), confidence score, and which detection head triggered.</li>
+      <li><strong>Detection events</strong> -- The type of detection (e.g., aimbot, injection, DMA), confidence score, and which detection layer triggered.</li>
       <li><strong>Anonymized session metadata</strong> -- Game ID, session duration, SDK version, region, and an anonymized session identifier. No player names, emails, IPs, or account details.</li>
       <li><strong>Hashed hardware fingerprint</strong> -- A one-way hash used solely for ban evasion tracking. Cannot be reversed to identify specific hardware.</li>
     </ul>
