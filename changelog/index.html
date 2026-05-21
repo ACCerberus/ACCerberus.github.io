@@ -269,15 +269,15 @@
         {t:'ADDED',c:'Manual review escalation pipeline for borderline detections (67-95% confidence)'},
         {t:'ADDED',c:'Secondary verification pass before auto-ban — reduces false positives by 34%'},
         {t:'IMPROVED',c:'Behavioral AI model retrained on 2,400 new cheat samples'},
-        {t:'IMPROVED',c:'Kernel scan cycle latency reduced from 3.1ms to 2.4ms avg'},
+        {t:'IMPROVED',c:'Kernel scan cycle latency reduced from 3.8ms to 2.9ms avg'},
         {t:'FIXED',c:'False positive on MSI Afterburner overlay when hardware monitoring is active'},
-        {t:'FIXED',c:'Memory footprint spike during extended sessions (>4hr) — capped at 22MB'},
+        {t:'FIXED',c:'Memory footprint spike during extended sessions (>4hr) — capped at 45MB'},
       ], sig: '+187 new signatures. Covers: AimStar v3.x, Project Infinity recompiled builds, NeverLose loader. Total: 4,891.' },
       { ver: 'v0.4.1.0b', date: 'Apr 28, 2026', dateSeed: dateToDaySeed(2026,4,28), tags: ['SECURITY'], changes: [
         {t:'SECURITY',c:'Patched driver communication channel — prevented IOCTL replay attack vector'},
         {t:'ADDED',c:'CPUID timing checks for hypervisor detection (KVM, custom type-1)'},
         {t:'ADDED',c:'Hardware compatibility profiles for ASUS, MSI, Gigabyte, ASRock motherboards'},
-        {t:'IMPROVED',c:'External overlay detection accuracy: 93.1% \u2192 95.8%'},
+        {t:'IMPROVED',c:'External overlay detection accuracy: 93.1% \u2192 94.6%'},
         {t:'FIXED',c:'Crash on AMD Ryzen 9000 series during PCIe bus enumeration'},
         {t:'FIXED',c:'Discord overlay incorrectly flagged as screen reader'},
       ], sig: '+143 new signatures. Focus: kernel-mode cheats targeting UE5.4 titles. Total: 4,704.' },
@@ -286,14 +286,14 @@
         {t:'ADDED',c:'DMA attack board detection (pattern matching for known PCIe devices)'},
         {t:'ADDED',c:'Firmware signature database — 1,200+ verified device firmware hashes'},
         {t:'ADDED',c:'Real-time threat dashboard for partner studios'},
-        {t:'IMPROVED',c:'Kernel integrity checks now run in parallel — 40% faster scan cycles'},
+        {t:'IMPROVED',c:'Kernel integrity checks now run in parallel — 18% faster scan cycles'},
         {t:'REMOVED',c:'Deprecated v1 ban API endpoints (migrated to v2 webhooks)'},
       ]},
 
       // === PHASE 4: Behavioral AI ===
       { phase: 'Phase 4 — Behavioral AI Engine (v0.3.x)', ver: 'v0.3.4.0b', date: 'Oct 8, 2025', dateSeed: dateToDaySeed(2025,10,8), tags: ['DETECTION UPDATE'], changes: [
         {t:'ADDED',c:'ONNX Runtime integration for behavioral AI inference (<2ms per cycle)'},
-        {t:'IMPROVED',c:'Internal cheat detection: 94.2% \u2192 97.4%'},
+        {t:'IMPROVED',c:'Internal cheat detection: 94.2% \u2192 96.1%'},
         {t:'FIXED',c:'Baseline profile not resetting between game sessions'},
         {t:'FIXED',c:'AI model memory leak when running >500 concurrent sessions'},
       ], sig: '+96 new signatures. Total: 3,847.' },
@@ -326,9 +326,9 @@
       // === PHASE 3: Kernel Mode ===
       { phase: 'Phase 3 — Kernel Integrity (v0.2.x)', ver: 'v0.2.4.0b', date: 'May 12, 2025', dateSeed: dateToDaySeed(2025,5,12), tags: ['SECURITY'], changes: [
         {t:'SECURITY',c:'Driver IOCTL validation hardened — added input length checks'},
-        {t:'IMPROVED',c:'Scan cycle time reduced from 8ms to 4.5ms avg'},
+        {t:'IMPROVED',c:'Scan cycle time reduced from 5.2ms to 3.8ms avg'},
         {t:'FIXED',c:'False positive on Corsair iCUE SDK overlay process'},
-        {t:'TEST',c:'Internal red team exercise — 128 bypass attempts, 119 caught'},
+        {t:'TEST',c:'Internal red team exercise — 128 bypass attempts, 112 caught (87.5%)'},
       ], sig: '+112 new signatures. Total: 2,890.' },
       { ver: 'v0.2.3.0b', date: 'Apr 18, 2025', dateSeed: dateToDaySeed(2025,4,18), tags: ['DETECTION UPDATE'], changes: [
         {t:'ADDED',c:'VAD (Virtual Address Descriptor) tree walking for hidden memory regions'},
@@ -339,7 +339,7 @@
       { ver: 'v0.2.2.0b', date: 'Mar 24, 2025', dateSeed: dateToDaySeed(2025,3,24), tags: ['BETA'], changes: [
         {t:'ADDED',c:'First partner integration test — TITAN-7 dev build'},
         {t:'ADDED',c:'Graceful degradation mode — game continues if driver fails to load'},
-        {t:'IMPROVED',c:'Driver memory footprint reduced from 4.8MB to 1.2MB'},
+        {t:'IMPROVED',c:'Driver memory footprint reduced from 8.2MB to 4.8MB'},
         {t:'FIXED',c:'BSOD on certain ASUS Z790 boards during initial PCIe scan'},
         {t:'TEST',c:'72hr soak test — 0 crashes, 0 memory leaks'},
       ]},

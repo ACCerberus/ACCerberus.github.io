@@ -764,25 +764,25 @@
     }).catch(function() {});
 
     // ===== DATE-SEEDED DAILY VALUES =====
-    // Detection rate: fluctuates 95.6% - 96.8% daily
-    var detRate = (98.4 + seeded(daySeed * 101) * 1.2).toFixed(1);
-    var detRateChange = (seeded(daySeed * 103) * 0.8 - 0.2).toFixed(1);
+    // Detection rate: fluctuates 96.0% - 97.8% daily (beta-realistic)
+    var detRate = (96.0 + seeded(daySeed * 101) * 1.8).toFixed(1);
+    var detRateChange = (seeded(daySeed * 103) * 0.6 - 0.2).toFixed(1);
     document.getElementById('sDetRate').textContent = detRate + '%';
     removeSkeleton('sDetRate');
     document.getElementById('sDetRateChange').textContent = (detRateChange >= 0 ? '+' : '') + detRateChange + '%';
     document.getElementById('sDetRateChange').className = 'stat-card-change ' + (detRateChange >= 0 ? 'stat-up' : 'stat-down');
 
-    // Latency: fluctuates 1.8ms - 2.5ms daily
-    var latency = (0.35 + seeded(daySeed * 107) * 0.25).toFixed(2);
-    var latChange = (seeded(daySeed * 109) * 0.08 - 0.04).toFixed(2);
+    // Latency: fluctuates 2.0ms - 3.2ms daily (kernel + AI overhead)
+    var latency = (2.0 + seeded(daySeed * 107) * 1.2).toFixed(1);
+    var latChange = (seeded(daySeed * 109) * 0.4 - 0.2).toFixed(1);
     document.getElementById('sLatency').textContent = latency + 'ms';
     removeSkeleton('sLatency');
     document.getElementById('sLatencyChange').textContent = (latChange >= 0 ? '+' : '') + latChange + 'ms';
     document.getElementById('sLatencyChange').className = 'stat-card-change ' + (parseFloat(latChange) <= 0 ? 'stat-down' : 'stat-up');
 
-    // False positive rate: fluctuates 0.008% - 0.018% daily
-    var fpRate = (0.008 + seeded(daySeed * 113) * 0.010).toFixed(3);
-    var fpChange = (seeded(daySeed * 117) * 0.006 - 0.003).toFixed(3);
+    // False positive rate: fluctuates 0.06% - 0.14% daily (beta-realistic)
+    var fpRate = (0.06 + seeded(daySeed * 113) * 0.08).toFixed(2);
+    var fpChange = (seeded(daySeed * 117) * 0.04 - 0.02).toFixed(2);
     document.getElementById('sFalsePos').textContent = fpRate + '%';
     removeSkeleton('sFalsePos');
     document.getElementById('sFPChange').textContent = (fpChange >= 0 ? '+' : '') + fpChange + '%';
@@ -915,7 +915,7 @@
 
     // ===== STAT CARDS (with localStorage persistence + cumulative history) =====
     // Realistic base numbers for an anti-cheat with 6 active titles
-    var dailyBaseThreats = Math.floor(180 + seeded(daySeed * 121) * 120); // 180-300 threats/day base
+    var dailyBaseThreats = Math.floor(40 + seeded(daySeed * 121) * 60); // 40-100 threats/day base (beta scale)
     var dailyBaseCCU = Math.floor(1200 + seeded(daySeed * 123) * 800); // 1200-2000 CCU base
 
     // Apply time-of-day multiplier to CCU

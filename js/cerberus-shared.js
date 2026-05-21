@@ -46,9 +46,9 @@
       .catch(function () {
         // Fallback defaults
         CERBERUS.state = {
-          threatLevel: 'MODERATE', signatureDb: 4891, totalBans: 2847291,
-          engineVersion: 'v0.4.2.0b', activeSessions: 4218, dailyDetections: 1847,
-          falsePositiveRate: 0.003, avgScanLatency: 0.42
+          threatLevel: 'LOW', signatureDb: 4891, totalBans: 3100,
+          engineVersion: 'v0.4.2.0b', activeSessions: 1120, dailyDetections: 87,
+          falsePositiveRate: 0.09, avgScanLatency: 2.4
         };
         CERBERUS._resolveState(CERBERUS.state);
         applyThreatBanner('MODERATE');
@@ -283,6 +283,18 @@
       { icon: 'ok', text: '<strong>Kernel integrity</strong> \u2014 scan cycle verified' },
       { icon: 'info', text: '<strong>SDK update</strong> \u2014 v0.4.3.0a available for partners' },
       { icon: 'ok', text: '<strong>AI model</strong> \u2014 behavioral engine updated' },
+      { icon: 'block', text: '<strong>HWID spoof blocked</strong> \u2014 hardware fingerprint mismatch detected' },
+      { icon: 'ok', text: '<strong>Ban wave complete</strong> \u2014 enforcement action across all regions' },
+      { icon: 'info', text: '<strong>Region sync</strong> \u2014 Asia-Pacific signatures propagated' },
+      { icon: 'ok', text: '<strong>Pentest batch</strong> \u2014 automated test suite passed 847 scenarios' },
+      { icon: 'block', text: '<strong>Kernel exploit blocked</strong> \u2014 driver injection attempt neutralized' },
+      { icon: 'info', text: '<strong>Model update</strong> \u2014 behavioral classifier v7.3 deployed' },
+      { icon: 'ok', text: '<strong>Session integrity</strong> \u2014 all active sessions verified clean' },
+      { icon: 'block', text: '<strong>Loader neutralized</strong> \u2014 new polymorphic stub detected and blocked' },
+      { icon: 'info', text: '<strong>Partner webhook</strong> \u2014 ban event delivered to 6 endpoints' },
+      { icon: 'ok', text: '<strong>Certificate rotated</strong> \u2014 driver signing cert renewed' },
+      { icon: 'block', text: '<strong>Memory injection blocked</strong> \u2014 RWX region detected in game process' },
+      { icon: 'info', text: '<strong>Threat intel</strong> \u2014 underground marketplace scan complete' },
     ];
 
     function showToast() {

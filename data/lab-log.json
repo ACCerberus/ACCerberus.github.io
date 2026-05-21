@@ -8,7 +8,7 @@
       "status": "EXPERIMENT",
       "startDate": "2026-04-10",
       "lastUpdate": "2026-05-18",
-      "findings": "Intel Meteor Lake NPU achieves 2.3x inference throughput vs CPU baseline. Power efficiency gains significant for always-on scanning."
+      "findings": "Intel Meteor Lake NPU achieves 1.8-2.5x inference throughput vs CPU baseline. Power efficiency gains promising for always-on scanning but driver support inconsistent."
     },
     {
       "id": "lab-002",
@@ -35,7 +35,7 @@
       "status": "EVALUATION",
       "startDate": "2026-02-15",
       "lastUpdate": "2026-05-10",
-      "findings": "Attestation flow works on 94% of tested hardware. Edge cases with custom BIOS configurations require fallback path."
+      "findings": "Attestation flow works on ~87-92% of tested hardware depending on vendor. Custom BIOS and older firmware revisions require graceful fallback."
     },
     {
       "id": "lab-005",
@@ -53,7 +53,7 @@
       "status": "EXPERIMENT",
       "startDate": "2026-03-20",
       "lastUpdate": "2026-05-16",
-      "findings": "L3 cache timing delta reliably identifies VMware/KVM with 97.8% accuracy. Hyper-V detection requires additional rdtsc calibration."
+      "findings": "L3 cache timing delta identifies VMware/KVM with 92-96% accuracy depending on host config. Hyper-V detection requires additional rdtsc calibration."
     },
     {
       "id": "lab-007",
@@ -71,7 +71,7 @@
       "status": "PROTOTYPE",
       "startDate": "2026-04-01",
       "lastUpdate": "2026-05-17",
-      "findings": "Magnitude pruning at 70% sparsity retains 99.1% detection accuracy. Knowledge distillation recovers remaining 0.6%."
+      "findings": "Magnitude pruning at 70% sparsity retains 96-97% detection accuracy. Knowledge distillation recovers ~1-2% but adds training complexity."
     }
   ],
   "templatePool": [
@@ -80,6 +80,16 @@
     { "title": "GAN-Based Cheat Synthesis", "desc": "Using generative adversarial networks to synthesize novel cheat patterns for proactive detection.", "topic": "ml" },
     { "title": "Zero-Knowledge Proof of Fair Play", "desc": "ZK-SNARK proofs allowing players to prove clean sessions without revealing system state.", "topic": "crypto" },
     { "title": "eBPF-Based Kernel Monitoring", "desc": "Using eBPF programs for low-overhead kernel-space behavioral monitoring on Linux.", "topic": "kernel" },
-    { "title": "Temporal Graph Neural Networks for Social Cheating", "desc": "Modeling player interaction graphs to detect coordinated cheating rings.", "topic": "ml" }
+    { "title": "Temporal Graph Neural Networks for Social Cheating", "desc": "Modeling player interaction graphs to detect coordinated cheating rings.", "topic": "ml" },
+    { "title": "Adversarial ML Robustness Testing", "desc": "Evaluating detection model resilience against adversarial input perturbations designed to evade classification.", "topic": "ml" },
+    { "title": "Secure Enclave Key Management", "desc": "Using Intel SGX/ARM TrustZone for tamper-resistant credential storage in the client module.", "topic": "hardware" },
+    { "title": "Behavioral Biometric Authentication", "desc": "Using mouse dynamics and typing patterns as supplementary identity verification signals.", "topic": "ml" },
+    { "title": "Network Traffic Fingerprinting", "desc": "Detecting cheat tool communication by analyzing packet timing and payload entropy patterns.", "topic": "networking" },
+    { "title": "Compiler-Level Obfuscation Pipeline", "desc": "Custom LLVM passes for automated binary diversification to resist reverse engineering.", "topic": "security" },
+    { "title": "Real-Time Replay Divergence Detection", "desc": "Comparing client-reported game state against server-authoritative replay for consistency verification.", "topic": "gamedev" },
+    { "title": "Rust Rewrite of Scan Engine Core", "desc": "Evaluating memory-safe reimplementation of performance-critical scan path in Rust.", "topic": "engineering" },
+    { "title": "Decentralized Ban Consensus Protocol", "desc": "Multi-party verification of ban decisions across independent detection nodes.", "topic": "crypto" },
+    { "title": "GPU Memory Scanning via Vulkan Compute", "desc": "Direct GPU memory inspection for detecting GPU-side cheat overlays and shader modifications.", "topic": "hardware" },
+    { "title": "Automated Cheat Sample Collection Pipeline", "desc": "Web scraping and sandboxed execution pipeline for continuous cheat binary acquisition.", "topic": "infra" }
   ]
 }

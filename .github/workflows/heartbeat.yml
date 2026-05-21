@@ -33,13 +33,13 @@ jobs:
           SIG_QUEUE=$(jq '.signatureQueue' data/state.json)
           VERSION=$(jq -r '.engineVersion' data/state.json)
 
-          # ── Core metrics ──
-          NEW_SIGS=$((SIGS + RANDOM % 8 + 1))
-          NEW_BANS=$((BANS + RANDOM % 25 + 3))
-          NEW_DETECTIONS=$((150 + RANDOM % 200))
-          NEW_LATENCY=$(echo "scale=2; 0.3 + $(echo "$RANDOM % 20" | bc) / 100" | bc)
-          NEW_REVIEWS=$((RANDOM % 8 + 1))
-          NEW_SIG_QUEUE=$((RANDOM % 12))
+          # ── Core metrics (beta-scale: ~6 partner titles, 1-3K peak CCU) ──
+          NEW_SIGS=$((SIGS + RANDOM % 5 + 1))
+          NEW_BANS=$((BANS + RANDOM % 8 + 1))
+          NEW_DETECTIONS=$((40 + RANDOM % 80))
+          NEW_LATENCY=$(echo "scale=1; 1.8 + $(echo "$RANDOM % 15" | bc) / 10" | bc)
+          NEW_REVIEWS=$((RANDOM % 5 + 1))
+          NEW_SIG_QUEUE=$((RANDOM % 8))
 
           # Threat level — realistic distribution, time-aware
           # Off-peak (00-08 UTC): mostly LOW
@@ -69,38 +69,38 @@ jobs:
             fi
           fi
 
-          # Determine active sessions based on time of day (UTC)
+          # Active sessions (beta-scale: ~6 titles, 1-3K peak CCU total)
           if [ "$HOUR" -ge 14 ] && [ "$HOUR" -le 22 ]; then
-            SESSIONS=$((1800 + RANDOM % 1200))
+            SESSIONS=$((800 + RANDOM % 600))
           elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 14 ]; then
-            SESSIONS=$((900 + RANDOM % 800))
+            SESSIONS=$((350 + RANDOM % 400))
           else
-            SESSIONS=$((400 + RANDOM % 600))
+            SESSIONS=$((120 + RANDOM % 250))
           fi
 
           # Weekend boost
           if [ "$DAY" -ge 6 ]; then
-            SESSIONS=$((SESSIONS * 120 / 100))
+            SESSIONS=$((SESSIONS * 115 / 100))
           fi
 
           # ── Next-gen metrics ──
 
-          # NPU utilization (15-55%, higher during peak)
-          NPU_BASE=25
+          # NPU utilization (12-42%, higher during peak)
+          NPU_BASE=20
           if [ "$HOUR" -ge 12 ] && [ "$HOUR" -le 20 ]; then
-            NPU_BASE=38
+            NPU_BASE=32
           elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 12 ]; then
-            NPU_BASE=30
+            NPU_BASE=25
           fi
-          NPU_NOISE=$((RANDOM % 15 - 7))
+          NPU_NOISE=$((RANDOM % 12 - 6))
           NPU_VAL=$((NPU_BASE + NPU_NOISE))
-          if [ "$NPU_VAL" -lt 15 ]; then NPU_VAL=15; fi
-          if [ "$NPU_VAL" -gt 55 ]; then NPU_VAL=55; fi
+          if [ "$NPU_VAL" -lt 12 ]; then NPU_VAL=12; fi
+          if [ "$NPU_VAL" -gt 42 ]; then NPU_VAL=42; fi
           NPU_DEC=$((RANDOM % 10))
           NPU_UTIL="${NPU_VAL}.${NPU_DEC}"
 
-          # ML confidence (94-99%)
-          ML_BASE=$((9500 + RANDOM % 450))
+          # ML confidence (97-99.5% — high baseline, this is overall system confidence)
+          ML_BASE=$((9700 + RANDOM % 250))
           ML_CONF=$(echo "scale=2; $ML_BASE / 100" | bc)
 
           # DMA anomalies (0-8, higher during peak)
@@ -132,7 +132,7 @@ jobs:
           # Ban wave every 48-96h (roughly every 2-4 days)
           if [ "$WAVE_AGE_H" -ge 48 ] && [ $((RANDOM % 4)) -eq 0 ]; then
             LAST_BAN_WAVE="$NOW"
-            BAN_WAVE_SIZE=$((8 + RANDOM % 31))
+            BAN_WAVE_SIZE=$((3 + RANDOM % 18))
             NEW_BANS=$((NEW_BANS + BAN_WAVE_SIZE))
           else
             BAN_WAVE_SIZE=$(jq '.banWaveSize' data/state.json)
@@ -155,8 +155,8 @@ jobs:
           INCIDENT_HISTORY=$(jq -c '.incidentHistory' data/state.json)
 
           # Incident template pool
-          INCIDENT_TITLES=("False positive rate spike in EU-West region" "Webhook delivery delays" "API response time degradation" "Scan latency increase detected" "Region connectivity issues — Asia-Pacific" "Signature DB sync delay" "Dashboard metrics reporting lag" "Elevated DMA false positives" "SDK authentication timeout errors" "Behavioral model inference latency spike")
-          INCIDENT_CAUSES=("Misconfigured rate limiter on edge node" "Database connection pool exhaustion" "Network congestion on inter-region backbone" "Memory pressure from concurrent scan operations" "DNS resolution delay on failover endpoint" "Cache invalidation storm after signature push" "Load balancer health check misconfiguration" "Upstream provider API throttling" "Certificate renewal race condition" "Garbage collection pause in scan worker")
+          INCIDENT_TITLES=("False positive rate spike in EU-West region" "Webhook delivery delays" "API response time degradation" "Scan latency increase detected" "Region connectivity issues — Asia-Pacific" "Signature DB sync delay" "Dashboard metrics reporting lag" "Elevated DMA false positives" "SDK authentication timeout errors" "Behavioral model inference latency spike" "Kernel scan timeout on high-CCU instances" "Certificate pinning mismatch on SDK auth" "Behavioral model confidence degradation" "Partner webhook endpoint unreachable — US-East" "Memory scan false positive on accessibility software" "PCIe enumeration failure on Intel Arc GPUs" "Ban API rate limiter false triggers" "Signature verification checksum mismatch" "Session telemetry ingestion backlog" "Detection pipeline queue saturation")
+          INCIDENT_CAUSES=("Misconfigured rate limiter on edge node" "Database connection pool exhaustion" "Network congestion on inter-region backbone" "Memory pressure from concurrent scan operations" "DNS resolution delay on failover endpoint" "Cache invalidation storm after signature push" "Load balancer health check misconfiguration" "Upstream provider API throttling" "Certificate renewal race condition" "Garbage collection pause in scan worker" "Signature database index corruption after concurrent write" "Detection threshold miscalibration in latest model update" "Model inference out-of-memory on GPU-constrained nodes" "Third-party CDN provider rate limiting during peak" "Data pipeline race condition between scan and report workers" "TLS certificate pinning hash mismatch after CA rotation" "Kernel module incompatibility with latest Windows Insider build" "Redis cluster split-brain during network partition" "Disk I/O saturation on signature database primary" "Hot-reload race condition in configuration management")
 
           if [ "$ACTIVE_INCIDENT" = "null" ]; then
             # 3% chance of new incident per run (~1 every 3 days)

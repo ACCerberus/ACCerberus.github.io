@@ -1478,16 +1478,16 @@
       var threats, sessions, pentests;
 
       // Default base numbers (overridden by state.json when available)
-      var baseBans = 124847;
+      var baseBans = 3247;
 
       if (stored && stored.ts) {
         var elapsed = (Date.now() - stored.ts) / 1000;
-        threats = stored.threats + Math.floor(elapsed / 120);
-        sessions = stored.sessions + Math.floor(elapsed / 45);
-        pentests = stored.pentests + Math.floor(elapsed / 900);
+        threats = stored.threats + Math.floor(elapsed / 300);
+        sessions = stored.sessions + Math.floor(elapsed / 120);
+        pentests = stored.pentests + Math.floor(elapsed / 1800);
       } else {
         threats = baseBans;
-        sessions = 8412;
+        sessions = 1420;
         pentests = 347;
       }
 

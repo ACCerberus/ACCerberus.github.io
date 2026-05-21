@@ -32,6 +32,16 @@
     { "name": "Neural Network Pruning Pipeline", "desc": "Automated model compression for edge deployment", "color": "var(--green)" },
     { "name": "Cross-Platform Telemetry Unifier", "desc": "Unified event schema across PC, console, and mobile", "color": "var(--blue)" },
     { "name": "Cheat-as-a-Service Tracker", "desc": "Dark web monitoring and provider lifecycle tracking", "color": "var(--red)" },
-    { "name": "Hardware Security Module Integration", "desc": "HSM-backed key management for signature verification", "color": "var(--accent)" }
+    { "name": "Hardware Security Module Integration", "desc": "HSM-backed key management for signature verification", "color": "var(--accent)" },
+    { "name": "Player Trust Score System", "desc": "Reputation system based on behavioral history across sessions and titles", "color": "var(--green)" },
+    { "name": "Automated Ban Appeal Portal", "desc": "Self-service appeal system with evidence review and AI-assisted triage", "color": "var(--blue)" },
+    { "name": "Anti-Cheat Transparency Report", "desc": "Public quarterly reports on detection rates, false positives, and enforcement actions", "color": "var(--accent)" },
+    { "name": "Multi-Language SDK Support", "desc": "SDK bindings for C#, Rust, Go, and Python alongside native C++", "color": "var(--purple)" },
+    { "name": "Custom Detection Rule Engine", "desc": "Studio-defined behavioral rules for game-specific cheat patterns", "color": "var(--red)" },
+    { "name": "Real-Time Spectator Analysis", "desc": "Live spectator mode with behavioral overlay for tournament officials", "color": "var(--blue)" },
+    { "name": "Deployment Health Dashboard", "desc": "Per-title deployment monitoring with SLA tracking and alerting", "color": "var(--green)" },
+    { "name": "Automated Regression Test Suite", "desc": "Continuous compatibility testing across 200+ hardware configurations", "color": "var(--accent)" },
+    { "name": "Serverless Edge Scanning", "desc": "Cloudflare Workers-based lightweight scanning for browser games", "color": "var(--purple)" },
+    { "name": "Cheat Economy Intelligence Feed", "desc": "Automated tracking of cheat pricing, availability, and provider status", "color": "var(--red)" }
   ]
 }
