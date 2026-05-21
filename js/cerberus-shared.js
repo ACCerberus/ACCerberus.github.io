@@ -277,24 +277,18 @@
     document.body.appendChild(container);
 
     var msgs = [
-      { icon: 'ok', text: '<strong>Signature DB synced</strong> \u2014 all regions up to date' },
+      { icon: 'ok', text: '<strong>Signature DB synced</strong> \u2014 US-East + EU-West up to date' },
       { icon: 'info', text: '<strong>Threat intel</strong> \u2014 new loader variant catalogued' },
-      { icon: 'block', text: '<strong>DMA board blocked</strong> \u2014 firmware fingerprint matched' },
       { icon: 'ok', text: '<strong>Kernel integrity</strong> \u2014 scan cycle verified' },
-      { icon: 'info', text: '<strong>SDK update</strong> \u2014 v0.4.3.0a available for partners' },
-      { icon: 'ok', text: '<strong>AI model</strong> \u2014 behavioral engine updated' },
-      { icon: 'block', text: '<strong>HWID spoof blocked</strong> \u2014 hardware fingerprint mismatch detected' },
-      { icon: 'ok', text: '<strong>Ban wave complete</strong> \u2014 enforcement action across all regions' },
-      { icon: 'info', text: '<strong>Region sync</strong> \u2014 Asia-Pacific signatures propagated' },
-      { icon: 'ok', text: '<strong>Pentest batch</strong> \u2014 automated test suite passed 847 scenarios' },
-      { icon: 'block', text: '<strong>Kernel exploit blocked</strong> \u2014 driver injection attempt neutralized' },
-      { icon: 'info', text: '<strong>Model update</strong> \u2014 behavioral classifier v7.3 deployed' },
-      { icon: 'ok', text: '<strong>Session integrity</strong> \u2014 all active sessions verified clean' },
-      { icon: 'block', text: '<strong>Loader neutralized</strong> \u2014 new polymorphic stub detected and blocked' },
-      { icon: 'info', text: '<strong>Partner webhook</strong> \u2014 ban event delivered to 6 endpoints' },
-      { icon: 'ok', text: '<strong>Certificate rotated</strong> \u2014 driver signing cert renewed' },
-      { icon: 'block', text: '<strong>Memory injection blocked</strong> \u2014 RWX region detected in game process' },
-      { icon: 'info', text: '<strong>Threat intel</strong> \u2014 underground marketplace scan complete' },
+      { icon: 'ok', text: '<strong>AI model</strong> \u2014 behavioral engine checkpoint saved' },
+      { icon: 'block', text: '<strong>HWID mismatch</strong> \u2014 hardware fingerprint flagged for review' },
+      { icon: 'ok', text: '<strong>Pentest batch</strong> \u2014 automated test suite passed 84 scenarios' },
+      { icon: 'block', text: '<strong>Kernel anomaly</strong> \u2014 suspicious driver load flagged' },
+      { icon: 'info', text: '<strong>Model update</strong> \u2014 behavioral classifier v3.1 deployed to beta' },
+      { icon: 'ok', text: '<strong>Session integrity</strong> \u2014 active sessions verified clean' },
+      { icon: 'info', text: '<strong>Partner webhook</strong> \u2014 detection event delivered' },
+      { icon: 'block', text: '<strong>Memory anomaly</strong> \u2014 RWX region detected in game process' },
+      { icon: 'info', text: '<strong>Network sentinel</strong> \u2014 packet integrity check passed' },
     ];
 
     function showToast() {
@@ -311,12 +305,12 @@
       while (container.children.length > 3) container.removeChild(container.firstChild);
     }
 
-    // First toast after 20-40s, then every 45-120s (less frequent than homepage)
+    // First toast after 30-60s, then every 90-240s
     setTimeout(function () {
       showToast();
       setInterval(function () {
-        if (Math.random() < 0.5) showToast();
-      }, 45000 + Math.floor(Math.random() * 75000));
+        if (Math.random() < 0.4) showToast();
+      }, 90000 + Math.floor(Math.random() * 150000));
     }, 20000 + Math.floor(Math.random() * 20000));
   }
 

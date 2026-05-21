@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-20T23:15:50Z",
+  "lastUpdated": "2026-05-20T23:14:00Z",
   "entries": [
     {
       "id": "lab-001",
@@ -12,24 +12,6 @@
     },
     {
       "id": "lab-002",
-      "title": "Homomorphic Encryption for Memory Scanning",
-      "desc": "Exploring FHE schemes that allow pattern matching on encrypted memory snapshots without decryption.",
-      "status": "HYPOTHESIS",
-      "startDate": "2026-05-01",
-      "lastUpdate": "2026-05-15",
-      "findings": "CKKS scheme shows promise for approximate matching. Latency overhead currently 40x — investigating FPGA acceleration."
-    },
-    {
-      "id": "lab-003",
-      "title": "Federated Learning for Cross-Title Detection",
-      "desc": "Training shared detection models across multiple game titles without exposing individual game data.",
-      "status": "PROTOTYPE",
-      "startDate": "2026-03-01",
-      "lastUpdate": "2026-05-20",
-      "findings": "Federated averaging converges in 12 rounds across 4 test titles. Privacy guarantees verified via differential privacy audit."
-    },
-    {
-      "id": "lab-004",
       "title": "TPM 2.0 Remote Attestation Chain",
       "desc": "Using TPM attestation to verify boot chain integrity and detect rootkit-level tampering before game launch.",
       "status": "EVALUATION",
@@ -38,16 +20,7 @@
       "findings": "Attestation flow works on ~87-92% of tested hardware depending on vendor. Custom BIOS and older firmware revisions require graceful fallback."
     },
     {
-      "id": "lab-005",
-      "title": "WebGPU-Accelerated Behavioral Pattern Matching",
-      "desc": "Leveraging WebGPU compute shaders for client-side behavioral anomaly detection at high throughput.",
-      "status": "HYPOTHESIS",
-      "startDate": "2026-05-10",
-      "lastUpdate": "2026-05-19",
-      "findings": "Initial WebGPU compute shader prototype processes 10K input events/frame. Browser compatibility matrix under evaluation."
-    },
-    {
-      "id": "lab-006",
+      "id": "lab-003",
       "title": "Side-Channel Timing for VM Detection",
       "desc": "Using CPU cache timing variations to detect virtual machine environments used to bypass hardware bans.",
       "status": "EXPERIMENT",
@@ -56,16 +29,7 @@
       "findings": "L3 cache timing delta identifies VMware/KVM with 92-96% accuracy depending on host config. Hyper-V detection requires additional rdtsc calibration."
     },
     {
-      "id": "lab-007",
-      "title": "Quantum-Resistant Signature Verification",
-      "desc": "Evaluating CRYSTALS-Dilithium and SPHINCS+ for post-quantum signature database integrity verification.",
-      "status": "HYPOTHESIS",
-      "startDate": "2026-05-05",
-      "lastUpdate": "2026-05-14",
-      "findings": "Dilithium-3 verification is 1.4x slower than Ed25519 but within acceptable bounds. Key size increase impacts distribution."
-    },
-    {
-      "id": "lab-008",
+      "id": "lab-004",
       "title": "Neural Network Pruning for Edge Deployment",
       "desc": "Structured pruning of behavioral detection models to reduce client-side inference cost by 60%+.",
       "status": "PROTOTYPE",
@@ -78,18 +42,10 @@
     { "title": "FPGA-Accelerated Pattern Matching", "desc": "Using reconfigurable hardware for real-time cheat signature matching at line rate.", "topic": "hardware" },
     { "title": "Differential Privacy in Telemetry", "desc": "Applying epsilon-delta privacy to aggregated detection metrics before reporting.", "topic": "privacy" },
     { "title": "GAN-Based Cheat Synthesis", "desc": "Using generative adversarial networks to synthesize novel cheat patterns for proactive detection.", "topic": "ml" },
-    { "title": "Zero-Knowledge Proof of Fair Play", "desc": "ZK-SNARK proofs allowing players to prove clean sessions without revealing system state.", "topic": "crypto" },
     { "title": "eBPF-Based Kernel Monitoring", "desc": "Using eBPF programs for low-overhead kernel-space behavioral monitoring on Linux.", "topic": "kernel" },
-    { "title": "Temporal Graph Neural Networks for Social Cheating", "desc": "Modeling player interaction graphs to detect coordinated cheating rings.", "topic": "ml" },
     { "title": "Adversarial ML Robustness Testing", "desc": "Evaluating detection model resilience against adversarial input perturbations designed to evade classification.", "topic": "ml" },
-    { "title": "Secure Enclave Key Management", "desc": "Using Intel SGX/ARM TrustZone for tamper-resistant credential storage in the client module.", "topic": "hardware" },
-    { "title": "Behavioral Biometric Authentication", "desc": "Using mouse dynamics and typing patterns as supplementary identity verification signals.", "topic": "ml" },
     { "title": "Network Traffic Fingerprinting", "desc": "Detecting cheat tool communication by analyzing packet timing and payload entropy patterns.", "topic": "networking" },
     { "title": "Compiler-Level Obfuscation Pipeline", "desc": "Custom LLVM passes for automated binary diversification to resist reverse engineering.", "topic": "security" },
-    { "title": "Real-Time Replay Divergence Detection", "desc": "Comparing client-reported game state against server-authoritative replay for consistency verification.", "topic": "gamedev" },
-    { "title": "Rust Rewrite of Scan Engine Core", "desc": "Evaluating memory-safe reimplementation of performance-critical scan path in Rust.", "topic": "engineering" },
-    { "title": "Decentralized Ban Consensus Protocol", "desc": "Multi-party verification of ban decisions across independent detection nodes.", "topic": "crypto" },
-    { "title": "GPU Memory Scanning via Vulkan Compute", "desc": "Direct GPU memory inspection for detecting GPU-side cheat overlays and shader modifications.", "topic": "hardware" },
-    { "title": "Automated Cheat Sample Collection Pipeline", "desc": "Web scraping and sandboxed execution pipeline for continuous cheat binary acquisition.", "topic": "infra" }
+    { "title": "Rust Rewrite of Scan Engine Core", "desc": "Evaluating memory-safe reimplementation of performance-critical scan path in Rust.", "topic": "engineering" }
   ]
 }
