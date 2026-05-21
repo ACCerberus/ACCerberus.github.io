@@ -2,46 +2,45 @@
   "lastUpdated": "2026-05-20T23:15:50Z",
   "items": {
     "short": [
-      { "id": "r-s1", "name": "Partner Dashboard v2", "desc": "Redesigned partner dashboard with real-time threat intel feeds", "progress": 68, "color": "var(--green)", "added": "2026-03-01" },
-      { "id": "r-s2", "name": "Linux Native Client", "desc": "Native Linux kernel module for Proton and native titles", "progress": 52, "color": "var(--blue)", "added": "2026-02-15" },
-      { "id": "r-s3", "name": "Webhook v2 Protocol", "desc": "Event-driven webhook system with retry and dead-letter queues", "progress": 81, "color": "var(--accent)", "added": "2026-01-20" },
-      { "id": "r-s4", "name": "SDK Auto-Updater", "desc": "Automatic SDK version management with rollback support", "progress": 44, "color": "var(--purple)", "added": "2026-04-10" }
+      { "id": "r-s1", "name": "Adversarial Replay Sandbox", "desc": "Isolated replay environment that re-executes suspicious sessions server-side to confirm cheating without client intervention — eliminates false positives on edge cases", "progress": 72, "color": "var(--green)", "added": "2026-03-01" },
+      { "id": "r-s2", "name": "Input Entropy Fingerprinting", "desc": "Measures Shannon entropy of raw input streams to detect synthetic inputs — human input has natural entropy patterns that no cheat can replicate", "progress": 58, "color": "var(--blue)", "added": "2026-02-15" },
+      { "id": "r-s3", "name": "Zero-Footprint Mode", "desc": "Kernel module unloads completely between scan cycles — leaves zero memory residue, making Cerberus undetectable by cheat developers during reverse engineering", "progress": 84, "color": "var(--accent)", "added": "2026-01-20" },
+      { "id": "r-s4", "name": "Cross-Session Behavioral Graph", "desc": "Graph neural network that builds player identity from behavioral patterns across sessions — detects ban evaders even with new hardware and accounts", "progress": 41, "color": "var(--purple)", "added": "2026-04-10" }
     ],
     "mid": [
-      { "id": "r-m1", "name": "Console SDK (PS5/Xbox)", "desc": "PlayStation 5 and Xbox Series X|S native integration", "progress": 18, "color": "var(--blue)", "added": "2026-01-01" },
-      { "id": "r-m2", "name": "Mobile Anti-Cheat Module", "desc": "Android and iOS behavioral detection for mobile titles", "progress": 12, "color": "var(--accent)", "added": "2026-02-01" },
-      { "id": "r-m3", "name": "AI Model Marketplace", "desc": "Community-contributed detection models with peer review", "progress": 28, "color": "var(--purple)", "added": "2026-03-15" },
-      { "id": "r-m4", "name": "Real-Time Appeal Portal", "desc": "Player-facing ban appeal system with evidence review", "progress": 35, "color": "var(--green)", "added": "2026-04-01" }
+      { "id": "r-m1", "name": "Proof-of-Play Protocol", "desc": "Cryptographic attestation that a game session was played legitimately — players can prove clean sessions to tournament organizers without revealing system state", "progress": 22, "color": "var(--blue)", "added": "2026-01-01" },
+      { "id": "r-m2", "name": "Peripheral Bus Sniffer", "desc": "Monitors USB/HID bus traffic patterns to detect hardware cheat devices (Cronus, XIM, strikepack) by analyzing input timing jitter and polling anomalies", "progress": 15, "color": "var(--accent)", "added": "2026-02-01" },
+      { "id": "r-m3", "name": "Silent Honeypot Injection", "desc": "Injects fake memory regions that appear to contain game state — any cheat reading them triggers instant detection without false positives, since no legitimate process accesses them", "progress": 31, "color": "var(--red)", "added": "2026-03-15" },
+      { "id": "r-m4", "name": "Neural Style Transfer Detection", "desc": "Detects AI-powered aimbots that mimic human aim patterns by analyzing micro-corrections and acceleration curves that neural networks cannot perfectly replicate", "progress": 18, "color": "var(--purple)", "added": "2026-04-01" },
+      { "id": "r-m5", "name": "Cheat Provider Lifecycle Tracker", "desc": "Automated dark web monitoring that tracks cheat providers from release to takedown — predicts new bypass attempts before they ship based on provider development patterns", "progress": 26, "color": "var(--green)", "added": "2026-03-01" }
     ],
     "long": [
-      { "id": "r-l1", "name": "Quantum-Resistant Signatures", "desc": "Post-quantum cryptography for signature verification", "progress": 3, "color": "var(--red)", "added": "2026-01-01" },
-      { "id": "r-l2", "name": "Federated Detection Network", "desc": "Cross-title threat intelligence sharing without data exposure", "progress": 7, "color": "var(--blue)", "added": "2026-02-01" },
-      { "id": "r-l3", "name": "Hardware Attestation v2", "desc": "TPM 2.0 remote attestation for hardware integrity verification", "progress": 5, "color": "var(--accent)", "added": "2026-03-01" }
+      { "id": "r-l1", "name": "Cognitive Load Analysis", "desc": "Measures player cognitive load through input complexity and reaction timing — cheaters exhibit unnaturally low cognitive load during high-complexity situations", "progress": 6, "color": "var(--red)", "added": "2026-01-01" },
+      { "id": "r-l2", "name": "Federated Detection Mesh", "desc": "Cross-title threat intelligence sharing using differential privacy — multiple game studios contribute to a shared detection model without exposing any individual game's data", "progress": 8, "color": "var(--blue)", "added": "2026-02-01" },
+      { "id": "r-l3", "name": "Hardware Execution Tracing", "desc": "Uses Intel PT (Processor Trace) to record actual CPU instruction flow during game execution — detects code injection at the hardware level, impossible to spoof from software", "progress": 3, "color": "var(--accent)", "added": "2026-03-01" },
+      { "id": "r-l4", "name": "Temporal Anomaly Detection", "desc": "Analyzes time-series game state deltas at microsecond resolution — detects speedhacks, teleports, and physics exploits that modify game time without triggering traditional checks", "progress": 5, "color": "var(--purple)", "added": "2026-04-01" }
     ],
     "completed": [
-      { "id": "r-c1", "name": "DMA Board Detection", "desc": "PCIe device fingerprinting for DMA-based cheats", "completedDate": "2026-04-15" },
-      { "id": "r-c2", "name": "Behavioral AI v7", "desc": "7th generation behavioral analysis neural network", "completedDate": "2026-03-20" },
-      { "id": "r-c3", "name": "Multi-Region Deployment", "desc": "9-region global infrastructure with <50ms latency", "completedDate": "2026-02-28" }
+      { "id": "r-c1", "name": "DMA Board Detection", "desc": "PCIe device fingerprinting for DMA-based cheats — first AC to detect Screamer and custom DMA boards via firmware timing analysis", "completedDate": "2026-04-15" },
+      { "id": "r-c2", "name": "Behavioral AI v7", "desc": "7th generation behavioral analysis neural network trained on 50K labeled cheat samples", "completedDate": "2026-03-20" },
+      { "id": "r-c3", "name": "Multi-Region Deployment", "desc": "9-region global infrastructure with sub-50ms signature sync latency", "completedDate": "2026-02-28" }
     ]
   },
   "templatePool": [
-    { "name": "Replay Analysis Engine", "desc": "Server-side replay parsing for post-match cheat detection", "color": "var(--blue)" },
-    { "name": "Encrypted Memory Scanner", "desc": "Homomorphic encryption for privacy-preserving memory analysis", "color": "var(--purple)" },
-    { "name": "WebGPU Behavioral Analysis", "desc": "GPU-accelerated behavioral pattern matching in browser", "color": "var(--accent)" },
-    { "name": "Side-Channel VM Detection", "desc": "Timing-based VM and hypervisor detection via cache analysis", "color": "var(--red)" },
-    { "name": "Neural Network Pruning Pipeline", "desc": "Automated model compression for edge deployment", "color": "var(--green)" },
-    { "name": "Cross-Platform Telemetry Unifier", "desc": "Unified event schema across PC, console, and mobile", "color": "var(--blue)" },
-    { "name": "Cheat-as-a-Service Tracker", "desc": "Dark web monitoring and provider lifecycle tracking", "color": "var(--red)" },
-    { "name": "Hardware Security Module Integration", "desc": "HSM-backed key management for signature verification", "color": "var(--accent)" },
-    { "name": "Player Trust Score System", "desc": "Reputation system based on behavioral history across sessions and titles", "color": "var(--green)" },
-    { "name": "Automated Ban Appeal Portal", "desc": "Self-service appeal system with evidence review and AI-assisted triage", "color": "var(--blue)" },
-    { "name": "Anti-Cheat Transparency Report", "desc": "Public quarterly reports on detection rates, false positives, and enforcement actions", "color": "var(--accent)" },
-    { "name": "Multi-Language SDK Support", "desc": "SDK bindings for C#, Rust, Go, and Python alongside native C++", "color": "var(--purple)" },
-    { "name": "Custom Detection Rule Engine", "desc": "Studio-defined behavioral rules for game-specific cheat patterns", "color": "var(--red)" },
-    { "name": "Real-Time Spectator Analysis", "desc": "Live spectator mode with behavioral overlay for tournament officials", "color": "var(--blue)" },
+    { "name": "Retinal Scan Correlation", "desc": "Eye tracking data analysis to detect ESP/wallhack users by correlating gaze patterns with enemy positions behind walls", "color": "var(--blue)" },
+    { "name": "Physics Simulation Validator", "desc": "Server-side physics replay that detects impossible movement trajectories and collision bypasses", "color": "var(--green)" },
+    { "name": "Binary Birthmarking", "desc": "Unique per-client code mutations that make each game binary identifiable — leaked cheats can be traced to the exact account that extracted them", "color": "var(--purple)" },
+    { "name": "Audio Fingerprint Scanner", "desc": "Detects audio-based ESP tools by analyzing whether player reactions correlate with sound cues that should be inaudible at their position", "color": "var(--accent)" },
+    { "name": "GPU Shader Integrity Monitor", "desc": "Validates GPU shader programs at runtime to detect wallhack shaders and chams injected via graphics driver hooks", "color": "var(--red)" },
+    { "name": "Network Packet Entropy Analysis", "desc": "Detects packet manipulation and lag switches by analyzing entropy patterns in outbound network traffic", "color": "var(--blue)" },
+    { "name": "Autonomous Red Team Agent", "desc": "AI agent that continuously attempts to bypass Cerberus detection — finds vulnerabilities before cheat developers do", "color": "var(--red)" },
+    { "name": "Social Graph Cheater Detection", "desc": "Maps player social connections to identify boosting rings and organized cheating groups through behavioral clustering", "color": "var(--green)" },
+    { "name": "Memory Page Fault Canary", "desc": "Places watchpoint-free memory canaries using page table manipulation — detects memory reads without any CPU overhead", "color": "var(--purple)" },
+    { "name": "Competitive Integrity Score", "desc": "Public per-player trust score based on behavioral history that tournament organizers and matchmaking can use", "color": "var(--accent)" },
+    { "name": "Polymorphic Driver Loader", "desc": "Each client loads a uniquely obfuscated kernel driver variant — prevents universal bypass development", "color": "var(--red)" },
+    { "name": "Inference-on-Edge via NPU", "desc": "Offload behavioral AI inference to dedicated NPU hardware for zero-impact scanning during gameplay", "color": "var(--blue)" },
+    { "name": "Multi-Language SDK", "desc": "SDK bindings for C#, Rust, Go, and Python alongside native C++", "color": "var(--purple)" },
     { "name": "Deployment Health Dashboard", "desc": "Per-title deployment monitoring with SLA tracking and alerting", "color": "var(--green)" },
-    { "name": "Automated Regression Test Suite", "desc": "Continuous compatibility testing across 200+ hardware configurations", "color": "var(--accent)" },
-    { "name": "Serverless Edge Scanning", "desc": "Cloudflare Workers-based lightweight scanning for browser games", "color": "var(--purple)" },
-    { "name": "Cheat Economy Intelligence Feed", "desc": "Automated tracking of cheat pricing, availability, and provider status", "color": "var(--red)" }
+    { "name": "Automated Regression Test Suite", "desc": "Continuous compatibility testing across 200+ hardware configurations", "color": "var(--accent)" }
   ]
 }
