@@ -157,6 +157,7 @@
     <p>&copy; <script>document.write(new Date().getFullYear())</script> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/">Home</a> &nbsp;&middot;&nbsp; <a href="/docs/">Docs</a> &nbsp;&middot;&nbsp; <a href="/status/">Status</a></p>
   </footer>
 
+  <script src="/js/cerberus-engine.js"></script>
   <script src="/js/cerberus-shared.js"></script>
   <script>
     // ===== SEEDED RANDOM =====
@@ -168,8 +169,19 @@
     function dateToDaySeed(y, m, d) { return Math.floor(new Date(y, m-1, d).getTime() / 86400000); }
 
     // ===== DATA-DRIVEN ROADMAP (from roadmap.json, falls back to hardcoded) =====
-    function renderRoadmapItem(item, etaLabel, etaClass) {
-      var dailyShift = Math.floor(seeded(today + (item.id || '').charCodeAt(3) * 17) * 3);
+    function renderRoadmapItem(item, etaLabel, etaClass, itemIdx) {
+      // Engine-derived cumulative progress since item was added
+      var dailyShift = 0;
+      if (window.CerberusEngine && item.added) {
+        var addedTime = new Date(item.added).getTime();
+        var daysSinceAdded = Math.floor((Date.now() - addedTime) / 86400000);
+        for (var d = 0; d < Math.min(daysSinceAdded, 60); d++) {
+          dailyShift += window.CerberusEngine.labProgress(itemIdx || 0, new Date(Date.now() - d * 86400000));
+        }
+        dailyShift = Math.floor(dailyShift);
+      } else {
+        dailyShift = Math.floor(seeded(today + (item.id || '').charCodeAt(3) * 17) * 3);
+      }
       var pct = Math.min(item.progress + dailyShift, 95);
       var color = item.color || 'var(--accent)';
       return '<div class="roadmap-item"><div class="roadmap-item-header"><span class="roadmap-item-name">' + item.name + '</span><span class="roadmap-item-eta ' + etaClass + '">' + etaLabel + '</span></div><div class="roadmap-item-desc">' + item.desc + '</div><div class="roadmap-bar"><div class="roadmap-bar-fill" style="width:' + pct + '%;background:' + color + ';"></div></div></div>';
@@ -177,17 +189,17 @@
 
     function renderRoadmap(data) {
       var shortHTML = '<div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600;">In Progress</div><div class="roadmap-grid">';
-      (data.items.short || []).forEach(function(item) { shortHTML += renderRoadmapItem(item, 'IN PROGRESS', 'eta-progress'); });
+      (data.items.short || []).forEach(function(item, i) { shortHTML += renderRoadmapItem(item, 'IN PROGRESS', 'eta-progress', i); });
       shortHTML += '</div>';
       document.getElementById('roadmapShort').innerHTML = shortHTML;
 
       var midHTML = '<div class="roadmap-grid">';
-      (data.items.mid || []).forEach(function(item) { midHTML += renderRoadmapItem(item, 'PLANNED', 'eta-planned'); });
+      (data.items.mid || []).forEach(function(item, i) { midHTML += renderRoadmapItem(item, 'PLANNED', 'eta-planned', i + 10); });
       midHTML += '</div>';
       document.getElementById('roadmapMid').innerHTML = midHTML;
 
       var longHTML = '<div class="roadmap-grid">';
-      (data.items.long || []).forEach(function(item) { longHTML += renderRoadmapItem(item, 'RESEARCH', 'eta-research'); });
+      (data.items.long || []).forEach(function(item, i) { longHTML += renderRoadmapItem(item, 'RESEARCH', 'eta-research', i + 20); });
       longHTML += '</div>';
       document.getElementById('roadmapLong').innerHTML = longHTML;
 
@@ -230,20 +242,28 @@
       renderRoadmap(fallbackRoadmap);
     });
 
-    // ===== R&D LAB LOG (from lab-log.json) =====
+    // ===== R&D LAB LOG (from lab-log.json, with engine-derived progress) =====
+    var BE = window.CerberusEngine;
     fetch('/data/lab-log.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(data) {
       if (!data.entries || data.entries.length === 0) return;
       document.getElementById('labLogSection').style.display = 'block';
       var statusColors = { 'HYPOTHESIS': 'var(--text-dim)', 'EXPERIMENT': 'var(--blue)', 'PROTOTYPE': 'var(--accent)', 'EVALUATION': 'var(--green)', 'ARCHIVED': 'var(--text-dim)' };
       var statusBg = { 'HYPOTHESIS': 'rgba(107,112,132,0.1)', 'EXPERIMENT': 'rgba(64,136,232,0.1)', 'PROTOTYPE': 'rgba(232,160,32,0.1)', 'EVALUATION': 'rgba(48,200,96,0.1)', 'ARCHIVED': 'rgba(107,112,132,0.08)' };
       var labHTML = '';
-      data.entries.forEach(function(entry) {
+      data.entries.forEach(function(entry, idx) {
         var col = statusColors[entry.status] || 'var(--text-dim)';
         var bg = statusBg[entry.status] || 'rgba(107,112,132,0.1)';
+        // Engine-derived last-update time (hours ago, not days)
+        var lastUpdateStr = entry.lastUpdate;
+        if (BE) {
+          var labTime = BE.labLastUpdate(idx);
+          lastUpdateStr = BE.relativeTime(labTime.getTime());
+        }
         labHTML += '<div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,0.01);margin-bottom:8px;">';
         labHTML += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">';
         labHTML += '<span style="font-size:0.82rem;font-weight:600;color:var(--text-bright);">' + entry.title + '</span>';
         labHTML += '<span style="font-family:var(--font-mono);font-size:0.6rem;padding:2px 8px;border-radius:4px;font-weight:600;background:' + bg + ';color:' + col + ';">' + entry.status + '</span>';
+        labHTML += '<span style="font-family:var(--font-mono);font-size:0.58rem;color:var(--text-dim);margin-left:auto;">updated ' + lastUpdateStr + '</span>';
         labHTML += '</div>';
         labHTML += '<div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px;">' + entry.desc + '</div>';
         if (entry.findings) {

@@ -254,6 +254,7 @@
     &nbsp;&middot;&nbsp; <a href="/status/">Status</a></p>
   </footer>
 
+  <script src="/js/cerberus-engine.js"></script>
   <script src="/js/cerberus-shared.js"></script>
   <script>
     // =====================================================================
@@ -587,9 +588,37 @@
       scanDay--;
     }
 
-    // Guarantee variety in the first 5 posts — ensure no two adjacent posts are same type
-    // (already fairly varied by seed, but we can shuffle types a little)
-    // The seeded approach naturally distributes well — no extra fix needed.
+    // Inject arms-race-correlated post if today is a spike day
+    var BE = window.CerberusEngine;
+    if (BE) {
+      var arc = BE.armsRaceEvent();
+      if (arc.isSpike) {
+        var arcAuthor = AUTHORS[3]; // ArsenalRX — Threat Research
+        var arcPost = {
+          type: 'threat', catClass: 'cat-threat', catLabel: 'THREAT ALERT',
+          title: 'Active Bypass Detected \u2014 ' + arc.provider + ' Update',
+          author: arcAuthor, date: fmtDate(today), readTime: 3,
+          excerpt: 'Our detection engine identified a new bypass variant from ' + arc.provider + ' earlier today. ' + arc.spikeSigs + ' emergency signatures have been deployed across all regions. Detection rate for this variant is now at 94% and climbing as behavioral models retrain.',
+          tags: ['arms-race', 'threat-alert', 'signatures', arc.provider.toLowerCase()],
+          sevBadge: { label: 'ELEVATED', cls: 'sev-high' },
+          statsBoxes: [
+            { value: '+' + arc.spikeSigs, label: 'Emergency Sigs' },
+            { value: '94%', label: 'Current Detection' },
+            { value: arc.provider, label: 'Provider' },
+            { value: '<2h', label: 'Response Time' },
+          ],
+          categoryBreakdown: null,
+          body: [
+            'Our detection engine identified a new bypass variant from ' + arc.provider + ' earlier today. The update appears to target our kernel integrity checks with a modified driver loading sequence.',
+            'Within 90 minutes of first detection, ' + arc.spikeSigs + ' emergency signatures were generated and pushed to all 3 regions. The behavioral AI layer was already flagging suspicious patterns before signature deployment, providing zero-gap coverage.',
+            'All affected accounts have been flagged for review. Partners have been notified via webhook. We will publish a full analysis once the threat is fully contained.',
+          ],
+          timeline: null,
+          advisoryMeta: null,
+        };
+        posts.unshift(arcPost);
+      }
+    }
 
     // =====================================================================
     // RENDER

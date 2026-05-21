@@ -3,16 +3,16 @@
   var CS = {};
   window.CerberusStochastic = CS;
 
-  // ─── Helpers ───
+  // ─── Helpers (delegate to CerberusEngine when available) ───
 
-  // Seeded random (deterministic) - same sine-based approach used elsewhere
   CS.seeded = function(seed) {
+    if (window.CerberusEngine) return CerberusEngine.seeded(seed);
     var x = Math.sin(seed) * 43758.5453;
     return x - Math.floor(x);
   };
 
-  // Day seed - consistent value per calendar day
   CS.daySeed = function() {
+    if (window.CerberusEngine) return CerberusEngine.daySeed();
     var d = new Date();
     return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
   };
@@ -86,11 +86,12 @@
     return Math.max(min, Math.min(max, val));
   };
 
-  // Generate NPU utilization (15-55%, hour-based with noise)
+  // Generate NPU utilization (20-45%, scaled by load)
   CS.npuUtilization = function(hour, seed) {
-    var base = 25 + CS.diurnalMultiplier(hour) * 20;
-    var noise = (CS.seeded(seed || CS.daySeed() * 201) - 0.5) * 10;
-    return CS.clamp(Math.round((base + noise) * 10) / 10, 15, 55);
+    if (window.CerberusEngine) return CerberusEngine.npuUtilization();
+    var base = 25 + CS.diurnalMultiplier(hour) * 15;
+    var noise = (CS.seeded(seed || CS.daySeed() * 201) - 0.5) * 6;
+    return CS.clamp(Math.round((base + noise) * 10) / 10, 20, 45);
   };
 
   // Generate ML confidence (94-99%)
@@ -114,13 +115,10 @@
     return CS.clamp(Math.round((base + noise) * 100) / 100, 99.8, 100);
   };
 
-  // Generate behavioral model version string
-  CS.behavioralModelVersion = function(seed) {
-    var s = CS.seeded(seed || CS.daySeed() * 601);
-    var major = 7;
-    var minor = Math.floor(s * 6); // 0-5
-    var patch = Math.floor(CS.seeded((seed || CS.daySeed()) * 602) * 20);
-    return 'bm-' + major + '.' + minor + '.' + patch;
+  // Generate behavioral model version string (v3.x series, consistent with engine)
+  CS.behavioralModelVersion = function() {
+    if (window.CerberusEngine) return CerberusEngine.CONFIG.behavioralModel;
+    return 'bm-3.1.4';
   };
 
   // Generate PCIe firmware DB size (growing counter)

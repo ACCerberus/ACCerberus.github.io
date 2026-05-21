@@ -187,6 +187,7 @@
     <p>&copy; <script>document.write(new Date().getFullYear())</script> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/">Home</a> &nbsp;&middot;&nbsp; <a href="/docs/">Docs</a> &nbsp;&middot;&nbsp; <a href="/changelog/">Changelog</a></p>
   </footer>
 
+  <script src="/js/cerberus-engine.js"></script>
   <script src="/js/cerberus-shared.js"></script>
   <script>
     // ===== SEEDED RANDOM =====
@@ -202,26 +203,37 @@
     }
     updateTime(); setInterval(updateTime, 1000);
 
-    // ===== UPTIME BARS (date-seeded) =====
-    var services = [
-      { name: 'Detection Engine', base: 97.6, id: 1 },
-      { name: 'API & Dashboard', base: 98.1, id: 2 },
-      { name: 'Data Pipeline', base: 97.9, id: 3 },
-    ];
+    // ===== UPTIME BARS (date-seeded, per-region) =====
+    var E = window.CerberusEngine;
+    var serviceNames = ['Detection Engine', 'API & Dashboard', 'Data Pipeline'];
+    var regionNames = E ? E.CONFIG.regions.map(function(r) { return r.name; }) : ['US-East', 'EU-West', 'AP-Southeast'];
+    var services = [];
+    var svcId = 0;
+    serviceNames.forEach(function(svcName, si) {
+      regionNames.forEach(function(regName, ri) {
+        svcId++;
+        services.push({ name: svcName + ' — ' + regName, svcIdx: si, regIdx: ri, id: svcId });
+      });
+    });
 
     var uptimeHTML = '';
+    var lastSvc = '';
     services.forEach(function(svc) {
+      // Section divider for each service group
+      var svcLabel = serviceNames[svc.svcIdx];
+      if (svcLabel !== lastSvc) {
+        if (lastSvc) uptimeHTML += '<div style="height:12px;"></div>';
+        lastSvc = svcLabel;
+      }
       var degradedDays = [];
       for (var d = 0; d < 30; d++) {
-        var roll = seeded(today - d + svc.id * 100);
-        if (roll < 0.06) degradedDays.push(d); // ~6% chance per day per service
+        var status = E ? E.regionUptime(svc.svcIdx, svc.regIdx, d) : 'operational';
+        if (status === 'degraded') degradedDays.push(d);
       }
-      var pct = (100 - degradedDays.length * (0.01 + seeded(today + svc.id * 7) * 0.02)).toFixed(2);
+      var pct = (100 - degradedDays.length * (0.5 + seeded(today + svc.id * 7) * 0.8)).toFixed(1);
       if (degradedDays.length === 0) pct = '100';
 
-      uptimeHTML += '<div class="uptime-row"><span class="uptime-name">' + svc.name + '</span><div class="uptime-bar" id="bar' + svc.id + '"></div><span class="uptime-pct" style="color:' + (pct >= 99.9 ? 'var(--green)' : 'var(--accent)') + ';">' + pct + '%</span></div>';
-
-      // Store for bar rendering
+      uptimeHTML += '<div class="uptime-row"><span class="uptime-name">' + svc.name + '</span><div class="uptime-bar" id="bar' + svc.id + '"></div><span class="uptime-pct" style="color:' + (parseFloat(pct) >= 99.5 ? 'var(--green)' : 'var(--accent)') + ';">' + pct + '%</span></div>';
       svc.degraded = degradedDays;
     });
     document.getElementById('uptimeRows').innerHTML = uptimeHTML;
@@ -238,10 +250,10 @@
       }
     });
 
-    // ===== SCHEDULED MAINTENANCE (always shows next upcoming) =====
-    var maintDaysAhead = 3 + Math.floor(seeded(today * 3) * 8); // 3-10 days from now
-    var maintDate = new Date(Date.now() + maintDaysAhead * 86400000);
-    var maintHour = 2 + Math.floor(seeded(today * 5) * 4); // 02:00-05:00 UTC
+    // ===== SCHEDULED MAINTENANCE (engine-derived, always future) =====
+    var E = window.CerberusEngine;
+    var maintDate = E ? E.nextMaintenance() : new Date(Date.now() + 5 * 86400000);
+    var maintHour = maintDate.getUTCHours();
     var maintTasks = [
       { title: 'Signature DB reindex and optimization', desc: 'Reindexing signature database for faster lookup times. Detection engine falls back to cached signatures. No client downtime.' },
       { title: 'Kernel driver certificate rotation', desc: 'Rotating WHQL code-signing certificate for the kernel driver. Partners will need to pull updated SDK binaries within 48h.' },

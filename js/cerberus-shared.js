@@ -14,13 +14,15 @@
   var CERBERUS = window.CERBERUS || {};
   window.CERBERUS = CERBERUS;
 
-  // ─── Helpers ───
+  // ─── Helpers (delegated to CerberusEngine when available) ───
   function daySeed() {
+    if (window.CerberusEngine) return CerberusEngine.daySeed();
     var d = new Date();
     return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
   }
 
   function seededRand(seed) {
+    if (window.CerberusEngine) return CerberusEngine.seeded(seed);
     var x = Math.sin(seed) * 43758.5453;
     return x - Math.floor(x);
   }
@@ -38,17 +40,35 @@
       .then(function (r) { return r.json(); })
       .then(function (data) {
         CERBERUS.state = data;
+        // Override stale state values with engine-derived ones
+        var E = window.CerberusEngine;
+        if (E) {
+          var snap = E.snapshot();
+          data.threatLevel = snap.threatLevel;
+          data.signatureDb = snap.signatureCount;
+          data.totalBans = snap.totalBans;
+          data.activeSessions = snap.activeSessions;
+          data.dailyDetections = snap.dailyDetections;
+          data.nextScheduledMaint = snap.nextMaintenance.toISOString();
+        }
         CERBERUS._resolveState(data);
         applyThreatBanner(data.threatLevel);
         applySmartFavicon(data.threatLevel);
         document.dispatchEvent(new CustomEvent('cerberus:state', { detail: data }));
       })
       .catch(function () {
-        // Fallback defaults
+        // Fallback defaults — aligned with engine values
+        var E = window.CerberusEngine;
+        var snap = E ? E.snapshot() : null;
         CERBERUS.state = {
-          threatLevel: 'LOW', signatureDb: 4891, totalBans: 3100,
-          engineVersion: 'v0.4.2.0b', activeSessions: 1120, dailyDetections: 87,
-          falsePositiveRate: 0.09, avgScanLatency: 2.4
+          threatLevel: 'LOW',
+          signatureDb: snap ? snap.signatureCount : 4910,
+          totalBans: snap ? snap.totalBans : 3247,
+          engineVersion: snap ? snap.engineVersion : 'v0.4.2.0b',
+          activeSessions: snap ? snap.activeSessions : 482,
+          dailyDetections: snap ? snap.dailyDetections : 18,
+          falsePositiveRate: snap ? snap.falsePositiveRate : 0.14,
+          avgScanLatency: 2.4
         };
         CERBERUS._resolveState(CERBERUS.state);
         applyThreatBanner('MODERATE');
@@ -276,7 +296,7 @@
     container.id = 'toastContainer';
     document.body.appendChild(container);
 
-    var msgs = [
+    var baseMsgs = [
       { icon: 'ok', text: '<strong>Signature DB synced</strong> \u2014 US-East + EU-West up to date' },
       { icon: 'info', text: '<strong>Threat intel</strong> \u2014 new loader variant catalogued' },
       { icon: 'ok', text: '<strong>Kernel integrity</strong> \u2014 scan cycle verified' },
@@ -290,6 +310,22 @@
       { icon: 'block', text: '<strong>Memory anomaly</strong> \u2014 RWX region detected in game process' },
       { icon: 'info', text: '<strong>Network sentinel</strong> \u2014 packet integrity check passed' },
     ];
+    // Arms race spike messages — shown when engine detects a spike day
+    var spikeMsgs = [
+      { icon: 'block', text: '<strong>Arms race spike</strong> \u2014 new bypass variant detected, emergency sigs deploying' },
+      { icon: 'info', text: '<strong>Signature burst</strong> \u2014 {n} new signatures pushed in response to provider update' },
+      { icon: 'block', text: '<strong>Elevated threat</strong> \u2014 detection rate surge from new cheat loader' },
+      { icon: 'info', text: '<strong>Threat intel</strong> \u2014 provider "{provider}" released new build, analysis in progress' },
+    ];
+    var E = window.CerberusEngine;
+    var arc = E ? E.armsRaceEvent() : null;
+    var msgs = baseMsgs.slice();
+    if (arc && arc.isSpike) {
+      spikeMsgs.forEach(function(m) {
+        var text = m.text.replace('{n}', arc.spikeSigs).replace('{provider}', arc.provider);
+        msgs.push({ icon: m.icon, text: text });
+      });
+    }
 
     function showToast() {
       var msg = msgs[Math.floor(Math.random() * msgs.length)];
@@ -305,13 +341,16 @@
       while (container.children.length > 3) container.removeChild(container.firstChild);
     }
 
-    // First toast after 30-60s, then every 90-240s
+    // First toast after 60-120s, then every 2-10min (engine-paced)
     setTimeout(function () {
       showToast();
-      setInterval(function () {
-        if (Math.random() < 0.4) showToast();
-      }, 90000 + Math.floor(Math.random() * 150000));
-    }, 20000 + Math.floor(Math.random() * 20000));
+      function scheduleNext() {
+        var E = window.CerberusEngine;
+        var delay = E ? E.nextToastInterval() : (120000 + Math.floor(Math.random() * 480000));
+        setTimeout(function () { showToast(); scheduleNext(); }, delay);
+      }
+      scheduleNext();
+    }, 60000 + Math.floor(Math.random() * 60000));
   }
 
   // ─── INIT ───

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cerberus - Next-Generation Anti-Cheat Engine</title>
-  <meta name="description" content="Cerberus — Four-layer anti-cheat engine with kernel protection, behavioral AI, hardware fingerprinting, and network-level sentinel analysis. Zero telemetry. Zero compromise." />
+  <meta name="description" content="Cerberus — Four-layer anti-cheat engine with kernel protection, behavioral AI, hardware fingerprinting, and network-level sentinel analysis. No telemetry. No compromise." />
   <meta property="og:title" content="Cerberus Anti-Cheat" />
   <meta property="og:description" content="Four layers. Every surface. Nothing gets past the gate." />
   <meta property="og:type" content="website" />
@@ -666,7 +666,7 @@
       <p class="hero-subtitle">Cerberus is a next-generation anti-cheat engine that combines kernel-level protection, behavioral AI, hardware fingerprinting, and network-level sentinel analysis into a unified four-layer defense system. No rootkit. No telemetry. No compromise.</p>
       <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:12px;">
         <span style="font-family:var(--font-mono);font-size:0.78rem;color:var(--accent);background:rgba(232,160,32,0.1);border:1px solid rgba(232,160,32,0.2);padding:4px 14px;border-radius:6px;">v0.4.2.0b</span>
-        <span style="font-size:0.72rem;color:var(--text-dim);">Latest stable &middot; May 12, 2026</span>
+        <span id="versionAge" style="font-size:0.72rem;color:var(--text-dim);">Latest stable</span>
       </div>
       <div class="hero-actions">
         <a href="/access/" class="btn-primary">
@@ -706,11 +706,37 @@
           Sigs: <span id="pulseSigs" style="color:var(--text);">--</span>
         </div>
         <div style="font-size:0.72rem;color:var(--text-dim);font-family:var(--font-mono);">
-          Regions: <span id="pulseRegions" style="color:var(--text);">--</span>/9 online
+          Regions: <span id="pulseRegions" style="color:var(--text);">--</span>/3 online
         </div>
         <div style="font-size:0.72rem;color:var(--text-dim);font-family:var(--font-mono);">
           Last sync: <span id="pulseSync" style="color:var(--text);">--</span>
         </div>
+      </div>
+      <!-- FP Streak Badge -->
+      <div id="fpStreakBadge" style="margin-top:20px;display:flex;justify-content:center;opacity:0;transition:opacity 0.6s;">
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:8px;background:rgba(48,200,96,0.08);border:1px solid rgba(48,200,96,0.2);">
+          <span style="font-size:0.72rem;color:var(--green);font-family:var(--font-mono);font-weight:600;">True Positive Streak: <span id="fpStreakDays">--</span> days</span>
+        </div>
+      </div>
+      <!-- Daily Digest -->
+      <div id="dailyDigest" style="margin-top:24px;max-width:540px;margin-left:auto;margin-right:auto;opacity:0;transition:opacity 0.6s;">
+        <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+          <summary style="padding:12px 18px;cursor:pointer;font-size:0.78rem;font-family:var(--font-heading);font-weight:600;color:var(--text-bright);display:flex;align-items:center;gap:8px;list-style:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Daily Digest
+            <span id="digestDate" style="margin-left:auto;font-family:var(--font-mono);font-size:0.68rem;color:var(--text-dim);font-weight:400;"></span>
+          </summary>
+          <div style="padding:0 18px 14px;font-family:var(--font-mono);font-size:0.72rem;line-height:1.8;">
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 16px;color:var(--text-dim);">
+              <span style="color:var(--text);font-weight:600;">Today</span>
+              <span id="digestToday"></span>
+              <span style="color:var(--text);font-weight:600;">Yesterday</span>
+              <span id="digestYesterday"></span>
+              <span style="color:var(--text);font-weight:600;">7-day trend</span>
+              <span id="digestTrend"></span>
+            </div>
+          </div>
+        </details>
       </div>
     </div>
   </section>
@@ -721,8 +747,8 @@
   <section class="section" id="threat">
     <div class="section-header reveal">
       <div class="section-label">The Problem</div>
-      <h2 class="section-title">The anti-cheat industry is failing</h2>
-      <p class="section-desc">Every major solution on the market today was built to fight yesterday's cheats. Here's what they're missing.</p>
+      <h2 class="section-title">The gaps in current anti-cheat</h2>
+      <p class="section-desc">Most solutions still rely on techniques designed for an earlier generation of cheats. Here's where they fall short.</p>
     </div>
     <div class="threat-grid">
       <div class="threat-card reveal">
@@ -869,7 +895,7 @@
         </div>
         <div class="arch-layer">
           <div class="arch-layer-name">Ring 3 — User Mode</div>
-          <p>Multi-model ML pipeline running TCN-based aim analysis, entropy scoring, and behavioral fingerprinting at 1000Hz+. Sub-2ms latency, zero frame impact.</p>
+          <p>Multi-model ML pipeline running TCN-based aim analysis, entropy scoring, and behavioral fingerprinting at 1000Hz+. Sub-2ms latency, minimal frame impact in beta testing.</p>
         </div>
         <div class="arch-layer">
           <div class="arch-layer-name">Hardware Layer</div>
@@ -1073,9 +1099,9 @@
     </div>
     <div class="metrics-grid reveal">
       <div class="metric-card">
-        <div class="metric-value">96.2%</div>
-        <div class="metric-label">Overall Detection Rate</div>
-        <div class="metric-sub">Blended across all cheat categories</div>
+        <div class="metric-value">~78%</div>
+        <div class="metric-label">Blended Detection Rate</div>
+        <div class="metric-sub">Across all cheat categories (beta)</div>
       </div>
       <div class="metric-card">
         <div class="metric-value">0.14%</div>
@@ -1465,6 +1491,7 @@
     <p style="margin-top: 16px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved.</p>
   </footer>
 
+  <script src="/js/cerberus-engine.js"></script>
   <script src="/js/cerberus-shared.js"></script>
   <script>
     // Year
@@ -1510,64 +1537,69 @@
       gridObserver.observe(grid);
     });
 
-    // Live counters — pull base from state.json, increment in real-time
+    // Live counters — derived from CerberusEngine
     (function() {
-      var TITLES = 6;
+      var E = window.CerberusEngine;
+      var snap = E ? E.snapshot() : null;
+      var TITLES = snap ? snap.games : 3;
 
-      var stored = null;
-      try { stored = JSON.parse(localStorage.getItem('cerberusStats7')); } catch(e) {}
+      var threats = snap ? snap.totalBans : 3247;
+      var sessions = snap ? snap.sessionsProtected : 482;
+      var pentests = snap ? snap.pentestScenarios : 184;
 
-      var threats, sessions, pentests;
-
-      // Default base numbers (overridden by state.json when available)
-      var baseBans = 3247;
-
-      if (stored && stored.ts) {
-        var elapsed = (Date.now() - stored.ts) / 1000;
-        threats = stored.threats + Math.floor(elapsed / 900);
-        sessions = stored.sessions + Math.floor(elapsed / 360);
-        pentests = stored.pentests + Math.floor(elapsed / 3600);
-      } else {
-        threats = baseBans;
-        sessions = 482;
-        pentests = 184;
+      // Populate system pulse bar from engine
+      if (E && snap) {
+        var pulseEl = document.getElementById('systemPulse');
+        if (pulseEl) {
+          var vEl = document.getElementById('pulseVersion');
+          var sEl = document.getElementById('pulseSigs');
+          var rEl = document.getElementById('pulseRegions');
+          var tEl = document.getElementById('pulseSync');
+          if (vEl) vEl.textContent = E.CONFIG.engineVersion;
+          if (sEl) sEl.textContent = E.signatureCount().toLocaleString();
+          if (rEl) rEl.textContent = E.CONFIG.regions.length;
+          if (tEl) tEl.textContent = E.relativeTime(snap.lastHeartbeat.getTime());
+          pulseEl.style.opacity = '1';
+        }
       }
 
-      // Pull base from state.json so counter stays consistent with heartbeat
-      if (window.CERBERUS && CERBERUS.stateReady) {
-        CERBERUS.stateReady.then(function(state) {
-          if (state && state.totalBans && (!stored || !stored.ts)) {
-            threats = state.totalBans;
-            if (threatEl) threatEl.textContent = threats.toLocaleString();
-            save();
-          }
-          // Populate system pulse bar
-          var pulseEl = document.getElementById('systemPulse');
-          if (pulseEl && state) {
-            var vEl = document.getElementById('pulseVersion');
-            var sEl = document.getElementById('pulseSigs');
-            var rEl = document.getElementById('pulseRegions');
-            var tEl = document.getElementById('pulseSync');
-            if (vEl) vEl.textContent = state.engineVersion || '--';
-            if (sEl) sEl.textContent = (state.signatureDb || 0).toLocaleString();
-            if (rEl) rEl.textContent = state.regionsOnline || '--';
-            if (tEl && state.lastUpdate) {
-              var d = new Date(state.lastUpdate);
-              var ago = Math.floor((Date.now() - d.getTime()) / 60000);
-              tEl.textContent = ago < 60 ? ago + 'min ago' : Math.floor(ago / 60) + 'h ago';
-            }
-            pulseEl.style.opacity = '1';
-          }
-        });
+      // Dynamic version age
+      if (E) {
+        var vaEl = document.getElementById('versionAge');
+        if (vaEl) vaEl.textContent = 'Latest stable \u00b7 ' + E.versionAge();
       }
 
-      function save() {
-        try { localStorage.setItem('cerberusStats7', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, ts: Date.now() })); } catch(e) {}
+      // FP streak badge
+      if (snap) {
+        var fpBadge = document.getElementById('fpStreakBadge');
+        var fpDays = document.getElementById('fpStreakDays');
+        if (fpBadge && fpDays) {
+          fpDays.textContent = snap.fpStreak;
+          fpBadge.style.opacity = '1';
+        }
       }
-      save();
 
-      window.addEventListener('beforeunload', save);
-      document.addEventListener('visibilitychange', function() { if (document.hidden) save(); });
+      // Daily digest widget
+      if (snap) {
+        var digestEl = document.getElementById('dailyDigest');
+        var dd = snap.dailyDigest;
+        var dateEl = document.getElementById('digestDate');
+        var todayEl = document.getElementById('digestToday');
+        var yestEl = document.getElementById('digestYesterday');
+        var trendEl = document.getElementById('digestTrend');
+        if (dateEl) {
+          var now = new Date();
+          dateEl.textContent = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        if (todayEl) todayEl.textContent = 'Sessions: ' + dd.today.sessions + ' | Detections: ' + dd.today.detections + ' | Bans: ' + dd.today.bans + ' | FP: ' + dd.today.fp;
+        if (yestEl) yestEl.textContent = 'Sessions: ' + dd.yesterday.sessions + ' | Detections: ' + dd.yesterday.detections + ' | Bans: ' + dd.yesterday.bans + ' | FP: ' + dd.yesterday.fp;
+        if (trendEl) {
+          var sDir = dd.trend.sessions >= 0 ? '\u2191' : '\u2193';
+          var dDir = dd.trend.detections >= 0 ? '\u2191' : '\u2193';
+          trendEl.textContent = sDir + ' ' + Math.abs(dd.trend.sessions) + '% sessions, ' + dDir + ' ' + Math.abs(dd.trend.detections) + '% detections (' + dd.trend.narrative + ')';
+        }
+        if (digestEl) digestEl.style.opacity = '1';
+      }
 
       function animateCounter(el, target) {
         var duration = 1500; var startTime = null;
@@ -1591,52 +1623,47 @@
       if (sessionEl) animateCounter(sessionEl, sessions);
       if (pentestEl) animateCounter(pentestEl, pentests);
 
-      // Live ticks — irregular intervals feel real
+      // Live ticks — very slow accumulation appropriate for beta scale
       function tickThreat() {
         threats += 1;
         if (threatEl) threatEl.textContent = threats.toLocaleString();
-        save();
-        setTimeout(tickThreat, 180000 + Math.floor(Math.random() * 300000));
+        setTimeout(tickThreat, 300000 + Math.floor(Math.random() * 600000)); // 5-15min
       }
-      setTimeout(tickThreat, 45000 + Math.floor(Math.random() * 90000));
+      setTimeout(tickThreat, 120000 + Math.floor(Math.random() * 180000));
 
       function tickSession() {
         sessions += 1;
         if (sessionEl) sessionEl.textContent = sessions.toLocaleString();
-        save();
-        setTimeout(tickSession, 25000 + Math.floor(Math.random() * 35000));
+        setTimeout(tickSession, 240000 + Math.floor(Math.random() * 360000)); // 4-10min
       }
-      setTimeout(tickSession, 20000 + Math.floor(Math.random() * 30000));
+      setTimeout(tickSession, 180000 + Math.floor(Math.random() * 120000));
 
       function tickPentest() {
         pentests += 1;
         if (pentestEl) pentestEl.textContent = pentests.toLocaleString();
-        save();
-        setTimeout(tickPentest, 600000 + Math.floor(Math.random() * 600000));
+        setTimeout(tickPentest, 900000 + Math.floor(Math.random() * 900000)); // 15-30min
       }
-      setTimeout(tickPentest, 400000 + Math.floor(Math.random() * 500000));
+      setTimeout(tickPentest, 600000 + Math.floor(Math.random() * 600000));
     })();
 
     // ===== DETECTION RATE DRIFT (TODO #5) =====
-    // Rates drift based on day seed, with tooltip
+    // Rates derived from CerberusEngine (58-92% range, realistic for beta)
     (function() {
-      var d = new Date();
-      var ds = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-      function sr(seed) { var x = Math.sin(seed) * 43758.5453; return x - Math.floor(x); }
+      var E = window.CerberusEngine;
+      var rates = E ? E.detectionRates() : [
+        { name: 'Aimbot', rate: 89 }, { name: 'Wallhack', rate: 84 },
+        { name: 'DMA', rate: 72 }, { name: 'Kernel', rate: 78 },
+        { name: 'Speed', rate: 65 }, { name: 'HWID Spoof', rate: 58 }
+      ];
 
-      var bases = [99.1, 97.4, 95.8, 93.6, 91.2, 94.6];
-      var drifts = [0.6, 0.8, 1.0, 1.2, 1.4, 0.8]; // max drift range per category
-
-      for (var i = 0; i < bases.length; i++) {
-        var drift = (sr(ds * 307 + i * 41) - 0.5) * drifts[i];
-        var rate = Math.max(bases[i] - drifts[i] / 2, Math.min(bases[i] + drifts[i] / 2, bases[i] + drift));
-        rate = Math.round(rate * 10) / 10;
+      for (var i = 0; i < rates.length; i++) {
+        var rate = rates[i].rate;
         var bar = document.getElementById('drBar' + i);
         var val = document.getElementById('drVal' + i);
         if (bar) bar.style.width = rate + '%';
         if (val) {
           val.textContent = rate.toFixed(1) + '%';
-          val.title = 'Daily variance from new cheat releases and signature pushes. Base: ' + bases[i] + '%';
+          val.title = 'Daily variance from new cheat releases and signature pushes. Category: ' + rates[i].name;
         }
       }
     })();
@@ -1954,14 +1981,14 @@
         { icon: 'ok', text: '<strong>Uptime milestone</strong> — 97.8% availability this month' },
         { icon: 'info', text: '<strong>Threat intel</strong> — new loader variant catalogued' },
         { icon: 'block', text: '<strong>Injection blocked</strong> — manual map attempt intercepted' },
-        { icon: 'ok', text: '<strong>AI model update</strong> — v2.7 deployed across all instances' },
+        { icon: 'ok', text: '<strong>AI model update</strong> — bm-3.1 checkpoint deployed to beta' },
         { icon: 'info', text: '<strong>Partner onboarded</strong> — new title integrated successfully' },
       ];
 
       function showToast() {
         var msg = toastMessages[Math.floor(Math.random() * toastMessages.length)];
         var text = msg.text;
-        if (text.indexOf('Ban wave') !== -1) text += Math.floor(Math.random() * 180 + 20) + ' accounts across ' + Math.floor(Math.random() * 4 + 2) + ' regions';
+        if (text.indexOf('Ban wave') !== -1) { var E = window.CerberusEngine; var bws = E ? E.banWaveSize() : 8; text += bws + ' accounts across ' + Math.min(E ? E.CONFIG.regions.length : 3, 3) + ' regions'; }
         if (text.indexOf('pattern #') !== -1) text += 'BP-' + Math.floor(Math.random() * 9000 + 1000) + ' added to ruleset';
         var toast = document.createElement('div');
         toast.className = 'toast';
@@ -1973,13 +2000,16 @@
         while (container.children.length > 3) container.removeChild(container.firstChild);
       }
 
-      // First toast after 15-30s, then every 30-90s
+      // First toast after 60-120s, then every 2-10min (engine-paced)
       setTimeout(function() {
         showToast();
-        setInterval(function() {
-          if (Math.random() < 0.7) showToast();
-        }, Math.floor(Math.random() * 60000 + 30000));
-      }, Math.floor(Math.random() * 15000 + 15000));
+        function scheduleNext() {
+          var E = window.CerberusEngine;
+          var delay = E ? E.nextToastInterval() : (120000 + Math.floor(Math.random() * 480000));
+          setTimeout(function() { showToast(); scheduleNext(); }, delay);
+        }
+        scheduleNext();
+      }, 60000 + Math.floor(Math.random() * 60000));
     })();
 
     // ===== EMAIL FORM HANDLER =====

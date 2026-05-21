@@ -584,6 +584,7 @@
         </div>
       </div>
       <div id="sigSyncStatus" style="padding:16px 0;"></div>
+      <div id="sigAgeDistribution" style="padding:0 0 12px;border-top:1px solid var(--border);margin-top:8px;padding-top:12px;"></div>
     </div>
   </div>
 
@@ -670,6 +671,7 @@
     <p style="margin-top: 12px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved.</p>
   </footer>
 
+  <script src="/js/cerberus-engine.js"></script>
   <script src="/js/cerberus-stochastic.js"></script>
   <script src="/js/cerberus-shared.js"></script>
   <script>
@@ -711,10 +713,17 @@
 
     // ===== PULL LIVE STATE FROM state.json (updated by GitHub Actions heartbeat) =====
     fetch('/data/state.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(state) {
+      // Override stale state values with engine-derived ones
+      if (E) {
+        var snap = E.snapshot();
+        state.threatLevel = snap.threatLevel;
+        state.signatureDb = snap.signatureCount;
+      }
       var el = document.getElementById('dashTime');
-      if (el && state.lastUpdate) {
-        var d = new Date(state.lastUpdate);
-        el.textContent = 'Last sync: ' + d.toLocaleTimeString() + ' \u00b7 Sigs: ' + state.signatureDb + ' \u00b7 Threat: ' + state.threatLevel;
+      if (el) {
+        var hb = E ? E.lastHeartbeat() : new Date();
+        var hbStr = E ? E.relativeTime(hb.getTime()) : 'just now';
+        el.textContent = 'Last heartbeat: ' + hbStr + ' \u00b7 Sigs: ' + (E ? E.signatureCount().toLocaleString() : state.signatureDb) + ' \u00b7 Threat: ' + state.threatLevel;
       }
       // ── Next-gen metrics from state.json ──
       if (state.npuUtilization !== undefined) {
@@ -769,9 +778,9 @@
     }).catch(function() {});
 
     // ===== DATE-SEEDED DAILY VALUES =====
-    // Detection rate: fluctuates 96.0% - 97.8% daily (beta-realistic)
-    var detRate = (96.0 + seeded(daySeed * 101) * 1.8).toFixed(1);
-    var detRateChange = (seeded(daySeed * 103) * 0.6 - 0.2).toFixed(1);
+    // Detection rate: blended ~78% with daily drift (beta-realistic)
+    var detRate = E ? E.snapshot().blendedDetectionRate.toFixed(1) : (76.0 + seeded(daySeed * 101) * 4).toFixed(1);
+    var detRateChange = (seeded(daySeed * 103) * 1.2 - 0.5).toFixed(1);
     document.getElementById('sDetRate').textContent = detRate + '%';
     removeSkeleton('sDetRate');
     document.getElementById('sDetRateChange').textContent = (detRateChange >= 0 ? '+' : '') + detRateChange + '%';
@@ -785,8 +794,8 @@
     document.getElementById('sLatencyChange').textContent = (latChange >= 0 ? '+' : '') + latChange + 'ms';
     document.getElementById('sLatencyChange').className = 'stat-card-change ' + (parseFloat(latChange) <= 0 ? 'stat-down' : 'stat-up');
 
-    // False positive rate: fluctuates 0.06% - 0.14% daily (beta-realistic)
-    var fpRate = (0.06 + seeded(daySeed * 113) * 0.08).toFixed(2);
+    // False positive rate: fluctuates around 0.14% daily (consistent with engine)
+    var fpRate = (0.10 + seeded(daySeed * 113) * 0.08).toFixed(2);
     var fpChange = (seeded(daySeed * 117) * 0.04 - 0.02).toFixed(2);
     document.getElementById('sFalsePos').textContent = fpRate + '%';
     removeSkeleton('sFalsePos');
@@ -802,19 +811,15 @@
       { name: 'PRD-US-EAST-01', code: 'CRB-0117', genre: 'Tactical FPS', status: 'live', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.2.0b-b2847' },
       { name: 'PRD-EU-WEST-03', code: 'CRB-0243', genre: 'Battle Royale', status: 'live', tier: 'cerberus', engine: 'UE5.3', version: 'v0.4.2.0b-b2847' },
       { name: 'STG-ASIA-SE-01', code: 'CRB-0389', genre: 'FPS', status: 'beta', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.3.0rc-b2851' },
-      { name: 'PRD-US-WEST-02', code: 'CRB-0412', genre: 'MMO', status: 'live', tier: 'aegis', engine: 'Custom', version: 'v0.4.2.0b-b2847' },
-      { name: 'PRD-EU-NORTH-01', code: 'CRB-0518', genre: 'Extraction Shooter', status: 'live', tier: 'cerberus', engine: 'UE5.3', version: 'v0.4.2.0b-b2847' },
-      { name: 'STG-OCE-01', code: 'CRB-0604', genre: 'Survival', status: 'beta', tier: 'aegis', engine: 'Unity 6', version: 'v0.4.3.0rc-b2851' },
     ];
 
     // Generate consistent daily stats per game
     games.forEach(function(g, i) {
       var s = seeded(daySeed + i * 7);
-      var base = g.tier === 'cerberus' ? 12 : 5;
-      g.threats = Math.floor(base + s * base * 0.8);
-      g.ccu = g.tier === 'cerberus' ? Math.floor(200 + seeded(daySeed + i * 3) * 600) :
-              Math.floor(80 + seeded(daySeed + i * 5) * 250);
-      g.bans24 = Math.floor(g.threats * (0.7 + seeded(daySeed + i * 11) * 0.2));
+      // Beta scale: ~160 avg CCU per game, 4-12 threats/day per game
+      g.threats = Math.floor(4 + s * 8);
+      g.ccu = Math.floor(80 + seeded(daySeed + i * 3) * 160);
+      g.bans24 = Math.floor(g.threats * (0.6 + seeded(daySeed + i * 11) * 0.2));
       g.flags24 = g.threats - g.bans24;
     });
 
@@ -869,40 +874,21 @@
     setInterval(function() {
       games.forEach(function(g) {
         if (g.status === 'restarting') {
-          // 40% chance to come back online each tick
-          if (Math.random() < 0.4) { g.status = 'live'; g.ccu = Math.floor(50 + Math.random() * 200); }
+          if (Math.random() < 0.4) { g.status = 'live'; g.ccu = Math.floor(30 + Math.random() * 80); }
           return;
         }
         if (g.status === 'starting') {
-          g.status = 'live'; g.ccu = Math.floor(30 + Math.random() * 100);
+          g.status = 'live'; g.ccu = Math.floor(20 + Math.random() * 60);
           return;
         }
-        // Fluctuate CCU by -8% to +8%
-        var delta = Math.floor(g.ccu * (Math.random() * 0.16 - 0.08));
-        g.ccu = Math.max(10, g.ccu + delta);
-        // Slowly increment threats
-        if (Math.random() < 0.3) g.threats += Math.floor(Math.random() * 3 + 1);
-        // Rare restart event (~1% per tick)
-        if (Math.random() < 0.01 && g.status === 'live') { g.status = 'restarting'; }
+        // Fluctuate CCU by -5% to +5%
+        var delta = Math.floor(g.ccu * (Math.random() * 0.10 - 0.05));
+        g.ccu = Math.max(10, Math.min(240, g.ccu + delta));
+        // Slowly increment threats (rare — beta scale)
+        if (Math.random() < 0.1) g.threats += 1;
+        // Rare restart event (~0.5% per tick)
+        if (Math.random() < 0.005 && g.status === 'live') { g.status = 'restarting'; }
       });
-      // Very rare: new server comes online (~0.5% per tick, max 10 servers)
-      if (Math.random() < 0.005 && games.length < 10) {
-        var usedNames = games.map(function(g) { return g.name; });
-        var available = allServerNames.filter(function(n) { return usedNames.indexOf(n) === -1; });
-        if (available.length > 0) {
-          var newName = available[Math.floor(Math.random() * available.length)];
-          games.push({
-            name: newName,
-            code: 'CRB-' + String(Math.floor(Math.random() * 9000 + 1000)),
-            genre: allGenres[Math.floor(Math.random() * allGenres.length)],
-            status: 'starting',
-            tier: newName.indexOf('STG') === 0 ? 'aegis' : 'cerberus',
-            engine: allEngines[Math.floor(Math.random() * allEngines.length)],
-            version: 'v0.4.3.0rc-b2851',
-            threats: 0, ccu: 0, bans24: 0, flags24: 0
-          });
-        }
-      }
       renderGameTable();
     }, 8000 + Math.floor(Math.random() * 7000));
 
@@ -919,12 +905,10 @@
     var todMult = todMultipliers[hourNow] * (isWeekend ? 1.35 : 1.0);
 
     // ===== STAT CARDS (with localStorage persistence + cumulative history) =====
-    // Realistic base numbers for an anti-cheat with 6 active titles
-    var dailyBaseThreats = Math.floor(40 + seeded(daySeed * 121) * 60); // 40-100 threats/day base (beta scale)
-    var dailyBaseCCU = Math.floor(1200 + seeded(daySeed * 123) * 800); // 1200-2000 CCU base
-
-    // Apply time-of-day multiplier to CCU
-    dailyBaseCCU = Math.floor(dailyBaseCCU * todMult);
+    // Base numbers derived from CerberusEngine (beta scale: ~480 peak CCU, 3 titles)
+    var E = window.CerberusEngine;
+    var dailyBaseThreats = E ? E.dailyDetections() : Math.floor(12 + seeded(daySeed * 121) * 26); // 12-38 threats/day
+    var dailyBaseCCU = E ? E.activeSessions() : Math.floor(200 + seeded(daySeed * 123) * 280); // ~200-480 CCU
 
     // Persist counters across page refreshes — use a single key that survives across days
     var statsKey = 'cerberusAnalytics_v3';
@@ -1012,27 +996,28 @@
     // Fluctuate active sessions — scale fluctuation by time-of-day
     var sessionEl = document.getElementById('sActiveSessions');
     setInterval(function() {
-      // Gradually drift CCU toward time-of-day target
-      var targetCCU = Math.floor(dailyBaseCCU * todMultipliers[new Date().getHours()] * (isWeekend ? 1.35 : 1.0));
-      var drift = Math.floor((targetCCU - totalCCU) * 0.05); // 5% drift toward target
-      totalCCU += drift + Math.floor(Math.random() * 20) - 9;
-      if (totalCCU < 150) totalCCU = 150 + Math.floor(Math.random() * 50);
+      // Gradually drift CCU toward engine-derived target
+      var targetCCU = E ? E.activeSessions() : Math.floor(dailyBaseCCU * todMultipliers[new Date().getHours()] * (isWeekend ? 1.35 : 1.0));
+      var drift = Math.floor((targetCCU - totalCCU) * 0.05);
+      totalCCU += drift + Math.floor(Math.random() * 10) - 4;
+      if (totalCCU < 40) totalCCU = 40 + Math.floor(Math.random() * 20);
+      if (totalCCU > 540) totalCCU = 540 - Math.floor(Math.random() * 20);
       sessionEl.textContent = totalCCU.toLocaleString();
       saveStats();
       if (window._freshnessReset) _freshnessReset();
-    }, 5000);
+    }, 8000);
 
-    // Fluctuate threats — scale by time-of-day
+    // Fluctuate threats — very slow for beta scale (~12-38/day)
     var threat24El = document.getElementById('sThreat24');
     setInterval(function() {
-      var inc = todMult > 1.0 ? (Math.random() < 0.4 ? 1 : 0) : (Math.random() < 0.15 ? 1 : 0);
+      var inc = todMult > 1.0 ? (Math.random() < 0.08 ? 1 : 0) : (Math.random() < 0.03 ? 1 : 0);
       totalThreats24 += inc;
       if (inc > 0) {
         threat24El.textContent = totalThreats24.toLocaleString();
         document.getElementById('chartTotal').textContent = 'Total: ' + totalThreats24.toLocaleString();
       }
       saveStats();
-    }, 25000);
+    }, 60000);
 
     // ===== CHART (fully date-seeded) =====
     (function() {
@@ -1125,9 +1110,9 @@
       draw();
 
       setInterval(function() {
-        hourlyData[hourlyData.length - 1] += Math.floor(Math.random() * 8) + 1;
+        hourlyData[hourlyData.length - 1] += Math.random() < 0.3 ? 1 : 0;
         draw();
-      }, 5000);
+      }, 30000);
     })();
 
     // ===== CHEAT TYPE BREAKDOWN (date-seeded daily shifts) =====
@@ -1167,12 +1152,9 @@
 
     // ===== REGIONS (date-seeded daily shifts) =====
     var regionsBase = [
-      { name: 'Asia Pacific', base: 38 },
-      { name: 'Europe', base: 27 },
-      { name: 'North America', base: 19 },
-      { name: 'South America', base: 8 },
-      { name: 'Middle East & Africa', base: 5 },
-      { name: 'Oceania', base: 3 },
+      { name: 'US-East', base: 40 },
+      { name: 'EU-West', base: 35 },
+      { name: 'AP-Southeast', base: 25 },
     ];
     var regRawTotal = 0;
     var regions = [];
@@ -1197,7 +1179,7 @@
     // ===== LIVE FEED — SIMULATED WEBSOCKET EVENT STREAM (System 1) =====
     var feedEl = document.getElementById('liveFeed');
     var gameNames = games.map(function(g) { return g.name; });
-    var feedRegions = ['NA-East', 'NA-West', 'EU-West', 'EU-North', 'Asia-SE', 'Asia-East', 'OCE', 'SA-East', 'ME-Central'];
+    var feedRegions = ['US-East', 'EU-West', 'AP-Southeast'];
 
     var cheatProviders = [
       { provider: 'AimStar', cheats: ['Aimbot v3.2', 'ESP Overlay', 'Triggerbot'], method: 'Internal' },
@@ -1224,7 +1206,7 @@
     var todaysHotProvider = cheatProviders[Math.floor(seeded(daySeed * 151) * cheatProviders.length)];
     var armsRaceStage = Math.floor(seeded(daySeed * 199) * 4); // 0=new release, 1=wave detected, 2=sigs pushed, 3=mopped up
     var armsRaceVersion = 'v' + Math.floor(seeded(daySeed * 201) * 5 + 2) + '.' + Math.floor(seeded(daySeed * 203) * 9) + '.' + Math.floor(seeded(daySeed * 205) * 9);
-    var armsRaceBanCount = Math.floor(seeded(daySeed * 207) * 35 + 8);
+    var armsRaceBanCount = E ? E.banWaveSize() : Math.floor(seeded(daySeed * 207) * 11 + 5);
     var armsRaceResponseTime = Math.floor(seeded(daySeed * 209) * 45 + 8); // minutes to respond
 
     // Queue for pending follow-up events (cross-references)
@@ -1333,7 +1315,7 @@
           'Manual review #CR-' + new Date().getFullYear() + '-' + Math.floor(Math.random()*90000+10000) + ' completed \u2014 <span style="color:var(--green);font-weight:600;">CLEARED</span> \u00b7 false positive \u00b7 player unbanned',
           'Ban appeal #BA-' + Math.floor(Math.random()*9000+1000) + ' \u2014 denied \u00b7 hardware fingerprint match confirmed',
           'Repeat offender flagged \u2014 ' + playerId + ' \u00b7 3rd ban across 2 HWID changes',
-          'Ban wave batch #BW-' + Math.floor(Math.random()*900+100) + ' \u2014 ' + Math.floor(Math.random()*12+3) + ' accounts \u00b7 ' + provider.provider + ' cluster',
+          'Ban wave batch #BW-' + Math.floor(Math.random()*900+100) + ' \u2014 ' + Math.floor(Math.random()*8+3) + ' accounts \u00b7 ' + provider.provider + ' cluster',
           'Analyst note: ' + provider.provider + ' loader updated \u2014 new signature deployed in ' + Math.floor(Math.random()*20+5) + 'min',
         ];
         return {
@@ -1368,8 +1350,8 @@
     // Instead of single events at fixed intervals, push batches of 1-5 events
     // at irregular intervals mimicking real server pushes
     function scheduleBatch() {
-      // Base interval: 3-12 seconds, scaled by time-of-day (busier = faster)
-      var baseDelay = 8000 + Math.floor(Math.random() * 15000);
+      // Base interval: 45s-5min, engine-paced for beta realism
+      var baseDelay = E ? E.nextEventInterval() : (45000 + Math.floor(Math.random() * 255000));
       var scaledDelay = Math.floor(baseDelay / Math.max(todMult, 0.3));
       setTimeout(function() {
         // Check for pending follow-up events first
@@ -1482,7 +1464,7 @@
         var daysAgo = Math.floor(seeded(daySeed * 163 + i * 17) * 28) + 1;
         var d = new Date(Date.now() - daysAgo * 86400000);
         var dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        var count = Math.floor(seeded(daySeed * 167 + i * 19) * 30) + 8;
+        var count = Math.floor(seeded(daySeed * 167 + i * 19) * 11) + 5; // 5-15 accounts per wave
         var reason = reasons[Math.floor(seeded(daySeed * 173 + i * 23) * reasons.length)];
         html += '<div class="ban-wave-item"><span class="ban-wave-date">' + dateStr + '</span><span class="ban-wave-reason">' + reason + '</span><span class="ban-wave-count">' + count + ' banned</span></div>';
       }
@@ -1556,7 +1538,7 @@
       var versions = [
         {
           ver: 'v0.4.2.0b', date: 'May 12, 2026', tag: 'CURRENT', tagClass: 'vh-tag-active',
-          stats: { totalBans: 1284, totalDetections: 1843, falsePositives: 4, avgLatency: '0.42ms', sigCount: 4891, pentests: 347 },
+          stats: { totalBans: 1284, totalDetections: 1843, falsePositives: 4, avgLatency: '2.4ms', sigCount: 4891, pentests: 347 },
           findings: [
             'DMA attack detection rate improved to 91.2% with TLP timing analysis',
             'Behavioral AI catches 94% of unknown/custom cheats without prior signatures',
@@ -1578,7 +1560,7 @@
         },
         {
           ver: 'v0.4.1.0b', date: 'Apr 28, 2026', tag: 'PREVIOUS', tagClass: 'vh-tag-prev',
-          stats: { totalBans: 1021, totalDetections: 1489, falsePositives: 6, avgLatency: '0.51ms', sigCount: 4704, pentests: 298 },
+          stats: { totalBans: 1021, totalDetections: 1489, falsePositives: 6, avgLatency: '2.8ms', sigCount: 4704, pentests: 298 },
           findings: [
             'IOCTL replay attack vector discovered during internal security audit',
             'CPUID timing checks effective at catching KVM and custom Type-1 hypervisors',
@@ -1598,7 +1580,7 @@
         },
         {
           ver: 'v0.4.0.0b', date: 'Nov 3, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
-          stats: { totalBans: 6847, totalDetections: 9823, falsePositives: 41, avgLatency: '3.8ms', sigCount: 3847, pentests: 628 },
+          stats: { totalBans: 847, totalDetections: 1423, falsePositives: 12, avgLatency: '3.8ms', sigCount: 3847, pentests: 128 },
           findings: [
             'Hardware fingerprinting (Layer 3) provides decisive evidence for DMA attacks',
             'Known DMA boards detectable via firmware pattern matching with 88% accuracy',
@@ -1618,7 +1600,7 @@
         },
         {
           ver: 'v0.3.0.0b', date: 'Jun 10, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
-          stats: { totalBans: 3241, totalDetections: 5102, falsePositives: 67, avgLatency: '5.2ms', sigCount: 2890, pentests: 312 },
+          stats: { totalBans: 524, totalDetections: 810, falsePositives: 18, avgLatency: '5.2ms', sigCount: 2890, pentests: 84 },
           findings: [
             'Behavioral AI (Layer 2) detects aim patterns invisible to signature-only scanning',
             'Input analysis at 500Hz provides sufficient granularity for aimbot detection',
@@ -1638,7 +1620,7 @@
         },
         {
           ver: 'v0.2.0.0b', date: 'Feb 10, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
-          stats: { totalBans: 847, totalDetections: 1423, falsePositives: 89, avgLatency: '8.1ms', sigCount: 1200, pentests: 128 },
+          stats: { totalBans: 142, totalDetections: 287, falsePositives: 23, avgLatency: '8.1ms', sigCount: 1200, pentests: 42 },
           findings: [
             'Kernel integrity monitoring (Layer 1) catches injected drivers invisible to usermode',
             'Memory permission scanning detects RWX regions from cheat injections',
@@ -1790,7 +1772,29 @@
     (function() {
       var syncEl = document.getElementById('sigSyncStatus');
       if (!syncEl) return;
-      var regions = ['US-EAST', 'US-WEST', 'EU-WEST', 'EU-NORTH', 'AP-EAST', 'AP-SOUTH', 'SA-EAST', 'AF-SOUTH', 'ME-CENTRAL'];
+      var regions = ['US-EAST', 'EU-WEST', 'AP-SOUTHEAST'];
+
+      // Render signature age distribution
+      var sigDistEl = document.getElementById('sigAgeDistribution');
+      if (sigDistEl && E) {
+        var dist = E.signatureDistribution();
+        var total = dist.total;
+        var freshPct = (dist.fresh / total * 100).toFixed(1);
+        var activePct = (dist.active / total * 100).toFixed(1);
+        var legacyPct = (dist.legacy / total * 100).toFixed(1);
+        sigDistEl.innerHTML =
+          '<div style="font-size:0.72rem;font-weight:600;color:var(--text-bright);margin-bottom:8px;">Signature Age</div>' +
+          '<div style="display:flex;gap:4px;height:8px;border-radius:4px;overflow:hidden;margin-bottom:8px;">' +
+            '<div style="width:' + freshPct + '%;background:var(--green);" title="Fresh: ' + dist.fresh + '"></div>' +
+            '<div style="width:' + activePct + '%;background:var(--accent);" title="Active: ' + dist.active + '"></div>' +
+            '<div style="width:' + legacyPct + '%;background:var(--text-dim);opacity:0.4;" title="Legacy: ' + dist.legacy + '"></div>' +
+          '</div>' +
+          '<div style="display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text-dim);font-family:var(--font-mono);">' +
+            '<span style="color:var(--green);">Fresh (&lt;7d): ' + dist.fresh + '</span>' +
+            '<span style="color:var(--accent);">Active (7-30d): ' + dist.active + '</span>' +
+            '<span>Legacy (30d+): ' + dist.legacy.toLocaleString() + '</span>' +
+          '</div>';
+      }
 
       function renderSynced() {
         var html = '<div style="display:flex;flex-direction:column;gap:6px;">';
@@ -1876,7 +1880,7 @@
             statusEl.style.borderColor = 'rgba(224,64,80,0.3)';
             statusEl.style.color = '#e04050';
             // Publish cross-page event
-            if (window.CERBERUS) CERBERUS.publishEvent('banWave', { count: Math.floor(seeded(ds * 263) * 30) + 8 });
+            if (window.CERBERUS) CERBERUS.publishEvent('banWave', { count: E ? E.banWaveSize() : Math.floor(seeded(ds * 263) * 11) + 5 });
           }
           var remaining = Math.max(0, waveActiveEnd - now);
           var sec = Math.floor(remaining / 1000);
