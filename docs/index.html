@@ -174,8 +174,8 @@
 <span class="type">CerberusConfig</span> config = {};
 config.<span class="fn">apiKey</span>       = <span class="str">"crb_live_xxxxxxxxxxxxxxxx"</span>;
 config.<span class="fn">gameId</span>       = <span class="str">"your-game-id"</span>;
-config.<span class="fn">enableAI</span>     = <span class="kw">true</span>;   <span class="cmt">// Head 2: Behavioral AI</span>
-config.<span class="fn">enableHW</span>     = <span class="kw">true</span>;   <span class="cmt">// Head 3: Hardware fingerprinting</span>
+config.<span class="fn">enableAI</span>     = <span class="kw">true</span>;   <span class="cmt">// Layer 2: Behavioral AI</span>
+config.<span class="fn">enableHW</span>     = <span class="kw">true</span>;   <span class="cmt">// Layer 3: Hardware fingerprinting</span>
 config.<span class="fn">banCallback</span>  = OnPlayerBanned;
 
 <span class="type">CerberusResult</span> result = <span class="fn">Cerberus_Init</span>(&config);
@@ -207,7 +207,7 @@ config.<span class="fn">banCallback</span>  = OnPlayerBanned;
       <p>Players running games protected by Cerberus need:</p>
       <ul>
         <li><strong>OS:</strong> Windows 10 20H2+ or Windows 11 (x64 only)</li>
-        <li><strong>BIOS — Secure Boot:</strong> Must be <strong>enabled</strong>. Required for hardware verification (Head 3). Check: <code>msinfo32</code> → "Secure Boot State" should show "On"</li>
+        <li><strong>BIOS — Secure Boot:</strong> Must be <strong>enabled</strong>. Required for hardware verification (Layer 3). Check: <code>msinfo32</code> → "Secure Boot State" should show "On"</li>
         <li><strong>BIOS — TPM 2.0:</strong> Recommended (enables firmware attestation in v0.6+). Most modern systems have this enabled by default</li>
         <li><strong>Windows Update:</strong> System must be on a supported Windows build. Outdated builds may fail driver signature verification</li>
         <li><strong>GPU Drivers:</strong> Up to date. Outdated GPU drivers can trigger false positives on overlay detection</li>
@@ -240,8 +240,8 @@ cerberus-sdk-v0.4.2.0b-win64.zip
         <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
         <tr><td>apiKey</td><td>const char*</td><td>Your API key from the partner dashboard. Required.</td></tr>
         <tr><td>gameId</td><td>const char*</td><td>Unique game identifier. Required.</td></tr>
-        <tr><td>enableAI</td><td>bool</td><td>Enable Head 2 (behavioral AI). Default: true. Aegis+ tier required.</td></tr>
-        <tr><td>enableHW</td><td>bool</td><td>Enable Head 3 (hardware fingerprinting). Default: true. Cerberus+ tier required.</td></tr>
+        <tr><td>enableAI</td><td>bool</td><td>Enable Layer 2 (behavioral AI). Default: true. Aegis+ tier required.</td></tr>
+        <tr><td>enableHW</td><td>bool</td><td>Enable Layer 3 (hardware fingerprinting). Default: true. Cerberus+ tier required.</td></tr>
         <tr><td>scanInterval</td><td>uint32_t</td><td>Kernel scan interval in ms. Default: 2000. Min: 500.</td></tr>
         <tr><td>aiSampleRate</td><td>uint32_t</td><td>Input sampling rate in Hz. Default: 1000. Range: 250-2000.</td></tr>
         <tr><td>banCallback</td><td>CerberusBanFn</td><td>Called when a player is banned mid-session.</td></tr>
@@ -357,11 +357,11 @@ cerberus-sdk-v0.4.2.0b-win64.zip
         <tr><td>Detection type</td><td>Always</td><td>Which head triggered (KERNEL, AI, HW, NET) and the specific detection category (e.g., AIMBOT, INJECTION, DMA_READ)</td></tr>
         <tr><td>Confidence score</td><td>Always</td><td>0.0-1.0 float representing detection certainty. Auto-ban threshold: 0.95+</td></tr>
         <tr><td>Session snapshot</td><td>Always</td><td>Anonymized session metadata: game ID, session duration, region, SDK version</td></tr>
-        <tr><td>Hardware fingerprint</td><td>Head 3</td><td>Hashed device identifiers for ban evasion tracking. No PII — hardware IDs are one-way hashed</td></tr>
+        <tr><td>Hardware fingerprint</td><td>Layer 3</td><td>Hashed device identifiers for ban evasion tracking. No PII — hardware IDs are one-way hashed</td></tr>
         <tr><td>Memory region info</td><td>Kernel</td><td>Address range, permissions (RWX), and module association of suspicious memory regions. Game memory content is NOT captured</td></tr>
         <tr><td>Behavioral profile</td><td>AI</td><td>Statistical summary: aim correction speed, reaction time distribution, headshot rate deviation from player baseline</td></tr>
-        <tr><td>Device audit log</td><td>Head 3</td><td>List of enumerated PCIe devices and firmware verification results. Used to identify DMA boards</td></tr>
-        <tr><td>Network anomaly report</td><td>Head 4 (NET)</td><td>Server-side traffic analysis summary: packet timing anomalies, impossible state transitions, and position desync indicators</td></tr>
+        <tr><td>Device audit log</td><td>Layer 3</td><td>List of enumerated PCIe devices and firmware verification results. Used to identify DMA boards</td></tr>
+        <tr><td>Network anomaly report</td><td>Layer 4 (NET)</td><td>Server-side traffic analysis summary: packet timing anomalies, impossible state transitions, and position desync indicators</td></tr>
       </table>
 
       <div class="callout callout-info">Cerberus never captures game memory contents, screenshots, keystrokes, browsing data, or any PII. All hardware identifiers are one-way hashed before transmission. Evidence is retained for 90 days (configurable per partner) to support ban appeals.</div>
@@ -384,7 +384,7 @@ cerberus-sdk-v0.4.2.0b-win64.zip
         <tr><td>flag.cleared</td><td>Auto/Manual</td><td>Flag cleared — player confirmed clean</td></tr>
         <tr><td>session.start</td><td>SDK call</td><td>Cerberus session started for a player</td></tr>
         <tr><td>session.end</td><td>SDK call</td><td>Session ended cleanly</td></tr>
-        <tr><td>hw.anomaly</td><td>Head 3</td><td>Unrecognized or suspicious hardware detected</td></tr>
+        <tr><td>hw.anomaly</td><td>Layer 3</td><td>Unrecognized or suspicious hardware detected</td></tr>
       </table>
 
       <h2 id="unreal">Unreal Engine Integration</h2>
@@ -437,7 +437,7 @@ PublicDependencyModuleNames.Add(<span class="str">"CerberusSDK"</span>);
       <p>The driver requires kernel-mode access (ring-0) to monitor memory permissions, detect mapped drivers, and enumerate PCIe devices. The driver is EV code-signed and submitted for WHQL certification (pending). We plan to complete third-party security audits before public release.</p>
 
       <h3>Can I use Cerberus for singleplayer games?</h3>
-      <p>Yes, but it's designed for competitive multiplayer. For singleplayer, you can use Head 1 only (kernel integrity) at the free Argus tier to prevent save file tampering or achievement exploits.</p>
+      <p>Yes, but it's designed for competitive multiplayer. For singleplayer, you can use Layer 1 only (kernel integrity) at the free Argus tier to prevent save file tampering or achievement exploits.</p>
 
       <h3>What engines are supported?</h3>
       <p>Cerberus works with any Windows game that can link a C++ or C# library. We have first-class plugins for Unreal Engine 5.x and Unity 2022+. Custom engine integration takes 1-2 hours with the raw SDK.</p>

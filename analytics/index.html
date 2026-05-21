@@ -1600,7 +1600,7 @@
           ver: 'v0.4.0.0b', date: 'Nov 3, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
           stats: { totalBans: 6847, totalDetections: 9823, falsePositives: 41, avgLatency: '3.8ms', sigCount: 3847, pentests: 628 },
           findings: [
-            'Hardware fingerprinting (Head 3) provides decisive evidence for DMA attacks',
+            'Hardware fingerprinting (Layer 3) provides decisive evidence for DMA attacks',
             'Known DMA boards detectable via firmware pattern matching with 88% accuracy',
             'Real-time threat dashboard enables partner studios to monitor their own titles',
             'Parallel kernel integrity checks yield 40% faster scan cycles',
@@ -1611,7 +1611,7 @@
             'DMA attack boards vary widely — pattern matching alone insufficient, need TLP timing',
           ],
           improvements: [
-            'Head 3: PCIe device enumeration + firmware verification launched',
+            'Layer 3: PCIe device enumeration + firmware verification launched',
             'Firmware signature database: 1,200+ verified device hashes',
             'Kernel integrity checks parallelized — 40% faster scan cycles',
           ]
@@ -1620,7 +1620,7 @@
           ver: 'v0.3.0.0b', date: 'Jun 10, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
           stats: { totalBans: 3241, totalDetections: 5102, falsePositives: 67, avgLatency: '5.2ms', sigCount: 2890, pentests: 312 },
           findings: [
-            'Behavioral AI (Head 2) detects aim patterns invisible to signature-only scanning',
+            'Behavioral AI (Layer 2) detects aim patterns invisible to signature-only scanning',
             'Input analysis at 500Hz provides sufficient granularity for aimbot detection',
             'Confidence-based tiers prevent false bans while catching sophisticated cheats',
             'Per-player baselines are essential — skill variance is too wide for global thresholds',
@@ -1631,7 +1631,7 @@
             'Synthetic input curves are distinguishable from human input in >97% of cases',
           ],
           improvements: [
-            'Head 2: Behavioral AI engine with real-time input analysis',
+            'Layer 2: Behavioral AI engine with real-time input analysis',
             'Confidence-based detection tiers: auto-ban, flag, monitor',
             'SDK simplified to 4 function calls for integration',
           ]
@@ -1640,7 +1640,7 @@
           ver: 'v0.2.0.0b', date: 'Feb 10, 2025', tag: 'MILESTONE', tagClass: 'vh-tag-prev',
           stats: { totalBans: 847, totalDetections: 1423, falsePositives: 89, avgLatency: '8.1ms', sigCount: 1200, pentests: 128 },
           findings: [
-            'Kernel integrity monitoring (Head 1) catches injected drivers invisible to usermode',
+            'Kernel integrity monitoring (Layer 1) catches injected drivers invisible to usermode',
             'Memory permission scanning detects RWX regions from cheat injections',
             'First partner integration test validated SDK stability over 72-hour soak test',
           ],
@@ -1650,7 +1650,7 @@
             'BSOD prevention requires extensive hardware compatibility testing before each release',
           ],
           improvements: [
-            'Head 1: Kernel integrity monitor with minifilter driver',
+            'Layer 1: Kernel integrity monitor with minifilter driver',
             'Memory permission scanning for RWX region detection',
             'Initial signature database: 1,200 known cheat hashes',
           ]
