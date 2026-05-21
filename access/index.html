@@ -638,6 +638,7 @@ White-label SDK</span>
           appIdEl.textContent = appId;
           formCard.style.display = 'none';
           successCard.style.display = 'block';
+          setTimeout(function() { window.location.href = '/'; }, 10000);
         }, 1200 + Math.random() * 800);
       });
     })();
