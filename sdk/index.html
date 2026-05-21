@@ -317,16 +317,12 @@
   <div class="modal-overlay" id="dlModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal">
       <div class="modal-icon">&#x1F512;</div>
-      <div class="modal-title" id="modalTitle">Partner Access Required</div>
+      <div class="modal-title" id="modalTitle">Partner Account Required</div>
       <div class="modal-body">
-        SDK access is restricted to approved partner studios. Downloads are gated behind a signed partner agreement and API key provisioning.
-        <br /><br />
-        To request access, reach out to the partnerships team:
+        SDK downloads are restricted to approved partner studios with a verified account. Create a partner account to get started — applications are reviewed within 48 hours.
       </div>
-      <div class="modal-email">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
-        cerberus@arsenalrx.dev
-      </div>
+      <a href="/access/" style="display:inline-block;margin:16px 0;padding:12px 28px;border-radius:8px;background:var(--accent);color:#050507;font-weight:600;font-size:0.85rem;text-decoration:none;transition:background 0.2s;">Create Partner Account</a>
+      <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:12px;">Or contact us directly: cerberus@arsenalrx.dev</div>
       <button class="modal-close" onclick="closeModal()">Dismiss</button>
     </div>
   </div>
@@ -459,7 +455,7 @@
         <div class="component-icon" style="background:rgba(64,136,232,0.1);">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
         </div>
-        <div class="component-name">Sample Project (Unity) <span style="font-size:0.65rem;background:rgba(232,160,32,0.15);color:var(--accent);padding:2px 8px;border-radius:4px;margin-left:6px;font-weight:600;vertical-align:middle;">EARLY PREVIEW</span></div>
+        <div class="component-name" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">Sample Project (Unity) <span style="font-size:0.6rem;background:rgba(232,160,32,0.15);color:var(--accent);padding:2px 8px;border-radius:4px;font-weight:600;white-space:nowrap;">EARLY PREVIEW</span></div>
         <div class="component-desc">Unity 2022 LTS package with C# P/Invoke bindings, session lifecycle hooks, and example ban callback handler. Unreal Engine is the primary supported engine — Unity integration is functional but still maturing.</div>
         <div class="component-meta">
           <span class="component-badge badge-unity">UNITY</span>
@@ -479,6 +475,51 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- ENGINE COMPATIBILITY -->
+    <div style="margin-bottom:48px;">
+      <div class="section-header">
+        <div class="section-title">Engine Compatibility</div>
+        <div class="section-subtitle">SDK support status by game engine</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">
+        <div style="padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="font-size:0.85rem;font-weight:600;color:var(--text-bright);">Unreal Engine 5</span>
+            <span style="font-size:0.55rem;padding:2px 8px;border-radius:4px;background:rgba(48,200,96,0.1);color:var(--green);font-weight:600;">FULL SUPPORT</span>
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-dim);">UE 5.1+ plugin with Blueprint bindings, session management, auto-updater. Primary supported platform.</div>
+        </div>
+        <div style="padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="font-size:0.85rem;font-weight:600;color:var(--text-bright);">Unity</span>
+            <span style="font-size:0.55rem;padding:2px 8px;border-radius:4px;background:rgba(232,160,32,0.15);color:var(--accent);font-weight:600;white-space:nowrap;">EARLY PREVIEW</span>
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-dim);">Unity 2022 LTS+ via C# P/Invoke bindings. Functional but still maturing — some features require manual setup.</div>
+        </div>
+        <div style="padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="font-size:0.85rem;font-weight:600;color:var(--text-bright);">Godot 4</span>
+            <span style="font-size:0.55rem;padding:2px 8px;border-radius:4px;background:rgba(136,96,232,0.1);color:var(--purple);font-weight:600;">COMMUNITY</span>
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-dim);">Community-maintained GDExtension wrapper. Uses raw C++ SDK under the hood. Not officially supported.</div>
+        </div>
+        <div style="padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="font-size:0.85rem;font-weight:600;color:var(--text-bright);">Custom / C++</span>
+            <span style="font-size:0.55rem;padding:2px 8px;border-radius:4px;background:rgba(48,200,96,0.1);color:var(--green);font-weight:600;">FULL SUPPORT</span>
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-dim);">Raw C++ static library + single header. 4 API calls to integrate: Init, StartSession, EndSession, Shutdown.</div>
+        </div>
+        <div style="padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="font-size:0.85rem;font-weight:600;color:var(--text-bright);">CryEngine</span>
+            <span style="font-size:0.55rem;padding:2px 8px;border-radius:4px;background:rgba(107,112,132,0.15);color:var(--text-dim);font-weight:600;">RAW SDK</span>
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-dim);">Via raw C++ SDK. No native plugin — requires manual integration through CryEngine's plugin system.</div>
+        </div>
+      </div>
     </div>
 
     <!-- TWO COLUMN: SYSREQ + QUICKSTART -->

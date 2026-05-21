@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Request Access - Cerberus Anti-Cheat</title>
-  <meta name="description" content="Apply for early access to Cerberus anti-cheat integration. We review every application within 48 hours." />
+  <title>Create Partner Account - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Create a Cerberus partner account to access the SDK, API dashboard, and integration tools. Applications reviewed within 48 hours." />
   <meta name="theme-color" content="#e8a020" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -310,15 +310,15 @@
       <a href="/status/">Status</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
-      <a href="/access/" class="active">Request Access</a>
+      <a href="/access/" class="active">Partner Account</a>
     </div>
   </nav>
 
   <!-- HEADER -->
   <div class="page-header">
-    <div class="page-header-label">Early Access Program</div>
-    <h1>Request Early Access</h1>
-    <p>Apply for Cerberus integration. We review every application within 48 hours.</p>
+    <div class="page-header-label">Partner Program</div>
+    <h1>Create Partner Account</h1>
+    <p>Set up your studio account to access the SDK, API dashboard, and integration tools. All accounts are reviewed within 48 hours.</p>
   </div>
 
   <!-- TRUST BADGES -->
@@ -341,6 +341,32 @@
   <div class="form-wrapper">
     <div class="form-card" id="formCard">
       <form id="accessForm" method="POST">
+
+        <!-- Section 0: Account Credentials -->
+        <div class="form-section">
+          <div class="form-section-label">Account Credentials</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Work Email</label>
+              <input type="email" name="email" placeholder="alex@studio.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Display Name</label>
+              <input type="text" name="display_name" placeholder="e.g. Alex Carter" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" placeholder="Min. 12 characters" required minlength="12" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm Password</label>
+              <input type="password" name="password_confirm" placeholder="Re-enter password" required minlength="12" />
+            </div>
+          </div>
+          <div style="font-size:0.7rem;color:var(--text-dim);margin-top:8px;">Your account will be provisioned after manual review. You'll receive an API key and dashboard access via email.</div>
+        </div>
 
         <!-- Section 1: Studio Information -->
         <div class="form-section">
@@ -386,13 +412,14 @@
               <label class="form-label">Engine</label>
               <select name="engine">
                 <option value="">Select engine</option>
-                <option value="Unreal Engine 5">Unreal Engine 5</option>
-                <option value="Unity 6">Unity 6</option>
-                <option value="Godot">Godot</option>
-                <option value="CryEngine">CryEngine</option>
-                <option value="Custom Engine">Custom Engine</option>
+                <option value="Unreal Engine 5">Unreal Engine 5 (full support)</option>
+                <option value="Unity 6">Unity 6 (early preview)</option>
+                <option value="Godot">Godot (community SDK)</option>
+                <option value="CryEngine">CryEngine (raw C++ SDK)</option>
+                <option value="Custom Engine">Custom Engine (raw C++ SDK)</option>
                 <option value="Other">Other</option>
               </select>
+              <div style="font-size:0.65rem;color:var(--text-dim);margin-top:6px;">Unreal Engine is our primary supported platform. Unity integration is functional but in early preview. All other engines use the raw C++ SDK (4 API calls).</div>
             </div>
           </div>
           <div class="form-row">
@@ -533,21 +560,11 @@ White-label SDK</span>
 
         <!-- Section 4: Contact -->
         <div class="form-section">
-          <div class="form-section-label">Contact Information</div>
+          <div class="form-section-label">Contact Details</div>
           <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Full Name</label>
-              <input type="text" name="full_name" placeholder="e.g. Alex Carter" required />
-            </div>
             <div class="form-group">
               <label class="form-label">Job Title <span class="optional">(optional)</span></label>
               <input type="text" name="job_title" placeholder="e.g. Lead Engineer" />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Work Email</label>
-              <input type="email" name="email" placeholder="alex@studio.com" required />
             </div>
             <div class="form-group">
               <label class="form-label">Phone <span class="optional">(optional)</span></label>
@@ -576,7 +593,7 @@ White-label SDK</span>
           </div>
         </div>
 
-        <button type="submit" class="btn-submit">Submit Application</button>
+        <button type="submit" class="btn-submit">Create Account</button>
       </form>
     </div>
 
@@ -585,10 +602,10 @@ White-label SDK</span>
       <div class="success-icon">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
       </div>
-      <h2>Application Received</h2>
-      <p>Our team will review your application and respond within 48 hours. Check your inbox for a confirmation email.</p>
+      <h2>Account Submitted for Review</h2>
+      <p>Your partner account has been created and is pending manual review. Our team will verify your studio and provision API access within 48 hours. Check your inbox for a confirmation email.</p>
       <p id="redirectMsg" style="font-size:0.8rem;color:var(--text-dim);margin-top:12px;"></p>
-      <div class="success-id-label">Application ID</div>
+      <div class="success-id-label">Partner Account ID</div>
       <div class="success-id" id="appId"></div>
     </div>
   </div>
@@ -629,8 +646,18 @@ White-label SDK</span>
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
+        var pw = form.querySelector('input[name="password"]').value;
+        var pwc = form.querySelector('input[name="password_confirm"]').value;
+        if (pw !== pwc) {
+          alert('Passwords do not match.');
+          return;
+        }
+        if (pw.length < 12) {
+          alert('Password must be at least 12 characters.');
+          return;
+        }
         var btn = form.querySelector('button[type="submit"]');
-        btn.textContent = 'Submitting...';
+        btn.textContent = 'Creating account...';
         btn.disabled = true;
 
         // Simulate processing delay, then show success
