@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-003",
+      "title": "Discord overlay false positive spike",
+      "startedAt": "2026-05-14T08:22:00Z",
+      "resolvedAt": "2026-05-14T11:40:00Z",
+      "duration": "3h 18m",
+      "impactPct": 3.4,
+      "rootCause": "Discord canary build changed overlay injection pattern. Kernel layer flagged it as DLL injection. Updated whitelist within 3 hours.",
+      "timeline": [
+        {
+          "time": "2026-05-14T08:22:00Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-14T11:40:00Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement additional monitoring for affected subsystem",
+        "Update runbook with new escalation procedures"
+      ],
+      "lessonsLearned": [
+        "Rollback procedures should be tested quarterly"
+      ]
+    },
+    {
       "id": "INC-003",
       "title": "Discord overlay false positive spike",
       "severity": "moderate",

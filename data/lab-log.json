@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-20T23:14:00Z",
+  "lastUpdated": "2026-05-21",
   "entries": [
     {
       "id": "lab-001",
@@ -39,13 +39,45 @@
     }
   ],
   "templatePool": [
-    { "title": "FPGA-Accelerated Pattern Matching", "desc": "Using reconfigurable hardware for real-time cheat signature matching at line rate.", "topic": "hardware" },
-    { "title": "Differential Privacy in Telemetry", "desc": "Applying epsilon-delta privacy to aggregated detection metrics before reporting.", "topic": "privacy" },
-    { "title": "GAN-Based Cheat Synthesis", "desc": "Using generative adversarial networks to synthesize novel cheat patterns for proactive detection.", "topic": "ml" },
-    { "title": "eBPF-Based Kernel Monitoring", "desc": "Using eBPF programs for low-overhead kernel-space behavioral monitoring on Linux.", "topic": "kernel" },
-    { "title": "Adversarial ML Robustness Testing", "desc": "Evaluating detection model resilience against adversarial input perturbations designed to evade classification.", "topic": "ml" },
-    { "title": "Network Traffic Fingerprinting", "desc": "Detecting cheat tool communication by analyzing packet timing and payload entropy patterns.", "topic": "networking" },
-    { "title": "Compiler-Level Obfuscation Pipeline", "desc": "Custom LLVM passes for automated binary diversification to resist reverse engineering.", "topic": "security" },
-    { "title": "Rust Rewrite of Scan Engine Core", "desc": "Evaluating memory-safe reimplementation of performance-critical scan path in Rust.", "topic": "engineering" }
+    {
+      "title": "FPGA-Accelerated Pattern Matching",
+      "desc": "Using reconfigurable hardware for real-time cheat signature matching at line rate.",
+      "topic": "hardware"
+    },
+    {
+      "title": "Differential Privacy in Telemetry",
+      "desc": "Applying epsilon-delta privacy to aggregated detection metrics before reporting.",
+      "topic": "privacy"
+    },
+    {
+      "title": "GAN-Based Cheat Synthesis",
+      "desc": "Using generative adversarial networks to synthesize novel cheat patterns for proactive detection.",
+      "topic": "ml"
+    },
+    {
+      "title": "eBPF-Based Kernel Monitoring",
+      "desc": "Using eBPF programs for low-overhead kernel-space behavioral monitoring on Linux.",
+      "topic": "kernel"
+    },
+    {
+      "title": "Adversarial ML Robustness Testing",
+      "desc": "Evaluating detection model resilience against adversarial input perturbations designed to evade classification.",
+      "topic": "ml"
+    },
+    {
+      "title": "Network Traffic Fingerprinting",
+      "desc": "Detecting cheat tool communication by analyzing packet timing and payload entropy patterns.",
+      "topic": "networking"
+    },
+    {
+      "title": "Compiler-Level Obfuscation Pipeline",
+      "desc": "Custom LLVM passes for automated binary diversification to resist reverse engineering.",
+      "topic": "security"
+    },
+    {
+      "title": "Rust Rewrite of Scan Engine Core",
+      "desc": "Evaluating memory-safe reimplementation of performance-critical scan path in Rust.",
+      "topic": "engineering"
+    }
   ]
 }
