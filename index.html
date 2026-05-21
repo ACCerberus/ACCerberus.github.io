@@ -1242,18 +1242,20 @@
         <div class="pricing-price" data-usd="0">Free</div>
         <div class="pricing-period">Self-service — limited to indie &amp; early-access</div>
         <ul class="pricing-features">
-          <li>Kernel integrity monitoring</li>
+          <li>Kernel integrity monitoring (ring-0)</li>
           <li>Signature-based cheat detection</li>
-          <li>Memory permission auditing</li>
+          <li>Memory permission auditing (RWX scan)</li>
+          <li>Process &amp; module enumeration</li>
           <li>Code-signing enforcement</li>
           <li>Basic driver verification</li>
-          <li>Standard ban API</li>
-          <li>Community support + docs</li>
+          <li>Standard ban API + session events</li>
+          <li>SDK documentation &amp; sample projects</li>
+          <li>Community Discord support</li>
           <li>10K concurrent player limit</li>
           <li class="disabled">Behavioral AI engine</li>
           <li class="disabled">Hardware fingerprinting</li>
-          <li class="disabled">DMA attack detection</li>
           <li class="disabled">Network Sentinel</li>
+          <li class="disabled">Threat intelligence reports</li>
           <li class="disabled">Dedicated support</li>
         </ul>
         <a href="/access/" class="pricing-btn pricing-btn-outline">Start Free</a>
@@ -1266,12 +1268,16 @@
         <div class="pricing-period">Volume-based pricing — tailored to your CCU</div>
         <ul class="pricing-features">
           <li>Everything in Argus</li>
-          <li>Behavioral AI engine (full)</li>
+          <li>Behavioral AI engine (TCN model)</li>
+          <li>500Hz input sampling &amp; analysis</li>
           <li>Aim analysis &amp; reaction timing</li>
           <li>Input cadence anomaly detection</li>
           <li>Micro-movement pattern recognition</li>
+          <li>Per-player behavioral baselines</li>
+          <li>Confidence-based flag tiers (auto-ban, flag, monitor)</li>
           <li>ONNX Runtime inference (&lt;2ms)</li>
-          <li>Advanced ban API + webhooks</li>
+          <li>Advanced ban API + webhook events</li>
+          <li>Partner analytics dashboard</li>
           <li>Priority email support (12hr SLA)</li>
           <li>Monthly threat intelligence reports</li>
           <li>100K concurrent player limit</li>
@@ -1281,8 +1287,7 @@
         </ul>
         <a href="/access/" class="pricing-btn pricing-btn-outline">Request Access</a>
       </div>
-      <div class="pricing-card pricing-card-featured reveal">
-        <div class="pricing-badge">MOST POPULAR</div>
+      <div class="pricing-card reveal">
         <div class="pricing-tier">Complete</div>
         <div class="pricing-name">Cerberus</div>
         <div class="pricing-desc">All four detection layers. Kernel + AI + hardware + network sentinel protection. Up to 500K CCU.</div>
@@ -1290,21 +1295,25 @@
         <div class="pricing-period">Volume-based pricing — tailored to your CCU</div>
         <ul class="pricing-features">
           <li>Everything in Aegis</li>
-          <li>Hardware fingerprinting (full PCIe)</li>
-          <li>Firmware signature cross-referencing</li>
-          <li>DMA attack board detection</li>
+          <li>Hardware fingerprinting (full PCIe topology)</li>
+          <li>PCIe TLP timing anomaly detection</li>
+          <li>DMA attack board detection &amp; blocking</li>
           <li>External memory read detection</li>
+          <li>Firmware signature cross-referencing</li>
           <li>Firmware spoof identification</li>
+          <li>IOMMU/VT-d attestation</li>
           <li>Hypervisor-aware scanning</li>
           <li>Network Sentinel (full)</li>
           <li>Cross-player anomaly correlation</li>
           <li>Cheat-ring &amp; cluster detection</li>
+          <li>Session replay forensics</li>
+          <li>Matchmaking integrity scoring</li>
           <li>Real-time threat dashboard</li>
           <li>Dedicated threat analyst</li>
           <li>Slack/Discord direct — 4hr SLA</li>
           <li>500K concurrent player limit</li>
         </ul>
-        <a href="/access/" class="pricing-btn pricing-btn-primary">Request Access</a>
+        <a href="/access/" class="pricing-btn pricing-btn-outline">Request Access</a>
       </div>
       <div class="pricing-card reveal">
         <div class="pricing-tier">Enterprise</div>
@@ -1316,13 +1325,16 @@
           <li>Everything in Cerberus</li>
           <li>Unlimited CCU — no player cap</li>
           <li>Custom detection rule authoring</li>
+          <li>Title-specific AI model training</li>
           <li>Private threat intelligence feed</li>
           <li>On-premise deployment option</li>
-          <li>Custom AI model training on your data</li>
           <li>Dedicated red team penetration testing</li>
+          <li>Pre-launch cheat landscape audit</li>
           <li>White-glove integration onboarding</li>
+          <li>Named account engineer</li>
           <li>24/7 engineering escalation hotline</li>
-          <li>SLA-backed uptime target (98%)</li>
+          <li>SLA-backed uptime guarantee (98%)</li>
+          <li>Custom webhook &amp; event schemas</li>
           <li>Quarterly executive security briefings</li>
         </ul>
         <a href="mailto:cerberus@arsenalrx.dev" class="pricing-btn pricing-btn-outline">Contact Sales</a>
