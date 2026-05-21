@@ -15,7 +15,7 @@
   "weeklyBanWaves": 3,
   "pendingReviews": 7,
   "signatureQueue": 0,
-  "threatLevel": "MODERATE",
+  "threatLevel": "LOW",
   "npuUtilization": 32.4,
   "mlConfidence": 97.2,
   "dmaAnomalies": 3,
