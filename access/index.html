@@ -587,6 +587,7 @@ White-label SDK</span>
       </div>
       <h2>Application Received</h2>
       <p>Our team will review your application and respond within 48 hours. Check your inbox for a confirmation email.</p>
+      <p id="redirectMsg" style="font-size:0.8rem;color:var(--text-dim);margin-top:12px;"></p>
       <div class="success-id-label">Application ID</div>
       <div class="success-id" id="appId"></div>
     </div>
@@ -638,7 +639,14 @@ White-label SDK</span>
           appIdEl.textContent = appId;
           formCard.style.display = 'none';
           successCard.style.display = 'block';
-          setTimeout(function() { window.location.href = '/'; }, 10000);
+          var secs = 5;
+          var msgEl = document.getElementById('redirectMsg');
+          msgEl.textContent = 'Redirecting to home in ' + secs + 's...';
+          var countdown = setInterval(function() {
+            secs--;
+            if (secs <= 0) { clearInterval(countdown); window.location.href = '/'; }
+            else { msgEl.textContent = 'Redirecting to home in ' + secs + 's...'; }
+          }, 1000);
         }, 1200 + Math.random() * 800);
       });
     })();
