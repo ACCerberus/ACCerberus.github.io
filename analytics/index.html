@@ -380,6 +380,62 @@
     </div>
   </div>
 
+  <!-- NEXT-GEN METRICS (from state.json) -->
+  <div style="max-width:1300px;margin:0 auto 16px;padding:0 24px;position:relative;z-index:1;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;">
+      <div class="stat-card" style="padding:14px 18px;">
+        <div class="stat-card-label"><span>NPU Utilization</span></div>
+        <div class="stat-card-value" id="sNpuUtil" style="font-size:1.3rem;">--</div>
+      </div>
+      <div class="stat-card" style="padding:14px 18px;">
+        <div class="stat-card-label"><span>ML Confidence</span></div>
+        <div class="stat-card-value" id="sMlConf" style="font-size:1.3rem;">--</div>
+      </div>
+      <div class="stat-card" style="padding:14px 18px;">
+        <div class="stat-card-label"><span>DMA Anomalies</span></div>
+        <div class="stat-card-value" id="sDmaAnom" style="font-size:1.3rem;">--</div>
+      </div>
+      <div class="stat-card" style="padding:14px 18px;">
+        <div class="stat-card-label"><span>Obfuscation Integrity</span></div>
+        <div class="stat-card-value" id="sObfInt" style="font-size:1.3rem;">--</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HARDWARE INTELLIGENCE PANEL -->
+  <div style="max-width:1300px;margin:0 auto 16px;padding:0 24px;position:relative;z-index:1;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;">
+        <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">PCIe Firmware DB</div>
+        <div id="sPcieDb" style="font-family:var(--font-mono);font-size:1.1rem;color:var(--accent);font-weight:600;">--</div>
+        <div style="font-size:0.6rem;color:var(--text-dim);margin-top:2px;">device fingerprints</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;">
+        <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Hypervisor Heartbeat</div>
+        <div id="sHypervisor" style="font-family:var(--font-mono);font-size:1.1rem;color:var(--green);font-weight:600;">--</div>
+        <div style="font-size:0.6rem;color:var(--text-dim);margin-top:2px;">last verified</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;">
+        <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Behavioral Model</div>
+        <div id="sBmVer" style="font-family:var(--font-mono);font-size:1.1rem;color:var(--purple);font-weight:600;">--</div>
+        <div style="font-size:0.6rem;color:var(--text-dim);margin-top:2px;">active version</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;">
+        <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Arms Race Cycle</div>
+        <div id="sArmsRace" style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+          <div id="armsRaceDot" style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div>
+          <span id="armsRaceLabel" style="font-family:var(--font-mono);font-size:0.85rem;font-weight:600;color:var(--green);">--</span>
+        </div>
+        <div style="display:flex;gap:3px;margin-top:8px;">
+          <div id="arc0" style="flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.06);"></div>
+          <div id="arc1" style="flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.06);"></div>
+          <div id="arc2" style="flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.06);"></div>
+          <div id="arc3" style="flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.06);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- #74: DATA FRESHNESS INDICATOR -->
   <div style="max-width:1300px;margin:0 auto 6px;padding:0 24px;position:relative;z-index:1;display:flex;align-items:center;gap:8px;">
     <div id="freshnessIndicator" style="display:flex;align-items:center;gap:6px;font-size:0.65rem;font-family:var(--font-mono);color:var(--text-dim);">
@@ -609,6 +665,7 @@
     <p style="margin-top: 12px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved.</p>
   </footer>
 
+  <script src="/js/cerberus-stochastic.js"></script>
   <script src="/js/cerberus-shared.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -653,6 +710,56 @@
       if (el && state.lastUpdate) {
         var d = new Date(state.lastUpdate);
         el.textContent = 'Last sync: ' + d.toLocaleTimeString() + ' \u00b7 Sigs: ' + state.signatureDb + ' \u00b7 Threat: ' + state.threatLevel;
+      }
+      // ── Next-gen metrics from state.json ──
+      if (state.npuUtilization !== undefined) {
+        var npuEl = document.getElementById('sNpuUtil');
+        if (npuEl) { npuEl.textContent = state.npuUtilization + '%'; npuEl.classList.remove('skeleton'); }
+      }
+      if (state.mlConfidence !== undefined) {
+        var mlEl = document.getElementById('sMlConf');
+        if (mlEl) { mlEl.textContent = state.mlConfidence + '%'; mlEl.classList.remove('skeleton'); }
+      }
+      if (state.dmaAnomalies !== undefined) {
+        var dmaEl = document.getElementById('sDmaAnom');
+        if (dmaEl) { dmaEl.textContent = state.dmaAnomalies; dmaEl.classList.remove('skeleton'); dmaEl.style.color = state.dmaAnomalies > 5 ? 'var(--red)' : state.dmaAnomalies > 2 ? 'var(--accent)' : 'var(--green)'; }
+      }
+      if (state.obfuscationIntegrity !== undefined) {
+        var obfEl = document.getElementById('sObfInt');
+        if (obfEl) { obfEl.textContent = state.obfuscationIntegrity + '%'; obfEl.classList.remove('skeleton'); obfEl.style.color = state.obfuscationIntegrity >= 99.9 ? 'var(--green)' : 'var(--accent)'; }
+      }
+      if (state.pcieFirmwareDbSize !== undefined) {
+        var pcieEl = document.getElementById('sPcieDb');
+        if (pcieEl) pcieEl.textContent = state.pcieFirmwareDbSize.toLocaleString();
+      }
+      if (state.hypervisorHeartbeat) {
+        var hvEl = document.getElementById('sHypervisor');
+        if (hvEl) {
+          var hvAge = Math.floor((Date.now() - new Date(state.hypervisorHeartbeat).getTime()) / 60000);
+          hvEl.textContent = hvAge < 1 ? 'just now' : hvAge < 60 ? hvAge + 'm ago' : Math.floor(hvAge / 60) + 'h ago';
+          hvEl.style.color = hvAge < 180 ? 'var(--green)' : 'var(--accent)';
+        }
+      }
+      if (state.behavioralModelVersion) {
+        var bmEl = document.getElementById('sBmVer');
+        if (bmEl) bmEl.textContent = state.behavioralModelVersion;
+      }
+      // Arms race cycle visualization
+      var armsStages = [
+        { label: 'BYPASS DETECTED', color: '#e04050' },
+        { label: 'ANALYSIS', color: '#e87830' },
+        { label: 'SIGS DEPLOYING', color: '#e8a020' },
+        { label: 'NEUTRALIZED', color: '#30c860' }
+      ];
+      var arcCycle = state.armsRaceCycle !== undefined ? state.armsRaceCycle : 3;
+      var arcStage = armsStages[arcCycle] || armsStages[3];
+      var arcLabel = document.getElementById('armsRaceLabel');
+      var arcDot = document.getElementById('armsRaceDot');
+      if (arcLabel) { arcLabel.textContent = arcStage.label; arcLabel.style.color = arcStage.color; }
+      if (arcDot) arcDot.style.background = arcStage.color;
+      for (var ai = 0; ai <= 3; ai++) {
+        var arcBar = document.getElementById('arc' + ai);
+        if (arcBar) arcBar.style.background = ai <= arcCycle ? arcStage.color : 'rgba(255,255,255,0.06)';
       }
     }).catch(function() {});
 

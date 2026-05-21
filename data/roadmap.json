@@ -1,0 +1,37 @@
+{
+  "lastUpdated": "2026-05-20T23:15:50Z",
+  "items": {
+    "short": [
+      { "id": "r-s1", "name": "Partner Dashboard v2", "desc": "Redesigned partner dashboard with real-time threat intel feeds", "progress": 68, "color": "var(--green)", "added": "2026-03-01" },
+      { "id": "r-s2", "name": "Linux Native Client", "desc": "Native Linux kernel module for Proton and native titles", "progress": 52, "color": "var(--blue)", "added": "2026-02-15" },
+      { "id": "r-s3", "name": "Webhook v2 Protocol", "desc": "Event-driven webhook system with retry and dead-letter queues", "progress": 81, "color": "var(--accent)", "added": "2026-01-20" },
+      { "id": "r-s4", "name": "SDK Auto-Updater", "desc": "Automatic SDK version management with rollback support", "progress": 44, "color": "var(--purple)", "added": "2026-04-10" }
+    ],
+    "mid": [
+      { "id": "r-m1", "name": "Console SDK (PS5/Xbox)", "desc": "PlayStation 5 and Xbox Series X|S native integration", "progress": 18, "color": "var(--blue)", "added": "2026-01-01" },
+      { "id": "r-m2", "name": "Mobile Anti-Cheat Module", "desc": "Android and iOS behavioral detection for mobile titles", "progress": 12, "color": "var(--accent)", "added": "2026-02-01" },
+      { "id": "r-m3", "name": "AI Model Marketplace", "desc": "Community-contributed detection models with peer review", "progress": 28, "color": "var(--purple)", "added": "2026-03-15" },
+      { "id": "r-m4", "name": "Real-Time Appeal Portal", "desc": "Player-facing ban appeal system with evidence review", "progress": 35, "color": "var(--green)", "added": "2026-04-01" }
+    ],
+    "long": [
+      { "id": "r-l1", "name": "Quantum-Resistant Signatures", "desc": "Post-quantum cryptography for signature verification", "progress": 3, "color": "var(--red)", "added": "2026-01-01" },
+      { "id": "r-l2", "name": "Federated Detection Network", "desc": "Cross-title threat intelligence sharing without data exposure", "progress": 7, "color": "var(--blue)", "added": "2026-02-01" },
+      { "id": "r-l3", "name": "Hardware Attestation v2", "desc": "TPM 2.0 remote attestation for hardware integrity verification", "progress": 5, "color": "var(--accent)", "added": "2026-03-01" }
+    ],
+    "completed": [
+      { "id": "r-c1", "name": "DMA Board Detection", "desc": "PCIe device fingerprinting for DMA-based cheats", "completedDate": "2026-04-15" },
+      { "id": "r-c2", "name": "Behavioral AI v7", "desc": "7th generation behavioral analysis neural network", "completedDate": "2026-03-20" },
+      { "id": "r-c3", "name": "Multi-Region Deployment", "desc": "9-region global infrastructure with <50ms latency", "completedDate": "2026-02-28" }
+    ]
+  },
+  "templatePool": [
+    { "name": "Replay Analysis Engine", "desc": "Server-side replay parsing for post-match cheat detection", "color": "var(--blue)" },
+    { "name": "Encrypted Memory Scanner", "desc": "Homomorphic encryption for privacy-preserving memory analysis", "color": "var(--purple)" },
+    { "name": "WebGPU Behavioral Analysis", "desc": "GPU-accelerated behavioral pattern matching in browser", "color": "var(--accent)" },
+    { "name": "Side-Channel VM Detection", "desc": "Timing-based VM and hypervisor detection via cache analysis", "color": "var(--red)" },
+    { "name": "Neural Network Pruning Pipeline", "desc": "Automated model compression for edge deployment", "color": "var(--green)" },
+    { "name": "Cross-Platform Telemetry Unifier", "desc": "Unified event schema across PC, console, and mobile", "color": "var(--blue)" },
+    { "name": "Cheat-as-a-Service Tracker", "desc": "Dark web monitoring and provider lifecycle tracking", "color": "var(--red)" },
+    { "name": "Hardware Security Module Integration", "desc": "HSM-backed key management for signature verification", "color": "var(--accent)" }
+  ]
+}

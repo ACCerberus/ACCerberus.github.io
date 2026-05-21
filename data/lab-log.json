@@ -1,0 +1,85 @@
+{
+  "lastUpdated": "2026-05-20T23:15:50Z",
+  "entries": [
+    {
+      "id": "lab-001",
+      "title": "NPU Offloading for Real-Time Behavioral Analysis",
+      "desc": "Investigating dedicated NPU hardware for running behavioral inference models at scan-time, bypassing CPU/GPU contention.",
+      "status": "EXPERIMENT",
+      "startDate": "2026-04-10",
+      "lastUpdate": "2026-05-18",
+      "findings": "Intel Meteor Lake NPU achieves 2.3x inference throughput vs CPU baseline. Power efficiency gains significant for always-on scanning."
+    },
+    {
+      "id": "lab-002",
+      "title": "Homomorphic Encryption for Memory Scanning",
+      "desc": "Exploring FHE schemes that allow pattern matching on encrypted memory snapshots without decryption.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-05-01",
+      "lastUpdate": "2026-05-15",
+      "findings": "CKKS scheme shows promise for approximate matching. Latency overhead currently 40x — investigating FPGA acceleration."
+    },
+    {
+      "id": "lab-003",
+      "title": "Federated Learning for Cross-Title Detection",
+      "desc": "Training shared detection models across multiple game titles without exposing individual game data.",
+      "status": "PROTOTYPE",
+      "startDate": "2026-03-01",
+      "lastUpdate": "2026-05-20",
+      "findings": "Federated averaging converges in 12 rounds across 4 test titles. Privacy guarantees verified via differential privacy audit."
+    },
+    {
+      "id": "lab-004",
+      "title": "TPM 2.0 Remote Attestation Chain",
+      "desc": "Using TPM attestation to verify boot chain integrity and detect rootkit-level tampering before game launch.",
+      "status": "EVALUATION",
+      "startDate": "2026-02-15",
+      "lastUpdate": "2026-05-10",
+      "findings": "Attestation flow works on 94% of tested hardware. Edge cases with custom BIOS configurations require fallback path."
+    },
+    {
+      "id": "lab-005",
+      "title": "WebGPU-Accelerated Behavioral Pattern Matching",
+      "desc": "Leveraging WebGPU compute shaders for client-side behavioral anomaly detection at high throughput.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-05-10",
+      "lastUpdate": "2026-05-19",
+      "findings": "Initial WebGPU compute shader prototype processes 10K input events/frame. Browser compatibility matrix under evaluation."
+    },
+    {
+      "id": "lab-006",
+      "title": "Side-Channel Timing for VM Detection",
+      "desc": "Using CPU cache timing variations to detect virtual machine environments used to bypass hardware bans.",
+      "status": "EXPERIMENT",
+      "startDate": "2026-03-20",
+      "lastUpdate": "2026-05-16",
+      "findings": "L3 cache timing delta reliably identifies VMware/KVM with 97.8% accuracy. Hyper-V detection requires additional rdtsc calibration."
+    },
+    {
+      "id": "lab-007",
+      "title": "Quantum-Resistant Signature Verification",
+      "desc": "Evaluating CRYSTALS-Dilithium and SPHINCS+ for post-quantum signature database integrity verification.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-05-05",
+      "lastUpdate": "2026-05-14",
+      "findings": "Dilithium-3 verification is 1.4x slower than Ed25519 but within acceptable bounds. Key size increase impacts distribution."
+    },
+    {
+      "id": "lab-008",
+      "title": "Neural Network Pruning for Edge Deployment",
+      "desc": "Structured pruning of behavioral detection models to reduce client-side inference cost by 60%+.",
+      "status": "PROTOTYPE",
+      "startDate": "2026-04-01",
+      "lastUpdate": "2026-05-17",
+      "findings": "Magnitude pruning at 70% sparsity retains 99.1% detection accuracy. Knowledge distillation recovers remaining 0.6%."
+    }
+  ],
+  "templatePool": [
+    { "title": "FPGA-Accelerated Pattern Matching", "desc": "Using reconfigurable hardware for real-time cheat signature matching at line rate.", "topic": "hardware" },
+    { "title": "Differential Privacy in Telemetry", "desc": "Applying epsilon-delta privacy to aggregated detection metrics before reporting.", "topic": "privacy" },
+    { "title": "GAN-Based Cheat Synthesis", "desc": "Using generative adversarial networks to synthesize novel cheat patterns for proactive detection.", "topic": "ml" },
+    { "title": "Zero-Knowledge Proof of Fair Play", "desc": "ZK-SNARK proofs allowing players to prove clean sessions without revealing system state.", "topic": "crypto" },
+    { "title": "eBPF-Based Kernel Monitoring", "desc": "Using eBPF programs for low-overhead kernel-space behavioral monitoring on Linux.", "topic": "kernel" },
+    { "title": "Temporal Graph Neural Networks for Social Cheating", "desc": "Modeling player interaction graphs to detect coordinated cheating rings.", "topic": "ml" }
+  ]
+}

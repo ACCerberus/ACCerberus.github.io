@@ -278,83 +278,139 @@
     }
     document.getElementById('recentIncidents').innerHTML = incidentHTML;
 
-    // ===== ACTIVE INCIDENT LIFECYCLE SIMULATION (System 3) =====
-    // ~20% chance of an active incident on any given day, seeded by date
+    // ===== ACTIVE INCIDENT (reads from state.json first, falls back to client-side sim) =====
     (function() {
-      var activeIncidentRoll = seeded(today * 211);
-      if (activeIncidentRoll > 0.20) return; // No active incident today
-
       var activeEl = document.getElementById('activeIncident');
-      activeEl.style.display = 'block';
 
-      var activeIncidents = [
-        { title: 'Elevated false positive rate on Discord overlay', service: 'Detection Engine', root: 'Discord updated their overlay injection method in latest Canary build. Whitelist update in progress.' },
-        { title: 'Webhook delivery delays to EU-West region', service: 'Webhook Delivery', root: 'EU-West load balancer experiencing connection pool exhaustion. Scaling worker pool.' },
-        { title: 'Dashboard API intermittent 503 errors', service: 'Threat Dashboard', root: 'Database replica lag causing read timeouts during peak query volume.' },
-        { title: 'Signature sync delay — new batch pending', service: 'Signature Database', root: 'CDN cache invalidation propagating slower than expected across edge nodes.' },
-        { title: 'Increased scan latency on Intel 14th gen', service: 'Detection Engine', root: 'New Intel microcode update changed CPUID timing characteristics. Calibration update deploying.' },
-        { title: 'Ban API rate limit false triggers', service: 'Ban API', root: 'Token bucket algorithm counting retried requests. Implementing deduplication.' },
-      ];
+      function renderActiveIncident(inc) {
+        activeEl.style.display = 'block';
+        var statusMap = {
+          'INVESTIGATING': { badge: 'badge-investigating', stage: 0 },
+          'IDENTIFIED': { badge: 'badge-identified', stage: 1 },
+          'MONITORING': { badge: 'badge-monitoring', stage: 2 },
+          'RESOLVING': { badge: 'badge-resolving', stage: 3 }
+        };
+        var sm = statusMap[inc.status] || statusMap['INVESTIGATING'];
 
-      var incident = activeIncidents[Math.floor(seeded(today * 213) * activeIncidents.length)];
+        var dot = document.getElementById('statusDot');
+        var bannerText = document.getElementById('statusText');
+        var banner = document.getElementById('statusBanner');
+        if (sm.stage < 2) {
+          dot.style.background = 'var(--accent)';
+          dot.style.boxShadow = '0 0 12px rgba(232,160,32,0.4)';
+          bannerText.textContent = 'Degraded Performance';
+          bannerText.style.color = 'var(--accent)';
+          banner.style.borderColor = 'rgba(232,160,32,0.2)';
+        } else {
+          dot.style.background = 'var(--blue)';
+          dot.style.boxShadow = '0 0 12px rgba(64,136,232,0.4)';
+          bannerText.textContent = 'Minor Issue \u2014 Monitoring';
+          bannerText.style.color = 'var(--blue)';
+          banner.style.borderColor = 'rgba(64,136,232,0.2)';
+        }
 
-      // Determine lifecycle stage based on hour of day (simulates progression)
-      var hourFraction = new Date().getHours() + new Date().getMinutes() / 60;
-      var incidentStartHour = Math.floor(seeded(today * 217) * 12 + 2); // Started 2-14 hours ago
-      var hoursElapsed = hourFraction - incidentStartHour;
-      if (hoursElapsed < 0) hoursElapsed += 24;
+        var startTime = new Date(inc.startedAt || inc.updatedAt);
+        var timeStr = function(d) { return String(d.getUTCHours()).padStart(2,'0') + ':' + String(d.getUTCMinutes()).padStart(2,'0') + ' UTC'; };
 
-      var stage, badgeClass, badgeText;
-      if (hoursElapsed < 0.5) { stage = 0; badgeClass = 'badge-investigating'; badgeText = 'INVESTIGATING'; }
-      else if (hoursElapsed < 1.5) { stage = 1; badgeClass = 'badge-identified'; badgeText = 'IDENTIFIED'; }
-      else if (hoursElapsed < 3.0) { stage = 2; badgeClass = 'badge-monitoring'; badgeText = 'MONITORING'; }
-      else { stage = 3; badgeClass = 'badge-resolving'; badgeText = 'RESOLVING'; }
+        var stageTexts = [
+          { text: '<strong>Investigating</strong> \u2014 Reports received of ' + inc.title.toLowerCase() + '. Engineering team alerted.', stage: 0 },
+          { text: '<strong>Identified</strong> \u2014 ' + (inc.rootCause || 'Root cause under analysis.'), stage: 1 },
+          { text: '<strong>Monitoring</strong> \u2014 Fix deployed. Monitoring for recurrence across all regions.', stage: 2 },
+          { text: '<strong>Resolving</strong> \u2014 No recurrence observed. Preparing post-incident review.', stage: 3 },
+        ];
 
-      // Update banner
-      var dot = document.getElementById('statusDot');
-      var bannerText = document.getElementById('statusText');
-      var banner = document.getElementById('statusBanner');
-      if (stage < 2) {
-        dot.style.background = 'var(--accent)';
-        dot.style.boxShadow = '0 0 12px rgba(232,160,32,0.4)';
-        bannerText.textContent = 'Degraded Performance';
-        bannerText.style.color = 'var(--accent)';
-        banner.style.borderColor = 'rgba(232,160,32,0.2)';
-      } else {
-        dot.style.background = 'var(--blue)';
-        dot.style.boxShadow = '0 0 12px rgba(64,136,232,0.4)';
-        bannerText.textContent = 'Minor Issue — Monitoring';
-        bannerText.style.color = 'var(--blue)';
-        banner.style.borderColor = 'rgba(64,136,232,0.2)';
+        var html = '<div class="active-incident' + (sm.stage >= 2 ? ' degraded' : '') + '">';
+        html += '<div class="active-incident-header"><span class="active-incident-badge ' + sm.badge + '">' + inc.status + '</span><span class="active-incident-title">' + inc.title + '</span></div>';
+        if (inc.id) html += '<div style="font-size:0.68rem;color:var(--text-dim);margin-bottom:12px;font-family:var(--font-mono);">' + inc.id + '</div>';
+        html += '<div class="incident-timeline">';
+        stageTexts.forEach(function(e) {
+          if (e.stage > sm.stage) return;
+          var cls = e.stage === sm.stage ? 'active' : 'completed';
+          var t = e.stage === 0 ? timeStr(startTime) : timeStr(new Date(startTime.getTime() + e.stage * 2 * 3600000));
+          html += '<div class="incident-timeline-entry ' + cls + '"><div class="incident-timeline-time">' + t + '</div><div class="incident-timeline-text">' + e.text + '</div></div>';
+        });
+        html += '</div>';
+        if (sm.stage < 3) {
+          var nextStage = ['Identification', 'Fix deployment', 'Resolution confirmation', 'Post-incident review'][sm.stage + 1];
+          html += '<div class="incident-eta">Next update expected: ' + nextStage + ' \u2014 ETA ~' + [30, 60, 90, 30][sm.stage] + ' minutes</div>';
+        }
+        html += '</div>';
+        activeEl.innerHTML = html;
       }
 
-      var startTime = new Date();
-      startTime.setHours(incidentStartHour, Math.floor(seeded(today * 219) * 60), 0);
-      var timeStr = function(d) { return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ' UTC'; };
+      // Try server-generated incident from state.json first
+      fetch('/data/state.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(state) {
+        if (state.activeIncident && state.activeIncident.title) {
+          renderActiveIncident(state.activeIncident);
+          return;
+        }
 
-      var entries = [
-        { time: timeStr(startTime), text: '<strong>Investigating</strong> \u2014 Reports received of ' + incident.title.toLowerCase() + '. Engineering team alerted.', stage: 0 },
-        { time: timeStr(new Date(startTime.getTime() + 30*60000)), text: '<strong>Identified</strong> \u2014 ' + incident.root, stage: 1 },
-        { time: timeStr(new Date(startTime.getTime() + 90*60000)), text: '<strong>Monitoring</strong> \u2014 Fix deployed. Monitoring for recurrence across all regions.', stage: 2 },
-        { time: timeStr(new Date(startTime.getTime() + 180*60000)), text: '<strong>Resolving</strong> \u2014 No recurrence in 90 minutes. Preparing post-incident review.', stage: 3 },
-      ];
+        // Also render resolved incidents from history into recent incidents section
+        if (state.incidentHistory && state.incidentHistory.length > 0) {
+          var histHTML = '';
+          state.incidentHistory.forEach(function(inc) {
+            var d = new Date(inc.resolvedAt || inc.updatedAt);
+            histHTML += '<div class="incident"><div class="incident-header"><span class="incident-severity sev-resolved">RESOLVED</span><span class="incident-title">' + inc.title + '</span><span class="incident-date">' + fmtDate(d) + '</span></div><div class="incident-body">' + (inc.rootCause || 'Resolved.') + '</div></div>';
+          });
+          // Prepend server incidents to the existing client-generated ones
+          var recentEl = document.getElementById('recentIncidents');
+          if (recentEl) recentEl.innerHTML = histHTML + recentEl.innerHTML;
+        }
 
-      var html = '<div class="active-incident' + (stage >= 2 ? ' degraded' : '') + '">';
-      html += '<div class="active-incident-header"><span class="active-incident-badge ' + badgeClass + '">' + badgeText + '</span><span class="active-incident-title">' + incident.title + '</span></div>';
-      html += '<div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;">Affected service: <strong style="color:var(--text);">' + incident.service + '</strong></div>';
-      html += '<div class="incident-timeline">';
-      entries.forEach(function(e) {
-        if (e.stage > stage) return;
-        var cls = e.stage === stage ? 'active' : 'completed';
-        html += '<div class="incident-timeline-entry ' + cls + '"><div class="incident-timeline-time">' + e.time + '</div><div class="incident-timeline-text">' + e.text + '</div></div>';
+        // Fall back to client-side simulation
+        var activeIncidentRoll = seeded(today * 211);
+        if (activeIncidentRoll > 0.20) return;
+
+        var activeIncidents = [
+          { title: 'Elevated false positive rate on Discord overlay', status: 'INVESTIGATING', rootCause: 'Discord updated their overlay injection method in latest Canary build. Whitelist update in progress.', startedAt: new Date(Date.now() - (2 + seeded(today * 217) * 6) * 3600000).toISOString() },
+          { title: 'Webhook delivery delays to EU-West region', status: 'IDENTIFIED', rootCause: 'EU-West load balancer experiencing connection pool exhaustion. Scaling worker pool.', startedAt: new Date(Date.now() - (3 + seeded(today * 218) * 5) * 3600000).toISOString() },
+          { title: 'Dashboard API intermittent 503 errors', status: 'MONITORING', rootCause: 'Database replica lag causing read timeouts during peak query volume.', startedAt: new Date(Date.now() - (4 + seeded(today * 219) * 4) * 3600000).toISOString() },
+        ];
+
+        // Determine stage based on time of day
+        var hourFrac = new Date().getHours() + new Date().getMinutes() / 60;
+        var stageIdx = Math.floor(hourFrac / 6) % activeIncidents.length;
+        var simInc = activeIncidents[stageIdx];
+        // Set status based on hour progression
+        var stages = ['INVESTIGATING', 'IDENTIFIED', 'MONITORING', 'RESOLVING'];
+        var hrMod = Math.floor(hourFrac) % 4;
+        simInc.status = stages[hrMod];
+        renderActiveIncident(simInc);
+      }).catch(function() {
+        // Offline fallback — use pure client-side
+        var activeIncidentRoll = seeded(today * 211);
+        if (activeIncidentRoll > 0.20) return;
+        renderActiveIncident({
+          title: 'Webhook delivery delays', status: 'MONITORING',
+          rootCause: 'Queue worker pool undersized. Scaling in progress.',
+          startedAt: new Date(Date.now() - 4 * 3600000).toISOString()
+        });
       });
-      html += '</div>';
-      if (stage < 3) {
-        var nextStage = ['Identification', 'Fix deployment', 'Resolution confirmation', 'Post-incident review'][stage + 1];
-        html += '<div class="incident-eta">Next update expected: ' + nextStage + ' \u2014 ETA ~' + [30, 60, 90, 30][stage] + ' minutes</div>';
-      }
-      html += '</div>';
-      activeEl.innerHTML = html;
+    })();
+
+    // ===== POST-MORTEMS (from server data) =====
+    (function() {
+      fetch('/data/incidents.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(data) {
+        if (!data.postmortems || data.postmortems.length === 0) return;
+        var recentEl = document.getElementById('recentIncidents');
+        if (!recentEl) return;
+        data.postmortems.forEach(function(pm) {
+          var existing = recentEl.querySelector('[data-pm-id="' + pm.incidentId + '"]');
+          if (existing) return;
+          var d = new Date(pm.resolvedAt);
+          var pmHTML = '<div class="incident" data-pm-id="' + pm.incidentId + '">';
+          pmHTML += '<div class="incident-header"><span class="incident-severity sev-resolved">POST-MORTEM</span><span class="incident-title">' + pm.title + '</span><span class="incident-date">' + fmtDate(d) + '</span></div>';
+          pmHTML += '<div class="incident-body"><strong>Duration:</strong> ' + pm.duration + ' &middot; <strong>Impact:</strong> ' + pm.impactPct + '% of requests<br/>';
+          pmHTML += '<strong>Root cause:</strong> ' + pm.rootCause + '</div>';
+          if (pm.actionItems && pm.actionItems.length > 0) {
+            pmHTML += '<div class="incident-update" style="margin-top:8px;"><strong>Action items:</strong><ul style="margin:4px 0 0 16px;font-size:0.78rem;color:var(--text-dim);">';
+            pm.actionItems.forEach(function(a) { pmHTML += '<li>' + a + '</li>'; });
+            pmHTML += '</ul></div>';
+          }
+          pmHTML += '</div>';
+          recentEl.insertAdjacentHTML('afterbegin', pmHTML);
+        });
+      }).catch(function() {});
     })();
 
     // ===== TODO #8: REAL GITHUB COMMIT ACTIVITY =====

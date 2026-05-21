@@ -1,0 +1,12 @@
+{
+  "currentVersion": "v0.4.2.0b",
+  "buildNumber": 2847,
+  "lastPatchBump": "2026-05-19T06:00:00Z",
+  "lastMinorBump": "2026-05-12T10:00:00Z",
+  "lastFeatureBump": "2026-03-15T12:00:00Z",
+  "patchHistory": [
+    { "version": "v0.4.2.0b", "date": "2026-05-12T10:00:00Z", "summary": "Stability improvements and false positive fixes" },
+    { "version": "v0.4.1.9b", "date": "2026-05-05T14:00:00Z", "summary": "DMA board fingerprint database expansion" },
+    { "version": "v0.4.1.8b", "date": "2026-04-28T08:00:00Z", "summary": "Kernel callback verification hardening" }
+  ]
+}

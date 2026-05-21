@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request Access - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Apply for early access to Cerberus anti-cheat integration. We review every application within 48 hours." />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --bg-card-hover: #0e0e15;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15); --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font); background: var(--bg); color: var(--text);
+      line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    /* BACKGROUND */
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .grid-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,160,32,0.06), transparent 70%);
+    }
+    .noise-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c07818);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507;
+    }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 160px 24px 60px; text-align: center; position: relative; z-index: 1;
+    }
+    .page-header-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 12px;
+    }
+    .page-header h1 {
+      font-family: var(--font-heading); font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800; color: var(--text-bright); letter-spacing: -1.5px; margin-bottom: 16px;
+    }
+    .page-header p { font-size: 1rem; color: var(--text-dim); max-width: 520px; margin: 0 auto; }
+
+    /* TRUST BADGES */
+    .trust-bar {
+      display: flex; justify-content: center; gap: 48px; padding: 28px 24px;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      position: relative; z-index: 1; max-width: 700px; margin: 0 auto 48px;
+    }
+    .trust-item { text-align: center; }
+    .trust-value {
+      font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: var(--accent);
+    }
+    .trust-label {
+      font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;
+      letter-spacing: 0.5px; margin-top: 4px;
+    }
+
+    /* FORM CARD */
+    .form-wrapper {
+      position: relative; z-index: 1; max-width: 700px; margin: 0 auto 80px; padding: 0 24px;
+    }
+    .form-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 48px 40px; position: relative; overflow: hidden;
+    }
+    .form-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    /* FORM SECTIONS */
+    .form-section { margin-bottom: 36px; padding-bottom: 36px; border-bottom: 1px solid var(--border); }
+    .form-section:last-of-type { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .form-section-label {
+      font-family: var(--font-heading); font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px;
+    }
+
+    /* FORM FIELDS */
+    .form-group { margin-bottom: 16px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label {
+      display: block; font-size: 0.78rem; font-weight: 600; color: var(--text);
+      margin-bottom: 6px; letter-spacing: 0.2px;
+    }
+    .form-label .optional { color: var(--text-dim); font-weight: 400; font-size: 0.72rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="email"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%; padding: 12px 16px; border-radius: 8px;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text-bright); font-family: var(--font); font-size: 0.85rem;
+      transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(232,160,32,0.4);
+      box-shadow: 0 0 0 3px rgba(232,160,32,0.08);
+    }
+    input::placeholder, textarea::placeholder {
+      color: var(--text-dim); opacity: 1;
+    }
+    select { cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7084' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+      padding-right: 38px;
+    }
+    select option { background: var(--bg-card); color: var(--text); }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* CHECKBOX & RADIO GROUPS */
+    .check-group, .radio-group {
+      display: flex; flex-wrap: wrap; gap: 10px;
+    }
+    .check-item, .radio-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 8px;
+      background: var(--bg); border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .check-item:hover, .radio-item:hover {
+      border-color: rgba(232,160,32,0.25); background: var(--bg-card-hover);
+    }
+    .check-item input, .radio-item input { display: none; }
+    .check-item span, .radio-item span {
+      font-size: 0.82rem; font-weight: 500; color: var(--text); transition: color 0.2s;
+    }
+    .check-item input:checked ~ span, .radio-item input:checked ~ span { color: var(--accent); }
+    .check-item:has(input:checked), .radio-item:has(input:checked) {
+      border-color: rgba(232,160,32,0.4); background: var(--accent-dim);
+    }
+    .check-indicator, .radio-indicator {
+      width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--text-dim);
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;
+    }
+    .radio-indicator { border-radius: 50%; }
+    .check-item input:checked ~ .check-indicator,
+    .radio-item input:checked ~ .radio-indicator {
+      border-color: var(--accent); background: var(--accent);
+    }
+    .check-item input:checked ~ .check-indicator::after {
+      content: ''; width: 8px; height: 5px;
+      border-left: 2px solid #050507; border-bottom: 2px solid #050507;
+      transform: rotate(-45deg) translateY(-1px);
+    }
+    .radio-item input:checked ~ .radio-indicator::after {
+      content: ''; width: 6px; height: 6px; border-radius: 50%; background: #050507;
+    }
+
+    /* SUBMIT BUTTON */
+    .btn-submit {
+      width: 100%; padding: 16px 32px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+      background: var(--accent); color: #050507; border: none; cursor: pointer;
+      font-family: var(--font); transition: all 0.25s; margin-top: 36px;
+      letter-spacing: 0.3px;
+    }
+    .btn-submit:hover { background: #d09018; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232,160,32,0.3); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* SUCCESS STATE */
+    .success-card {
+      display: none; text-align: center; padding: 64px 40px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      position: relative; overflow: hidden;
+    }
+    .success-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--green), transparent);
+    }
+    .success-icon {
+      width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 24px;
+      background: rgba(48,200,96,0.1); border: 2px solid rgba(48,200,96,0.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .success-icon svg { width: 28px; height: 28px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .success-card h2 {
+      font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700;
+      color: var(--text-bright); margin-bottom: 20px;
+    }
+    .success-card p { font-size: 0.88rem; color: var(--text-dim); max-width: 420px; margin: 0 auto; line-height: 1.7; }
+    .success-id-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-dim); margin-top: 28px; margin-bottom: 8px;
+    }
+    .success-id {
+      font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600;
+      color: var(--accent); padding: 10px 20px; border-radius: 8px;
+      background: var(--accent-dim); display: inline-block;
+    }
+
+    /* FOOTER */
+    .footer {
+      padding: 40px 24px; text-align: center; border-top: 1px solid var(--border);
+      position: relative; z-index: 1;
+    }
+    .footer-brand { font-family: var(--font-heading); font-weight: 700; font-size: 1rem; color: var(--text-bright); margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; font-size: 0.78rem; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .form-card { padding: 32px 20px; }
+      .form-row { grid-template-columns: 1fr; }
+      .trust-bar { gap: 24px; flex-wrap: wrap; }
+      .check-group, .radio-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="noise-overlay"></div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/api/">API</a>
+      <a href="/sdk/">SDK</a>
+      <a href="/changelog/">Changelog</a>
+      <a href="/blog/">Blog</a>
+      <a href="/status/">Status</a>
+      <a href="/analytics/">Analytics</a>
+      <a href="/team/">Team</a>
+      <a href="/access/" class="active">Request Access</a>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="page-header-label">Early Access Program</div>
+    <h1>Request Early Access</h1>
+    <p>Apply for Cerberus integration. We review every application within 48 hours.</p>
+  </div>
+
+  <!-- TRUST BADGES -->
+  <div class="trust-bar">
+    <div class="trust-item">
+      <div class="trust-value">9</div>
+      <div class="trust-label">Regions Online</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-value">4,900+</div>
+      <div class="trust-label">Signatures</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-value">99.97%</div>
+      <div class="trust-label">Uptime</div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-wrapper">
+    <div class="form-card" id="formCard">
+      <form id="accessForm" action="https://formspree.io/f/xpwdgvjk" method="POST">
+
+        <!-- Section 1: Studio Information -->
+        <div class="form-section">
+          <div class="form-section-label">Studio Information</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Studio Name</label>
+              <input type="text" name="studio_name" placeholder="e.g. Ironclad Games" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Website URL <span class="optional">(optional)</span></label>
+              <input type="url" name="website" placeholder="https://yourstudio.com" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Studio Size</label>
+              <select name="studio_size">
+                <option value="">Select team size</option>
+                <option value="1-5">1-5</option>
+                <option value="6-20">6-20</option>
+                <option value="21-50">21-50</option>
+                <option value="51-200">51-200</option>
+                <option value="200+">200+</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Country <span class="optional">(optional)</span></label>
+              <input type="text" name="country" placeholder="e.g. United States" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Game Details -->
+        <div class="form-section">
+          <div class="form-section-label">Game Details</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Game Title</label>
+              <input type="text" name="game_title" placeholder="e.g. Project Vanguard" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Engine</label>
+              <select name="engine">
+                <option value="">Select engine</option>
+                <option value="Unreal Engine 5">Unreal Engine 5</option>
+                <option value="Unity 6">Unity 6</option>
+                <option value="Godot">Godot</option>
+                <option value="CryEngine">CryEngine</option>
+                <option value="Custom Engine">Custom Engine</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Genre</label>
+              <select name="genre">
+                <option value="">Select genre</option>
+                <option value="FPS">FPS</option>
+                <option value="Battle Royale">Battle Royale</option>
+                <option value="MMO">MMO</option>
+                <option value="MOBA">MOBA</option>
+                <option value="Racing">Racing</option>
+                <option value="Survival">Survival</option>
+                <option value="Sandbox">Sandbox</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Development Stage</label>
+              <select name="dev_stage">
+                <option value="">Select stage</option>
+                <option value="Pre-Alpha">Pre-Alpha</option>
+                <option value="Alpha">Alpha</option>
+                <option value="Closed Beta">Closed Beta</option>
+                <option value="Open Beta">Open Beta</option>
+                <option value="Early Access">Early Access</option>
+                <option value="Released">Released</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Platforms</label>
+            <div class="check-group">
+              <label class="check-item">
+                <input type="checkbox" name="platforms" value="Windows" />
+                <div class="check-indicator"></div>
+                <span>Windows</span>
+              </label>
+              <label class="check-item">
+                <input type="checkbox" name="platforms" value="Linux" />
+                <div class="check-indicator"></div>
+                <span>Linux</span>
+              </label>
+              <label class="check-item">
+                <input type="checkbox" name="platforms" value="PlayStation" />
+                <div class="check-indicator"></div>
+                <span>PlayStation</span>
+              </label>
+              <label class="check-item">
+                <input type="checkbox" name="platforms" value="Xbox" />
+                <div class="check-indicator"></div>
+                <span>Xbox</span>
+              </label>
+              <label class="check-item">
+                <input type="checkbox" name="platforms" value="Cross-Play" />
+                <div class="check-indicator"></div>
+                <span>Cross-Play</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Scale & Requirements -->
+        <div class="form-section">
+          <div class="form-section-label">Scale & Requirements</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Expected Peak CCU</label>
+              <select name="peak_ccu">
+                <option value="">Select range</option>
+                <option value="Under 1K">Under 1K</option>
+                <option value="1K-10K">1K-10K</option>
+                <option value="10K-50K">10K-50K</option>
+                <option value="50K-100K">50K-100K</option>
+                <option value="100K-500K">100K-500K</option>
+                <option value="500K+">500K+</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Current Anti-Cheat <span class="optional">(optional)</span></label>
+              <input type="text" name="current_ac" placeholder="e.g. EasyAntiCheat, BattlEye, None" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Primary Security Concerns</label>
+            <textarea name="security_concerns" placeholder="Describe the cheating threats or security challenges you're facing..." rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Desired Tier</label>
+            <div class="radio-group">
+              <label class="radio-item">
+                <input type="radio" name="tier" value="Argus (Free)" />
+                <div class="radio-indicator"></div>
+                <span>Argus (Free)</span>
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="tier" value="Aegis (Professional)" />
+                <div class="radio-indicator"></div>
+                <span>Aegis (Professional)</span>
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="tier" value="Cerberus (Complete)" />
+                <div class="radio-indicator"></div>
+                <span>Cerberus (Complete)</span>
+              </label>
+              <label class="radio-item">
+                <input type="radio" name="tier" value="Olympus (Enterprise)" />
+                <div class="radio-indicator"></div>
+                <span>Olympus (Enterprise)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Contact -->
+        <div class="form-section">
+          <div class="form-section-label">Contact Information</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" name="full_name" placeholder="e.g. Alex Carter" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Job Title <span class="optional">(optional)</span></label>
+              <input type="text" name="job_title" placeholder="e.g. Lead Engineer" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Work Email</label>
+              <input type="email" name="email" placeholder="alex@studio.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone <span class="optional">(optional)</span></label>
+              <input type="tel" name="phone" placeholder="+1 (555) 000-0000" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: Additional -->
+        <div class="form-section">
+          <div class="form-section-label">Additional</div>
+          <div class="form-group">
+            <label class="form-label">How did you hear about us?</label>
+            <select name="referral_source">
+              <option value="">Select one</option>
+              <option value="Search Engine">Search Engine</option>
+              <option value="Social Media">Social Media</option>
+              <option value="Conference/Event">Conference/Event</option>
+              <option value="Referral">Referral</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Additional Notes <span class="optional">(optional)</span></label>
+            <textarea name="notes" placeholder="Anything else you'd like us to know..." rows="3"></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Submit Application</button>
+      </form>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-card" id="successCard">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
+      </div>
+      <h2>Application Received</h2>
+      <p>Our team will review your application and respond within 48 hours. Check your inbox for a confirmation email.</p>
+      <div class="success-id-label">Application ID</div>
+      <div class="success-id" id="appId"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span></div>
+    <p>Three heads. Three layers. Nothing gets past the gate.</p>
+    <div style="display:flex;justify-content:center;gap:24px;margin-top:16px;flex-wrap:wrap;">
+      <a href="/docs/">Documentation</a>
+      <a href="/api/">API Reference</a>
+      <a href="/sdk/">SDK</a>
+      <a href="/changelog/">Changelog</a>
+      <a href="/blog/">Blog</a>
+      <a href="/status/">Status</a>
+      <a href="/analytics/">Analytics</a>
+      <a href="/team/">Team</a>
+      <a href="mailto:cerberus@arsenalrx.dev">Contact</a>
+    </div>
+    <p style="margin-top: 16px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved.</p>
+  </footer>
+
+  <script src="/js/cerberus-shared.js"></script>
+  <script>
+    (function() {
+      var form = document.getElementById('accessForm');
+      var formCard = document.getElementById('formCard');
+      var successCard = document.getElementById('successCard');
+      var appIdEl = document.getElementById('appId');
+
+      if (!form || !successCard) return;
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = form.querySelector('button[type="submit"]');
+        btn.textContent = 'Submitting...';
+        btn.disabled = true;
+
+        fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        }).then(function(r) {
+          if (r.ok) {
+            var appId = 'CRB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
+            appIdEl.textContent = appId;
+            formCard.style.display = 'none';
+            successCard.style.display = 'block';
+          } else {
+            btn.textContent = 'Error — Try Again';
+            btn.disabled = false;
+          }
+        }).catch(function() {
+          btn.textContent = 'Error — Try Again';
+          btn.disabled = false;
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+name: Cerberus Content Engine
+
+on:
+  schedule:
+    # Daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate daily changelog entry
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          TODAY=$(date -u +"%Y-%m-%d")
+          SEED=$(($(date +%s) % 100000))
+
+          # Ensure changelog-entries.json exists
+          if [ ! -f data/changelog-entries.json ]; then
+            echo '[]' > data/changelog-entries.json
+          fi
+
+          # Read current state for realistic values
+          SIGS=$(jq '.signatureDb' data/state.json)
+          VERSION=$(jq -r '.engineVersion' data/state.json)
+
+          # Provider pool
+          PROVIDERS=("PhantomOverlay" "RingZero" "KernelVault" "GhostWare" "ShadowPatcher" "VoidHook" "NullDriver" "ByteForge" "StealthCore" "DarkModule" "HexShield" "CipherLoad" "DeepRoot" "SilentByte" "ApexHack")
+          PROV_IDX=$((RANDOM % ${#PROVIDERS[@]}))
+          PROVIDER="${PROVIDERS[$PROV_IDX]}"
+
+          # Cheat types
+          CHEAT_TYPES=("aimbot" "ESP" "wallhack" "speedhack" "triggerbot" "DMA read" "kernel exploit" "driver spoof" "memory manipulation" "input injection" "radar hack" "anti-recoil" "silent aim")
+          CHEAT_IDX=$((RANDOM % ${#CHEAT_TYPES[@]}))
+          CHEAT="${CHEAT_TYPES[$CHEAT_IDX]}"
+
+          # Fix targets
+          FIX_TARGETS=("NVIDIA overlay hook" "AMD ReLive injection" "Steam overlay compatibility" "Discord hook detection" "OBS capture layer" "MSI Afterburner overlay" "Corsair iCUE driver" "Razer Synapse module" "ASUS Aura SDK")
+          FIX_IDX=$((RANDOM % ${#FIX_TARGETS[@]}))
+          FIX_TARGET="${FIX_TARGETS[$FIX_IDX]}"
+
+          # Improvement metrics
+          METRICS=("scan latency reduced by 8%" "memory footprint decreased by 12%" "false positive rate improved by 0.002%" "detection confidence increased by 1.3%" "kernel callback response time reduced by 15ms" "signature matching throughput up 22%")
+          MET_IDX=$((RANDOM % ${#METRICS[@]}))
+          METRIC="${METRICS[$MET_IDX]}"
+
+          SIG_DELTA=$((RANDOM % 12 + 3))
+
+          # Build entry
+          ENTRY=$(jq -n \
+            --arg date "$TODAY" \
+            --arg ts "$NOW" \
+            --arg ver "$VERSION" \
+            --argjson sigs "$SIGS" \
+            --argjson sigdelta "$SIG_DELTA" \
+            --arg provider "$PROVIDER" \
+            --arg cheat "$CHEAT" \
+            --arg fix "$FIX_TARGET" \
+            --arg metric "$METRIC" \
+            '{
+              date: $date,
+              timestamp: $ts,
+              version: $ver,
+              type: "daily",
+              changes: [
+                {type: "security", text: ("Neutralized " + $provider + " " + $cheat + " variant — signatures deployed")},
+                {type: "added", text: ("+" + ($sigdelta|tostring) + " signatures — " + ($sigs|tostring) + " total coverage")},
+                {type: "fixed", text: ("Resolved false positive on " + $fix)},
+                {type: "improved", text: $metric}
+              ]
+            }')
+
+          # Append to changelog entries
+          jq --argjson entry "$ENTRY" '. + [$entry]' data/changelog-entries.json > data/cl_tmp.json && mv data/cl_tmp.json data/changelog-entries.json
+
+          echo "Generated changelog entry for $TODAY"
+
+      - name: Maybe generate blog post stub
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          TODAY=$(date -u +"%Y-%m-%d")
+
+          # Ensure blog-entries.json exists
+          if [ ! -f data/blog-entries.json ]; then
+            echo '[]' > data/blog-entries.json
+          fi
+
+          # Check days since last blog entry
+          LAST_BLOG=$(jq -r '.[-1].date // "2026-01-01"' data/blog-entries.json)
+          LAST_TS=$(date -d "$LAST_BLOG" +%s 2>/dev/null || echo 0)
+          NOW_TS=$(date +%s)
+          DAYS_SINCE=$(( (NOW_TS - LAST_TS) / 86400 ))
+
+          # Generate every 3-7 days (check if enough time has passed, then 40% chance)
+          if [ "$DAYS_SINCE" -ge 3 ] && [ $((RANDOM % 5)) -lt 2 ]; then
+            SIGS=$(jq '.signatureDb' data/state.json)
+            BANS=$(jq '.totalBans' data/state.json)
+
+            # Weighted type selection
+            TYPES=("threat" "threat" "threat" "advisory" "advisory" "engineering" "engineering" "milestone" "casestudy" "casestudy")
+            TYPE_IDX=$((RANDOM % ${#TYPES[@]}))
+            POST_TYPE="${TYPES[$TYPE_IDX]}"
+
+            # Title pools per type
+            case "$POST_TYPE" in
+              "threat")
+                TITLES=("Monthly Threat Landscape Report" "Emerging DMA Attack Vectors" "Kernel-Level Exploit Trends" "Provider Ecosystem Analysis" "Behavioral Pattern Evolution Report")
+                ;;
+              "advisory")
+                TITLES=("Security Advisory: Detection Engine Update" "Advisory: Signature Database Integrity" "Security Notice: False Positive Correction" "Advisory: SDK Authentication Hardening")
+                ;;
+              "engineering")
+                TITLES=("Engineering Deep Dive: Scan Pipeline Optimization" "Building Low-Latency Detection at Scale" "Neural Network Architecture for Behavioral Analysis" "Zero-Copy Memory Scanning Techniques")
+                ;;
+              "milestone")
+                TITLES=("Signature Database Crosses ${SIGS} Entries" "Detection Engine Performance Milestone" "Regional Expansion Update" "Partner Integration Milestone")
+                ;;
+              "casestudy")
+                TITLES=("Partner Spotlight: Competitive FPS Integration" "Case Study: MMO Anti-Cheat Deployment" "Battle Royale Protection at Scale" "Esports Tournament Protection Results")
+                ;;
+            esac
+
+            TITLE_IDX=$((RANDOM % ${#TITLES[@]}))
+            TITLE="${TITLES[$TITLE_IDX]}"
+
+            AUTHORS=("nvoronov" "akovacs" "jpark" "mzhang" "eriksson")
+            AUTH_IDX=$((RANDOM % ${#AUTHORS[@]}))
+            AUTHOR="${AUTHORS[$AUTH_IDX]}"
+
+            BLOG_ENTRY=$(jq -n \
+              --arg date "$TODAY" \
+              --arg ts "$NOW" \
+              --arg type "$POST_TYPE" \
+              --arg title "$TITLE" \
+              --arg author "$AUTHOR" \
+              '{date: $date, timestamp: $ts, type: $type, title: $title, author: $author, generated: true}')
+
+            jq --argjson entry "$BLOG_ENTRY" '. + [$entry]' data/blog-entries.json > data/be_tmp.json && mv data/be_tmp.json data/blog-entries.json
+
+            echo "Generated blog stub: $TITLE"
+          else
+            echo "Skipping blog generation (${DAYS_SINCE} days since last, or random skip)"
+          fi
+
+      - name: Maybe bump version
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          NOW_TS=$(date +%s)
+
+          # Read version metadata
+          LAST_PATCH=$(jq -r '.lastPatchBump' data/version-meta.json)
+          LAST_MINOR=$(jq -r '.lastMinorBump' data/version-meta.json)
+          CUR_VERSION=$(jq -r '.currentVersion' data/version-meta.json)
+          BUILD=$(jq '.buildNumber' data/version-meta.json)
+
+          PATCH_TS=$(date -d "$LAST_PATCH" +%s 2>/dev/null || echo 0)
+          MINOR_TS=$(date -d "$LAST_MINOR" +%s 2>/dev/null || echo 0)
+          PATCH_AGE_H=$(( (NOW_TS - PATCH_TS) / 3600 ))
+          MINOR_AGE_D=$(( (NOW_TS - MINOR_TS) / 86400 ))
+
+          BUMPED="false"
+          NEW_VERSION="$CUR_VERSION"
+          NEW_BUILD=$((BUILD + 1))
+          BUMP_TYPE=""
+          BUMP_SUMMARY=""
+
+          # PATCH every 12-72h (50% chance when eligible)
+          if [ "$PATCH_AGE_H" -ge 24 ] && [ $((RANDOM % 2)) -eq 0 ]; then
+            # Parse version: v0.4.2.0b -> increment last digit
+            # Extract numeric parts
+            BASE=$(echo "$CUR_VERSION" | sed 's/^v//' | sed 's/b$//')
+            IFS='.' read -ra PARTS <<< "$BASE"
+            LAST_PART=$((${PARTS[3]} + 1))
+            NEW_VERSION="v${PARTS[0]}.${PARTS[1]}.${PARTS[2]}.${LAST_PART}b"
+            BUMPED="true"
+            BUMP_TYPE="patch"
+
+            SUMMARIES=("Stability improvements and scan optimizations" "False positive corrections and signature updates" "Performance tuning and memory optimizations" "Detection threshold calibration" "Kernel module compatibility fixes" "DMA fingerprint database expansion")
+            SUM_IDX=$((RANDOM % ${#SUMMARIES[@]}))
+            BUMP_SUMMARY="${SUMMARIES[$SUM_IDX]}"
+          fi
+
+          # MINOR every 14-28 days
+          if [ "$MINOR_AGE_D" -ge 14 ] && [ $((RANDOM % 7)) -eq 0 ]; then
+            BASE=$(echo "$CUR_VERSION" | sed 's/^v//' | sed 's/b$//')
+            IFS='.' read -ra PARTS <<< "$BASE"
+            MINOR_PART=$((${PARTS[2]} + 1))
+            NEW_VERSION="v${PARTS[0]}.${PARTS[1]}.${MINOR_PART}.0b"
+            BUMPED="true"
+            BUMP_TYPE="minor"
+
+            SUMMARIES=("New behavioral detection models and API enhancements" "Expanded hardware fingerprinting and SDK improvements" "Multi-region optimization and new detection vectors" "AI model upgrade and performance overhaul")
+            SUM_IDX=$((RANDOM % ${#SUMMARIES[@]}))
+            BUMP_SUMMARY="${SUMMARIES[$SUM_IDX]}"
+          fi
+
+          if [ "$BUMPED" = "true" ]; then
+            # Update version-meta.json
+            if [ "$BUMP_TYPE" = "patch" ]; then
+              jq --arg ver "$NEW_VERSION" --argjson build "$NEW_BUILD" --arg now "$NOW" --arg summary "$BUMP_SUMMARY" \
+                '.currentVersion = $ver | .buildNumber = $build | .lastPatchBump = $now | .patchHistory = [{version: $ver, date: $now, summary: $summary}] + .patchHistory | .patchHistory = .patchHistory[0:10]' \
+                data/version-meta.json > data/vm_tmp.json && mv data/vm_tmp.json data/version-meta.json
+            else
+              jq --arg ver "$NEW_VERSION" --argjson build "$NEW_BUILD" --arg now "$NOW" --arg summary "$BUMP_SUMMARY" \
+                '.currentVersion = $ver | .buildNumber = $build | .lastMinorBump = $now | .lastPatchBump = $now | .patchHistory = [{version: $ver, date: $now, summary: $summary}] + .patchHistory | .patchHistory = .patchHistory[0:10]' \
+                data/version-meta.json > data/vm_tmp.json && mv data/vm_tmp.json data/version-meta.json
+            fi
+
+            # Also update state.json engineVersion and buildNumber
+            jq --arg ver "$NEW_VERSION" --argjson build "$NEW_BUILD" \
+              '.engineVersion = $ver | .buildNumber = $build' \
+              data/state.json > data/st_tmp.json && mv data/st_tmp.json data/state.json
+
+            echo "BUMP_MSG=release: bump to ${NEW_VERSION} — ${BUMP_SUMMARY}" >> $GITHUB_ENV
+            echo "BUMPED=true" >> $GITHUB_ENV
+          else
+            echo "BUMPED=false" >> $GITHUB_ENV
+          fi
+
+      - name: Update roadmap progress
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          # Update short-term items (+0.5-2% per day)
+          jq --arg now "$NOW" '
+            .lastUpdated = $now |
+            .items.short = [.items.short[] |
+              if .progress < 100 then
+                .progress = (.progress + (0.5 + (($now | explode | .[0]) % 15) / 10) | . * 10 | floor | . / 10)
+              else . end
+            ] |
+            .items.mid = [.items.mid[] |
+              if .progress < 100 then
+                .progress = (.progress + (0.1 + (($now | explode | .[2]) % 4) / 10) | . * 10 | floor | . / 10)
+              else . end
+            ]
+          ' data/roadmap.json > data/rm_tmp.json && mv data/rm_tmp.json data/roadmap.json
+
+          # Check if any short-term items hit 100%
+          COMPLETED=$(jq '[.items.short[] | select(.progress >= 100)] | length' data/roadmap.json)
+          if [ "$COMPLETED" -gt 0 ]; then
+            # Move completed items to completed list, replace from template pool
+            jq '
+              (.items.short | map(select(.progress >= 100))) as $done |
+              (.items.completed + [$done[] | {id: .id, name: .name, desc: .desc, completedDate: (now | strftime("%Y-%m-%d"))}]) as $newCompleted |
+              (.templatePool | .[0:($done | length)]) as $replacements |
+              (.templatePool | .[($done | length):]) as $remainingPool |
+              .items.short = ([.items.short[] | select(.progress < 100)] + [$replacements[] | {id: ("r-s" + (now | tostring | .[-4:])), name: .name, desc: .desc, progress: 0, color: .color, added: (now | strftime("%Y-%m-%d"))}]) |
+              .items.completed = ($newCompleted | .[0:10]) |
+              .templatePool = $remainingPool
+            ' data/roadmap.json > data/rm_tmp2.json && mv data/rm_tmp2.json data/roadmap.json
+            echo "Moved $COMPLETED items to completed, replaced from template pool"
+          fi
+
+      - name: Maybe generate lab log entry
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          TODAY=$(date -u +"%Y-%m-%d")
+
+          # Check days since last lab entry
+          LAST_LAB=$(jq -r '.entries[-1].lastUpdate // "2026-01-01"' data/lab-log.json)
+          LAST_TS=$(date -d "$LAST_LAB" +%s 2>/dev/null || echo 0)
+          NOW_TS=$(date +%s)
+          DAYS_SINCE=$(( (NOW_TS - LAST_TS) / 86400 ))
+
+          # Progress existing entries (random status transitions)
+          jq --arg now "$TODAY" '
+            .lastUpdated = $now |
+            .entries = [.entries[] |
+              if .status == "HYPOTHESIS" and ((.id | explode | .[0]) % 7 == 0) then
+                .status = "EXPERIMENT" | .lastUpdate = $now
+              elif .status == "EXPERIMENT" and ((.id | explode | .[1]) % 11 == 0) then
+                .status = "PROTOTYPE" | .lastUpdate = $now
+              elif .status == "PROTOTYPE" and ((.id | explode | .[2]) % 13 == 0) then
+                .status = "EVALUATION" | .lastUpdate = $now
+              else . end
+            ]
+          ' data/lab-log.json > data/ll_tmp.json && mv data/ll_tmp.json data/lab-log.json
+
+          # Generate new entry every 5-10 days
+          if [ "$DAYS_SINCE" -ge 5 ] && [ $((RANDOM % 3)) -eq 0 ]; then
+            POOL_SIZE=$(jq '.templatePool | length' data/lab-log.json)
+            if [ "$POOL_SIZE" -gt 0 ]; then
+              IDX=$((RANDOM % POOL_SIZE))
+              ENTRY_ID="lab-$(printf '%03d' $(($(jq '.entries | length' data/lab-log.json) + 1)))"
+
+              jq --arg id "$ENTRY_ID" --arg now "$TODAY" --argjson idx "$IDX" '
+                .templatePool[$idx] as $tmpl |
+                .entries += [{
+                  id: $id,
+                  title: $tmpl.title,
+                  desc: $tmpl.desc,
+                  status: "HYPOTHESIS",
+                  startDate: $now,
+                  lastUpdate: $now,
+                  findings: "Initial research phase. Literature review in progress."
+                }] |
+                .templatePool = (.templatePool[:$idx] + .templatePool[$idx+1:])
+              ' data/lab-log.json > data/ll_tmp2.json && mv data/ll_tmp2.json data/lab-log.json
+
+              echo "Generated new lab log entry"
+            fi
+          fi
+
+      - name: Generate post-mortem if incident resolved
+        run: |
+          # Check if any incidents were just resolved (in history but no postmortem)
+          if [ ! -f data/incidents.json ]; then
+            echo '{"postmortems":[]}' > data/incidents.json
+          fi
+
+          HISTORY=$(jq -c '.incidentHistory // []' data/state.json)
+          HISTORY_LEN=$(echo "$HISTORY" | jq 'length')
+
+          if [ "$HISTORY_LEN" -gt 0 ]; then
+            LATEST_ID=$(echo "$HISTORY" | jq -r '.[0].id // empty')
+            if [ -n "$LATEST_ID" ]; then
+              # Check if postmortem already exists
+              EXISTS=$(jq --arg id "$LATEST_ID" '[.postmortems[] | select(.incidentId == $id)] | length' data/incidents.json)
+              if [ "$EXISTS" -eq 0 ]; then
+                # Generate post-mortem
+                INCIDENT=$(echo "$HISTORY" | jq '.[0]')
+                TITLE=$(echo "$INCIDENT" | jq -r '.title')
+                STARTED=$(echo "$INCIDENT" | jq -r '.startedAt')
+                RESOLVED=$(echo "$INCIDENT" | jq -r '.resolvedAt // .updatedAt')
+                CAUSE=$(echo "$INCIDENT" | jq -r '.rootCause // "Under investigation"')
+
+                # Calculate duration
+                START_TS=$(date -d "$STARTED" +%s 2>/dev/null || echo 0)
+                END_TS=$(date -d "$RESOLVED" +%s 2>/dev/null || echo "$(date +%s)")
+                DURATION_H=$(( (END_TS - START_TS) / 3600 ))
+                DURATION_M=$(( ((END_TS - START_TS) % 3600) / 60 ))
+
+                IMPACT_PCTS=("0.8" "1.2" "2.1" "3.4" "1.7" "0.5" "2.8")
+                IMP_IDX=$((RANDOM % ${#IMPACT_PCTS[@]}))
+                IMPACT="${IMPACT_PCTS[$IMP_IDX]}"
+
+                ACTIONS=("Implement additional monitoring for affected subsystem" "Add circuit breaker to prevent cascade failures" "Update runbook with new escalation procedures" "Deploy canary configuration validation" "Add automated rollback trigger for similar conditions")
+                ACT1_IDX=$((RANDOM % ${#ACTIONS[@]}))
+                ACT2_IDX=$(( (ACT1_IDX + 2) % ${#ACTIONS[@]} ))
+
+                LESSONS=("Detection of this failure mode should be automated" "Configuration changes need staged rollout validation" "Monitoring gaps in this subsystem need to be addressed" "Incident response time can be improved with better alerting")
+                LES_IDX=$((RANDOM % ${#LESSONS[@]}))
+
+                PM=$(jq -n \
+                  --arg id "$LATEST_ID" \
+                  --arg title "$TITLE" \
+                  --arg started "$STARTED" \
+                  --arg resolved "$RESOLVED" \
+                  --arg cause "$CAUSE" \
+                  --arg impact "$IMPACT" \
+                  --argjson durH "$DURATION_H" \
+                  --argjson durM "$DURATION_M" \
+                  --arg action1 "${ACTIONS[$ACT1_IDX]}" \
+                  --arg action2 "${ACTIONS[$ACT2_IDX]}" \
+                  --arg lesson "${LESSONS[$LES_IDX]}" \
+                  '{
+                    incidentId: $id,
+                    title: $title,
+                    startedAt: $started,
+                    resolvedAt: $resolved,
+                    duration: (($durH | tostring) + "h " + ($durM | tostring) + "m"),
+                    impactPct: ($impact | tonumber),
+                    rootCause: $cause,
+                    timeline: [
+                      {time: $started, status: "INVESTIGATING", detail: "Automated monitoring detected anomaly"},
+                      {time: $resolved, status: "RESOLVED", detail: "Root cause identified and remediated"}
+                    ],
+                    actionItems: [$action1, $action2],
+                    lessonsLearned: [$lesson]
+                  }')
+
+                jq --argjson pm "$PM" '.postmortems = [$pm] + .postmortems | .postmortems = .postmortems[0:10]' \
+                  data/incidents.json > data/inc_tmp.json && mv data/inc_tmp.json data/incidents.json
+
+                echo "Generated post-mortem for $LATEST_ID"
+              fi
+            fi
+          fi
+
+      - name: Commit and push
+        run: |
+          git config user.name "cerberus-bot"
+          git config user.email "cerberus-bot@cerberusac.dev"
+          git add data/
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          if [ "${BUMPED}" = "true" ]; then
+            git commit -m "$BUMP_MSG"
+          else
+            git commit -m "content: generate daily updates"
+          fi
+
+          git push

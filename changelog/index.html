@@ -127,10 +127,21 @@
     <h1 class="page-title">Changelog</h1>
     <p class="page-desc">Version history, detection updates, and patch notes since v0.0.1. <span id="sigSyncBadge" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--green);"></span></p>
 
-    <!-- Roadmap -->
+    <!-- Roadmap (data-driven from roadmap.json) -->
     <div class="roadmap">
       <div class="roadmap-title"><span style="font-size:1.2rem;">&#9776;</span> Product Roadmap</div>
-      <div class="roadmap-grid" id="roadmapGrid"></div>
+      <div id="roadmapShort" style="margin-bottom:16px;"></div>
+      <div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 8px;font-weight:600;">Mid-Term</div>
+      <div class="roadmap-grid" id="roadmapMid"></div>
+      <div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 8px;font-weight:600;">Long-Term Research</div>
+      <div class="roadmap-grid" id="roadmapLong"></div>
+      <div id="roadmapCompleted" style="margin-top:16px;"></div>
+    </div>
+
+    <!-- R&D Lab Log -->
+    <div class="roadmap" id="labLogSection" style="display:none;">
+      <div class="roadmap-title"><span style="font-size:1.2rem;">&#x1F9EA;</span> R&D Lab Log</div>
+      <div id="labLogEntries"></div>
     </div>
 
     <div class="timeline" id="changelogTimeline"></div>
@@ -151,26 +162,92 @@
     function daysAgo(n) { return new Date(Date.now() - n * 86400000); }
     function dateToDaySeed(y, m, d) { return Math.floor(new Date(y, m-1, d).getTime() / 86400000); }
 
-    // ===== ROADMAP (safe items — no detection internals) =====
-    var roadmapItems = [
-      { name: 'Partner Dashboard v2', desc: 'Redesigned analytics, custom alerting rules, team management.', eta: 'IN PROGRESS', etaClass: 'eta-progress', pct: 68, color: 'var(--green)' },
-      { name: 'Automated Appeal Review', desc: 'AI-assisted ban appeal triage to reduce manual review queue.', eta: 'IN PROGRESS', etaClass: 'eta-progress', pct: 42, color: 'var(--green)' },
-      { name: 'Console Support (PS5/Xbox)', desc: 'Native SDK for PlayStation 5 and Xbox Series X|S titles.', eta: 'Q3 2026', etaClass: 'eta-planned', pct: 15, color: 'var(--blue)' },
-      { name: 'Linux / Steam Deck', desc: 'Kernel module for Linux + Proton compatibility layer.', eta: 'Q4 2026', etaClass: 'eta-planned', pct: 8, color: 'var(--blue)' },
-      { name: 'Multi-Title Licensing', desc: 'Volume-based pricing for studios with 3+ integrated titles.', eta: 'Q3 2026', etaClass: 'eta-planned', pct: 30, color: 'var(--blue)' },
-      { name: 'SOC 2 Type II Certification', desc: 'Independent security audit and compliance certification.', eta: 'Q4 2026', etaClass: 'eta-planned', pct: 12, color: 'var(--blue)' },
-      { name: 'Custom Detection Rules', desc: 'Studio-defined rules engine for game-specific behaviors.', eta: 'RESEARCH', etaClass: 'eta-research', pct: 5, color: 'var(--purple)' },
-      { name: 'Mobile Anti-Cheat', desc: 'Android and iOS SDK for competitive mobile titles.', eta: '2027', etaClass: 'eta-research', pct: 2, color: 'var(--purple)' },
-    ];
+    // ===== DATA-DRIVEN ROADMAP (from roadmap.json, falls back to hardcoded) =====
+    function renderRoadmapItem(item, etaLabel, etaClass) {
+      var dailyShift = Math.floor(seeded(today + (item.id || '').charCodeAt(3) * 17) * 3);
+      var pct = Math.min(item.progress + dailyShift, 95);
+      var color = item.color || 'var(--accent)';
+      return '<div class="roadmap-item"><div class="roadmap-item-header"><span class="roadmap-item-name">' + item.name + '</span><span class="roadmap-item-eta ' + etaClass + '">' + etaLabel + '</span></div><div class="roadmap-item-desc">' + item.desc + '</div><div class="roadmap-bar"><div class="roadmap-bar-fill" style="width:' + pct + '%;background:' + color + ';"></div></div></div>';
+    }
 
-    // Roadmap progress shifts slightly each day
-    var rmHTML = '';
-    roadmapItems.forEach(function(item, i) {
-      var dailyShift = Math.floor(seeded(today + i * 17) * 3);
-      var pct = Math.min(item.pct + dailyShift, item.eta === 'IN PROGRESS' ? 95 : item.pct + 5);
-      rmHTML += '<div class="roadmap-item"><div class="roadmap-item-header"><span class="roadmap-item-name">' + item.name + '</span><span class="roadmap-item-eta ' + item.etaClass + '">' + item.eta + '</span></div><div class="roadmap-item-desc">' + item.desc + '</div><div class="roadmap-bar"><div class="roadmap-bar-fill" style="width:' + pct + '%;background:' + item.color + ';"></div></div></div>';
+    function renderRoadmap(data) {
+      var shortHTML = '<div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600;">In Progress</div><div class="roadmap-grid">';
+      (data.items.short || []).forEach(function(item) { shortHTML += renderRoadmapItem(item, 'IN PROGRESS', 'eta-progress'); });
+      shortHTML += '</div>';
+      document.getElementById('roadmapShort').innerHTML = shortHTML;
+
+      var midHTML = '<div class="roadmap-grid">';
+      (data.items.mid || []).forEach(function(item) { midHTML += renderRoadmapItem(item, 'PLANNED', 'eta-planned'); });
+      midHTML += '</div>';
+      document.getElementById('roadmapMid').innerHTML = midHTML;
+
+      var longHTML = '<div class="roadmap-grid">';
+      (data.items.long || []).forEach(function(item) { longHTML += renderRoadmapItem(item, 'RESEARCH', 'eta-research'); });
+      longHTML += '</div>';
+      document.getElementById('roadmapLong').innerHTML = longHTML;
+
+      if (data.items.completed && data.items.completed.length > 0) {
+        var compHTML = '<div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600;">Recently Completed</div>';
+        data.items.completed.forEach(function(item) {
+          compHTML += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:0.78rem;"><span style="color:var(--green);">&#10003;</span><span style="color:var(--text);">' + item.name + '</span><span style="color:var(--text-dim);font-size:0.68rem;">' + (item.completedDate || '') + '</span></div>';
+        });
+        document.getElementById('roadmapCompleted').innerHTML = compHTML;
+      }
+    }
+
+    // Fallback hardcoded roadmap
+    var fallbackRoadmap = {
+      items: {
+        short: [
+          { id: 'r-s1', name: 'Partner Dashboard v2', desc: 'Redesigned analytics, custom alerting rules, team management.', progress: 68, color: 'var(--green)' },
+          { id: 'r-s2', name: 'Linux Native Client', desc: 'Native Linux kernel module for Proton and native titles.', progress: 52, color: 'var(--blue)' },
+          { id: 'r-s3', name: 'Webhook v2 Protocol', desc: 'Event-driven webhook system with retry and dead-letter queues.', progress: 81, color: 'var(--accent)' },
+          { id: 'r-s4', name: 'SDK Auto-Updater', desc: 'Automatic SDK version management with rollback support.', progress: 44, color: 'var(--purple)' },
+        ],
+        mid: [
+          { id: 'r-m1', name: 'Console SDK (PS5/Xbox)', desc: 'PlayStation 5 and Xbox Series X|S native integration.', progress: 18, color: 'var(--blue)' },
+          { id: 'r-m2', name: 'Mobile Anti-Cheat Module', desc: 'Android and iOS behavioral detection for mobile titles.', progress: 12, color: 'var(--accent)' },
+        ],
+        long: [
+          { id: 'r-l1', name: 'Quantum-Resistant Signatures', desc: 'Post-quantum cryptography for signature verification.', progress: 3, color: 'var(--red)' },
+          { id: 'r-l2', name: 'Federated Detection Network', desc: 'Cross-title threat intelligence sharing without data exposure.', progress: 7, color: 'var(--blue)' },
+        ],
+        completed: [
+          { name: 'DMA Board Detection', completedDate: '2026-04-15' },
+          { name: 'Behavioral AI v7', completedDate: '2026-03-20' },
+        ]
+      }
+    };
+
+    fetch('/data/roadmap.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(data) {
+      renderRoadmap(data);
+    }).catch(function() {
+      renderRoadmap(fallbackRoadmap);
     });
-    document.getElementById('roadmapGrid').innerHTML = rmHTML;
+
+    // ===== R&D LAB LOG (from lab-log.json) =====
+    fetch('/data/lab-log.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(data) {
+      if (!data.entries || data.entries.length === 0) return;
+      document.getElementById('labLogSection').style.display = 'block';
+      var statusColors = { 'HYPOTHESIS': 'var(--text-dim)', 'EXPERIMENT': 'var(--blue)', 'PROTOTYPE': 'var(--accent)', 'EVALUATION': 'var(--green)', 'ARCHIVED': 'var(--text-dim)' };
+      var statusBg = { 'HYPOTHESIS': 'rgba(107,112,132,0.1)', 'EXPERIMENT': 'rgba(64,136,232,0.1)', 'PROTOTYPE': 'rgba(232,160,32,0.1)', 'EVALUATION': 'rgba(48,200,96,0.1)', 'ARCHIVED': 'rgba(107,112,132,0.08)' };
+      var labHTML = '';
+      data.entries.forEach(function(entry) {
+        var col = statusColors[entry.status] || 'var(--text-dim)';
+        var bg = statusBg[entry.status] || 'rgba(107,112,132,0.1)';
+        labHTML += '<div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,0.01);margin-bottom:8px;">';
+        labHTML += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">';
+        labHTML += '<span style="font-size:0.82rem;font-weight:600;color:var(--text-bright);">' + entry.title + '</span>';
+        labHTML += '<span style="font-family:var(--font-mono);font-size:0.6rem;padding:2px 8px;border-radius:4px;font-weight:600;background:' + bg + ';color:' + col + ';">' + entry.status + '</span>';
+        labHTML += '</div>';
+        labHTML += '<div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px;">' + entry.desc + '</div>';
+        if (entry.findings) {
+          labHTML += '<div style="font-size:0.72rem;color:var(--text);background:rgba(255,255,255,0.02);border-left:2px solid ' + col + ';padding:6px 12px;border-radius:0 6px 6px 0;">' + entry.findings + '</div>';
+        }
+        labHTML += '</div>';
+      });
+      document.getElementById('labLogEntries').innerHTML = labHTML;
+    }).catch(function() {});
 
     // ===== DATA POOLS =====
     var providers = ['AimStar','NeverLose','Skeet','Iniuria','Phantom Overlay','Project Infinity','Interium','Spirthack','Onetap','Nixware','Fatality','Aimware','Gamesense','EngineOwning','UnknownCheats paste','Cronus Zen','xhook.gg','Pandora.gg','Artifex','Midnight.im','RageCheats','EternalAim','SilentWare','KMBox/Vezax','VoidHack','PremiumHacks','UltraAim','SharpShooter','NetRadar','PixelBot Pro','ByteHax','AntiDetect.cc','IceWall','TurboHack','Memstar','ExternalAC','PasteHacks','LegitBot.cc','NexusCheats','VapeCheats'];
@@ -456,55 +533,53 @@
       return html;
     }
 
-    // Initial render: daily updates + first few major releases
-    var html = '';
-    var firstMajorPhase = true;
-    dailyUpdates.forEach(function(rel, idx) {
-      html += renderRelease(rel, idx === 0);
-    });
+    // ===== RENDER SERVER-GENERATED + CLIENT-GENERATED CHANGELOG =====
+    function renderAllReleases(serverEntries) {
+      var html = '';
 
-    // Show a "daily updates" divider if there are daily updates
-    if (dailyUpdates.length > 0) {
-      html += '<div style="text-align:center;padding:16px 0;margin:8px 0;"><span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);background:var(--bg);padding:0 12px;">MAJOR RELEASES</span></div>';
-    }
-
-    // Render initial batch of major releases (show first 8)
-    var initialBatch = 8;
-    var currentPhase = '';
-    majorReleases.slice(0, initialBatch).forEach(function(rel, idx) {
-      if (rel.phase && rel.phase !== currentPhase) {
-        currentPhase = rel.phase;
-        html += '<div class="phase-label">' + rel.phase + '</div>';
-      }
-      html += renderRelease(rel, false);
-    });
-
-    timeline.innerHTML = html;
-
-    // Show more button if there are more releases
-    if (majorReleases.length > initialBatch) {
-      var btn = document.getElementById('showMoreBtn');
-      btn.style.display = 'block';
-      btn.textContent = 'Load ' + (majorReleases.length - initialBatch) + ' earlier releases';
-      btn.onclick = function() {
-        var moreHTML = '';
-        var morePhase = currentPhase;
-        majorReleases.slice(initialBatch).forEach(function(rel) {
-          if (rel.phase && rel.phase !== morePhase) {
-            morePhase = rel.phase;
-            moreHTML += '<div class="phase-label">' + rel.phase + '</div>';
-          }
-          moreHTML += renderRelease(rel, false);
+      // Server-generated daily entries (from content engine)
+      if (serverEntries && serverEntries.length > 0) {
+        serverEntries.slice().reverse().forEach(function(entry, idx) {
+          var rel = {
+            ver: entry.version,
+            date: entry.date,
+            tags: ['SIG UPDATE'],
+            changes: entry.changes.map(function(c) { return { t: c.type.toUpperCase(), c: c.text }; }),
+            isDaily: true,
+            isLatest: idx === 0
+          };
+          html += renderRelease(rel, idx === 0);
         });
-        // Insert before the button
-        var wrapper = document.createElement('div');
-        wrapper.innerHTML = moreHTML;
-        while (wrapper.firstChild) {
-          timeline.appendChild(wrapper.firstChild);
+      }
+
+      // Client-generated daily updates
+      dailyUpdates.forEach(function(rel, idx) {
+        var isFirst = idx === 0 && (!serverEntries || serverEntries.length === 0);
+        html += renderRelease(rel, isFirst);
+      });
+
+      // Divider before major releases
+      html += '<div style="text-align:center;padding:16px 0;margin:8px 0;"><span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);background:var(--bg);padding:0 12px;">MAJOR RELEASES</span></div>';
+
+      // All major releases (no pagination — show full history)
+      var currentPhase = '';
+      majorReleases.forEach(function(rel) {
+        if (rel.phase && rel.phase !== currentPhase) {
+          currentPhase = rel.phase;
+          html += '<div class="phase-label">' + rel.phase + '</div>';
         }
-        btn.style.display = 'none';
-      };
+        html += renderRelease(rel, false);
+      });
+
+      timeline.innerHTML = html;
     }
+
+    // Try loading server-generated changelog entries first
+    fetch('/data/changelog-entries.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(entries) {
+      renderAllReleases(entries);
+    }).catch(function() {
+      renderAllReleases(null);
+    });
 
     // Show last sync time
     var d = new Date();

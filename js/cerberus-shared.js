@@ -188,6 +188,7 @@
       { name: 'SDK Download', desc: 'Download SDK package', url: '/sdk/' },
       { name: 'Blog', desc: 'Threat reports & engineering', url: '/blog/' },
       { name: 'Team', desc: 'Engineering team', url: '/team/' },
+      { name: 'Request Access', desc: 'Early access application form', url: '/access/' },
     ];
 
     var overlay = null;

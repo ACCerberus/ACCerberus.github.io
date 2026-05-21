@@ -21,6 +21,7 @@ jobs:
           SEED=$(($(date +%s) % 10000))
           HOUR=$(date -u +%H)
           DAY=$(date -u +%u)  # 1=Monday, 7=Sunday
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
           # Read current state — NEVER touch engineVersion or buildNumber
           # Those are only changed manually during a real version bump
@@ -32,7 +33,7 @@ jobs:
           SIG_QUEUE=$(jq '.signatureQueue' data/state.json)
           VERSION=$(jq -r '.engineVersion' data/state.json)
 
-          # Increment values realistically — sigs must ONLY go up (never down)
+          # ── Core metrics ──
           NEW_SIGS=$((SIGS + RANDOM % 8 + 1))
           NEW_BANS=$((BANS + RANDOM % 25 + 3))
           NEW_DETECTIONS=$((150 + RANDOM % 200))
@@ -59,8 +60,137 @@ jobs:
             SESSIONS=$((SESSIONS * 120 / 100))
           fi
 
-          # Update state.json — preserve engineVersion and buildNumber exactly
-          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          # ── Next-gen metrics ──
+
+          # NPU utilization (15-55%, higher during peak)
+          NPU_BASE=25
+          if [ "$HOUR" -ge 12 ] && [ "$HOUR" -le 20 ]; then
+            NPU_BASE=38
+          elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 12 ]; then
+            NPU_BASE=30
+          fi
+          NPU_NOISE=$((RANDOM % 15 - 7))
+          NPU_VAL=$((NPU_BASE + NPU_NOISE))
+          if [ "$NPU_VAL" -lt 15 ]; then NPU_VAL=15; fi
+          if [ "$NPU_VAL" -gt 55 ]; then NPU_VAL=55; fi
+          NPU_DEC=$((RANDOM % 10))
+          NPU_UTIL="${NPU_VAL}.${NPU_DEC}"
+
+          # ML confidence (94-99%)
+          ML_BASE=$((9500 + RANDOM % 450))
+          ML_CONF=$(echo "scale=2; $ML_BASE / 100" | bc)
+
+          # DMA anomalies (0-8, higher during peak)
+          DMA_BASE=2
+          if [ "$HOUR" -ge 14 ] && [ "$HOUR" -le 22 ]; then
+            DMA_BASE=4
+          fi
+          DMA_VAL=$((DMA_BASE + RANDOM % 4))
+          if [ "$DMA_VAL" -gt 8 ]; then DMA_VAL=8; fi
+
+          # Obfuscation integrity (99.8-100%)
+          OBF_BASE=$((9985 + RANDOM % 15))
+          OBF_INT=$(echo "scale=2; $OBF_BASE / 100" | bc)
+
+          # Behavioral model version (stable, rare changes)
+          BM_VER=$(jq -r '.behavioralModelVersion' data/state.json)
+
+          # PCIe firmware DB size (only grows)
+          PCIE_CUR=$(jq '.pcieFirmwareDbSize' data/state.json)
+          PCIE_GROW=$((RANDOM % 3))
+          PCIE_NEW=$((PCIE_CUR + PCIE_GROW))
+
+          # ── Ban wave tracking ──
+          LAST_BAN_WAVE=$(jq -r '.lastBanWave' data/state.json)
+          LAST_WAVE_TS=$(date -d "$LAST_BAN_WAVE" +%s 2>/dev/null || echo 0)
+          NOW_TS=$(date +%s)
+          WAVE_AGE_H=$(( (NOW_TS - LAST_WAVE_TS) / 3600 ))
+
+          # Ban wave every 48-96h (roughly every 2-4 days)
+          if [ "$WAVE_AGE_H" -ge 48 ] && [ $((RANDOM % 4)) -eq 0 ]; then
+            LAST_BAN_WAVE="$NOW"
+            BAN_WAVE_SIZE=$((8 + RANDOM % 31))
+            NEW_BANS=$((NEW_BANS + BAN_WAVE_SIZE))
+          else
+            BAN_WAVE_SIZE=$(jq '.banWaveSize' data/state.json)
+          fi
+
+          # Arms race cycle (0-3 based on days since last wave)
+          WAVE_DAYS=$((WAVE_AGE_H / 24))
+          if [ "$WAVE_DAYS" -le 1 ]; then
+            ARMS_CYCLE=0
+          elif [ "$WAVE_DAYS" -le 3 ]; then
+            ARMS_CYCLE=1
+          elif [ "$WAVE_DAYS" -le 6 ]; then
+            ARMS_CYCLE=2
+          else
+            ARMS_CYCLE=3
+          fi
+
+          # ── Incident state machine ──
+          ACTIVE_INCIDENT=$(jq -r '.activeIncident' data/state.json)
+          INCIDENT_HISTORY=$(jq -c '.incidentHistory' data/state.json)
+
+          # Incident template pool
+          INCIDENT_TITLES=("False positive rate spike in EU-West region" "Webhook delivery delays" "API response time degradation" "Scan latency increase detected" "Region connectivity issues — Asia-Pacific" "Signature DB sync delay" "Dashboard metrics reporting lag" "Elevated DMA false positives" "SDK authentication timeout errors" "Behavioral model inference latency spike")
+          INCIDENT_CAUSES=("Misconfigured rate limiter on edge node" "Database connection pool exhaustion" "Network congestion on inter-region backbone" "Memory pressure from concurrent scan operations" "DNS resolution delay on failover endpoint" "Cache invalidation storm after signature push" "Load balancer health check misconfiguration" "Upstream provider API throttling" "Certificate renewal race condition" "Garbage collection pause in scan worker")
+
+          if [ "$ACTIVE_INCIDENT" = "null" ]; then
+            # 3% chance of new incident per run (~1 every 3 days)
+            if [ $((RANDOM % 100)) -lt 3 ]; then
+              INC_IDX=$((RANDOM % ${#INCIDENT_TITLES[@]}))
+              CAUSE_IDX=$((RANDOM % ${#INCIDENT_CAUSES[@]}))
+              INC_ID="INC-$(date -u +%Y%m%d)-$(printf '%04d' $((RANDOM % 10000)))"
+              ACTIVE_INCIDENT=$(jq -n \
+                --arg id "$INC_ID" \
+                --arg title "${INCIDENT_TITLES[$INC_IDX]}" \
+                --arg status "INVESTIGATING" \
+                --arg started "$NOW" \
+                --arg updated "$NOW" \
+                --arg cause "${INCIDENT_CAUSES[$CAUSE_IDX]}" \
+                '{id: $id, title: $title, status: $status, startedAt: $started, updatedAt: $updated, rootCause: $cause, severity: "minor", impactPct: 2.5}')
+            fi
+          else
+            # Progress existing incident through stages
+            INC_STATUS=$(echo "$ACTIVE_INCIDENT" | jq -r '.status')
+            INC_STARTED=$(echo "$ACTIVE_INCIDENT" | jq -r '.startedAt')
+            INC_START_TS=$(date -d "$INC_STARTED" +%s 2>/dev/null || echo "$NOW_TS")
+            INC_AGE_H=$(( (NOW_TS - INC_START_TS) / 3600 ))
+
+            case "$INC_STATUS" in
+              "INVESTIGATING")
+                # Move to IDENTIFIED after 2-4h
+                if [ "$INC_AGE_H" -ge 2 ]; then
+                  ACTIVE_INCIDENT=$(echo "$ACTIVE_INCIDENT" | jq --arg now "$NOW" '.status = "IDENTIFIED" | .updatedAt = $now')
+                fi
+                ;;
+              "IDENTIFIED")
+                # Move to MONITORING after 4-8h total
+                if [ "$INC_AGE_H" -ge 4 ]; then
+                  ACTIVE_INCIDENT=$(echo "$ACTIVE_INCIDENT" | jq --arg now "$NOW" '.status = "MONITORING" | .updatedAt = $now')
+                fi
+                ;;
+              "MONITORING")
+                # Move to RESOLVED after 6-10h total
+                if [ "$INC_AGE_H" -ge 6 ]; then
+                  # Resolve: move to history, clear active
+                  RESOLVED=$(echo "$ACTIVE_INCIDENT" | jq --arg now "$NOW" '.status = "RESOLVED" | .resolvedAt = $now | .updatedAt = $now')
+                  # Prepend to history, keep last 5
+                  INCIDENT_HISTORY=$(echo "$INCIDENT_HISTORY" | jq --argjson inc "$RESOLVED" '[$inc] + . | .[0:5]')
+                  ACTIVE_INCIDENT="null"
+                fi
+                ;;
+            esac
+          fi
+
+          # ── Write updated state.json ──
+          # Build the active incident value for jq
+          if [ "$ACTIVE_INCIDENT" = "null" ] || [ -z "$ACTIVE_INCIDENT" ]; then
+            INC_ARG="null"
+          else
+            INC_ARG="$ACTIVE_INCIDENT"
+          fi
+
           jq --arg now "$NOW" \
              --argjson sigs "$NEW_SIGS" \
              --argjson bans "$NEW_BANS" \
@@ -70,7 +200,26 @@ jobs:
              --argjson rev "$NEW_REVIEWS" \
              --argjson sigq "$NEW_SIG_QUEUE" \
              --arg level "$NEW_LEVEL" \
-             '.lastUpdate = $now | .signatureDb = $sigs | .totalBans = $bans | .dailyDetections = $det | .avgScanLatency = $lat | .activeSessions = $sess | .pendingReviews = $rev | .signatureQueue = $sigq | .threatLevel = $level' \
+             --argjson npu "$NPU_UTIL" \
+             --argjson mlconf "$ML_CONF" \
+             --argjson dma "$DMA_VAL" \
+             --argjson obf "$OBF_INT" \
+             --arg bmver "$BM_VER" \
+             --argjson pcie "$PCIE_NEW" \
+             --arg lastwave "$LAST_BAN_WAVE" \
+             --argjson wavesize "$BAN_WAVE_SIZE" \
+             --argjson armscycle "$ARMS_CYCLE" \
+             --argjson incident "$INC_ARG" \
+             --argjson history "$INCIDENT_HISTORY" \
+             '.lastUpdate = $now |
+              .signatureDb = $sigs | .totalBans = $bans | .dailyDetections = $det |
+              .avgScanLatency = $lat | .activeSessions = $sess |
+              .pendingReviews = $rev | .signatureQueue = $sigq | .threatLevel = $level |
+              .npuUtilization = $npu | .mlConfidence = $mlconf | .dmaAnomalies = $dma |
+              .hypervisorHeartbeat = $now | .obfuscationIntegrity = $obf |
+              .behavioralModelVersion = $bmver | .pcieFirmwareDbSize = $pcie |
+              .lastBanWave = $lastwave | .banWaveSize = $wavesize | .armsRaceCycle = $armscycle |
+              .activeIncident = $incident | .incidentHistory = $history' \
              data/state.json > data/state_tmp.json && mv data/state_tmp.json data/state.json
 
           # ── Pick a realistic commit message (30 total) ──

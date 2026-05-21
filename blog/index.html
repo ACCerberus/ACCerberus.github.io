@@ -708,8 +708,26 @@
       renderPosts();
     });
 
-    // Initial render
-    renderPosts();
+    // Load server-generated blog entries and prepend to posts array
+    fetch('/data/blog-entries.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(entries) {
+      if (!entries || entries.length === 0) { renderPosts(); return; }
+      // Convert server entries to match client format, using existing generators
+      entries.slice().reverse().forEach(function(entry) {
+        var typeMap = { 'threat': 0, 'advisory': 1, 'engineering': 2, 'milestone': 3, 'casestudy': 4 };
+        var typeIdx = typeMap[entry.type] || 0;
+        var entrySeed = Math.floor(new Date(entry.date).getTime() / 86400000);
+        var postSeed = entrySeed * 1000 + typeIdx * 100;
+        var generated = POST_GENERATORS[typeIdx](postSeed, entrySeed);
+        generated.title = entry.title || generated.title;
+        generated.date = entry.date;
+        // Check for duplicates by title
+        var isDupe = posts.some(function(p) { return p.title === generated.title; });
+        if (!isDupe) posts.unshift(generated);
+      });
+      renderPosts();
+    }).catch(function() {
+      renderPosts();
+    });
   </script>
 
 </body>
