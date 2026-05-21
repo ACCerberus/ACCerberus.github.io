@@ -1,0 +1,5 @@
+Contact: mailto:security@arsenalrx.dev
+Expires: 2027-05-20T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://cerberusac.dev/.well-known/security.txt
+Policy: https://cerberusac.dev/security-policy

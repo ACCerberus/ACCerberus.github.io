@@ -1,3 +1,37 @@
 {
-  "postmortems": []
+  "postmortems": [
+    {
+      "id": "INC-003",
+      "title": "Discord overlay false positive spike",
+      "severity": "moderate",
+      "date": "2026-05-14",
+      "duration": "3h 18m",
+      "summary": "Discord canary build (v1.0.3) changed its overlay injection pattern, causing the kernel layer to flag it as DLL injection. ~40 sessions were falsely flagged. No auto-bans were issued (all below 95% confidence threshold). Whitelist updated within 3 hours.",
+      "rootCause": "Discord modified its overlay hook from SetWindowsHookEx to a direct IAT patch. Our kernel layer's DLL injection heuristic matched the new pattern.",
+      "resolution": "Added Discord's updated injection signature to the overlay whitelist. Deployed hotfix v0.4.2.0b-patch1.",
+      "lessonsLearned": "Need automated regression testing against top-20 overlay apps on every kernel layer update."
+    },
+    {
+      "id": "INC-002",
+      "title": "Behavioral model latency regression",
+      "severity": "low",
+      "date": "2026-04-22",
+      "duration": "2h 35m",
+      "summary": "Model update bm-3.0.9 doubled inference time to 4.8ms on i5-10th gen and older CPUs. No detection failures occurred. Rolled back to bm-3.0.8, re-optimized, and redeployed as bm-3.1.0.",
+      "rootCause": "New model architecture used unsupported ONNX operator on older CPUs, falling back to CPU-only path instead of using AVX2.",
+      "resolution": "Added ONNX operator compatibility check to model validation pipeline. Re-exported model with compatible operators.",
+      "lessonsLearned": "Model deployment pipeline needs hardware-matrix benchmarking gate before rollout."
+    },
+    {
+      "id": "INC-001",
+      "title": "Driver load failure on Windows 11 24H2 preview",
+      "severity": "moderate",
+      "date": "2026-03-29",
+      "duration": "13h 15m",
+      "summary": "Microsoft changed kernel callback registration behavior in Windows 11 24H2 preview build 26200. The Cerberus driver failed to load on affected systems (~12 beta testers). Patched in v0.4.1.7b.",
+      "rootCause": "PsSetCreateProcessNotifyRoutineEx2 behavior changed in 24H2 preview, requiring updated callback registration.",
+      "resolution": "Updated driver to use version-aware callback registration with fallback to legacy API on older builds.",
+      "lessonsLearned": "Subscribe to Windows Insider kernel change notifications. Add Win11 preview builds to CI test matrix."
+    }
+  ]
 }

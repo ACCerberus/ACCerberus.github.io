@@ -8,8 +8,30 @@
   <meta property="og:title" content="Cerberus Anti-Cheat" />
   <meta property="og:description" content="Four layers. Every surface. Nothing gets past the gate." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cerberusac.dev/" />
+  <meta name="robots" content="index, follow" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="theme-color" content="#e8a020" />
+  <link rel="canonical" href="https://cerberusac.dev/" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="manifest" href="/manifest.json" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Cerberus Anti-Cheat",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Windows 10, Windows 11",
+    "description": "Four-layer anti-cheat engine with kernel protection, behavioral AI, hardware fingerprinting, and network sentinel analysis.",
+    "softwareVersion": "0.4.2.0b",
+    "author": {
+      "@type": "Organization",
+      "name": "Cerberus Team",
+      "url": "https://cerberusac.dev",
+      "email": "cerberus@arsenalrx.dev"
+    }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -1446,9 +1468,13 @@
       <a href="/changelog/">Changelog</a>
       <a href="/blog/">Blog</a>
       <a href="/status/">Status</a>
-      <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
       <a href="mailto:cerberus@arsenalrx.dev">Contact</a>
+    </div>
+    <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;flex-wrap:wrap;font-size:0.78rem;">
+      <a href="/privacy/" style="color:var(--text-dim);">Privacy Policy</a>
+      <a href="/terms/" style="color:var(--text-dim);">Terms of Service</a>
+      <a href="/.well-known/security.txt" style="color:var(--text-dim);">Security</a>
     </div>
     <p style="margin-top: 16px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved.</p>
   </footer>
