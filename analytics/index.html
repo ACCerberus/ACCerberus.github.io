@@ -498,8 +498,8 @@
     <div class="dash-card">
       <div class="dash-card-header">
         <div>
-          <div class="dash-card-title">Server Instances</div>
-          <div class="dash-card-sub">Active Cerberus deployments</div>
+          <div class="dash-card-title">Test Server Instances</div>
+          <div class="dash-card-sub">Beta test deployments</div>
         </div>
       </div>
       <table class="game-table">
@@ -814,9 +814,9 @@
 
     // ===== PARTNER TITLES (server instances) =====
     var games = [
-      { name: 'PRD-US-EAST-01', code: 'CRB-0117', genre: 'Tactical FPS', status: 'live', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.2.0b-b2847' },
-      { name: 'PRD-EU-WEST-03', code: 'CRB-0243', genre: 'Battle Royale', status: 'live', tier: 'cerberus', engine: 'UE5.3', version: 'v0.4.2.0b-b2847' },
-      { name: 'STG-ASIA-SE-01', code: 'CRB-0389', genre: 'FPS', status: 'beta', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.3.0rc-b2851' },
+      { name: 'TST-US-EAST-01', code: 'CRB-0117', genre: 'Tactical FPS', status: 'testing', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.2.0b-b2847' },
+      { name: 'TST-EU-WEST-01', code: 'CRB-0243', genre: 'Battle Royale', status: 'testing', tier: 'cerberus', engine: 'UE5.3', version: 'v0.4.2.0b-b2847' },
+      { name: 'TST-ASIA-SE-01', code: 'CRB-0389', genre: 'FPS', status: 'testing', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.3.0rc-b2851' },
     ];
 
     // Generate consistent daily stats per game
@@ -831,10 +831,10 @@
 
     // ===== DYNAMIC SERVER INSTANCE UPDATES =====
     var allServerNames = [
-      'PRD-US-EAST-01','PRD-US-EAST-02','PRD-US-WEST-01','PRD-US-WEST-02','PRD-US-CENTRAL-01',
-      'PRD-EU-WEST-01','PRD-EU-WEST-02','PRD-EU-WEST-03','PRD-EU-NORTH-01','PRD-EU-CENTRAL-01',
-      'PRD-ASIA-SE-01','PRD-ASIA-EAST-01','PRD-ASIA-EAST-02','PRD-OCE-01','PRD-SA-EAST-01',
-      'STG-US-EAST-01','STG-EU-WEST-01','STG-ASIA-SE-01','STG-OCE-01','DEV-INTERNAL-01'
+      'TST-US-EAST-01','TST-US-EAST-02','TST-US-WEST-01',
+      'TST-EU-WEST-01','TST-EU-WEST-02','TST-EU-NORTH-01',
+      'TST-ASIA-SE-01','TST-ASIA-EAST-01','TST-OCE-01',
+      'STG-US-EAST-01','STG-EU-WEST-01','STG-ASIA-SE-01','DEV-INTERNAL-01'
     ];
     var allGenres = ['Tactical FPS','Battle Royale','FPS','MMO','Extraction Shooter','Survival','Arena Shooter','Racing','Open World','Sandbox'];
     var allEngines = ['UE5.4','UE5.3','Unity 6','Custom','Godot 4','CryEngine 5.7'];
@@ -853,6 +853,7 @@
         var statusClass, statusLabel;
         if (g.status === 'restarting') { statusClass = 'game-status-beta'; statusLabel = 'Restarting'; }
         else if (g.status === 'starting') { statusClass = 'game-status-beta'; statusLabel = 'Starting'; }
+        else if (g.status === 'testing') { statusClass = 'game-status-beta'; statusLabel = 'Testing'; }
         else if (g.status === 'beta') { statusClass = 'game-status-beta'; statusLabel = 'Beta'; }
         else { statusClass = 'game-status-live'; statusLabel = 'Live'; }
         var lastEvt = instanceLastEvent[g.code] || now;
@@ -880,7 +881,7 @@
     setInterval(function() {
       games.forEach(function(g) {
         if (g.status === 'restarting') {
-          if (Math.random() < 0.4) { g.status = 'live'; g.ccu = Math.floor(30 + Math.random() * 80); }
+          if (Math.random() < 0.4) { g.status = 'testing'; g.ccu = Math.floor(30 + Math.random() * 80); }
           return;
         }
         if (g.status === 'starting') {
@@ -1184,9 +1185,9 @@
     var feedEl = document.getElementById('liveFeed');
     // Map server instances to their correct regions (prevent name/region mismatch)
     var serverRegionMap = [
-      { name: 'PRD-US-EAST-01', region: 'US-East' },
-      { name: 'PRD-EU-WEST-03', region: 'EU-West' },
-      { name: 'STG-ASIA-SE-01', region: 'AP-Southeast' }
+      { name: 'TST-US-EAST-01', region: 'US-East' },
+      { name: 'TST-EU-WEST-01', region: 'EU-West' },
+      { name: 'TST-ASIA-SE-01', region: 'AP-Southeast' }
     ];
     var feedRegions = ['US-East', 'EU-West', 'AP-Southeast'];
 
