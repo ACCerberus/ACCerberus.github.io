@@ -243,25 +243,25 @@
   <div class="page-header">
     <div class="page-header-label">Our Team</div>
     <h1>The people behind the gate</h1>
-    <p>75+ engineers across 6 departments, united by a single mission: make cheating in competitive games technically impossible.</p>
+    <p>19 engineers across 4 departments, united by a single mission: make cheating in competitive games technically impossible.</p>
   </div>
 
   <!-- STATS -->
   <div class="stats-bar reveal">
     <div class="stat-item">
-      <div class="stat-value">78</div>
+      <div class="stat-value">19</div>
       <div class="stat-label">Engineers</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value">6</div>
+      <div class="stat-value">4</div>
       <div class="stat-label">Departments</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value">14</div>
+      <div class="stat-value">8</div>
       <div class="stat-label">Countries</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value">220+</div>
+      <div class="stat-value">74</div>
       <div class="stat-label">Combined Years</div>
     </div>
   </div>
@@ -346,132 +346,51 @@
         <div class="dept-header">
           <div class="dept-icon dept-icon-kernel">&#x1F6E1;</div>
           <div>
-            <div class="dept-name">Kernel Engineering</div>
-            <div class="dept-count">14 engineers</div>
+            <div class="dept-name">Kernel & Hardware</div>
+            <div class="dept-count">6 engineers</div>
           </div>
         </div>
-        <div class="dept-desc">Develops and maintains the ring-0 driver, integrity verification systems, code-signing enforcement, and memory permission auditing. Handles all kernel-mode operations across Windows builds.</div>
+        <div class="dept-desc">Develops the ring-0 driver, hardware fingerprinting pipeline, memory integrity verification, and PCIe/DMA detection. Owns everything that touches kernel mode or physical hardware.</div>
         <div class="dept-members">
           <div class="dept-member"><div class="dept-member-avatar">DK</div><div><div class="dept-member-name">dkrasov</div><div class="dept-member-title">Lead</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">AT</div><div><div class="dept-member-name">atorres</div><div class="dept-member-title">Sr. Driver Dev</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">AX</div><div><div class="dept-member-name">ArsenalRX</div><div class="dept-member-title">HW Security & Threat Research</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">AT</div><div><div class="dept-member-name">atorres</div><div class="dept-member-title">Driver Dev</div></div></div>
           <div class="dept-member"><div class="dept-member-avatar">VP</div><div><div class="dept-member-name">vpetrov</div><div class="dept-member-title">Kernel Security</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">JL</div><div><div class="dept-member-name">jliao</div><div class="dept-member-title">Integrity Monitor</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">OM</div><div><div class="dept-member-name">omueller</div><div class="dept-member-title">Minifilter Dev</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">RS</div><div><div class="dept-member-name">rsingh</div><div class="dept-member-title">Memory Audit</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">PD</div><div><div class="dept-member-name">pdimitrov</div><div class="dept-member-title">Syscall Eng.</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">CH</div><div><div class="dept-member-name">charris</div><div class="dept-member-title">Driver Dev</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">TK</div><div><div class="dept-member-name">tkuznetsov</div><div class="dept-member-title">Hypervisor Eng.</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">IN</div><div><div class="dept-member-name">inakamura</div><div class="dept-member-title">Code Signing</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">MW</div><div><div class="dept-member-name">mwong</div><div class="dept-member-title">WDM Specialist</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">LF</div><div><div class="dept-member-name">lferreira</div><div class="dept-member-title">Boot Integrity</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">AP</div><div><div class="dept-member-name">apark</div><div class="dept-member-title">Ring-0 Testing</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">GR</div><div><div class="dept-member-name">groberts</div><div class="dept-member-title">Driver QA</div></div></div>
-          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+11</div><div class="dept-member-name">Show all</div></div>
+          <div class="dept-member"><div class="dept-member-avatar">MR</div><div><div class="dept-member-name">mradzinski</div><div class="dept-member-title">Firmware RE</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">TK</div><div><div class="dept-member-name">tkuznetsov</div><div class="dept-member-title">Hypervisor Eng.</div></div></div>
         </div>
       </div>
       <div class="dept-card reveal">
         <div class="dept-header">
           <div class="dept-icon dept-icon-ai">&#x1F9E0;</div>
           <div>
-            <div class="dept-name">AI & Behavioral Analysis</div>
-            <div class="dept-count">12 engineers</div>
+            <div class="dept-name">AI & Detection</div>
+            <div class="dept-count">5 engineers</div>
           </div>
         </div>
-        <div class="dept-desc">Builds and trains the behavioral detection models. Handles real-time input analysis, anomaly classification, model optimization for sub-2ms inference, and continuous retraining against new cheat patterns.</div>
+        <div class="dept-desc">Builds behavioral detection models, network sentinel analysis, and the verdict engine. Handles real-time inference, anomaly classification, and continuous retraining against new cheat variants.</div>
         <div class="dept-members">
           <div class="dept-member"><div class="dept-member-avatar">SN</div><div><div class="dept-member-name">s.nakamura</div><div class="dept-member-title">Lead</div></div></div>
           <div class="dept-member"><div class="dept-member-avatar">RH</div><div><div class="dept-member-name">rhuang</div><div class="dept-member-title">ML Engineer</div></div></div>
           <div class="dept-member"><div class="dept-member-avatar">EL</div><div><div class="dept-member-name">elindqvist</div><div class="dept-member-title">Data Scientist</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">MC</div><div><div class="dept-member-name">mcheng</div><div class="dept-member-title">ONNX Optimizer</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">AK</div><div><div class="dept-member-name">akovalenko</div><div class="dept-member-title">Pattern Analyst</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">JB</div><div><div class="dept-member-name">jbraun</div><div class="dept-member-title">Inference Eng.</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">SK</div><div><div class="dept-member-name">skato</div><div class="dept-member-title">Training Pipeline</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">PN</div><div><div class="dept-member-name">pnguyen</div><div class="dept-member-title">Feature Eng.</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">DR</div><div><div class="dept-member-name">drivera</div><div class="dept-member-title">Anomaly Models</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">IS</div><div><div class="dept-member-name">istoica</div><div class="dept-member-title">Input Sampler</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">WL</div><div><div class="dept-member-name">wlee</div><div class="dept-member-title">Model Eval</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">CT</div><div><div class="dept-member-name">ctaylor</div><div class="dept-member-title">ML Ops</div></div></div>
-          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+9</div><div class="dept-member-name">Show all</div></div>
-        </div>
-      </div>
-      <div class="dept-card reveal">
-        <div class="dept-header">
-          <div class="dept-icon dept-icon-hw">&#x1F50D;</div>
-          <div>
-            <div class="dept-name">Hardware Security</div>
-            <div class="dept-count">10 engineers</div>
-          </div>
-        </div>
-        <div class="dept-desc">Handles PCIe device enumeration, firmware signature analysis, DMA attack pattern detection, and hardware fingerprinting. Maintains the database of known malicious DMA boards and firmware variants.</div>
-        <div class="dept-members">
-          <div class="dept-member"><div class="dept-member-avatar">AX</div><div><div class="dept-member-name">ArsenalRX</div><div class="dept-member-title">Lead</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">MR</div><div><div class="dept-member-name">mradzinski</div><div class="dept-member-title">Sr. Firmware RE</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">KO</div><div><div class="dept-member-name">kokonkwo</div><div class="dept-member-title">Firmware RE</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">NB</div><div><div class="dept-member-name">nbergman</div><div class="dept-member-title">PCIe Specialist</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">HC</div><div><div class="dept-member-name">hcarter</div><div class="dept-member-title">FPGA Dev</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">YT</div><div><div class="dept-member-name">ytanaka</div><div class="dept-member-title">Bus Analyzer</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">EP</div><div><div class="dept-member-name">epavel</div><div class="dept-member-title">DMA Research</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">RB</div><div><div class="dept-member-name">rbaker</div><div class="dept-member-title">Fingerprinting</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">LS</div><div><div class="dept-member-name">lsokolov</div><div class="dept-member-title">Embedded Sec.</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">AD</div><div><div class="dept-member-name">ademir</div><div class="dept-member-title">Signal Analysis</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">JW</div><div><div class="dept-member-name">jwilson</div><div class="dept-member-title">HW Testing</div></div></div>
-          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+7</div><div class="dept-member-name">Show all</div></div>
-        </div>
-      </div>
-      <div class="dept-card reveal">
-        <div class="dept-header">
-          <div class="dept-icon dept-icon-sec">&#x1F4A0;</div>
-          <div>
-            <div class="dept-name">Threat Research & Red Team</div>
-            <div class="dept-count">18 engineers</div>
-          </div>
-        </div>
-        <div class="dept-desc">Continuously reverse-engineers emerging cheat techniques, develops internal proof-of-concept exploits, and stress-tests Cerberus defenses. Coordinates threat intelligence sharing with partner studios.</div>
-        <div class="dept-members">
-          <div class="dept-member"><div class="dept-member-avatar">AX</div><div><div class="dept-member-name">ArsenalRX</div><div class="dept-member-title">Lead</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">JC</div><div><div class="dept-member-name">jcastillo</div><div class="dept-member-title">Sr. Red Team Analyst</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">FS</div><div><div class="dept-member-name">fsvensson</div><div class="dept-member-title">Sr. RE Analyst</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">YK</div><div><div class="dept-member-name">ykim</div><div class="dept-member-title">Exploit Dev</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">NP</div><div><div class="dept-member-name">npatel</div><div class="dept-member-title">Malware Analyst</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">TO</div><div><div class="dept-member-name">tolivier</div><div class="dept-member-title">Cheat RE</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">AG</div><div><div class="dept-member-name">agomez</div><div class="dept-member-title">Vuln Research</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">BZ</div><div><div class="dept-member-name">bzhang</div><div class="dept-member-title">Loader Analysis</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">KM</div><div><div class="dept-member-name">kmorozov</div><div class="dept-member-title">Anti-Tamper</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">DH</div><div><div class="dept-member-name">dhansen</div><div class="dept-member-title">Sig. Author</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">RO</div><div><div class="dept-member-name">rosullivan</div><div class="dept-member-title">Intel Coordinator</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">MW</div><div><div class="dept-member-name">mwatanabe</div><div class="dept-member-title">Binary Analyst</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">LK</div><div><div class="dept-member-name">lkraus</div><div class="dept-member-title">Driver RE</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">SC</div><div><div class="dept-member-name">schan</div><div class="dept-member-title">Pattern Eng.</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">FI</div><div><div class="dept-member-name">fivanov</div><div class="dept-member-title">Red Team Ops</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">JR</div><div><div class="dept-member-name">jreyes</div><div class="dept-member-title">Exploit Analyst</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">PB</div><div><div class="dept-member-name">pberg</div><div class="dept-member-title">Sandbox Eng.</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">VN</div><div><div class="dept-member-name">vnguyen</div><div class="dept-member-title">Threat Analyst</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">EK</div><div><div class="dept-member-name">ekim</div><div class="dept-member-title">Cheat DB Eng.</div></div></div>
-          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+15</div><div class="dept-member-name">Show all</div></div>
+          <div class="dept-member"><div class="dept-member-avatar">MC</div><div><div class="dept-member-name">mcheng</div><div class="dept-member-title">Inference Eng.</div></div></div>
+          <div class="dept-member"><div class="dept-member-avatar">JC</div><div><div class="dept-member-name">jcastillo</div><div class="dept-member-title">Threat Analyst</div></div></div>
         </div>
       </div>
       <div class="dept-card reveal">
         <div class="dept-header">
           <div class="dept-icon dept-icon-sdk">&#x1F4E6;</div>
           <div>
-            <div class="dept-name">SDK & Developer Experience</div>
-            <div class="dept-count">11 engineers</div>
+            <div class="dept-name">SDK & Platform</div>
+            <div class="dept-count">4 engineers</div>
           </div>
         </div>
-        <div class="dept-desc">Builds and maintains the public SDK, engine plugins, documentation, and integration tooling. Ensures any studio can go from zero to protected in under 10 minutes regardless of engine or build system.</div>
+        <div class="dept-desc">Builds the public SDK, engine plugins, REST API, dashboard, and integration tooling. Owns the developer experience from first API call to production deployment.</div>
         <div class="dept-members">
           <div class="dept-member"><div class="dept-member-avatar">LW</div><div><div class="dept-member-name">lweber</div><div class="dept-member-title">Lead</div></div></div>
           <div class="dept-member"><div class="dept-member-avatar">CP</div><div><div class="dept-member-name">cpark</div><div class="dept-member-title">Unreal Plugin</div></div></div>
           <div class="dept-member"><div class="dept-member-avatar">DA</div><div><div class="dept-member-name">dandrade</div><div class="dept-member-title">Unity Integration</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">KH</div><div><div class="dept-member-name">khalil</div><div class="dept-member-title">C# Bindings</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">ST</div><div><div class="dept-member-name">sthomas</div><div class="dept-member-title">API Design</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">RM</div><div><div class="dept-member-name">rmartin</div><div class="dept-member-title">Docs Writer</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">YL</div><div><div class="dept-member-name">ylee</div><div class="dept-member-title">Godot Plugin</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">OV</div><div><div class="dept-member-name">ovoronova</div><div class="dept-member-title">CMake Tooling</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">HW</div><div><div class="dept-member-name">hwang</div><div class="dept-member-title">SDK Testing</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">JF</div><div><div class="dept-member-name">jfischer</div><div class="dept-member-title">Integration Eng.</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">NC</div><div><div class="dept-member-name">ncohen</div><div class="dept-member-title">Build Systems</div></div></div>
-          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+8</div><div class="dept-member-name">Show all</div></div>
+          <div class="dept-member"><div class="dept-member-avatar">ST</div><div><div class="dept-member-name">sthomas</div><div class="dept-member-title">API & Infra</div></div></div>
         </div>
       </div>
       <div class="dept-card reveal">
@@ -479,25 +398,15 @@
           <div class="dept-icon dept-icon-qa">&#x1F9EA;</div>
           <div>
             <div class="dept-name">QA & Stability</div>
-            <div class="dept-count">13 engineers</div>
+            <div class="dept-count">4 engineers</div>
           </div>
         </div>
-        <div class="dept-desc">Runs automated regression testing across 200+ hardware configurations, validates kernel driver stability, monitors false-positive rates, and ensures Cerberus never degrades game performance.</div>
+        <div class="dept-desc">Runs regression testing across 40+ hardware configurations, validates driver stability, monitors false-positive rates, and ensures Cerberus never degrades game performance.</div>
         <div class="dept-members">
           <div class="dept-member"><div class="dept-member-avatar">TM</div><div><div class="dept-member-name">tmoretti</div><div class="dept-member-title">Lead</div></div></div>
           <div class="dept-member"><div class="dept-member-avatar">BJ</div><div><div class="dept-member-name">bjensen</div><div class="dept-member-title">Test Automation</div></div></div>
           <div class="dept-member"><div class="dept-member-avatar">AZ</div><div><div class="dept-member-name">azhao</div><div class="dept-member-title">Perf Analyst</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">MK</div><div><div class="dept-member-name">mkumar</div><div class="dept-member-title">Regression Eng.</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">PS</div><div><div class="dept-member-name">pschmidt</div><div class="dept-member-title">HW Compat.</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">RG</div><div><div class="dept-member-name">rgao</div><div class="dept-member-title">False Positive QA</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">KA</div><div><div class="dept-member-name">kanderson</div><div class="dept-member-title">Load Testing</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">EO</div><div><div class="dept-member-name">eoberg</div><div class="dept-member-title">Stability Eng.</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">WC</div><div><div class="dept-member-name">wchoi</div><div class="dept-member-title">Driver Verifier</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">HT</div><div><div class="dept-member-name">hturner</div><div class="dept-member-title">Perf Benchmarks</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">DO</div><div><div class="dept-member-name">dorlova</div><div class="dept-member-title">Crash Analysis</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">ML</div><div><div class="dept-member-name">mli</div><div class="dept-member-title">CI/CD Pipeline</div></div></div>
-          <div class="dept-member dept-hidden"><div class="dept-member-avatar">SJ</div><div><div class="dept-member-name">sjacobs</div><div class="dept-member-title">Test Coverage</div></div></div>
-          <div class="dept-expand" onclick="this.parentElement.querySelectorAll('.dept-hidden').forEach(function(e){e.classList.toggle('expanded')});this.style.display='none'"><div class="dept-member-avatar">+10</div><div class="dept-member-name">Show all</div></div>
+          <div class="dept-member"><div class="dept-member-avatar">PS</div><div><div class="dept-member-name">pschmidt</div><div class="dept-member-title">HW Compat.</div></div></div>
         </div>
       </div>
     </div>
@@ -505,18 +414,9 @@
 
   <!-- HIRING -->
   <div class="hiring-banner reveal">
-    <div class="hiring-badge" style="background:rgba(255,255,255,0.05);color:var(--text-dim);border-color:var(--border);animation:none;">APPLICATIONS CLOSED</div>
-    <h3>All positions are currently filled</h3>
-    <p>Thank you for your interest. We're not accepting new applications at this time. Check back later for future openings.</p>
-    <div class="hiring-roles">
-      <span class="hiring-role">Senior Kernel Engineer</span>
-      <span class="hiring-role">ML Engineer (Real-time)</span>
-      <span class="hiring-role">Firmware Reverse Engineer</span>
-      <span class="hiring-role">Red Team Analyst</span>
-    </div>
-    <span class="btn-hire" style="opacity:0.3;cursor:not-allowed;pointer-events:none;">
-      No Open Positions
-    </span>
+    <div class="hiring-badge" style="background:rgba(255,255,255,0.05);color:var(--text-dim);border-color:var(--border);animation:none;">TEAM UPDATE</div>
+    <h3>We're fully staffed for closed beta</h3>
+    <p>We may open new positions as we move toward public release. If you're interested in joining us, drop your resume at <a href="mailto:careers@arsenalrx.dev" style="color:var(--accent);">careers@arsenalrx.dev</a> and we'll keep it on file.</p>
   </div>
 
   <!-- FOOTER -->

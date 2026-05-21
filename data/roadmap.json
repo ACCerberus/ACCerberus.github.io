@@ -15,15 +15,13 @@
       { "id": "r-m5", "name": "Cheat Provider Lifecycle Tracker", "desc": "Automated dark web monitoring that tracks cheat providers from release to takedown — predicts new bypass attempts before they ship based on provider development patterns", "progress": 26, "color": "var(--green)", "added": "2026-03-01" }
     ],
     "long": [
-      { "id": "r-l1", "name": "Cognitive Load Analysis", "desc": "Measures player cognitive load through input complexity and reaction timing — cheaters exhibit unnaturally low cognitive load during high-complexity situations", "progress": 6, "color": "var(--red)", "added": "2026-01-01" },
-      { "id": "r-l2", "name": "Federated Detection Mesh", "desc": "Cross-title threat intelligence sharing using differential privacy — multiple game studios contribute to a shared detection model without exposing any individual game's data", "progress": 8, "color": "var(--blue)", "added": "2026-02-01" },
-      { "id": "r-l3", "name": "Hardware Execution Tracing", "desc": "Uses Intel PT (Processor Trace) to record actual CPU instruction flow during game execution — detects code injection at the hardware level, impossible to spoof from software", "progress": 3, "color": "var(--accent)", "added": "2026-03-01" },
-      { "id": "r-l4", "name": "Temporal Anomaly Detection", "desc": "Analyzes time-series game state deltas at microsecond resolution — detects speedhacks, teleports, and physics exploits that modify game time without triggering traditional checks", "progress": 5, "color": "var(--purple)", "added": "2026-04-01" }
+      { "id": "r-l1", "name": "Hardware Execution Tracing", "desc": "Uses Intel PT (Processor Trace) to record actual CPU instruction flow during game execution — detects code injection at the hardware level, impossible to spoof from software. Early research phase.", "progress": 3, "color": "var(--accent)", "added": "2026-03-01" },
+      { "id": "r-l2", "name": "Federated Detection Mesh", "desc": "Cross-title threat intelligence sharing using differential privacy — multiple game studios contribute to a shared detection model without exposing any individual game's data. Exploring feasibility.", "progress": 5, "color": "var(--blue)", "added": "2026-02-01" }
     ],
     "completed": [
       { "id": "r-c1", "name": "DMA Board Detection", "desc": "PCIe device fingerprinting for DMA-based cheats — first AC to detect Screamer and custom DMA boards via firmware timing analysis", "completedDate": "2026-04-15" },
-      { "id": "r-c2", "name": "Behavioral AI v7", "desc": "7th generation behavioral analysis neural network trained on 50K labeled cheat samples", "completedDate": "2026-03-20" },
-      { "id": "r-c3", "name": "Multi-Region Deployment", "desc": "9-region global infrastructure with sub-50ms signature sync latency", "completedDate": "2026-02-28" }
+      { "id": "r-c2", "name": "Behavioral AI v3", "desc": "3rd iteration of the behavioral analysis model — TCN-based architecture trained on 8K labeled cheat samples from beta partners", "completedDate": "2026-03-20" },
+      { "id": "r-c3", "name": "US-East + EU-West Deployment", "desc": "Initial multi-region setup — 3 regions with sub-80ms signature sync latency", "completedDate": "2026-02-28" }
     ]
   },
   "templatePool": [

@@ -1070,7 +1070,7 @@
         <div class="metric-sub">Blended across all cheat categories</div>
       </div>
       <div class="metric-card">
-        <div class="metric-value">0.012%</div>
+        <div class="metric-value">0.14%</div>
         <div class="metric-label">False Positive Rate</div>
         <div class="metric-sub">Borderline cases escalate to manual review</div>
       </div>
@@ -1341,7 +1341,7 @@
           What happens if a player is falsely detected?
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         </button>
-        <div class="faq-answer"><p>Detections below 95% confidence are never auto-banned — they enter the manual review queue. A threat analyst reviews the full session replay within 4 hours (Cerberus tier SLA). If a ban is issued and appealed, review completes within 24 hours. Current false positive rate: 0.012%.</p></div>
+        <div class="faq-answer"><p>Detections below 95% confidence are never auto-banned — they enter the manual review queue. A threat analyst reviews the full session replay within 4 hours (Cerberus tier SLA). If a ban is issued and appealed, review completes within 24 hours. Current false positive rate: 0.14%.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">
@@ -1506,7 +1506,7 @@
       var TITLES = 6;
 
       var stored = null;
-      try { stored = JSON.parse(localStorage.getItem('cerberusStats6')); } catch(e) {}
+      try { stored = JSON.parse(localStorage.getItem('cerberusStats7')); } catch(e) {}
 
       var threats, sessions, pentests;
 
@@ -1515,13 +1515,13 @@
 
       if (stored && stored.ts) {
         var elapsed = (Date.now() - stored.ts) / 1000;
-        threats = stored.threats + Math.floor(elapsed / 300);
-        sessions = stored.sessions + Math.floor(elapsed / 120);
-        pentests = stored.pentests + Math.floor(elapsed / 1800);
+        threats = stored.threats + Math.floor(elapsed / 900);
+        sessions = stored.sessions + Math.floor(elapsed / 360);
+        pentests = stored.pentests + Math.floor(elapsed / 3600);
       } else {
         threats = baseBans;
-        sessions = 1420;
-        pentests = 347;
+        sessions = 482;
+        pentests = 184;
       }
 
       // Pull base from state.json so counter stays consistent with heartbeat
@@ -1553,7 +1553,7 @@
       }
 
       function save() {
-        try { localStorage.setItem('cerberusStats6', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, ts: Date.now() })); } catch(e) {}
+        try { localStorage.setItem('cerberusStats7', JSON.stringify({ threats: threats, sessions: sessions, pentests: pentests, ts: Date.now() })); } catch(e) {}
       }
       save();
 
@@ -1587,7 +1587,7 @@
         threats += 1;
         if (threatEl) threatEl.textContent = threats.toLocaleString();
         save();
-        setTimeout(tickThreat, 60000 + Math.floor(Math.random() * 120000));
+        setTimeout(tickThreat, 180000 + Math.floor(Math.random() * 300000));
       }
       setTimeout(tickThreat, 45000 + Math.floor(Math.random() * 90000));
 

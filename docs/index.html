@@ -159,7 +159,7 @@
 
     <main class="content">
       <h1>Cerberus SDK Documentation</h1>
-      <p class="subtitle">Integrate Cerberus anti-cheat into your game in under 30 minutes.</p>
+      <p class="subtitle">Integrate Cerberus anti-cheat into your game in under 2 hours.</p>
 
       <h2 id="quickstart">Quick Start</h2>
       <p>Cerberus ships as a single static library (<code>cerberus_sdk.lib</code>) and a header file. The SDK handles all communication with the Cerberus kernel driver — your game code only needs to initialize, start a session, and listen for callbacks.</p>
@@ -428,19 +428,19 @@ PublicDependencyModuleNames.Add(<span class="str">"CerberusSDK"</span>);
       <p>No. The kernel driver loads only when your game launches and unloads when it exits. Cerberus has zero presence on the system outside of active game sessions.</p>
 
       <h3>What happens if a player is falsely banned?</h3>
-      <p>Detections below the 95% confidence threshold are never auto-banned — they go to manual review. If a ban is appealed, our threat analyst team reviews the full session replay within 4 hours (Cerberus tier SLA). False positive rate is currently 0.012%.</p>
+      <p>Detections below the 95% confidence threshold are never auto-banned — they go to manual review. If a ban is appealed, our threat analyst team reviews the full session replay within 4 hours (Cerberus tier SLA). False positive rate in our current beta cohort is 0.14%.</p>
 
       <h3>Does Cerberus collect player data?</h3>
       <p>No PII is ever collected. Cerberus processes hardware IDs, input patterns, and memory state locally. Only detection events (ban/flag) with anonymized session metadata are sent to the API. Zero telemetry — we don't know what games your players play, how long they play, or anything else.</p>
 
       <h3>What kernel access does Cerberus need?</h3>
-      <p>The driver requires kernel-mode access (ring-0) to monitor memory permissions, detect mapped drivers, and enumerate PCIe devices. The driver is Microsoft WHQL-signed and undergoes third-party security audits quarterly.</p>
+      <p>The driver requires kernel-mode access (ring-0) to monitor memory permissions, detect mapped drivers, and enumerate PCIe devices. The driver is EV code-signed and submitted for WHQL certification (pending). We plan to complete third-party security audits before public release.</p>
 
       <h3>Can I use Cerberus for singleplayer games?</h3>
       <p>Yes, but it's designed for competitive multiplayer. For singleplayer, you can use Head 1 only (kernel integrity) at the free Argus tier to prevent save file tampering or achievement exploits.</p>
 
       <h3>What engines are supported?</h3>
-      <p>Cerberus works with any Windows game that can link a C++ or C# library. We have first-class plugins for Unreal Engine 5.x and Unity 2022+. Custom engine integration takes ~30 minutes with the raw SDK.</p>
+      <p>Cerberus works with any Windows game that can link a C++ or C# library. We have first-class plugins for Unreal Engine 5.x and Unity 2022+. Custom engine integration takes 1-2 hours with the raw SDK.</p>
     </main>
   </div>
 
