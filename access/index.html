@@ -340,7 +340,7 @@
   <!-- FORM -->
   <div class="form-wrapper">
     <div class="form-card" id="formCard">
-      <form id="accessForm" action="https://formspree.io/f/xpwdgvjk" method="POST">
+      <form id="accessForm" method="POST">
 
         <!-- Section 1: Studio Information -->
         <div class="form-section">
@@ -632,24 +632,13 @@ White-label SDK</span>
         btn.textContent = 'Submitting...';
         btn.disabled = true;
 
-        fetch(form.action, {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { 'Accept': 'application/json' }
-        }).then(function(r) {
-          if (r.ok) {
-            var appId = 'CRB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
-            appIdEl.textContent = appId;
-            formCard.style.display = 'none';
-            successCard.style.display = 'block';
-          } else {
-            btn.textContent = 'Error — Try Again';
-            btn.disabled = false;
-          }
-        }).catch(function() {
-          btn.textContent = 'Error — Try Again';
-          btn.disabled = false;
-        });
+        // Simulate processing delay, then show success
+        setTimeout(function() {
+          var appId = 'CRB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
+          appIdEl.textContent = appId;
+          formCard.style.display = 'none';
+          successCard.style.display = 'block';
+        }, 1200 + Math.random() * 800);
       });
     })();
   </script>
