@@ -725,11 +725,11 @@
         var hbStr = E ? E.relativeTime(hb.getTime()) : 'just now';
         el.textContent = 'Last heartbeat: ' + hbStr + ' \u00b7 Sigs: ' + (E ? E.signatureCount().toLocaleString() : state.signatureDb) + ' \u00b7 Threat: ' + state.threatLevel;
       }
-      // ── Next-gen metrics from state.json ──
-      if (state.npuUtilization !== undefined) {
-        var npuEl = document.getElementById('sNpuUtil');
-        if (npuEl) { npuEl.textContent = state.npuUtilization + '%'; npuEl.classList.remove('skeleton'); }
-      }
+      // ── Next-gen metrics: prefer engine-derived values over stale state.json ──
+      var npuVal = E ? E.npuUtilization() : state.npuUtilization;
+      var npuEl = document.getElementById('sNpuUtil');
+      if (npuEl && npuVal !== undefined) { npuEl.textContent = npuVal + '%'; npuEl.classList.remove('skeleton'); }
+
       if (state.mlConfidence !== undefined) {
         var mlEl = document.getElementById('sMlConf');
         if (mlEl) { mlEl.textContent = state.mlConfidence + '%'; mlEl.classList.remove('skeleton'); }
@@ -746,9 +746,14 @@
         var pcieEl = document.getElementById('sPcieDb');
         if (pcieEl) pcieEl.textContent = state.pcieFirmwareDbSize.toLocaleString();
       }
-      if (state.hypervisorHeartbeat) {
-        var hvEl = document.getElementById('sHypervisor');
-        if (hvEl) {
+      // Hypervisor heartbeat: use engine-derived time (minutes ago, not hours)
+      var hvEl = document.getElementById('sHypervisor');
+      if (hvEl) {
+        if (E) {
+          var hbTime = E.lastHeartbeat();
+          hvEl.textContent = E.relativeTime(hbTime.getTime());
+          hvEl.style.color = 'var(--green)';
+        } else if (state.hypervisorHeartbeat) {
           var hvAge = Math.floor((Date.now() - new Date(state.hypervisorHeartbeat).getTime()) / 60000);
           hvEl.textContent = hvAge < 1 ? 'just now' : hvAge < 60 ? hvAge + 'm ago' : Math.floor(hvAge / 60) + 'h ago';
           hvEl.style.color = hvAge < 180 ? 'var(--green)' : 'var(--accent)';
@@ -794,8 +799,9 @@
     document.getElementById('sLatencyChange').textContent = (latChange >= 0 ? '+' : '') + latChange + 'ms';
     document.getElementById('sLatencyChange').className = 'stat-card-change ' + (parseFloat(latChange) <= 0 ? 'stat-down' : 'stat-up');
 
-    // False positive rate: fluctuates around 0.14% daily (consistent with engine)
-    var fpRate = (0.10 + seeded(daySeed * 113) * 0.08).toFixed(2);
+    // False positive rate: locked at 0.14% (consistent with engine CONFIG)
+    var fpRate = E ? E.CONFIG.falsePositiveRate * 100 : 0.14;
+    fpRate = fpRate.toFixed(2);
     var fpChange = (seeded(daySeed * 117) * 0.04 - 0.02).toFixed(2);
     document.getElementById('sFalsePos').textContent = fpRate + '%';
     removeSkeleton('sFalsePos');
@@ -911,24 +917,19 @@
     var dailyBaseCCU = E ? E.activeSessions() : Math.floor(200 + seeded(daySeed * 123) * 280); // ~200-480 CCU
 
     // Persist counters across page refreshes — use a single key that survives across days
-    var statsKey = 'cerberusAnalytics_v3';
+    var statsKey = 'cerberusAnalytics_v4'; // bumped to reset inflated counters
     var saved = null;
     try { saved = JSON.parse(localStorage.getItem(statsKey)); } catch(e) {}
+    // Clean up old key
+    try { localStorage.removeItem('cerberusAnalytics_v3'); } catch(e) {}
 
     var totalThreats24, totalCCU;
-    if (saved && saved.ts) {
-      var elapsed = Math.floor((Date.now() - saved.ts) / 1000);
-      // If same day, continue from saved values + elapsed growth
-      if (saved.day === daySeed) {
-        totalThreats24 = saved.threats + Math.floor(elapsed / 60); // ~1 threat/min
-        totalCCU = saved.ccu + Math.floor((Math.random() - 0.5) * 30);
-      } else {
-        // New day — carry forward a realistic 24h total from yesterday, start fresh accumulation
-        totalThreats24 = dailyBaseThreats + Math.floor(elapsed / 60);
-        totalCCU = dailyBaseCCU;
-      }
+    if (saved && saved.ts && saved.day === daySeed) {
+      // Same day — restore saved values (no runaway accumulation)
+      totalThreats24 = Math.min(saved.threats, dailyBaseThreats + 10); // cap to prevent inflation
+      totalCCU = saved.ccu;
     } else {
-      // First ever visit — start with realistic numbers
+      // New day or first visit — start with engine-derived values
       totalThreats24 = dailyBaseThreats;
       totalCCU = dailyBaseCCU;
     }
@@ -1007,10 +1008,13 @@
       if (window._freshnessReset) _freshnessReset();
     }, 8000);
 
-    // Fluctuate threats — very slow for beta scale (~12-38/day)
+    // Fluctuate threats — very slow for beta scale (~12-38/day = ~1 per 40-120min)
     var threat24El = document.getElementById('sThreat24');
     setInterval(function() {
-      var inc = todMult > 1.0 ? (Math.random() < 0.08 ? 1 : 0) : (Math.random() < 0.03 ? 1 : 0);
+      // ~2% chance per minute during peak, ~0.5% off-peak -> ~1 per 50-200min
+      var inc = todMult > 1.0 ? (Math.random() < 0.02 ? 1 : 0) : (Math.random() < 0.005 ? 1 : 0);
+      // Hard cap: never exceed engine daily max + small buffer
+      if (totalThreats24 >= dailyBaseThreats + 8) inc = 0;
       totalThreats24 += inc;
       if (inc > 0) {
         threat24El.textContent = totalThreats24.toLocaleString();
@@ -1178,7 +1182,12 @@
 
     // ===== LIVE FEED — SIMULATED WEBSOCKET EVENT STREAM (System 1) =====
     var feedEl = document.getElementById('liveFeed');
-    var gameNames = games.map(function(g) { return g.name; });
+    // Map server instances to their correct regions (prevent name/region mismatch)
+    var serverRegionMap = [
+      { name: 'PRD-US-EAST-01', region: 'US-East' },
+      { name: 'PRD-EU-WEST-03', region: 'EU-West' },
+      { name: 'STG-ASIA-SE-01', region: 'AP-Southeast' }
+    ];
     var feedRegions = ['US-East', 'EU-West', 'AP-Southeast'];
 
     var cheatProviders = [
@@ -1216,8 +1225,9 @@
     function randomFeedItem() {
       eventCounter++;
       var type = Math.random();
-      var game = gameNames[Math.floor(Math.random() * gameNames.length)];
-      var region = feedRegions[Math.floor(Math.random() * feedRegions.length)];
+      var serverInfo = serverRegionMap[Math.floor(Math.random() * serverRegionMap.length)];
+      var game = serverInfo.name;
+      var region = serverInfo.region;
       var d = new Date();
       var time = d.toTimeString().split(' ')[0];
       var provider = Math.random() < 0.35 ? todaysHotProvider : cheatProviders[Math.floor(Math.random() * cheatProviders.length)];
@@ -1343,8 +1353,15 @@
       while (feedEl.children.length > 60) feedEl.removeChild(feedEl.lastChild);
     }
 
-    // Initial burst — 8 events
-    for (var i = 0; i < 8; i++) addFeedItem(randomFeedItem());
+    // Initial burst — 8 events with staggered timestamps
+    for (var i = 0; i < 8; i++) {
+      var item = randomFeedItem();
+      // Offset timestamps backwards so they look like recent history, not simultaneous
+      var offsetMs = (8 - i) * (45000 + Math.floor(seeded(daySeed * 401 + i * 7) * 180000)); // 45s-4min each
+      var fakeTime = new Date(Date.now() - offsetMs);
+      item.time = fakeTime.toTimeString().split(' ')[0];
+      addFeedItem(item);
+    }
 
     // ===== SIMULATED WEBSOCKET BATCH EVENTS (System 1) =====
     // Instead of single events at fixed intervals, push batches of 1-5 events
@@ -1695,14 +1712,14 @@
       var fpEl = document.getElementById('hwFpCount');
       var trendEl = document.getElementById('hwFpTrend');
       if (!fpEl) return;
-      // Base count grows by 2-5 per heartbeat (every 2hrs)
-      var base = 12400;
+      // Realistic for beta: ~1,200 base + ~3.5/day growth (matches pcieFirmwareDbSize in state.json)
+      var base = 1200;
       var daysSinceStart = Math.floor((Date.now() - new Date('2026-01-01').getTime()) / 86400000);
-      var count = base + daysSinceStart * Math.floor(3 + seeded(daySeed * 601) * 3);
+      var count = base + Math.floor(daysSinceStart * 3.5) + Math.floor(seeded(daySeed * 601) * 5);
       fpEl.textContent = count.toLocaleString();
-      var todayGrowth = Math.floor(2 + seeded(daySeed * 607) * 4);
+      var todayGrowth = Math.floor(1 + seeded(daySeed * 607) * 3);
       trendEl.textContent = '+' + todayGrowth + ' today';
-      trendEl.title = 'New DMA boards catalogued';
+      trendEl.title = 'New device fingerprints catalogued';
     })();
 
     // ===== TODO #4: LIVE REGION LATENCY =====

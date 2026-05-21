@@ -95,6 +95,8 @@
 
     .show-more { display: block; width: 100%; padding: 14px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-dim); border-radius: 10px; font-family: var(--font); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; margin: 24px 0; text-align: center; }
     .show-more:hover { border-color: var(--accent); color: var(--accent); }
+    .past-versions-details summary::-webkit-details-marker { display: none; }
+    .past-versions-details[open] summary { margin-bottom: 8px; }
 
     .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); }
     .footer p { font-size: 0.75rem; color: var(--text-dim); }
@@ -316,7 +318,15 @@
       ]},
 
       // === PHASE 4: Behavioral AI ===
-      { phase: 'Phase 4 — Behavioral AI Engine (v0.3.x)', ver: 'v0.3.4.0b', date: 'Oct 8, 2025', dateSeed: dateToDaySeed(2025,10,8), tags: ['DETECTION UPDATE'], changes: [
+      { phase: 'Phase 4 — Behavioral AI Engine (v0.3.x)', ver: 'v0.3.5.0b', date: 'Oct 22, 2025', dateSeed: dateToDaySeed(2025,10,22), tags: ['BETA','MAJOR'], changes: [
+        {t:'ADDED',c:'First partner SDK release — SDK binary and headers available to approved studios'},
+        {t:'ADDED',c:'Partner onboarding documentation and integration guide'},
+        {t:'ADDED',c:'API key provisioning system for partner authentication'},
+        {t:'ADDED',c:'Webhook event system for ban.created, flag.created, session.start/end'},
+        {t:'IMPROVED',c:'SDK binary size reduced from 5.1MB to 3.9MB (stripped debug symbols)'},
+        {t:'TEST',c:'Integration validated with 2 partner studios in staging environment'},
+      ]},
+      { ver: 'v0.3.4.0b', date: 'Oct 8, 2025', dateSeed: dateToDaySeed(2025,10,8), tags: ['DETECTION UPDATE'], changes: [
         {t:'ADDED',c:'ONNX Runtime integration for behavioral AI inference (<2ms per cycle)'},
         {t:'IMPROVED',c:'Internal cheat detection: 94.2% \u2192 96.1%'},
         {t:'FIXED',c:'Baseline profile not resetting between game sessions'},
@@ -434,8 +444,8 @@
       var updates = [];
       for (var seed = startSeed; seed <= endSeed; seed++) {
         var daysSinceStart = seed - startSeed;
-        var sigCount = Math.floor(8 + seeded(seed * 3) * 35);
-        var totalSigs = baseSigCount + Math.floor(daysSinceStart * 18 + seeded(seed * 5) * 10);
+        var sigCount = Math.floor(3 + seeded(seed * 3) * 12);
+        var totalSigs = baseSigCount + Math.floor(daysSinceStart * 3.5 + seeded(seed * 5) * 5);
         var p1 = providers[Math.floor(seeded(seed * 7) * providers.length)];
         var p2 = providers[Math.floor(seeded(seed * 11) * providers.length)];
         while (p2 === p1) p2 = providers[Math.floor(seeded(seed * 11 + 1) * providers.length)];
@@ -504,11 +514,11 @@
         if (seeded(seed * 71) < 0.18) {
           var armsProvider = providers[Math.floor(seeded(seed * 73) * providers.length)];
           var armsVer = 'v' + Math.floor(seeded(seed * 75) * 5 + 2) + '.' + Math.floor(seeded(seed * 77) * 9) + '.' + Math.floor(seeded(seed * 79) * 9);
-          var armsBans = Math.floor(seeded(seed * 81) * 500 + 30);
+          var armsBans = Math.floor(seeded(seed * 81) * 10 + 5);
           var armsTime = Math.floor(seeded(seed * 83) * 50 + 5);
           var armsNarratives = [
             armsProvider + ' released ' + armsVer + ' update \u2014 new evasion detected and signatures deployed in ' + armsTime + ' minutes. ' + armsBans + ' accounts banned.',
-            'Wave detection: ' + armsProvider + ' ' + armsVer + ' cluster identified across ' + Math.floor(seeded(seed * 85) * 4 + 2) + ' partner titles \u2014 ' + armsBans + ' bans issued within ' + armsTime + 'min.',
+            'Wave detection: ' + armsProvider + ' ' + armsVer + ' cluster identified across ' + Math.floor(seeded(seed * 85) * 2 + 1) + ' partner titles \u2014 ' + armsBans + ' bans issued within ' + armsTime + 'min.',
             armsProvider + ' attempted loader obfuscation change in ' + armsVer + ' \u2014 behavioral AI flagged 100% of sessions before signature update.',
             'Rapid response: ' + armsProvider + ' ' + armsVer + ' bypass attempt neutralized in ' + armsTime + 'min \u2014 ' + armsBans + ' accounts suspended, hardware fingerprints logged.',
           ];
@@ -583,10 +593,11 @@
         html += renderRelease(rel, isFirst);
       });
 
-      // Divider before major releases
-      html += '<div style="text-align:center;padding:16px 0;margin:8px 0;"><span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);background:var(--bg);padding:0 12px;">MAJOR RELEASES</span></div>';
+      // Collapsible past versions
+      html += '<details class="past-versions-details" id="pastVersions"><summary class="show-more" style="list-style:none;cursor:pointer;">Show full version history (' + majorReleases.length + ' releases)</summary>';
+      html += '<div class="timeline" style="padding-left:32px;position:relative;margin-top:24px;">';
+      html += '<div style="position:absolute;left:7px;top:8px;bottom:0;width:2px;background:var(--border);"></div>';
 
-      // All major releases (no pagination — show full history)
       var currentPhase = '';
       majorReleases.forEach(function(rel) {
         if (rel.phase && rel.phase !== currentPhase) {
@@ -595,6 +606,8 @@
         }
         html += renderRelease(rel, false);
       });
+
+      html += '</div></details>';
 
       timeline.innerHTML = html;
     }

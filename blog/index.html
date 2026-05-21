@@ -320,11 +320,11 @@
       { title: 'Rearchitecting Our Signature Database',       metric: 'lookup time',         unit: 'ms',  before: [1.8, 2.9], after: [0.3, 0.7], emoji: '' },
       { title: 'How We Automated 80% of Ban Appeals',         metric: 'manual review time',  unit: 'min', before: [14, 22], after: [2, 4], emoji: '' },
     ];
-    var PARTNER_RESULTS = [72, 78, 81, 86, 89, 91, 94, 96];
+    var PARTNER_RESULTS = [45, 52, 58, 63, 68, 72, 78];
     var PARTNER_TIMES   = [3, 4, 5, 6, 8];
 
     var MILESTONE_SIGS  = [2500, 3000, 4000, 5000, 6000, 7500, 8000];
-    var MILESTONE_BANS  = ['50,000','75,000','100,000','125,000'];
+    var MILESTONE_BANS  = ['500','1,000','1,500','2,000','3,000'];
 
     var SEVERITIES = [
       { label: 'CRITICAL', cls: 'sev-critical' },
@@ -340,9 +340,9 @@
       var s = daySeed;
       var pool = AUTHOR_MAP.threat;
       var author = AUTHORS[pool[seedInt(s+1, 0, pool.length-1)]];
-      var totalDet = seedInt(s+2, 8000, 45000);
-      var detRate  = (seeded(s+3) * 0.8 + 99.0).toFixed(2);
-      var newSigs  = seedInt(s+4, 30, 180);
+      var totalDet = seedInt(s+2, 400, 900);
+      var detRate  = (seeded(s+3) * 6 + 74).toFixed(1); // 74-80%
+      var newSigs  = seedInt(s+4, 15, 50);
       var topType  = seedPick(s+5, CHEAT_TYPES);
       var topType2 = seedPick(s+6, CHEAT_TYPES);
       while (topType2 === topType) topType2 = seedPick(s+60, CHEAT_TYPES);
@@ -355,18 +355,18 @@
       var hwSpoof  = seedInt(s+13, 5, 14);
       var other    = 100 - dmaPct - kernPct - aimbotPct - espPct - hwSpoof;
       if (other < 2) other = 2;
-      var waveSize = seedInt(s+14, 40, 400);
-      var waveHrs  = seedInt(s+15, 2, 72);
-      var newProv  = seedInt(s+16, 2, 9);
+      var waveSize = seedInt(s+14, 5, 15);
+      var waveHrs  = seedInt(s+15, 4, 48);
+      var newProv  = seedInt(s+16, 1, 3);
       var mon = monthYear(postDate);
       var prevMon = prevMonthYear(postDate);
       var title = mon + ' Threat Landscape Report';
 
-      var p1 = 'The ' + mon + ' threat landscape report covers ' + totalDet.toLocaleString() + ' total detections across all partner titles, with an overall detection rate of ' + detRate + '%. Our signature database received ' + newSigs + ' new entries this cycle, bringing the total to ' + seedInt(s+17, 3500, 5500).toLocaleString() + ' tracked cheat signatures.';
+      var p1 = 'The ' + mon + ' threat landscape report covers ' + totalDet.toLocaleString() + ' total detections across all partner titles, with an overall detection rate of ' + detRate + '%. Our signature database received ' + newSigs + ' new entries this cycle, bringing the total to ' + seedInt(s+17, 4800, 5200).toLocaleString() + ' tracked cheat signatures.';
       var p2 = 'Aimbot variants remained the most prevalent cheat category at ' + aimbotPct + '% of all detections, followed by ESP and wallhack overlays at ' + espPct + '%. DMA-based attacks accounted for ' + dmaPct + '% of detections and were ' + dmaDir + ' ' + dmaDelta + '% compared to ' + prevMon + ' — a trend we attribute to ' + (dmaDir === 'up' ? 'new low-cost PCIe DMA boards entering the market and improved bypass toolkits targeting our hardware scanner' : 'our v0.4.x hardware fingerprinting improvements and updated PCIe timing heuristics') + '. Kernel-mode driver cheats represented ' + kernPct + '% of the threat volume, with HWID spoofers at ' + hwSpoof + '%.';
-      var p3 = 'Our behavioral AI engine flagged a coordinated wave of ' + waveSize.toLocaleString() + ' accounts within ' + waveHrs + ' hours, suspected to be an organized boosting ring operating across ' + seedInt(s+18, 2, 7) + ' partner titles. All flagged accounts were forwarded to partner studios for review. Response time from detection to partner notification averaged ' + seedInt(s+19, 4, 28) + ' minutes.';
-      var p4 = 'We added detection coverage for ' + newProv + ' previously untracked cheat providers this month, and issued ' + seedInt(s+20, 1, 4) + ' emergency signature pushes in response to new loader variants. Our false positive rate held at ' + (seeded(s+21) * 0.08 + 0.04).toFixed(3) + '% — below our SLA target of 0.1%. Looking ahead, we expect continued pressure on hardware-level detection vectors as DMA tool kits grow more accessible.';
-      var p5 = 'Partner studios reported a ' + seedInt(s+22, 12, 41) + '% reduction in player-submitted cheat reports compared to ' + prevMon + ', consistent with our detection coverage improvements. We continue to expand our behavioral baseline dataset, which now includes over ' + seedInt(s+23, 40, 250) + ' million input events for model training and anomaly calibration.';
+      var p3 = 'Our behavioral AI engine flagged a coordinated wave of ' + waveSize.toLocaleString() + ' accounts within ' + waveHrs + ' hours, suspected to be an organized boosting ring operating across ' + seedInt(s+18, 1, 3) + ' partner titles. All flagged accounts were forwarded to partner studios for review. Response time from detection to partner notification averaged ' + seedInt(s+19, 4, 28) + ' minutes.';
+      var p4 = 'We added detection coverage for ' + newProv + ' previously untracked cheat providers this month, and issued ' + seedInt(s+20, 1, 4) + ' emergency signature pushes in response to new loader variants. Our false positive rate held at 0.14% — below our SLA target of 0.15%. Looking ahead, we expect continued pressure on hardware-level detection vectors as DMA tool kits grow more accessible.';
+      var p5 = 'Partner studios reported a ' + seedInt(s+22, 12, 41) + '% reduction in player-submitted cheat reports compared to ' + prevMon + ', consistent with our detection coverage improvements. We continue to expand our behavioral baseline dataset, which now includes over ' + seedInt(s+23, 200, 800) + ' thousand input events for model training and anomaly calibration.';
 
       return {
         type: 'threat', catClass: 'cat-threat', catLabel: 'THREAT REPORT',
@@ -489,15 +489,15 @@
       var author = AUTHORS[pool[seedInt(s+1, 0, pool.length-1)]];
       var sigCount = MILESTONE_SIGS[seedInt(s+2, 0, MILESTONE_SIGS.length-1)];
       var banCount = MILESTONE_BANS[seedInt(s+3, 0, MILESTONE_BANS.length-1)];
-      var partners = seedInt(s+4, 3, 8);
-      var titles   = seedInt(s+5, 4, 12);
-      var coverage = seedInt(s+6, 85, 99);
+      var partners = seedInt(s+4, 2, 4);
+      var titles   = seedInt(s+5, 2, 4);
+      var coverage = seedInt(s+6, 65, 82);
       var title = 'Cerberus Surpasses ' + sigCount.toLocaleString() + ' Detection Signatures';
 
-      var p1 = 'Today we are marking a milestone: our detection signature database has crossed ' + sigCount.toLocaleString() + ' unique entries, covering cheat tools, loaders, injectors, kernel drivers, and hardware fingerprints from every major provider in the ecosystem. This represents ' + seedInt(s+7, 18, 48) + ' months of continuous research and ' + seedInt(s+8, 2, 6) + ' dedicated signature analysts.';
+      var p1 = 'Today we are marking a milestone: our detection signature database has crossed ' + sigCount.toLocaleString() + ' unique entries, covering cheat tools, loaders, injectors, kernel drivers, and hardware fingerprints from every major provider in the ecosystem. This represents ' + seedInt(s+7, 3, 8) + ' months of continuous research and ' + seedInt(s+8, 1, 2) + ' dedicated signature analysts.';
       var p2 = 'Our ' + sigCount.toLocaleString() + '-signature milestone corresponds to ' + coverage + '% coverage of the actively-used cheat tools across our partner network, based on telemetry from ' + titles + ' integrated titles and ' + partners + ' partner studios. Since our first signature database launch in v0.2.1.0b, we have grown from 1,200 entries to ' + sigCount.toLocaleString() + ' — a ' + Math.round((sigCount / 1200 - 1) * 100) + '% expansion.';
       var p3 = 'Cumulative bans issued through the Cerberus platform have now exceeded ' + banCount + ' accounts. Of these, ' + seedInt(s+9, 60, 82) + '% were triggered by signature matches, ' + seedInt(s+10, 10, 25) + '% by behavioral AI anomaly thresholds, and the remainder by hardware fingerprint flags. The multi-layer approach ensures that even zero-day tools that evade signature scanning are caught by our behavioral, hardware, and network sentinel detection layers.';
-      var p4 = 'Looking ahead, our next milestone target is ' + (sigCount * seedInt(s+11, 1, 2) + seedInt(s+12, 500, 3000)).toLocaleString() + ' signatures. We are expanding our research coverage to include mobile platforms and increasing our automated signature generation pipeline capacity from ' + seedInt(s+13, 80, 200) + ' to ' + seedInt(s+14, 250, 600) + ' new signatures per week.';
+      var p4 = 'Looking ahead, our next milestone target is ' + (sigCount * seedInt(s+11, 1, 2) + seedInt(s+12, 500, 3000)).toLocaleString() + ' signatures. We are expanding our research coverage to include mobile platforms and increasing our automated signature generation pipeline capacity from ' + seedInt(s+13, 10, 30) + ' to ' + seedInt(s+14, 40, 80) + ' new signatures per week.';
       var p5 = 'We want to thank our partner studios, our security research community, and the analysts who contribute to the signature database daily. The breadth of our coverage is only possible through collaborative threat intelligence sharing across the anti-cheat ecosystem.';
 
       return {
@@ -525,14 +525,14 @@
       var author = AUTHORS[pool[seedInt(s+1, 0, pool.length-1)]];
       var result  = PARTNER_RESULTS[seedInt(s+2, 0, PARTNER_RESULTS.length-1)];
       var intWeeks= PARTNER_TIMES[seedInt(s+3, 0, PARTNER_TIMES.length-1)];
-      var players = seedInt(s+4, 8000, 80000);
-      var banWave = seedInt(s+5, 200, 3000);
+      var players = seedInt(s+4, 2000, 15000);
+      var banWave = seedInt(s+5, 15, 80);
       var tickets = seedInt(s+6, 30, 80);
       var quote   = seedPick(s+7, [
         'Our cheat report queue dropped by ' + result + '% in the first two weeks. The integration was smoother than anything we\'d tried before.',
         'Cerberus caught patterns we had never seen before. The behavioral layer in particular flagged a coordinated boosting ring we would have completely missed.',
         'The SDK took our backend team ' + intWeeks + ' weeks to integrate, including full testing. The documentation was excellent.',
-        'We were skeptical at first, but the false positive rate has been below 0.1% — our support team has seen a significant reduction in unwarranted ban appeals.',
+        'We were skeptical at first, but the false positive rate has stayed around 0.14% — our support team has seen a significant reduction in unwarranted ban appeals.',
         'Since going live with Cerberus, our ranked mode has seen measurable rank distribution improvements. Players report a noticeably fairer experience.'
       ]);
       var title = 'How ' + seedPick(s+8, GAME_TITLES) + ' reduced cheating by ' + result + '%';

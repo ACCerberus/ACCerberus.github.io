@@ -7,59 +7,41 @@
       "resolvedAt": "2026-05-14T11:40:00Z",
       "duration": "3h 18m",
       "impactPct": 3.4,
-      "rootCause": "Discord canary build changed overlay injection pattern. Kernel layer flagged it as DLL injection. Updated whitelist within 3 hours.",
+      "rootCause": "Discord modified its overlay hook from SetWindowsHookEx to a direct IAT patch. Our kernel layer's DLL injection heuristic matched the new pattern.",
       "timeline": [
-        {
-          "time": "2026-05-14T08:22:00Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-05-14T11:40:00Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
+        { "time": "2026-05-14T08:22:00Z", "status": "INVESTIGATING", "detail": "Automated monitoring detected anomaly" },
+        { "time": "2026-05-14T11:40:00Z", "status": "RESOLVED", "detail": "Root cause identified and remediated" }
       ],
       "actionItems": [
         "Implement additional monitoring for affected subsystem",
         "Update runbook with new escalation procedures"
-      ],
-      "lessonsLearned": [
-        "Rollback procedures should be tested quarterly"
       ]
     },
     {
-      "id": "INC-003",
-      "title": "Discord overlay false positive spike",
-      "severity": "moderate",
-      "date": "2026-05-14",
-      "duration": "3h 18m",
-      "summary": "Discord canary build (v1.0.3) changed its overlay injection pattern, causing the kernel layer to flag it as DLL injection. ~40 sessions were falsely flagged. No auto-bans were issued (all below 95% confidence threshold). Whitelist updated within 3 hours.",
-      "rootCause": "Discord modified its overlay hook from SetWindowsHookEx to a direct IAT patch. Our kernel layer's DLL injection heuristic matched the new pattern.",
-      "resolution": "Added Discord's updated injection signature to the overlay whitelist. Deployed hotfix v0.4.2.0b-patch1.",
-      "lessonsLearned": "Need automated regression testing against top-20 overlay apps on every kernel layer update."
-    },
-    {
-      "id": "INC-002",
+      "incidentId": "INC-002",
       "title": "Behavioral model latency regression",
-      "severity": "low",
-      "date": "2026-04-22",
+      "startedAt": "2026-04-22T15:10:00Z",
+      "resolvedAt": "2026-04-22T17:45:00Z",
       "duration": "2h 35m",
-      "summary": "Model update bm-3.0.9 doubled inference time to 4.8ms on i5-10th gen and older CPUs. No detection failures occurred. Rolled back to bm-3.0.8, re-optimized, and redeployed as bm-3.1.0.",
+      "impactPct": 1.2,
       "rootCause": "New model architecture used unsupported ONNX operator on older CPUs, falling back to CPU-only path instead of using AVX2.",
-      "resolution": "Added ONNX operator compatibility check to model validation pipeline. Re-exported model with compatible operators.",
-      "lessonsLearned": "Model deployment pipeline needs hardware-matrix benchmarking gate before rollout."
+      "actionItems": [
+        "Add hardware-matrix benchmarking gate to model deployment pipeline",
+        "Subscribe to ONNX Runtime release notes for breaking changes"
+      ]
     },
     {
-      "id": "INC-001",
+      "incidentId": "INC-001",
       "title": "Driver load failure on Windows 11 24H2 preview",
-      "severity": "moderate",
-      "date": "2026-03-29",
+      "startedAt": "2026-03-29T20:00:00Z",
+      "resolvedAt": "2026-03-30T09:15:00Z",
       "duration": "13h 15m",
-      "summary": "Microsoft changed kernel callback registration behavior in Windows 11 24H2 preview build 26200. The Cerberus driver failed to load on affected systems (~12 beta testers). Patched in v0.4.1.7b.",
-      "rootCause": "PsSetCreateProcessNotifyRoutineEx2 behavior changed in 24H2 preview, requiring updated callback registration.",
-      "resolution": "Updated driver to use version-aware callback registration with fallback to legacy API on older builds.",
-      "lessonsLearned": "Subscribe to Windows Insider kernel change notifications. Add Win11 preview builds to CI test matrix."
+      "impactPct": 2.1,
+      "rootCause": "Microsoft changed kernel callback registration behavior in 24H2 preview build 26200. Updated driver to use version-aware callback registration.",
+      "actionItems": [
+        "Subscribe to Windows Insider kernel change notifications",
+        "Add Win11 preview builds to CI test matrix"
+      ]
     }
   ]
 }

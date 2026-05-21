@@ -645,13 +645,12 @@
     document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
 
     // ===== DOWNLOAD COUNTER =====
-    var DL_KEY = 'crb_sdk_dl_count';
-    var DL_SEED_KEY = 'crb_sdk_dl_seed';
+    var DL_KEY = 'crb_sdk_dl_count_v2';
+    var DL_SEED_KEY = 'crb_sdk_dl_seed_v2';
 
     function getBaseCount() {
-      // Seeded starting point tied to a fixed seed — gives consistent "historical" base
-      // Base: ~1,200 to ~1,800 range, deterministic
-      return 1247 + Math.floor(seeded(9901) * 600);
+      // Closed beta with 3 partner studios — realistic range ~80-130
+      return 84 + Math.floor(seeded(9901) * 50);
     }
 
     function loadDlCount() {
@@ -685,7 +684,7 @@
       var weekData = [];
       var total = 0;
       for (var i = 6; i >= 0; i--) {
-        var dayVal = Math.floor(80 + seeded((ds - i) * 571) * 60);
+        var dayVal = Math.floor(1 + seeded((ds - i) * 571) * 4);
         weekData.push(dayVal);
         total += dayVal;
       }
@@ -756,15 +755,24 @@
         ver: 'v0.4.0.0b',
         date: 'Nov 3, 2025',
         size: '4.3 MB',
-        changes: 'Major: hardware fingerprinting head, DMA board detection, firmware signature DB (1,200+ hashes), real-time dashboard.',
+        changes: 'Major: hardware fingerprinting layer, DMA board detection, firmware signature DB (1,200+ hashes), real-time dashboard.',
         seed: 41946,
         current: false
+      },
+      {
+        ver: 'v0.3.5.0b',
+        date: 'Oct 22, 2025',
+        size: '3.9 MB',
+        changes: 'First partner SDK release — partner onboarding, API key provisioning, webhook events, integration guide.',
+        seed: 41934,
+        current: false,
+        milestone: true
       },
       {
         ver: 'v0.3.4.0b',
         date: 'Oct 8, 2025',
         size: '3.9 MB',
-        changes: 'ONNX Runtime integration, behavioral AI 97.4% accuracy, session memory leak fix, AI overhead 1.8%.',
+        changes: 'ONNX Runtime integration, behavioral AI model v3 (TCN architecture), session memory leak fix.',
         seed: 41921,
         current: false
       },
@@ -796,13 +804,13 @@
 
     // ===== PER-VERSION DOWNLOAD COUNTS =====
     // Base counts are seeded (older = higher). localStorage grows them.
-    var DL_VER_KEY = 'crb_sdk_vdl_';
+    var DL_VER_KEY = 'crb_sdk_vdl2_';
     function getVersionDlCount(v) {
       var key = DL_VER_KEY + v.ver;
       var stored = parseInt(localStorage.getItem(key), 10);
       if (!stored || isNaN(stored)) {
-        // Generate seeded base — older versions have more downloads
-        var base = 120 + Math.floor(seeded(v.seed) * 400 + seeded(v.seed + 3) * 300);
+        // Generate seeded base — closed beta, small partner pool
+        var base = 8 + Math.floor(seeded(v.seed) * 20 + seeded(v.seed + 3) * 15);
         // Boost for current version: add from global counter minus base
         if (v.current) {
           var globalCount = loadDlCount();
@@ -827,7 +835,7 @@
     function renderVersionRow(v) {
       var dlCount = getVersionDlCount(v);
       var html = '<tr>';
-      html += '<td class="vt-version">' + v.ver + (v.current ? ' <span class="vt-current">CURRENT</span>' : '') + '</td>';
+      html += '<td class="vt-version">' + v.ver + (v.current ? ' <span class="vt-current">CURRENT</span>' : '') + (v.milestone ? ' <span style="font-size:0.55rem;padding:1px 6px;border-radius:3px;background:rgba(136,96,232,0.1);color:#8860e8;font-weight:600;">FIRST PARTNER RELEASE</span>' : '') + '</td>';
       html += '<td class="vt-date">' + v.date + '</td>';
       html += '<td class="vt-size">' + v.size + '</td>';
       html += '<td class="vt-changes">' + v.changes + '</td>';

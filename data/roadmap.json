@@ -93,6 +93,14 @@
         "progress": 5,
         "color": "var(--blue)",
         "added": "2026-02-01"
+      },
+      {
+        "id": "r-l3",
+        "name": "Autonomous Red Team Agent",
+        "desc": "Reinforcement learning agent that continuously probes Cerberus detection boundaries — discovers evasion vectors before cheat developers do. Requires significant compute budget. Scoping phase.",
+        "progress": 2,
+        "color": "var(--red)",
+        "added": "2026-04-15"
       }
     ],
     "completed": [
