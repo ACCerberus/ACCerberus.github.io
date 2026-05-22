@@ -209,6 +209,7 @@
 
       <div class="sidebar-section">
         <div class="sidebar-label">Account</div>
+        <div class="sidebar-item" onclick="switchTab('setup')"><span class="sidebar-icon">&gt;</span> Setup</div>
         <div class="sidebar-item" onclick="switchTab('settings')"><span class="sidebar-icon">*</span> Settings</div>
       </div>
     </div>
@@ -383,6 +384,87 @@
           <div class="info-row"><span class="info-key">Webhook Deliveries</span><span class="info-val" id="apiWebhooks">0</span></div>
           <div class="info-row"><span class="info-key">Avg Response Time</span><span class="info-val" id="apiAvgResp">0ms</span></div>
           <div class="info-row"><span class="info-key">Error Rate</span><span class="info-val" id="apiErrRate">0%</span></div>
+        </div>
+      </div>
+
+      <!-- SETUP -->
+      <div class="panel" id="panel-setup">
+        <div class="main-header">
+          <h1>Setup</h1>
+          <p>Configure your game title and integration settings</p>
+        </div>
+
+        <div class="info-card" style="margin-bottom:24px;">
+          <h3>Game Configuration</h3>
+          <div class="form-group" style="margin-bottom:16px;">
+            <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Game Title</label>
+            <input type="text" id="setupGame" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);" />
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group">
+              <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Genre</label>
+              <select id="setupGenre" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
+                <option value="FPS">FPS</option><option value="Battle Royale">Battle Royale</option><option value="MMO">MMO</option><option value="MOBA">MOBA</option><option value="Racing">Racing</option><option value="Survival">Survival</option><option value="Sandbox">Sandbox</option><option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Engine</label>
+              <select id="setupEngine" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
+                <option value="Unreal Engine 5">Unreal Engine 5</option><option value="Unity 6">Unity 6</option><option value="Godot">Godot</option><option value="CryEngine">CryEngine</option><option value="Custom Engine">Custom Engine</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
+            <div class="form-group">
+              <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Primary Region</label>
+              <select id="setupRegion" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
+                <option value="US-East">US-East</option><option value="EU-West">EU-West</option><option value="AP-Southeast">AP-Southeast</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Development Stage</label>
+              <select id="setupStage" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
+                <option value="Pre-Alpha">Pre-Alpha</option><option value="Alpha">Alpha</option><option value="Closed Beta">Closed Beta</option><option value="Open Beta">Open Beta</option><option value="Early Access">Early Access</option><option value="Live">Live</option>
+              </select>
+            </div>
+          </div>
+          <button onclick="saveSetup()" style="margin-top:20px;padding:10px 24px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--accent);color:#050507;border:none;cursor:pointer;font-family:var(--font);transition:all 0.2s;">Save Configuration</button>
+        </div>
+
+        <div class="info-card" style="margin-bottom:24px;">
+          <h3>Detection Layers</h3>
+          <div style="font-size:0.82rem;color:var(--text-dim);margin-bottom:16px;">Enable or disable detection layers for your title.</div>
+          <div style="display:grid;gap:12px;">
+            <label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.82rem;color:var(--text-bright);">
+              <input type="checkbox" checked style="accent-color:var(--accent);" /> Layer 1: Kernel Integrity
+              <span style="margin-left:auto;font-size:0.7rem;color:var(--green);font-weight:600;">ACTIVE</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.82rem;color:var(--text-bright);">
+              <input type="checkbox" checked style="accent-color:var(--accent);" /> Layer 2: Behavioral AI
+              <span style="margin-left:auto;font-size:0.7rem;color:var(--green);font-weight:600;">ACTIVE</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.82rem;color:var(--text-bright);">
+              <input type="checkbox" checked style="accent-color:var(--accent);" /> Layer 3: Hardware Fingerprinting
+              <span style="margin-left:auto;font-size:0.7rem;color:var(--green);font-weight:600;">ACTIVE</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.82rem;color:var(--text-bright);">
+              <input type="checkbox" checked style="accent-color:var(--accent);" /> Layer 4: Network Sentinel
+              <span style="margin-left:auto;font-size:0.7rem;color:var(--green);font-weight:600;">ACTIVE</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h3>Webhook Configuration</h3>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Ban Webhook URL</label>
+            <input type="url" id="setupWebhookBan" placeholder="https://yourgame.com/api/cerberus/bans" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.82rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font-mono);" />
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Detection Alert URL</label>
+            <input type="url" id="setupWebhookDet" placeholder="https://yourgame.com/api/cerberus/alerts" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.82rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font-mono);" />
+          </div>
+          <button onclick="alert('Webhooks saved.')" style="padding:10px 24px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--accent);color:#050507;border:none;cursor:pointer;font-family:var(--font);">Save Webhooks</button>
         </div>
       </div>
 
@@ -693,6 +775,28 @@
     // ═══════════════════════════════════════
     function statCard(label, value, change, dir, color) {
       return '<div class="stat-card ' + color + '"><div class="stat-label">' + label + '</div><div class="stat-value">' + value + '</div><div class="stat-change ' + dir + '">' + change + '</div></div>';
+    }
+
+    // Setup tab — populate from session
+    if (partner) {
+      document.getElementById('setupGame').value = partner.game || '';
+      document.getElementById('setupGenre').value = partner.genre || 'FPS';
+      document.getElementById('setupRegion').value = partner.region || 'US-East';
+    }
+
+    function saveSetup() {
+      if (!partner) return;
+      partner.game = document.getElementById('setupGame').value.trim() || partner.game;
+      partner.genre = document.getElementById('setupGenre').value;
+      partner.region = document.getElementById('setupRegion').value;
+      var storage = localStorage.getItem('cerberus_partner') ? localStorage : sessionStorage;
+      storage.setItem('cerberus_partner', JSON.stringify(partner));
+      document.getElementById('sgName').textContent = partner.game;
+      document.getElementById('sgMeta').textContent = partner.genre + ' · ' + partner.tier + ' tier';
+      document.getElementById('setGame').textContent = partner.game;
+      document.getElementById('setGenre').textContent = partner.genre;
+      document.getElementById('setRegion').textContent = partner.region;
+      alert('Configuration saved.');
     }
   </script>
 </body>

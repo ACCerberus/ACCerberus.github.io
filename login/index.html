@@ -153,11 +153,7 @@
       </form>
 
       <div class="login-footer">
-        <p>Don't have an account? <a href="/access/">Create Partner Account</a></p>
-      </div>
-
-      <div class="login-demo">
-        <button onclick="fillDemo()">Use demo credentials</button>
+        <p>Don't have an account? <a href="/access/">Request Access</a></p>
       </div>
     </div>
   </div>
@@ -168,32 +164,27 @@
   </footer>
 
   <script>
-    // Demo credentials
-    var DEMO_EMAIL = 'demo@cerberus-ac.com';
-    var DEMO_PASS = 'cerberus-beta-2026';
-
-    // Demo partner profile
-    var DEMO_PARTNER = {
-      email: DEMO_EMAIL,
-      name: 'Alex Carter',
-      studio: 'Ironclad Games',
-      game: 'Project Vanguard',
-      genre: 'FPS',
-      tier: 'Cerberus',
-      region: 'US-East',
-      apiKey: 'crbs_live_7f3a9c2e1b4d',
-      joined: '2026-03-14',
-      approved: true
-    };
-
-    function fillDemo() {
-      document.getElementById('loginEmail').value = DEMO_EMAIL;
-      document.getElementById('loginPassword').value = DEMO_PASS;
+    // SHA-256 hash
+    async function sha256(str) {
+      var buf = new TextEncoder().encode(str);
+      var hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
     }
 
-    function handleLogin(e) {
+    // Load accounts from data file
+    var accountsCache = null;
+    async function loadAccounts() {
+      if (accountsCache) return accountsCache;
+      try {
+        var r = await fetch('/data/accounts.json?' + Date.now());
+        accountsCache = await r.json();
+        return accountsCache;
+      } catch (e) { return []; }
+    }
+
+    async function handleLogin(e) {
       e.preventDefault();
-      var email = document.getElementById('loginEmail').value.trim();
+      var email = document.getElementById('loginEmail').value.trim().toLowerCase();
       var pass = document.getElementById('loginPassword').value;
       var btn = document.getElementById('loginBtn');
       var err = document.getElementById('loginError');
@@ -202,40 +193,72 @@
       btn.textContent = 'Authenticating...';
       err.style.display = 'none';
 
-      // Simulate auth delay
-      setTimeout(function() {
-        if (email === DEMO_EMAIL && pass === DEMO_PASS) {
-          // Store session
-          var storage = document.getElementById('rememberMe').checked ? localStorage : sessionStorage;
-          storage.setItem('cerberus_partner', JSON.stringify(DEMO_PARTNER));
-          storage.setItem('cerberus_session', Date.now().toString());
-          // Redirect to dashboard
-          window.location.href = '/dashboard/';
-        } else if (email && pass) {
-          // Any email/password combo works for the demo site
-          var customPartner = {
-            email: email,
-            name: email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); }),
-            studio: email.split('@')[1] ? email.split('@')[1].split('.')[0].replace(/\b\w/g, function(c) { return c.toUpperCase(); }) : 'Partner Studio',
-            game: 'Untitled Project',
-            genre: 'FPS',
-            tier: 'Watchdog',
-            region: 'US-East',
-            apiKey: 'crbs_live_' + Math.random().toString(36).substring(2, 14),
-            joined: new Date().toISOString().split('T')[0],
-            approved: true
-          };
-          var storage = document.getElementById('rememberMe').checked ? localStorage : sessionStorage;
-          storage.setItem('cerberus_partner', JSON.stringify(customPartner));
-          storage.setItem('cerberus_session', Date.now().toString());
-          window.location.href = '/dashboard/';
-        } else {
-          err.textContent = 'Invalid credentials. Use the demo account or contact support.';
+      try {
+        var accounts = await loadAccounts();
+        var passHash = await sha256(pass);
+        var account = null;
+        for (var i = 0; i < accounts.length; i++) {
+          if (accounts[i].email.toLowerCase() === email && accounts[i].passwordHash === passHash) {
+            account = accounts[i];
+            break;
+          }
+        }
+
+        if (!account) {
+          err.textContent = 'Invalid email or password.';
           err.style.display = 'block';
           btn.disabled = false;
           btn.textContent = 'Sign In';
+          return;
         }
-      }, 1200);
+
+        if (account.status === 'banned') {
+          err.textContent = 'This account has been suspended. Contact security@cerberus-ac.com.';
+          err.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+          return;
+        }
+
+        if (account.status === 'pending') {
+          err.textContent = 'Your account is pending review. You will receive an email once approved.';
+          err.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+          return;
+        }
+
+        if (account.status === 'rejected') {
+          err.textContent = 'Your access request was not approved. Contact support for details.';
+          err.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+          return;
+        }
+
+        // Approved — store session
+        var partner = {
+          email: account.email,
+          name: account.name || account.email.split('@')[0],
+          studio: account.studio || 'Partner Studio',
+          game: account.game || 'Untitled Project',
+          genre: account.genre || 'FPS',
+          tier: account.tier || 'Watchdog',
+          region: account.region || 'US-East',
+          apiKey: account.apiKey || 'crbs_live_' + email.replace(/[^a-z0-9]/g, '').substring(0, 12),
+          joined: account.joined || new Date().toISOString().split('T')[0],
+          approved: true
+        };
+        var storage = document.getElementById('rememberMe').checked ? localStorage : sessionStorage;
+        storage.setItem('cerberus_partner', JSON.stringify(partner));
+        storage.setItem('cerberus_session', Date.now().toString());
+        window.location.href = '/dashboard/';
+      } catch (ex) {
+        err.textContent = 'Authentication service unavailable. Try again later.';
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
     }
 
     // If already logged in, redirect
