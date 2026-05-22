@@ -747,7 +747,12 @@
       }
       var n = incrementDlCount();
       renderDlCount(n);
-      alert('SDK download started.\n\nNote: This is a demo — in production, the SDK binary would be served from a secure CDN.');
+      var a = document.createElement('a');
+      a.href = '/downloads/cerberus-sdk-v0.4.2.0b.zip';
+      a.download = 'cerberus-sdk-v0.4.2.0b.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
 
     // ===== CHECKSUM COPY =====
@@ -916,7 +921,12 @@
       if (el) el.textContent = n.toLocaleString();
       var g = incrementDlCount();
       renderDlCount(g);
-      alert('SDK download started.\n\nNote: This is a demo — in production, the SDK binary would be served from a secure CDN.');
+      var a = document.createElement('a');
+      a.href = '/downloads/cerberus-sdk-v0.4.2.0b.zip';
+      a.download = 'cerberus-sdk-v0.4.2.0b.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
 
     renderVersionTable();
