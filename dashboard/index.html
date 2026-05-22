@@ -427,10 +427,10 @@
               <div style="font-size:0.88rem;font-weight:600;color:var(--text-bright);">cerberus-sdk-v0.4.2.0b-win64.zip</div>
               <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">4.8 MB &middot; C++ static library &middot; Windows x64</div>
             </div>
-            <button onclick="alert('SDK download started.\n\nNote: This is a demo — in production, the SDK binary would be served from a secure CDN.')" style="padding:10px 24px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--accent);color:#050507;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:8px;">
+            <a href="/downloads/cerberus-sdk-v0.4.2.0b.zip" download="cerberus-sdk-v0.4.2.0b.zip" style="padding:10px 24px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--accent);color:#050507;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:8px;text-decoration:none;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Download SDK
-            </button>
+            </a>
           </div>
         </div>
 
@@ -476,7 +476,7 @@
             <div>
               <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Primary Region</label>
               <select id="setupRegion" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
-                <option value="US-East">US-East</option><option value="EU-West">EU-West</option><option value="AP-Southeast">AP-Southeast</option>
+                <option value="US-East">US-East</option><option value="US-West">US-West</option><option value="US-Central">US-Central</option><option value="EU-West">EU-West</option><option value="EU-Central">EU-Central</option><option value="EU-North">EU-North</option><option value="AP-Southeast">AP-Southeast</option>
               </select>
             </div>
             <div>
@@ -503,25 +503,8 @@
 
         <div class="info-card" style="margin-bottom:24px;">
           <h3>Detection Layers</h3>
-          <div style="font-size:0.82rem;color:var(--text-dim);margin-bottom:16px;">Enable or disable detection layers for your title.</div>
-          <div style="display:grid;gap:12px;">
-            <label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.82rem;color:var(--text-bright);">
-              <input type="checkbox" checked style="accent-color:var(--accent);" /> Layer 1: Kernel Integrity
-              <span style="margin-left:auto;font-size:0.7rem;color:var(--green);font-weight:600;">ACTIVE</span>
-            </label>
-            <label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.82rem;color:var(--text-bright);">
-              <input type="checkbox" checked style="accent-color:var(--accent);" /> Layer 2: Behavioral AI
-              <span style="margin-left:auto;font-size:0.7rem;color:var(--green);font-weight:600;">ACTIVE</span>
-            </label>
-            <label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.82rem;color:var(--text-bright);">
-              <input type="checkbox" checked style="accent-color:var(--accent);" /> Layer 3: Hardware Fingerprinting
-              <span style="margin-left:auto;font-size:0.7rem;color:var(--green);font-weight:600;">ACTIVE</span>
-            </label>
-            <label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.82rem;color:var(--text-bright);">
-              <input type="checkbox" checked style="accent-color:var(--accent);" /> Layer 4: Network Sentinel
-              <span style="margin-left:auto;font-size:0.7rem;color:var(--green);font-weight:600;">ACTIVE</span>
-            </label>
-          </div>
+          <div style="font-size:0.82rem;color:var(--text-dim);margin-bottom:16px;">Available detection layers are based on your plan tier. <a href="/#pricing" style="color:var(--accent);">Upgrade your plan</a> to unlock more layers.</div>
+          <div id="detectionLayersList" style="display:grid;gap:12px;"></div>
         </div>
 
         <div class="info-card">
@@ -564,7 +547,7 @@
             <div class="info-row"><span class="info-key">Genre</span><span class="info-val" id="setGenre">-</span></div>
             <div class="info-row"><span class="info-key">Region</span><span class="info-val" id="setRegion">-</span></div>
             <div class="info-row"><span class="info-key">Status</span><span class="info-val"><span class="badge badge-green">Active</span></span></div>
-            <div class="info-row"><span class="info-key">Detection Layers</span><span class="info-val">All 4 Active</span></div>
+            <div class="info-row"><span class="info-key">Detection Layers</span><span class="info-val" id="setLayers">--</span></div>
           </div>
         </div>
       </div>
@@ -585,13 +568,6 @@
     function statCard(label, value, change, dir, color) {
       return '<div class="stat-card ' + color + '"><div class="stat-label">' + label + '</div><div class="stat-value">' + value + '</div><div class="stat-change ' + dir + '">' + change + '</div></div>';
     }
-
-    // ═══════════════════════════════════════
-    // SEEDED RANDOM
-    // ═══════════════════════════════════════
-    function seeded(s) { var x = Math.sin(s) * 10000; return x - Math.floor(x); }
-    function seedInt(s, min, max) { return min + Math.floor(seeded(s) * (max - min + 1)); }
-    var today = Math.floor(Date.now() / 86400000);
 
     // ═══════════════════════════════════════
     // INIT UI
@@ -639,162 +615,82 @@
     }
 
     // ═══════════════════════════════════════
-    // GENERATE DASHBOARD DATA
+    // DASHBOARD DATA — all zeros until real data
     // ═══════════════════════════════════════
-    var partnerSeed = 0;
-    if (partner) { for (var i = 0; i < partner.email.length; i++) partnerSeed += partner.email.charCodeAt(i); }
-
-    // Overview stats
-    var totalSessions = seedInt(today * 7 + partnerSeed, 180, 520);
-    var activeSessions = seedInt(today * 11 + partnerSeed, 20, 85);
-    var totalDetections = seedInt(today * 13 + partnerSeed, 8, 42);
-    var totalBans = seedInt(today * 17 + partnerSeed, 3, 18);
-    var detRate = (seeded(today * 19 + partnerSeed) * 8 + 86).toFixed(1);
-    var fpRate = '0.14';
-    var avgLatency = (seeded(today * 23 + partnerSeed) * 2.2 + 2.8).toFixed(1);
-    var uptime = (97 + seeded(today * 29 + partnerSeed) * 1.8).toFixed(1);
-
     document.getElementById('overviewStats').innerHTML =
-      statCard('Active Sessions', activeSessions, '+' + seedInt(today*31+partnerSeed,1,8) + ' today', 'up', 'accent') +
-      statCard('Detections Today', totalDetections, (totalDetections > 20 ? 'Above' : 'Within') + ' avg range', totalDetections > 30 ? 'up' : 'neutral', 'blue') +
-      statCard('Bans Issued', totalBans, 'Last 24h', 'neutral', 'red') +
-      statCard('Detection Rate', detRate + '%', 'FP rate: ' + fpRate + '%', 'neutral', 'green');
+      statCard('Active Sessions', '0', 'No sessions yet', 'neutral', 'accent') +
+      statCard('Detections Today', '0', 'No detections', 'neutral', 'blue') +
+      statCard('Bans Issued', '0', 'Last 24h', 'neutral', 'red') +
+      statCard('Detection Rate', '--', 'No data yet', 'neutral', 'green');
 
-    // Detection stats
-    var sigMatches = seedInt(today*37+partnerSeed, 40, 65);
-    var aiFlags = seedInt(today*41+partnerSeed, 20, 35);
-    var hwFlags = seedInt(today*43+partnerSeed, 5, 15);
-    var netFlags = 100 - sigMatches - aiFlags - hwFlags;
     document.getElementById('detStats').innerHTML =
-      statCard('Signature Matches', sigMatches + '%', 'of detections', 'neutral', 'accent') +
-      statCard('Behavioral AI', aiFlags + '%', 'of detections', 'neutral', 'purple') +
-      statCard('Hardware Flags', hwFlags + '%', 'of detections', 'neutral', 'blue') +
-      statCard('Network Sentinel', Math.max(netFlags, 3) + '%', 'of detections', 'neutral', 'green');
+      statCard('Signature Matches', '0', 'no detections', 'neutral', 'accent') +
+      statCard('Behavioral AI', '0', 'no detections', 'neutral', 'purple') +
+      statCard('Hardware Flags', '0', 'no detections', 'neutral', 'blue') +
+      statCard('Network Sentinel', '0', 'no detections', 'neutral', 'green');
 
-    // Detection type breakdown
-    var types = [
-      { name: 'Aimbot', pct: seedInt(today*47+partnerSeed, 25, 38) },
-      { name: 'ESP/Wallhack', pct: seedInt(today*53+partnerSeed, 18, 28) },
-      { name: 'Kernel Driver', pct: seedInt(today*59+partnerSeed, 10, 20) },
-      { name: 'DMA Reader', pct: seedInt(today*61+partnerSeed, 4, 12) },
-      { name: 'HWID Spoofer', pct: seedInt(today*67+partnerSeed, 5, 14) },
-    ];
-    types.push({ name: 'Other', pct: Math.max(2, 100 - types.reduce(function(a,t){return a+t.pct;},0)) });
-
-    var typeHtml = '<div style="display:grid;gap:10px;">';
-    types.forEach(function(t) {
-      typeHtml += '<div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:0.78rem;color:var(--text-dim);">' + t.name + '</span>' +
-        '<div style="flex:1;height:20px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + t.pct + '%;background:var(--accent);border-radius:4px;"></div></div>' +
-        '<span style="width:40px;text-align:right;font-size:0.78rem;font-weight:600;color:var(--text-bright);">' + t.pct + '%</span></div>';
+    var emptyTypeHtml = '<div style="display:grid;gap:10px;">';
+    ['Aimbot','ESP/Wallhack','Kernel Driver','DMA Reader','HWID Spoofer','Other'].forEach(function(t) {
+      emptyTypeHtml += '<div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:0.78rem;color:var(--text-dim);">' + t + '</span>' +
+        '<div style="flex:1;height:20px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:0%;background:var(--accent);border-radius:4px;"></div></div>' +
+        '<span style="width:40px;text-align:right;font-size:0.78rem;font-weight:600;color:var(--text-bright);">0%</span></div>';
     });
-    typeHtml += '</div>';
-    document.getElementById('detTypeChart').innerHTML = typeHtml;
+    emptyTypeHtml += '</div>';
+    document.getElementById('detTypeChart').innerHTML = emptyTypeHtml;
 
-    // Detection layer breakdown
-    var layers = [
-      { name: 'L1: Kernel Integrity', pct: sigMatches },
-      { name: 'L2: Behavioral AI', pct: aiFlags },
-      { name: 'L3: Hardware FP', pct: hwFlags },
-      { name: 'L4: Network Sentinel', pct: Math.max(netFlags, 3) },
-    ];
+    var emptyLayerHtml = '<div style="display:grid;gap:10px;">';
+    var layerNames = ['L1: Kernel Integrity','L2: Behavioral AI','L3: Hardware FP','L4: Network Sentinel'];
     var layerColors = ['var(--accent)', 'var(--purple)', 'var(--blue)', 'var(--green)'];
-    var layerHtml = '<div style="display:grid;gap:10px;">';
-    layers.forEach(function(l, i) {
-      layerHtml += '<div style="display:flex;align-items:center;gap:12px;"><span style="width:140px;font-size:0.78rem;color:var(--text-dim);">' + l.name + '</span>' +
-        '<div style="flex:1;height:20px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + l.pct + '%;background:' + layerColors[i] + ';border-radius:4px;"></div></div>' +
-        '<span style="width:40px;text-align:right;font-size:0.78rem;font-weight:600;color:var(--text-bright);">' + l.pct + '%</span></div>';
+    layerNames.forEach(function(l, i) {
+      emptyLayerHtml += '<div style="display:flex;align-items:center;gap:12px;"><span style="width:140px;font-size:0.78rem;color:var(--text-dim);">' + l + '</span>' +
+        '<div style="flex:1;height:20px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:0%;background:' + layerColors[i] + ';border-radius:4px;"></div></div>' +
+        '<span style="width:40px;text-align:right;font-size:0.78rem;font-weight:600;color:var(--text-bright);">0%</span></div>';
     });
-    layerHtml += '</div>';
-    document.getElementById('detLayerChart').innerHTML = layerHtml;
+    emptyLayerHtml += '</div>';
+    document.getElementById('detLayerChart').innerHTML = emptyLayerHtml;
 
-    // Session stats
     document.getElementById('sessStats').innerHTML =
-      statCard('Active Now', activeSessions, 'across 3 regions', 'neutral', 'accent') +
-      statCard('Today Total', totalSessions, '+' + seedInt(today*71+partnerSeed,5,15) + '% vs yesterday', 'up', 'green') +
-      statCard('Avg Duration', seedInt(today*73+partnerSeed,25,55) + 'min', 'per session', 'neutral', 'blue') +
-      statCard('Scan Latency', avgLatency + 'ms', 'avg across regions', 'neutral', 'purple');
+      statCard('Active Now', '0', 'no sessions', 'neutral', 'accent') +
+      statCard('Today Total', '0', 'no data yet', 'neutral', 'green') +
+      statCard('Avg Duration', '--', 'no sessions', 'neutral', 'blue') +
+      statCard('Scan Latency', '--', 'no data yet', 'neutral', 'purple');
 
-    // Ban stats
     document.getElementById('banStats').innerHTML =
-      statCard('Total Bans', totalBans, 'last 24 hours', 'neutral', 'red') +
-      statCard('Auto-Banned', Math.round(totalBans * 0.7), '>95% confidence', 'neutral', 'accent') +
-      statCard('Manual Review', Math.round(totalBans * 0.3), 'pending: ' + seedInt(today*79+partnerSeed,0,3), 'neutral', 'blue') +
-      statCard('Appeals', seedInt(today*83+partnerSeed,0,2), seedInt(today*89+partnerSeed,0,1) + ' overturned', 'neutral', 'purple');
+      statCard('Total Bans', '0', 'last 24 hours', 'neutral', 'red') +
+      statCard('Auto-Banned', '0', 'no bans', 'neutral', 'accent') +
+      statCard('Manual Review', '0', 'pending: 0', 'neutral', 'blue') +
+      statCard('Appeals', '0', 'none', 'neutral', 'purple');
 
-    // Server stats
     document.getElementById('srvStats').innerHTML =
-      statCard('Uptime', uptime + '%', 'last 30 days', 'neutral', 'green') +
-      statCard('Avg Latency', avgLatency + 'ms', 'scan pipeline', 'neutral', 'blue') +
-      statCard('Regions', '3 / 3', 'all operational', 'neutral', 'accent') +
-      statCard('API Uptime', (98 + seeded(today*91+partnerSeed) * 1.5).toFixed(1) + '%', 'last 30 days', 'neutral', 'purple');
+      statCard('Uptime', '--', 'awaiting data', 'neutral', 'green') +
+      statCard('Avg Latency', '--', 'awaiting data', 'neutral', 'blue') +
+      statCard('Regions', '3 / 3', 'standby', 'neutral', 'accent') +
+      statCard('API Uptime', '--', 'awaiting data', 'neutral', 'purple');
 
     // ═══════════════════════════════════════
-    // BAR CHARTS
+    // BAR CHARTS — all zeros
     // ═══════════════════════════════════════
-    function buildBarChart(containerId, colorClass, seedOffset, minVal, maxVal) {
+    function buildEmptyBarChart(containerId, colorClass) {
       var days = ['S','M','T','W','T','F','S','S','M','T','W','T','F','S'];
       var html = '';
       for (var d = 13; d >= 0; d--) {
-        var val = seedInt((today - d) * seedOffset + partnerSeed, minVal, maxVal);
-        var pct = (val / maxVal) * 100;
-        html += '<div class="bar-col"><div class="bar-value">' + val + '</div><div class="bar ' + colorClass + '" style="height:' + Math.max(pct, 5) + '%;"></div><div class="bar-label">' + days[13 - d] + '</div></div>';
+        html += '<div class="bar-col"><div class="bar-value">0</div><div class="bar ' + colorClass + '" style="height:3%;"></div><div class="bar-label">' + days[13 - d] + '</div></div>';
       }
       document.getElementById(containerId).innerHTML = html;
     }
 
-    buildBarChart('detChart', '', 37, 5, 45);
-    buildBarChart('sessChart', 'blue', 41, 120, 550);
-    buildBarChart('banChart', 'red', 43, 1, 20);
-    buildBarChart('latencyChart', 'green', 47, 22, 52);
-    buildBarChart('apiReqChart', 'blue', 53, 800, 3500);
+    buildEmptyBarChart('detChart', '');
+    buildEmptyBarChart('sessChart', 'blue');
+    buildEmptyBarChart('banChart', 'red');
+    buildEmptyBarChart('latencyChart', 'green');
+    buildEmptyBarChart('apiReqChart', 'blue');
 
     // ═══════════════════════════════════════
-    // TABLES
+    // TABLES — empty states
     // ═══════════════════════════════════════
-    var CHEAT_TYPES = ['Aimbot','ESP/Wallhack','Kernel Driver','DMA Reader','HWID Spoofer','Triggerbot','Recoil Script'];
-    var LAYERS = ['Kernel Integrity','Behavioral AI','Hardware FP','Network Sentinel'];
-    var REGIONS = ['US-East','EU-West','AP-Southeast'];
-
-    // Detection table
-    var detHtml = '';
-    for (var i = 0; i < 12; i++) {
-      var mins = seedInt(today*97+partnerSeed+i, 2, 180);
-      var ct = CHEAT_TYPES[seedInt(today*101+partnerSeed+i, 0, CHEAT_TYPES.length-1)];
-      var layer = LAYERS[seedInt(today*103+partnerSeed+i, 0, LAYERS.length-1)];
-      var conf = (seeded(today*107+partnerSeed+i) * 8 + 91).toFixed(1);
-      var action = parseFloat(conf) >= 95 ? '<span class="badge badge-red">Auto-Ban</span>' : '<span class="badge badge-accent">Review</span>';
-      detHtml += '<tr><td>' + mins + 'min ago</td><td>' + ct + '</td><td><span class="badge badge-blue">' + layer + '</span></td><td>' + conf + '%</td><td>' + action + '</td></tr>';
-    }
-    document.getElementById('detTable').innerHTML = detHtml;
-
-    // Session table
-    var sessHtml = '';
-    for (var i = 0; i < 10; i++) {
-      var sid = 'sess_' + (today * 100 + i).toString(36);
-      var reg = REGIONS[seedInt(today*109+partnerSeed+i, 0, 2)];
-      var dur = seedInt(today*113+partnerSeed+i, 3, 90);
-      var scans = seedInt(today*127+partnerSeed+i, 10, 200);
-      var status = seeded(today*131+partnerSeed+i) > 0.1 ? '<span class="badge badge-green">Clean</span>' : '<span class="badge badge-accent">Flagged</span>';
-      sessHtml += '<tr><td style="font-family:var(--font-mono);font-size:0.75rem;">' + sid + '</td><td>' + reg + '</td><td>' + dur + 'min</td><td>' + scans + '</td><td>' + status + '</td></tr>';
-    }
-    document.getElementById('sessTable').innerHTML = sessHtml;
-
-    // Ban table with actions
-    var banHtml = '';
-    var BAN_REASONS = ['Aimbot detected','ESP overlay','Kernel driver tampering','DMA memory read','HWID spoofing','Triggerbot pattern','Coordinated boosting'];
-    for (var i = 0; i < 10; i++) {
-      var hrs = seedInt(today*137+partnerSeed+i, 1, 72);
-      var acct = 'user_' + seedInt(today*139+partnerSeed+i, 10000, 99999);
-      var reason = BAN_REASONS[seedInt(today*149+partnerSeed+i, 0, BAN_REASONS.length-1)];
-      var conf = (seeded(today*151+partnerSeed+i) * 5 + 94).toFixed(1);
-      var isEnforced = seeded(today*157+partnerSeed+i) > 0.15;
-      var st = isEnforced ? '<span class="badge badge-red">Enforced</span>' : '<span class="badge badge-accent">Under Review</span>';
-      var actionBtn = isEnforced
-        ? '<button class="ban-btn ban-btn-unban" onclick="unbanPlayer(\'' + acct + '\',this)">Unban</button>'
-        : '<button class="ban-btn ban-btn-ban" onclick="confirmBan(\'' + acct + '\',this)">Enforce</button> <button class="ban-btn ban-btn-unban" onclick="dismissBan(\'' + acct + '\',this)">Dismiss</button>';
-      banHtml += '<tr><td>' + hrs + 'h ago</td><td style="font-family:var(--font-mono);font-size:0.75rem;">' + acct + '</td><td>' + reason + '</td><td>' + conf + '%</td><td>' + st + '</td><td>' + actionBtn + '</td></tr>';
-    }
-    document.getElementById('banTable').innerHTML = banHtml;
+    document.getElementById('detTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:32px;">No detections recorded yet. Data will appear once the SDK is integrated and sessions are active.</td></tr>';
+    document.getElementById('sessTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:32px;">No active sessions. Connect your game via the SDK to start monitoring.</td></tr>';
+    document.getElementById('banTable').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:32px;">No bans issued yet. Bans will appear here when detections trigger enforcement actions.</td></tr>';
 
     // ═══════════════════════════════════════
     // BAN ACTIONS
@@ -843,50 +739,31 @@
     }
 
     // ═══════════════════════════════════════
-    // REGIONS
+    // REGIONS — empty standby
     // ═══════════════════════════════════════
+    var ALL_REGIONS = ['US-East','US-West','US-Central','EU-West','EU-Central','EU-North','AP-Southeast'];
     var regionHtml = '';
-    REGIONS.forEach(function(r, i) {
-      var lat = (seeded(today*163+partnerSeed+i) * 3 + 1.5).toFixed(1);
-      var sess = seedInt(today*167+partnerSeed+i, 5, 35);
-      var up = (97 + seeded(today*173+partnerSeed+i) * 2.5).toFixed(1);
+    ALL_REGIONS.forEach(function(r) {
       regionHtml += '<div class="region-card"><div class="region-name">' + r + '</div>' +
-        '<div class="region-status" style="color:var(--green);">Operational</div>' +
-        '<div class="region-latency">' + lat + 'ms</div>' +
-        '<div class="region-detail">' + sess + ' sessions &middot; ' + up + '% uptime</div></div>';
+        '<div class="region-status" style="color:var(--text-dim);">Standby</div>' +
+        '<div class="region-latency">--</div>' +
+        '<div class="region-detail">0 sessions &middot; No data</div></div>';
     });
     document.getElementById('regionCards').innerHTML = regionHtml;
 
     var srvHtml = '';
-    REGIONS.forEach(function(r, i) {
-      var lat = (seeded(today*179+partnerSeed+i) * 3 + 1.5).toFixed(1);
-      var load = seedInt(today*181+partnerSeed+i, 15, 65);
-      var up = (97 + seeded(today*191+partnerSeed+i) * 2.5).toFixed(1);
+    ALL_REGIONS.forEach(function(r) {
       srvHtml += '<div class="region-card"><div class="region-name">' + r + '</div>' +
-        '<div class="region-status" style="color:var(--green);">Healthy</div>' +
-        '<div class="region-latency">' + lat + 'ms avg</div>' +
-        '<div class="region-detail">Load: ' + load + '% &middot; Uptime: ' + up + '%</div></div>';
+        '<div class="region-status" style="color:var(--text-dim);">Standby</div>' +
+        '<div class="region-latency">--</div>' +
+        '<div class="region-detail">Load: -- &middot; Uptime: --</div></div>';
     });
     document.getElementById('srvRegions').innerHTML = srvHtml;
 
     // ═══════════════════════════════════════
-    // ACTIVITY FEED
+    // ACTIVITY FEED — empty
     // ═══════════════════════════════════════
-    var feedEvents = [
-      { dot: 'green', text: 'Session scan completed — ' + activeSessions + ' active sessions, all clean', time: seedInt(today*193+partnerSeed, 1, 5) + 'min ago' },
-      { dot: 'red', text: 'Auto-ban issued: user_' + seedInt(today*197+partnerSeed, 10000, 99999) + ' — aimbot detected (97.2% confidence)', time: seedInt(today*199+partnerSeed, 8, 25) + 'min ago' },
-      { dot: 'blue', text: 'Signature database updated — ' + seedInt(today*211+partnerSeed, 2, 8) + ' new entries applied', time: seedInt(today*223+partnerSeed, 30, 90) + 'min ago' },
-      { dot: 'accent', text: 'Behavioral AI model v3.' + seedInt(today*227+partnerSeed, 1, 4) + ' checkpoint loaded', time: seedInt(today*229+partnerSeed, 1, 4) + 'h ago' },
-      { dot: 'green', text: 'Webhook delivery successful — ban event to ' + (partner ? partner.studio : 'Studio') + ' endpoint', time: seedInt(today*233+partnerSeed, 2, 6) + 'h ago' },
-      { dot: 'red', text: 'Detection spike: ' + seedInt(today*239+partnerSeed, 3, 8) + ' ESP detections in 15-minute window', time: seedInt(today*241+partnerSeed, 3, 8) + 'h ago' },
-      { dot: 'blue', text: 'Daily scan report generated — ' + totalSessions + ' sessions, ' + totalDetections + ' detections', time: seedInt(today*251+partnerSeed, 8, 16) + 'h ago' },
-      { dot: 'green', text: 'Hardware attestation scan completed — no anomalies across ' + seedInt(today*257+partnerSeed, 2, 3) + ' regions', time: seedInt(today*263+partnerSeed, 12, 20) + 'h ago' },
-    ];
-    var feedHtml = '';
-    feedEvents.forEach(function(ev) {
-      feedHtml += '<div class="feed-item"><div class="feed-dot ' + ev.dot + '"></div><div><div class="feed-text">' + ev.text + '</div><div class="feed-time">' + ev.time + '</div></div></div>';
-    });
-    document.getElementById('activityFeed').innerHTML = feedHtml;
+    document.getElementById('activityFeed').innerHTML = '<div style="text-align:center;color:var(--text-dim);padding:32px;font-size:0.82rem;">No activity yet. Events will appear here once the SDK is integrated and sessions begin.</div>';
 
     // ═══════════════════════════════════════
     // API PANEL
@@ -898,13 +775,12 @@
       event.target.textContent = apiKeyRevealed ? 'Hide' : 'Reveal';
     }
 
-    var apiTotalVal = seedInt(today*269+partnerSeed, 8000, 35000);
-    document.getElementById('apiTotal').textContent = apiTotalVal.toLocaleString();
-    document.getElementById('apiSessInit').textContent = seedInt(today*271+partnerSeed, 3000, 15000).toLocaleString();
-    document.getElementById('apiVerdicts').textContent = seedInt(today*277+partnerSeed, 2000, 10000).toLocaleString();
-    document.getElementById('apiWebhooks').textContent = seedInt(today*281+partnerSeed, 500, 3000).toLocaleString();
-    document.getElementById('apiAvgResp').textContent = (seeded(today*283+partnerSeed) * 15 + 12).toFixed(0) + 'ms';
-    document.getElementById('apiErrRate').textContent = (seeded(today*293+partnerSeed) * 0.3 + 0.01).toFixed(2) + '%';
+    document.getElementById('apiTotal').textContent = '0';
+    document.getElementById('apiSessInit').textContent = '0';
+    document.getElementById('apiVerdicts').textContent = '0';
+    document.getElementById('apiWebhooks').textContent = '0';
+    document.getElementById('apiAvgResp').textContent = '--';
+    document.getElementById('apiErrRate').textContent = '--';
 
     // ═══════════════════════════════════════
     // SETUP
@@ -940,6 +816,31 @@
       document.getElementById('setupBanner').innerHTML = '';
       alert('Configuration saved.');
     }
+
+    // ═══════════════════════════════════════
+    // TIER-GATED DETECTION LAYERS
+    // ═══════════════════════════════════════
+    var LAYERS = [
+      { id: 'kernel', name: 'Layer 1: Kernel Integrity', desc: 'Ring-0 memory isolation, syscall tamper detection, BYOVD blocking', tiers: ['Argus','Aegis','Cerberus','Olympus'] },
+      { id: 'ai', name: 'Layer 2: Behavioral AI', desc: 'TCN-based aim analysis, micro-movement entropy, humanization bypass', tiers: ['Aegis','Cerberus','Olympus'] },
+      { id: 'hardware', name: 'Layer 3: Hardware Fingerprinting', desc: 'PCIe topology mapping, DMA timing analysis, TPM 2.0 attestation', tiers: ['Cerberus','Olympus'] },
+      { id: 'network', name: 'Layer 4: Network Sentinel', desc: 'Packet integrity, cross-player correlation, cheat-ring detection', tiers: ['Cerberus','Olympus'] },
+      { id: 'custom', name: 'Layer 5: Custom Rules Engine', desc: 'Studio-defined detection rules, custom telemetry hooks, priority tuning', tiers: ['Olympus'] }
+    ];
+    var tier = partner ? (partner.tier || 'Argus') : 'Argus';
+    var layersHtml = '';
+    var activeCount = 0;
+    LAYERS.forEach(function(l) {
+      var available = l.tiers.indexOf(tier) !== -1;
+      if (available) activeCount++;
+      layersHtml += '<label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;' + (available ? 'cursor:pointer;' : 'opacity:0.4;cursor:not-allowed;') + 'font-size:0.82rem;color:var(--text-bright);">' +
+        '<input type="checkbox"' + (available ? ' checked' : ' disabled') + ' style="accent-color:var(--accent);" /> ' + l.name +
+        (available ? '<span style="margin-left:auto;font-size:0.7rem;color:var(--green);font-weight:600;">ACTIVE</span>' :
+          '<span style="margin-left:auto;font-size:0.68rem;color:var(--text-dim);font-style:italic;">Requires ' + l.tiers[0] + '+ plan</span>') +
+        '</label>';
+    });
+    document.getElementById('detectionLayersList').innerHTML = layersHtml;
+    document.getElementById('setLayers').textContent = activeCount + ' of ' + LAYERS.length + ' Active';
 
     // Auto-redirect to setup on first login
     if (needsSetup) {
