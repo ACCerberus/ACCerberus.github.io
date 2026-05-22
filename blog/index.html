@@ -745,18 +745,77 @@
     // Load server-generated blog entries and prepend to posts array
     fetch('/data/blog-entries.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(entries) {
       if (!entries || entries.length === 0) { renderPosts(); return; }
-      // Convert server entries to match client format, using existing generators
+
+      // Category string → type key mapping
+      var catToType = {
+        'Threat Report': 'threat', 'threat': 'threat',
+        'Security Advisory': 'advisory', 'advisory': 'advisory',
+        'Engineering': 'engineering', 'engineering': 'engineering', 'Engineering Update': 'engineering',
+        'Milestone': 'milestone', 'milestone': 'milestone',
+        'Case Study': 'casestudy', 'casestudy': 'casestudy',
+      };
+      var catMeta = {
+        threat:      { catClass: 'cat-threat',   catLabel: 'THREAT REPORT' },
+        advisory:    { catClass: 'cat-advisory', catLabel: 'SECURITY ADVISORY' },
+        engineering: { catClass: 'cat-engineering', catLabel: 'ENGINEERING' },
+        milestone:   { catClass: 'cat-milestone',catLabel: 'MILESTONE' },
+        casestudy:   { catClass: 'cat-casestudy', catLabel: 'CASE STUDY' },
+      };
+
+      // Find author object by name string
+      function resolveAuthor(name) {
+        if (!name) return AUTHORS[0];
+        if (typeof name === 'object') return name;
+        for (var i = 0; i < AUTHORS.length; i++) {
+          if (AUTHORS[i].name === name) return AUTHORS[i];
+        }
+        return { name: name, initials: name.substring(0, 2).toUpperCase(), color: '#4088e8', bg: 'rgba(64,136,232,0.15)', role: '' };
+      }
+
+      var typeMap = { 'threat': 0, 'advisory': 1, 'engineering': 2, 'milestone': 3, 'casestudy': 4 };
+
       entries.slice().reverse().forEach(function(entry) {
-        var typeMap = { 'threat': 0, 'advisory': 1, 'engineering': 2, 'milestone': 3, 'casestudy': 4 };
-        var typeIdx = typeMap[entry.type] || 0;
-        var entrySeed = Math.floor(new Date(entry.date).getTime() / 86400000);
-        var postSeed = entrySeed * 1000 + typeIdx * 100;
-        var generated = POST_GENERATORS[typeIdx](postSeed, entrySeed);
-        generated.title = entry.title || generated.title;
-        generated.date = entry.date;
+        var hasContent = entry.body || entry.content || entry.summary;
+        var typeKey = catToType[entry.category || entry.type] || 'engineering';
+        var meta = catMeta[typeKey] || catMeta.engineering;
+
+        var post;
+        if (hasContent) {
+          // Publisher-created post — use actual content
+          var bodyText = entry.body || entry.content || '';
+          var bodyArr = typeof bodyText === 'string' ? bodyText.split(/\n\n+/).filter(function(p) { return p.trim(); }) : bodyText;
+          var excerpt = entry.summary || entry.excerpt || (bodyArr[0] || '');
+          var postDate = entry.date;
+          // Normalize ISO dates to display format; leave readable dates as-is
+          if (/^\d{4}-\d{2}-\d{2}/.test(postDate)) {
+            postDate = fmtDate(Math.floor(new Date(postDate).getTime() / 86400000));
+          }
+
+          post = {
+            type: typeKey, catClass: meta.catClass, catLabel: meta.catLabel,
+            title: entry.title, author: resolveAuthor(entry.author),
+            date: postDate, readTime: entry.readTime || Math.max(1, Math.ceil(bodyText.length / 1200)),
+            excerpt: excerpt,
+            tags: entry.tags || [typeKey],
+            sevBadge: entry.sevBadge || null,
+            statsBoxes: entry.statsBoxes || null,
+            categoryBreakdown: entry.categoryBreakdown || null,
+            body: bodyArr,
+            timeline: entry.timeline || null,
+          };
+        } else {
+          // Seed-generated post (legacy format — title + date + type only)
+          var typeIdx = typeMap[typeKey] || 0;
+          var entrySeed = Math.floor(new Date(entry.date).getTime() / 86400000);
+          var postSeed = entrySeed * 1000 + typeIdx * 100;
+          post = POST_GENERATORS[typeIdx](postSeed, entrySeed);
+          post.title = entry.title || post.title;
+          post.date = entry.date;
+        }
+
         // Check for duplicates by title
-        var isDupe = posts.some(function(p) { return p.title === generated.title; });
-        if (!isDupe) posts.unshift(generated);
+        var isDupe = posts.some(function(p) { return p.title === post.title; });
+        if (!isDupe) posts.unshift(post);
       });
       renderPosts();
     }).catch(function() {

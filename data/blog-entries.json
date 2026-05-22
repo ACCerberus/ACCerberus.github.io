@@ -1,12 +1,31 @@
 [
   {
-    "id": "blog-025",
-    "title": "Introducing Network Sentinel: Cerberus's Fourth Detection Layer",
-    "date": "2026-05-20T10:00:00Z",
-    "category": "Product Update",
+    "title": "Case Study: How a Indie FPS Studio Achieved Integration Speed",
     "author": "nvoronov",
-    "summary": "Today we're unveiling Network Sentinel — a server-side analysis layer that detects coordinated cheating, packet manipulation, and cheat rings that no client-side system can see. Cerberus now operates across four layers simultaneously.",
-    "content": "Until now, Cerberus operated across three client-side layers: kernel integrity, behavioral AI, and hardware fingerprinting. Each layer guards a different attack surface on the client machine. But there's always been a blind spot — the network.\n\nCheat developers increasingly operate at the network level. Speed hacks manipulate packet timing. Coordinated boosting rings use multiple accounts across sessions. Replay attacks feed fabricated data to game servers. None of these are visible from the client alone.\n\nNetwork Sentinel changes that. It runs entirely server-side, analyzing traffic patterns, reconciling movement data, correlating cross-player anomalies, and identifying cheat clusters. When a ban is issued on one account, Sentinel traces the hardware identity, behavioral fingerprint, and network signature to find linked accounts — even across different game titles.\n\nKey capabilities:\n- Real-time packet integrity validation\n- Server-side movement reconciliation\n- Cross-player statistical anomaly detection\n- Cheat-ring and cluster identification\n- Session replay forensic analysis\n- Encrypted payload tamper detection\n- Global threat intelligence feed\n- Matchmaking integrity scoring\n\nNetwork Sentinel is available now on the Cerberus and Olympus tiers. It requires zero client-side changes — just enable it in your dashboard."
+    "date": "May 21, 2026",
+    "readTime": 1,
+    "category": "Case Study",
+    "categoryColor": "var(--accent)",
+    "summary": "A indie fps studio integrated Cerberus and saw measurable improvement in integration speed within their first month.",
+    "tags": [
+      "case-study",
+      "fps",
+      "partner"
+    ],
+    "body": "## The Studio\n\nA indie (< 10k ccu) fps studio was struggling with [describe cheating problem]. Their existing anti-cheat solution was [describe limitations].\n\n## Integration\n\nThe team integrated Cerberus SDK in [X hours/days]. Key integration points:\n- [Integration detail 1]\n- [Integration detail 2]\n\n## Results (30 Days)\n\n- Cheating reports: [X]% reduction\n- False positive rate: [X]%\n- Player retention: [X]% improvement\n- Integration time: [X] hours\n\n## Studio Feedback\n\n\"[Quote from studio representative about their experience.]\"\n\n## Key Takeaways\n\n[What other studios can learn from this integration.]"
+  },
+  {
+    "title": "Test",
+    "author": "nvoronov",
+    "date": "May 21, 2026",
+    "readTime": 1,
+    "category": "Security Advisory",
+    "categoryColor": "var(--red)",
+    "summary": "test",
+    "tags": [
+      "test"
+    ],
+    "body": "test"
   },
   {
     "id": "blog-024",
