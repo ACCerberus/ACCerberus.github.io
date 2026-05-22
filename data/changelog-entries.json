@@ -205,5 +205,29 @@
         "text": "scan latency reduced by 8%"
       }
     ]
+  },
+  {
+    "date": "2026-05-22",
+    "timestamp": "2026-05-22T08:44:06Z",
+    "version": "v0.4.2.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 4939 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "player appeal rate reduced by 18%"
+      }
+    ]
   }
 ]
