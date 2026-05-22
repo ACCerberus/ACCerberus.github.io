@@ -111,6 +111,7 @@
     </a>
     <div class="nav-links">
       <a href="/">Home</a>
+      <a href="/#pricing">Plans</a>
       <a href="/docs/">Docs</a>
       <a href="/api/">API</a>
       <a href="/sdk/">SDK</a>
@@ -171,13 +172,18 @@
       return Array.from(new Uint8Array(hash)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
     }
 
-    // Load accounts from data file
+    // Load accounts from obfuscated data file
     var accountsCache = null;
+    function obfDecode(encoded) {
+      var reversed = encoded.split('').reverse().join('');
+      return atob(reversed);
+    }
     async function loadAccounts() {
       if (accountsCache) return accountsCache;
       try {
-        var r = await fetch('/data/accounts.json?' + Date.now());
-        accountsCache = await r.json();
+        var r = await fetch('/data/x9f3k7.json?' + Date.now());
+        var raw = await r.text();
+        accountsCache = JSON.parse(obfDecode(raw.trim()));
         return accountsCache;
       } catch (e) { return []; }
     }
@@ -196,15 +202,28 @@
       try {
         var accounts = await loadAccounts();
         var passHash = await sha256(pass);
+
+        // Find account in admin-managed accounts.json
         var account = null;
         for (var i = 0; i < accounts.length; i++) {
-          if (accounts[i].email.toLowerCase() === email && accounts[i].passwordHash === passHash) {
+          if (accounts[i].email.toLowerCase() === email) {
             account = accounts[i];
             break;
           }
         }
 
         if (!account) {
+          err.textContent = 'Invalid email or password.';
+          err.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+          return;
+        }
+
+        // Check password against registration data in localStorage
+        var regData = null;
+        try { regData = JSON.parse(localStorage.getItem('cerberus_reg_' + email)); } catch(x) {}
+        if (!regData || regData.passwordHash !== passHash) {
           err.textContent = 'Invalid email or password.';
           err.style.display = 'block';
           btn.disabled = false;
@@ -236,15 +255,15 @@
           return;
         }
 
-        // Approved — store session
+        // Approved — merge registration data + admin data into session
         var partner = {
           email: account.email,
-          name: account.name || account.email.split('@')[0],
-          studio: account.studio || 'Partner Studio',
-          game: account.game || 'Untitled Project',
-          genre: account.genre || 'FPS',
-          tier: account.tier || 'Watchdog',
-          region: account.region || 'US-East',
+          name: regData.name || account.email.split('@')[0],
+          studio: regData.studio || 'Partner Studio',
+          game: regData.game || 'Untitled Project',
+          genre: regData.genre || 'FPS',
+          tier: account.tier || 'Argus',
+          region: 'US-East',
           apiKey: account.apiKey || 'crbs_live_' + email.replace(/[^a-z0-9]/g, '').substring(0, 12),
           joined: account.joined || new Date().toISOString().split('T')[0],
           approved: true

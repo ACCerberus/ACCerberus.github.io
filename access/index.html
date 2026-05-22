@@ -308,6 +308,7 @@
     </a>
     <div class="nav-links">
       <a href="/">Home</a>
+      <a href="/#pricing">Plans</a>
       <a href="/docs/">Docs</a>
       <a href="/api/">API</a>
       <a href="/sdk/">SDK</a>
@@ -666,11 +667,44 @@ White-label SDK</span>
           return;
         }
         var btn = form.querySelector('button[type="submit"]');
-        btn.textContent = 'Creating account...';
+        btn.textContent = 'Submitting request...';
         btn.disabled = true;
 
-        // Simulate processing delay, then show success
-        setTimeout(function() {
+        // Hash password and store registration data in localStorage
+        var email = (form.querySelector('input[name="email"]').value || '').trim().toLowerCase();
+        var displayName = (form.querySelector('input[name="display_name"]').value || '').trim();
+        var studioName = (form.querySelector('input[name="studio_name"]').value || '').trim();
+        var gameTitleVal = (form.querySelector('input[name="game_title"]').value || '').trim();
+        var engineVal = (form.querySelector('select[name="engine"]').value || '');
+        var genreVal = (form.querySelector('select[name="genre"]').value || '');
+
+        // SHA-256 hash the password
+        var pwBuf = new TextEncoder().encode(pw);
+        crypto.subtle.digest('SHA-256', pwBuf).then(function(hashBuf) {
+          var passwordHash = Array.from(new Uint8Array(hashBuf)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+
+          // Save to localStorage so login page can verify
+          var regData = {
+            email: email,
+            passwordHash: passwordHash,
+            name: displayName,
+            studio: studioName,
+            game: gameTitleVal,
+            engine: engineVal,
+            genre: genreVal,
+            registered: new Date().toISOString()
+          };
+          localStorage.setItem('cerberus_reg_' + email, JSON.stringify(regData));
+
+          // Send pending registration to publisher server
+          try {
+            fetch('http://localhost:3847/api/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: email, name: displayName, studio: studioName, game: gameTitleVal, engine: engineVal, genre: genreVal })
+            }).catch(function() {});
+          } catch(x) {}
+
           var appId = 'CRB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
           appIdEl.textContent = appId;
           formCard.style.display = 'none';
@@ -683,7 +717,7 @@ White-label SDK</span>
             if (secs <= 0) { clearInterval(countdown); window.location.href = '/'; }
             else { msgEl.textContent = 'Redirecting to home in ' + secs + 's...'; }
           }, 1000);
-        }, 1200 + Math.random() * 800);
+        });
       });
     })();
   </script>
