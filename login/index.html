@@ -220,10 +220,8 @@
           return;
         }
 
-        // Check password against registration data in localStorage
-        var regData = null;
-        try { regData = JSON.parse(localStorage.getItem('cerberus_reg_' + email)); } catch(x) {}
-        if (!regData || regData.passwordHash !== passHash) {
+        // Check password against account passwordHash
+        if (!account.passwordHash || account.passwordHash !== passHash) {
           err.textContent = 'Invalid email or password.';
           err.style.display = 'block';
           btn.disabled = false;
@@ -255,13 +253,13 @@
           return;
         }
 
-        // Approved — merge registration data + admin data into session
+        // Approved — build session from account data
         var partner = {
           email: account.email,
-          name: regData.name || account.email.split('@')[0],
-          studio: regData.studio || 'Partner Studio',
-          game: regData.game || 'Untitled Project',
-          genre: regData.genre || 'FPS',
+          name: account.name || account.email.split('@')[0],
+          studio: account.studio || 'Partner Studio',
+          game: account.game || 'Untitled Project',
+          genre: account.genre || 'FPS',
           tier: account.tier || 'Argus',
           region: 'US-East',
           apiKey: account.apiKey || 'crbs_live_' + email.replace(/[^a-z0-9]/g, '').substring(0, 12),

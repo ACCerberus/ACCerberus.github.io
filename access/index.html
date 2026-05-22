@@ -701,7 +701,7 @@ White-label SDK</span>
             fetch('http://localhost:3847/api/register', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: email, name: displayName, studio: studioName, game: gameTitleVal, engine: engineVal, genre: genreVal })
+              body: JSON.stringify({ email: email, passwordHash: passwordHash, name: displayName, studio: studioName, game: gameTitleVal, engine: engineVal, genre: genreVal })
             }).catch(function() {});
           } catch(x) {}
 
