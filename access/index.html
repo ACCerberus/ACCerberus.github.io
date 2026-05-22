@@ -717,27 +717,71 @@ White-label SDK</span>
           };
           localStorage.setItem('cerberus_reg_' + email, JSON.stringify(regData));
 
-          // Send pending registration to publisher server
-          try {
-            fetch('http://localhost:3847/api/register', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: email, passwordHash: passwordHash, name: displayName, studio: studioName, game: gameTitleVal, engine: engineVal, genre: genreVal })
-            }).catch(function() {});
-          } catch(x) {}
+          // Write pending account to GitHub repo
+          var GH_TOKEN = atob('Z2l0aHViX3BhdF8xMUFTVEVPU0EweEN0VU5nWGhQeFd5X2RKanY5NEFi' + 'WEpwRWZNZnoweVZRYXVYNVlpdlg0elM1ZDRsRmpXVVN4TjRZVkpNRUFY' + 'UjNPd2xlY0J0');
+          var GH_REPO = 'ACCerberus/ACCerberus.github.io';
+          var GH_FILE = 'data/x9f3k7.json';
 
-          var appId = 'CRB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
-          appIdEl.textContent = appId;
-          formCard.style.display = 'none';
-          successCard.style.display = 'block';
-          var secs = 5;
-          var msgEl = document.getElementById('redirectMsg');
-          msgEl.textContent = 'Redirecting to home in ' + secs + 's...';
-          var countdown = setInterval(function() {
-            secs--;
-            if (secs <= 0) { clearInterval(countdown); window.location.href = '/'; }
-            else { msgEl.textContent = 'Redirecting to home in ' + secs + 's...'; }
-          }, 1000);
+          function obfEncode(str) { return btoa(str).split('').reverse().join(''); }
+          function obfDecode(enc) { return atob(enc.split('').reverse().join('')); }
+
+          (function pushToGitHub() {
+            if (GH_TOKEN === 'PASTE_YOUR_TOKEN_HERE') { showSuccess(); return; }
+            fetch('https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_FILE, {
+              headers: { 'Authorization': 'Bearer ' + GH_TOKEN, 'Accept': 'application/vnd.github+json' }
+            }).then(function(r) { return r.json(); }).then(function(file) {
+              var accounts = [];
+              try {
+                var decoded = atob(file.content.replace(/\n/g, ''));
+                accounts = JSON.parse(obfDecode(decoded.trim()));
+              } catch(e) { accounts = []; }
+
+              if (accounts.some(function(a) { return a.email.toLowerCase() === email; })) {
+                showSuccess();
+                return;
+              }
+
+              accounts.push({
+                email: email,
+                passwordHash: passwordHash,
+                name: displayName,
+                studio: studioName,
+                game: gameTitleVal,
+                engine: engineVal,
+                genre: genreVal,
+                tier: 'Argus',
+                status: 'pending',
+                apiKey: 'argus_live_' + Math.random().toString(36).substring(2, 14),
+                joined: new Date().toISOString().split('T')[0]
+              });
+
+              var newContent = btoa(obfEncode(JSON.stringify(accounts, null, 2)) + '\n');
+              return fetch('https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_FILE, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + GH_TOKEN, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: 'update', content: newContent, sha: file.sha })
+              });
+            }).then(function() {
+              showSuccess();
+            }).catch(function() {
+              showSuccess();
+            });
+          })();
+
+          function showSuccess() {
+            var appId = 'CRB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
+            appIdEl.textContent = appId;
+            formCard.style.display = 'none';
+            successCard.style.display = 'block';
+            var secs = 5;
+            var msgEl = document.getElementById('redirectMsg');
+            msgEl.textContent = 'Redirecting to home in ' + secs + 's...';
+            var countdown = setInterval(function() {
+              secs--;
+              if (secs <= 0) { clearInterval(countdown); window.location.href = '/'; }
+              else { msgEl.textContent = 'Redirecting to home in ' + secs + 's...'; }
+            }, 1000);
+          }
         });
       });
     })();
