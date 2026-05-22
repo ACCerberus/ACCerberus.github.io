@@ -35,6 +35,11 @@
     .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text-bright); }
     .nav-links a.active { color: var(--accent); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
+    .nav-login { padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(232,160,32,0.4); color: var(--accent); text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-login:hover { border-color: var(--accent); background: rgba(232,160,32,0.08); transform: translateY(-1px); }
+    .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
 
     .container { max-width: 800px; margin: 0 auto; padding: 120px 24px 80px; }
     .page-title { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: var(--text-bright); letter-spacing: -1px; margin-bottom: 8px; }
@@ -131,6 +136,10 @@
       <a href="/status/" class="active">Status</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
+    </div>
+    <div class="nav-cta-wrap">
+      <a href="/login/" class="nav-login">Partner Login</a>
+      <a href="/access/" class="nav-cta">Partner Account</a>
     </div>
   </nav>
 

@@ -35,6 +35,11 @@
     .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text-bright); }
     .nav-links a.active { color: var(--accent); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
+    .nav-login { padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(232,160,32,0.4); color: var(--accent); text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-login:hover { border-color: var(--accent); background: rgba(232,160,32,0.08); transform: translateY(-1px); }
+    .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
 
     .container { max-width: 800px; margin: 0 auto; padding: 120px 24px 80px; }
     .page-title { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: var(--text-bright); letter-spacing: -1px; margin-bottom: 8px; }
@@ -123,6 +128,10 @@
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
     </div>
+    <div class="nav-cta-wrap">
+      <a href="/login/" class="nav-login">Partner Login</a>
+      <a href="/access/" class="nav-cta">Partner Account</a>
+    </div>
   </nav>
 
   <div class="container">
@@ -133,10 +142,6 @@
     <div class="roadmap">
       <div class="roadmap-title"><span style="font-size:1.2rem;">&#9776;</span> Product Roadmap</div>
       <div id="roadmapShort" style="margin-bottom:16px;"></div>
-      <div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 8px;font-weight:600;">Mid-Term</div>
-      <div class="roadmap-grid" id="roadmapMid"></div>
-      <div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 8px;font-weight:600;">Long-Term Research</div>
-      <div class="roadmap-grid" id="roadmapLong"></div>
       <div id="roadmapCompleted" style="margin-top:16px;"></div>
     </div>
 
@@ -194,16 +199,6 @@
       (data.items.short || []).forEach(function(item, i) { shortHTML += renderRoadmapItem(item, 'IN PROGRESS', 'eta-progress', i); });
       shortHTML += '</div>';
       document.getElementById('roadmapShort').innerHTML = shortHTML;
-
-      var midHTML = '<div class="roadmap-grid">';
-      (data.items.mid || []).forEach(function(item, i) { midHTML += renderRoadmapItem(item, 'PLANNED', 'eta-planned', i + 10); });
-      midHTML += '</div>';
-      document.getElementById('roadmapMid').innerHTML = midHTML;
-
-      var longHTML = '<div class="roadmap-grid">';
-      (data.items.long || []).forEach(function(item, i) { longHTML += renderRoadmapItem(item, 'RESEARCH', 'eta-research', i + 20); });
-      longHTML += '</div>';
-      document.getElementById('roadmapLong').innerHTML = longHTML;
 
       if (data.items.completed && data.items.completed.length > 0) {
         var compHTML = '<div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600;">Recently Completed</div>';
