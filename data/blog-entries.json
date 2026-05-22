@@ -1,33 +1,5 @@
 [
   {
-    "title": "Case Study: How a Indie FPS Studio Achieved Integration Speed",
-    "author": "nvoronov",
-    "date": "May 21, 2026",
-    "readTime": 1,
-    "category": "Case Study",
-    "categoryColor": "var(--accent)",
-    "summary": "A indie fps studio integrated Cerberus and saw measurable improvement in integration speed within their first month.",
-    "tags": [
-      "case-study",
-      "fps",
-      "partner"
-    ],
-    "body": "## The Studio\n\nA indie (< 10k ccu) fps studio was struggling with [describe cheating problem]. Their existing anti-cheat solution was [describe limitations].\n\n## Integration\n\nThe team integrated Cerberus SDK in [X hours/days]. Key integration points:\n- [Integration detail 1]\n- [Integration detail 2]\n\n## Results (30 Days)\n\n- Cheating reports: [X]% reduction\n- False positive rate: [X]%\n- Player retention: [X]% improvement\n- Integration time: [X] hours\n\n## Studio Feedback\n\n\"[Quote from studio representative about their experience.]\"\n\n## Key Takeaways\n\n[What other studios can learn from this integration.]"
-  },
-  {
-    "title": "Test",
-    "author": "nvoronov",
-    "date": "May 21, 2026",
-    "readTime": 1,
-    "category": "Security Advisory",
-    "categoryColor": "var(--red)",
-    "summary": "test",
-    "tags": [
-      "test"
-    ],
-    "body": "test"
-  },
-  {
     "id": "blog-024",
     "title": "How We Detect Humanized Aimbots",
     "date": "2026-05-14T14:00:00Z",
