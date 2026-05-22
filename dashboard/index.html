@@ -56,7 +56,6 @@
     .sidebar-game-meta { font-size: 0.7rem; color: var(--text-dim); }
     .sidebar-game-status { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 0.7rem; }
     .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
-    .status-dot.warn { background: var(--accent); }
 
     /* MAIN CONTENT */
     .main { flex: 1; padding: 32px 40px; overflow-y: auto; max-height: calc(100vh - 65px); }
@@ -103,7 +102,7 @@
     .badge-purple { background: rgba(136,96,232,0.1); color: var(--purple); }
     .badge-dim { background: rgba(255,255,255,0.04); color: var(--text-dim); }
 
-    /* CHARTS (simple bar charts) */
+    /* CHARTS */
     .chart-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
     .chart-title { font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600; color: var(--text-bright); margin-bottom: 20px; }
     .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding-top: 10px; }
@@ -153,6 +152,26 @@
     .api-key-btn { padding: 6px 12px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(232,160,32,0.2); cursor: pointer; font-family: var(--font); }
     .api-key-btn:hover { background: rgba(232,160,32,0.15); }
 
+    /* DROPDOWN FIX */
+    select, select option {
+      background: var(--bg-card) !important;
+      color: var(--text-bright) !important;
+    }
+
+    /* SETUP BANNER */
+    .setup-banner { background: var(--accent-dim); border: 1px solid rgba(232,160,32,0.3); border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
+    .setup-banner-text { font-size: 0.88rem; color: var(--accent); font-weight: 600; }
+    .setup-banner-sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
+    .setup-banner-btn { padding: 8px 20px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; background: var(--accent); color: #050507; border: none; cursor: pointer; font-family: var(--font); }
+    .setup-banner-btn:hover { background: #d09018; }
+
+    /* BAN ACTION BUTTONS */
+    .ban-btn { padding: 4px 10px; border-radius: 4px; font-size: 0.68rem; font-weight: 600; border: none; cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+    .ban-btn-unban { background: rgba(48,200,96,0.15); color: var(--green); border: 1px solid rgba(48,200,96,0.2); }
+    .ban-btn-unban:hover { background: rgba(48,200,96,0.25); }
+    .ban-btn-ban { background: rgba(224,64,80,0.15); color: var(--red); border: 1px solid rgba(224,64,80,0.2); }
+    .ban-btn-ban:hover { background: rgba(224,64,80,0.25); }
+
     @media (max-width: 1024px) {
       .sidebar { width: 180px; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -195,22 +214,22 @@
 
       <div class="sidebar-section">
         <div class="sidebar-label">Monitoring</div>
-        <div class="sidebar-item active" onclick="switchTab('overview')"><span class="sidebar-icon">~</span> Overview</div>
-        <div class="sidebar-item" onclick="switchTab('detections')"><span class="sidebar-icon">!</span> Detections</div>
-        <div class="sidebar-item" onclick="switchTab('sessions')"><span class="sidebar-icon">#</span> Sessions</div>
-        <div class="sidebar-item" onclick="switchTab('bans')"><span class="sidebar-icon">x</span> Bans</div>
+        <div class="sidebar-item active" onclick="switchTab('overview',this)"><span class="sidebar-icon">~</span> Overview</div>
+        <div class="sidebar-item" onclick="switchTab('detections',this)"><span class="sidebar-icon">!</span> Detections</div>
+        <div class="sidebar-item" onclick="switchTab('sessions',this)"><span class="sidebar-icon">#</span> Sessions</div>
+        <div class="sidebar-item" onclick="switchTab('bans',this)"><span class="sidebar-icon">x</span> Bans</div>
       </div>
 
       <div class="sidebar-section">
         <div class="sidebar-label">Infrastructure</div>
-        <div class="sidebar-item" onclick="switchTab('servers')"><span class="sidebar-icon">@</span> Servers</div>
-        <div class="sidebar-item" onclick="switchTab('api')"><span class="sidebar-icon">/</span> API & Keys</div>
+        <div class="sidebar-item" onclick="switchTab('servers',this)"><span class="sidebar-icon">@</span> Servers</div>
+        <div class="sidebar-item" onclick="switchTab('api',this)"><span class="sidebar-icon">/</span> API & Keys</div>
       </div>
 
       <div class="sidebar-section">
         <div class="sidebar-label">Account</div>
-        <div class="sidebar-item" onclick="switchTab('setup')"><span class="sidebar-icon">&gt;</span> Setup</div>
-        <div class="sidebar-item" onclick="switchTab('settings')"><span class="sidebar-icon">*</span> Settings</div>
+        <div class="sidebar-item" onclick="switchTab('setup',this)"><span class="sidebar-icon">&gt;</span> Setup</div>
+        <div class="sidebar-item" onclick="switchTab('settings',this)"><span class="sidebar-icon">*</span> Settings</div>
       </div>
     </div>
 
@@ -223,6 +242,8 @@
           <h1>Overview</h1>
           <p>Real-time protection status for your title</p>
         </div>
+
+        <div id="setupBanner"></div>
 
         <div class="stats-grid" id="overviewStats"></div>
 
@@ -305,6 +326,29 @@
 
         <div class="stats-grid" id="banStats"></div>
 
+        <div class="info-card" style="margin-bottom:24px;">
+          <h3>Manual Ban / Unban</h3>
+          <div style="display:flex;gap:12px;align-items:flex-end;">
+            <div style="flex:1;">
+              <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Player Account ID</label>
+              <input type="text" id="manualBanId" placeholder="e.g. user_48291" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font-mono);" />
+            </div>
+            <div style="flex:1;">
+              <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Reason</label>
+              <select id="manualBanReason" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
+                <option value="Manual ban — policy violation">Policy Violation</option>
+                <option value="Manual ban — confirmed cheating">Confirmed Cheating</option>
+                <option value="Manual ban — boosting/collusion">Boosting / Collusion</option>
+                <option value="Manual ban — abuse/toxicity">Abuse / Toxicity</option>
+                <option value="Manual ban — other">Other</option>
+              </select>
+            </div>
+            <button onclick="manualBan()" style="padding:10px 20px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--red);color:#fff;border:none;cursor:pointer;font-family:var(--font);white-space:nowrap;">Ban Player</button>
+            <button onclick="manualUnban()" style="padding:10px 20px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--green);color:#050507;border:none;cursor:pointer;font-family:var(--font);white-space:nowrap;">Unban Player</button>
+          </div>
+          <div id="banActionResult" style="margin-top:12px;font-size:0.78rem;display:none;padding:10px 14px;border-radius:8px;"></div>
+        </div>
+
         <div class="chart-wrap">
           <div class="chart-title">Bans (Last 14 Days)</div>
           <div class="bar-chart" id="banChart"></div>
@@ -313,7 +357,7 @@
         <div class="table-wrap">
           <div class="table-header"><div class="table-title">Recent Bans</div></div>
           <table>
-            <thead><tr><th>Time</th><th>Account</th><th>Reason</th><th>Confidence</th><th>Status</th></tr></thead>
+            <thead><tr><th>Time</th><th>Account</th><th>Reason</th><th>Confidence</th><th>Status</th><th>Action</th></tr></thead>
             <tbody id="banTable"></tbody>
           </table>
         </div>
@@ -376,6 +420,20 @@
           </div>
         </div>
 
+        <div class="info-card" style="margin-top:24px;margin-bottom:24px;">
+          <h3>SDK Download</h3>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;">
+            <div style="flex:1;">
+              <div style="font-size:0.88rem;font-weight:600;color:var(--text-bright);">cerberus-sdk-v0.4.2.0b-win64.zip</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">4.8 MB &middot; C++ static library &middot; Windows x64</div>
+            </div>
+            <button onclick="alert('SDK download started.\n\nNote: This is a demo — in production, the SDK binary would be served from a secure CDN.')" style="padding:10px 24px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--accent);color:#050507;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download SDK
+            </button>
+          </div>
+        </div>
+
         <div class="info-card" style="margin-top:24px;">
           <h3>API Usage (This Month)</h3>
           <div class="info-row"><span class="info-key">Total Requests</span><span class="info-val" id="apiTotal">0</span></div>
@@ -397,34 +455,46 @@
         <div class="info-card" style="margin-bottom:24px;">
           <h3>Game Configuration</h3>
           <div class="form-group" style="margin-bottom:16px;">
-            <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Game Title</label>
+            <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Game Title</label>
             <input type="text" id="setupGame" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);" />
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div class="form-group">
-              <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Genre</label>
+            <div>
+              <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Genre</label>
               <select id="setupGenre" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
                 <option value="FPS">FPS</option><option value="Battle Royale">Battle Royale</option><option value="MMO">MMO</option><option value="MOBA">MOBA</option><option value="Racing">Racing</option><option value="Survival">Survival</option><option value="Sandbox">Sandbox</option><option value="Other">Other</option>
               </select>
             </div>
-            <div class="form-group">
-              <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Engine</label>
+            <div>
+              <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Engine</label>
               <select id="setupEngine" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
                 <option value="Unreal Engine 5">Unreal Engine 5</option><option value="Unity 6">Unity 6</option><option value="Godot">Godot</option><option value="CryEngine">CryEngine</option><option value="Custom Engine">Custom Engine</option>
               </select>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
-            <div class="form-group">
-              <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Primary Region</label>
+            <div>
+              <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Primary Region</label>
               <select id="setupRegion" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
                 <option value="US-East">US-East</option><option value="EU-West">EU-West</option><option value="AP-Southeast">AP-Southeast</option>
               </select>
             </div>
-            <div class="form-group">
-              <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Development Stage</label>
+            <div>
+              <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Development Stage</label>
               <select id="setupStage" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
                 <option value="Pre-Alpha">Pre-Alpha</option><option value="Alpha">Alpha</option><option value="Closed Beta">Closed Beta</option><option value="Open Beta">Open Beta</option><option value="Early Access">Early Access</option><option value="Live">Live</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
+            <div>
+              <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Max CCU (Concurrent Users)</label>
+              <input type="number" id="setupMaxCCU" placeholder="10000" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font-mono);" />
+            </div>
+            <div>
+              <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Platform</label>
+              <select id="setupPlatform" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
+                <option value="PC">PC Only</option><option value="PC + Console">PC + Console</option><option value="Cross-Platform">Cross-Platform</option>
               </select>
             </div>
           </div>
@@ -456,13 +526,17 @@
 
         <div class="info-card">
           <h3>Webhook Configuration</h3>
-          <div class="form-group" style="margin-bottom:12px;">
-            <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Ban Webhook URL</label>
+          <div style="margin-bottom:12px;">
+            <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Ban Webhook URL</label>
             <input type="url" id="setupWebhookBan" placeholder="https://yourgame.com/api/cerberus/bans" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.82rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font-mono);" />
           </div>
-          <div class="form-group" style="margin-bottom:12px;">
-            <label class="form-label" style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Detection Alert URL</label>
+          <div style="margin-bottom:12px;">
+            <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Detection Alert URL</label>
             <input type="url" id="setupWebhookDet" placeholder="https://yourgame.com/api/cerberus/alerts" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.82rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font-mono);" />
+          </div>
+          <div style="margin-bottom:12px;">
+            <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Session Event URL</label>
+            <input type="url" id="setupWebhookSess" placeholder="https://yourgame.com/api/cerberus/sessions" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.82rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font-mono);" />
           </div>
           <button onclick="alert('Webhooks saved.')" style="padding:10px 24px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--accent);color:#050507;border:none;cursor:pointer;font-family:var(--font);">Save Webhooks</button>
         </div>
@@ -481,7 +555,7 @@
             <div class="info-row"><span class="info-key">Email</span><span class="info-val" id="setEmail">-</span></div>
             <div class="info-row"><span class="info-key">Name</span><span class="info-val" id="setName">-</span></div>
             <div class="info-row"><span class="info-key">Studio</span><span class="info-val" id="setStudio">-</span></div>
-            <div class="info-row"><span class="info-key">Tier</span><span class="info-val" id="setTier">-</span></div>
+            <div class="info-row"><span class="info-key">Plan</span><span class="info-val" id="setTier">-</span></div>
             <div class="info-row"><span class="info-key">Joined</span><span class="info-val" id="setJoined">-</span></div>
           </div>
           <div class="info-card">
@@ -506,7 +580,14 @@
     if (!partner) { window.location.href = '/login/'; }
 
     // ═══════════════════════════════════════
-    // SEEDED RANDOM (consistent per-day data)
+    // HELPERS (must be before use)
+    // ═══════════════════════════════════════
+    function statCard(label, value, change, dir, color) {
+      return '<div class="stat-card ' + color + '"><div class="stat-label">' + label + '</div><div class="stat-value">' + value + '</div><div class="stat-change ' + dir + '">' + change + '</div></div>';
+    }
+
+    // ═══════════════════════════════════════
+    // SEEDED RANDOM
     // ═══════════════════════════════════════
     function seeded(s) { var x = Math.sin(s) * 10000; return x - Math.floor(x); }
     function seedInt(s, min, max) { return min + Math.floor(seeded(s) * (max - min + 1)); }
@@ -515,6 +596,8 @@
     // ═══════════════════════════════════════
     // INIT UI
     // ═══════════════════════════════════════
+    var needsSetup = !partner.game || partner.game === 'Untitled Project' || partner.game === '';
+
     if (partner) {
       document.getElementById('navUser').textContent = partner.name || 'Partner';
       document.getElementById('navStudio').textContent = partner.studio || 'Studio';
@@ -530,16 +613,21 @@
       document.getElementById('setGame').textContent = partner.game || '-';
       document.getElementById('setGenre').textContent = partner.genre || '-';
       document.getElementById('setRegion').textContent = partner.region || '-';
+
+      // Setup banner if game not configured
+      if (needsSetup) {
+        document.getElementById('setupBanner').innerHTML = '<div class="setup-banner"><div><div class="setup-banner-text">Complete your setup to get started</div><div class="setup-banner-sub">Configure your game title, genre, engine, and detection layers.</div></div><button class="setup-banner-btn" onclick="switchTab(\'setup\',document.querySelector(\'[onclick*=setup]\'))">Go to Setup</button></div>';
+      }
     }
 
     // ═══════════════════════════════════════
     // TAB SWITCHING
     // ═══════════════════════════════════════
-    function switchTab(tab) {
+    function switchTab(tab, el) {
       document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
       document.querySelectorAll('.sidebar-item').forEach(function(s) { s.classList.remove('active'); });
       document.getElementById('panel-' + tab).classList.add('active');
-      event.currentTarget.classList.add('active');
+      if (el) el.classList.add('active');
     }
 
     function logout() {
@@ -646,7 +734,6 @@
     function buildBarChart(containerId, colorClass, seedOffset, minVal, maxVal) {
       var days = ['S','M','T','W','T','F','S','S','M','T','W','T','F','S'];
       var html = '';
-      var maxH = 140;
       for (var d = 13; d >= 0; d--) {
         var val = seedInt((today - d) * seedOffset + partnerSeed, minVal, maxVal);
         var pct = (val / maxVal) * 100;
@@ -692,7 +779,7 @@
     }
     document.getElementById('sessTable').innerHTML = sessHtml;
 
-    // Ban table
+    // Ban table with actions
     var banHtml = '';
     var BAN_REASONS = ['Aimbot detected','ESP overlay','Kernel driver tampering','DMA memory read','HWID spoofing','Triggerbot pattern','Coordinated boosting'];
     for (var i = 0; i < 10; i++) {
@@ -700,10 +787,60 @@
       var acct = 'user_' + seedInt(today*139+partnerSeed+i, 10000, 99999);
       var reason = BAN_REASONS[seedInt(today*149+partnerSeed+i, 0, BAN_REASONS.length-1)];
       var conf = (seeded(today*151+partnerSeed+i) * 5 + 94).toFixed(1);
-      var st = seeded(today*157+partnerSeed+i) > 0.15 ? '<span class="badge badge-red">Enforced</span>' : '<span class="badge badge-accent">Under Review</span>';
-      banHtml += '<tr><td>' + hrs + 'h ago</td><td style="font-family:var(--font-mono);font-size:0.75rem;">' + acct + '</td><td>' + reason + '</td><td>' + conf + '%</td><td>' + st + '</td></tr>';
+      var isEnforced = seeded(today*157+partnerSeed+i) > 0.15;
+      var st = isEnforced ? '<span class="badge badge-red">Enforced</span>' : '<span class="badge badge-accent">Under Review</span>';
+      var actionBtn = isEnforced
+        ? '<button class="ban-btn ban-btn-unban" onclick="unbanPlayer(\'' + acct + '\',this)">Unban</button>'
+        : '<button class="ban-btn ban-btn-ban" onclick="confirmBan(\'' + acct + '\',this)">Enforce</button> <button class="ban-btn ban-btn-unban" onclick="dismissBan(\'' + acct + '\',this)">Dismiss</button>';
+      banHtml += '<tr><td>' + hrs + 'h ago</td><td style="font-family:var(--font-mono);font-size:0.75rem;">' + acct + '</td><td>' + reason + '</td><td>' + conf + '%</td><td>' + st + '</td><td>' + actionBtn + '</td></tr>';
     }
     document.getElementById('banTable').innerHTML = banHtml;
+
+    // ═══════════════════════════════════════
+    // BAN ACTIONS
+    // ═══════════════════════════════════════
+    function manualBan() {
+      var id = document.getElementById('manualBanId').value.trim();
+      if (!id) { showBanResult('Enter a player account ID.', 'red'); return; }
+      var reason = document.getElementById('manualBanReason').value;
+      showBanResult('Player ' + id + ' has been banned. Reason: ' + reason, 'green');
+      document.getElementById('manualBanId').value = '';
+    }
+
+    function manualUnban() {
+      var id = document.getElementById('manualBanId').value.trim();
+      if (!id) { showBanResult('Enter a player account ID.', 'red'); return; }
+      showBanResult('Player ' + id + ' has been unbanned.', 'green');
+      document.getElementById('manualBanId').value = '';
+    }
+
+    function showBanResult(msg, color) {
+      var el = document.getElementById('banActionResult');
+      el.style.display = 'block';
+      el.textContent = msg;
+      el.style.background = color === 'green' ? 'rgba(48,200,96,0.1)' : 'rgba(224,64,80,0.1)';
+      el.style.color = color === 'green' ? 'var(--green)' : 'var(--red)';
+      el.style.border = '1px solid ' + (color === 'green' ? 'rgba(48,200,96,0.2)' : 'rgba(224,64,80,0.2)');
+      setTimeout(function() { el.style.display = 'none'; }, 5000);
+    }
+
+    function unbanPlayer(acct, btn) {
+      var row = btn.closest('tr');
+      row.querySelector('td:nth-child(5)').innerHTML = '<span class="badge badge-green">Unbanned</span>';
+      row.querySelector('td:nth-child(6)').innerHTML = '<span style="font-size:0.72rem;color:var(--text-dim);">Unbanned</span>';
+    }
+
+    function confirmBan(acct, btn) {
+      var row = btn.closest('tr');
+      row.querySelector('td:nth-child(5)').innerHTML = '<span class="badge badge-red">Enforced</span>';
+      row.querySelector('td:nth-child(6)').innerHTML = '<button class="ban-btn ban-btn-unban" onclick="unbanPlayer(\'' + acct + '\',this)">Unban</button>';
+    }
+
+    function dismissBan(acct, btn) {
+      var row = btn.closest('tr');
+      row.querySelector('td:nth-child(5)').innerHTML = '<span class="badge badge-green">Dismissed</span>';
+      row.querySelector('td:nth-child(6)').innerHTML = '<span style="font-size:0.72rem;color:var(--text-dim);">Dismissed</span>';
+    }
 
     // ═══════════════════════════════════════
     // REGIONS
@@ -720,7 +857,6 @@
     });
     document.getElementById('regionCards').innerHTML = regionHtml;
 
-    // Server regions
     var srvHtml = '';
     REGIONS.forEach(function(r, i) {
       var lat = (seeded(today*179+partnerSeed+i) * 3 + 1.5).toFixed(1);
@@ -771,17 +907,16 @@
     document.getElementById('apiErrRate').textContent = (seeded(today*293+partnerSeed) * 0.3 + 0.01).toFixed(2) + '%';
 
     // ═══════════════════════════════════════
-    // HELPERS
+    // SETUP
     // ═══════════════════════════════════════
-    function statCard(label, value, change, dir, color) {
-      return '<div class="stat-card ' + color + '"><div class="stat-label">' + label + '</div><div class="stat-value">' + value + '</div><div class="stat-change ' + dir + '">' + change + '</div></div>';
-    }
-
-    // Setup tab — populate from session
     if (partner) {
       document.getElementById('setupGame').value = partner.game || '';
       document.getElementById('setupGenre').value = partner.genre || 'FPS';
       document.getElementById('setupRegion').value = partner.region || 'US-East';
+      if (partner.maxCCU) document.getElementById('setupMaxCCU').value = partner.maxCCU;
+      if (partner.platform) document.getElementById('setupPlatform').value = partner.platform;
+      if (partner.stage) document.getElementById('setupStage').value = partner.stage;
+      if (partner.engine) document.getElementById('setupEngine').value = partner.engine;
     }
 
     function saveSetup() {
@@ -789,14 +924,26 @@
       partner.game = document.getElementById('setupGame').value.trim() || partner.game;
       partner.genre = document.getElementById('setupGenre').value;
       partner.region = document.getElementById('setupRegion').value;
+      partner.engine = document.getElementById('setupEngine').value;
+      partner.stage = document.getElementById('setupStage').value;
+      partner.maxCCU = document.getElementById('setupMaxCCU').value;
+      partner.platform = document.getElementById('setupPlatform').value;
       var storage = localStorage.getItem('cerberus_partner') ? localStorage : sessionStorage;
       storage.setItem('cerberus_partner', JSON.stringify(partner));
       document.getElementById('sgName').textContent = partner.game;
-      document.getElementById('sgMeta').textContent = partner.genre + ' · ' + partner.tier + ' tier';
+      document.getElementById('sgMeta').textContent = partner.genre + ' · ' + partner.tier + ' plan';
       document.getElementById('setGame').textContent = partner.game;
       document.getElementById('setGenre').textContent = partner.genre;
       document.getElementById('setRegion').textContent = partner.region;
+      document.getElementById('cfgEngine').textContent = partner.engine;
+      // Hide setup banner
+      document.getElementById('setupBanner').innerHTML = '';
       alert('Configuration saved.');
+    }
+
+    // Auto-redirect to setup on first login
+    if (needsSetup) {
+      switchTab('setup', document.querySelector('[onclick*=setup]'));
     }
   </script>
 </body>

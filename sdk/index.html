@@ -377,9 +377,9 @@
         <div class="release-actions">
           <button class="btn-download" id="mainDlBtn" onclick="handleDownload()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download SDK
+            <span id="dlBtnText">Download SDK</span>
           </button>
-          <div class="release-meta-note">Requires approved partner account</div>
+          <div class="release-meta-note" id="dlNote">Requires approved partner account — <a href="/login/" style="color:var(--accent);">sign in</a> to download</div>
         </div>
       </div>
       <div class="release-stats">
@@ -647,31 +647,7 @@
       </table>
     </div>
 
-    <!-- ARCHIVE -->
-    <div style="margin-bottom:40px;">
-      <button id="archiveToggle" onclick="toggleArchive()" style="width:100%;padding:12px 20px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);font-family:var(--font);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all 0.2s;">
-        <span><span style="margin-right:8px;">&#9660;</span> Archived Versions <span style="font-size:0.7rem;color:var(--text-dim);margin-left:8px;" id="archiveCount"></span></span>
-        <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);">v0.1.0.0a — v0.3.4.0b</span>
-      </button>
-      <div id="archiveWrap" style="display:none;margin-top:4px;">
-        <div class="version-table-wrap">
-          <table class="version-table">
-            <thead>
-              <tr>
-                <th>Version</th>
-                <th>Date</th>
-                <th>Size</th>
-                <th>Changes</th>
-                <th>Downloads</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="archiveTableBody">
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    <!-- Archive removed — only latest version available for download -->
 
   </div>
 
@@ -756,10 +732,22 @@
       if (weeklyEl) weeklyEl.textContent = total + ' this week';
     })();
 
+    var sdkPartner = JSON.parse(localStorage.getItem('cerberus_partner') || sessionStorage.getItem('cerberus_partner') || 'null');
+
+    // Update UI based on login state
+    if (sdkPartner) {
+      document.getElementById('dlBtnText').textContent = 'Download SDK';
+      document.getElementById('dlNote').innerHTML = 'Signed in as <strong style="color:var(--text-bright);">' + (sdkPartner.name || sdkPartner.email) + '</strong> — ' + (sdkPartner.tier || 'Argus') + ' plan';
+    }
+
     function handleDownload() {
+      if (!sdkPartner) {
+        openModal();
+        return;
+      }
       var n = incrementDlCount();
       renderDlCount(n);
-      openModal();
+      alert('SDK download started.\n\nNote: This is a demo — in production, the SDK binary would be served from a secure CDN.');
     }
 
     // ===== CHECKSUM COPY =====
@@ -902,44 +890,33 @@
 
     function renderVersionTable() {
       var recentHtml = '';
-      var archiveHtml = '';
+      // Only show recent versions (no archive)
       versions.forEach(function(v, i) {
         if (i < RECENT_COUNT) {
           recentHtml += renderVersionRow(v);
-        } else {
-          archiveHtml += renderVersionRow(v);
         }
       });
       document.getElementById('versionTableBody').innerHTML = recentHtml;
-      document.getElementById('archiveTableBody').innerHTML = archiveHtml;
-      var archiveCount = versions.length - RECENT_COUNT;
-      document.getElementById('archiveCount').textContent = archiveCount + ' older release' + (archiveCount !== 1 ? 's' : '');
-    }
-
-    var archiveOpen = false;
-    function toggleArchive() {
-      archiveOpen = !archiveOpen;
-      document.getElementById('archiveWrap').style.display = archiveOpen ? 'block' : 'none';
-      var btn = document.getElementById('archiveToggle');
-      btn.querySelector('span span').textContent = archiveOpen ? '\u25B2' : '\u25BC';
-      btn.style.borderColor = archiveOpen ? 'var(--accent)' : '';
     }
 
     function handleVersionDl(verStr) {
-      // Increment version-specific count
+      if (!sdkPartner) {
+        openModal();
+        return;
+      }
+      // Only allow latest version download
+      var current = versions[0];
+      if (verStr !== current.ver) {
+        alert('Only the latest version (' + current.ver + ') is available for download.');
+        return;
+      }
       var n = incrementVersionDl(verStr);
       var idKey = 'vdl-' + verStr.replace(/\./g,'_');
       var el = document.getElementById(idKey);
       if (el) el.textContent = n.toLocaleString();
-
-      // Also increment global counter if it's the current version
-      var current = versions[0];
-      if (verStr === current.ver) {
-        var g = incrementDlCount();
-        renderDlCount(g);
-      }
-
-      openModal();
+      var g = incrementDlCount();
+      renderDlCount(g);
+      alert('SDK download started.\n\nNote: This is a demo — in production, the SDK binary would be served from a secure CDN.');
     }
 
     renderVersionTable();
