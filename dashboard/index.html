@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Partner Dashboard - Cerberus Anti-Cheat</title>
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --bg-card-hover: #0e0e15;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15); --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px); background-size: 60px 60px; }
+
+    /* NAV */
+    .nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 40px; position: relative; z-index: 10; border-bottom: 1px solid var(--border); background: rgba(5,5,7,0.9); backdrop-filter: blur(12px); }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 800; font-size: 1.1rem; color: #050507; }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-badge { font-size: 0.6rem; font-weight: 700; color: var(--accent); background: var(--accent-dim); padding: 2px 8px; border-radius: 4px; letter-spacing: 1px; text-transform: uppercase; margin-left: 8px; }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-user { font-size: 0.82rem; color: var(--text-dim); }
+    .nav-user strong { color: var(--text-bright); font-weight: 600; }
+    .btn-logout { padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; background: none; border: 1px solid rgba(224,64,80,0.3); color: var(--red); cursor: pointer; font-family: var(--font); transition: all 0.2s; }
+    .btn-logout:hover { background: rgba(224,64,80,0.1); border-color: var(--red); }
+
+    /* LAYOUT */
+    .dashboard { display: flex; min-height: calc(100vh - 65px); position: relative; z-index: 1; }
+
+    /* SIDEBAR */
+    .sidebar { width: 220px; border-right: 1px solid var(--border); padding: 24px 0; flex-shrink: 0; background: rgba(5,5,7,0.5); }
+    .sidebar-section { padding: 0 16px; margin-bottom: 24px; }
+    .sidebar-label { font-size: 0.6rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; padding: 0 8px; }
+    .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 500; color: var(--text-dim); transition: all 0.15s; }
+    .sidebar-item:hover { background: rgba(255,255,255,0.03); color: var(--text); }
+    .sidebar-item.active { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+    .sidebar-icon { width: 18px; text-align: center; font-family: var(--font-mono); font-size: 0.8rem; }
+    .sidebar-game { padding: 16px; margin: 0 16px 20px; border-radius: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); }
+    .sidebar-game-name { font-size: 0.85rem; font-weight: 600; color: var(--text-bright); margin-bottom: 4px; }
+    .sidebar-game-meta { font-size: 0.7rem; color: var(--text-dim); }
+    .sidebar-game-status { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 0.7rem; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+    .status-dot.warn { background: var(--accent); }
+
+    /* MAIN CONTENT */
+    .main { flex: 1; padding: 32px 40px; overflow-y: auto; max-height: calc(100vh - 65px); }
+    .main-header { margin-bottom: 32px; }
+    .main-header h1 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text-bright); }
+    .main-header p { font-size: 0.82rem; color: var(--text-dim); margin-top: 4px; }
+
+    /* STAT CARDS */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; position: relative; overflow: hidden; }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+    .stat-card.accent::before { background: linear-gradient(90deg, var(--accent), transparent); }
+    .stat-card.green::before { background: linear-gradient(90deg, var(--green), transparent); }
+    .stat-card.blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+    .stat-card.red::before { background: linear-gradient(90deg, var(--red), transparent); }
+    .stat-card.purple::before { background: linear-gradient(90deg, var(--purple), transparent); }
+    .stat-label { font-size: 0.7rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .stat-value { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; color: var(--text-bright); }
+    .stat-change { font-size: 0.72rem; font-weight: 600; margin-top: 6px; }
+    .stat-change.up { color: var(--green); }
+    .stat-change.down { color: var(--red); }
+    .stat-change.neutral { color: var(--text-dim); }
+
+    /* PANELS */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* TABLES */
+    .table-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    .table-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border); }
+    .table-title { font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600; color: var(--text-bright); }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 12px 24px; font-size: 0.7rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); }
+    td { padding: 14px 24px; font-size: 0.82rem; color: var(--text); border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.015); }
+
+    /* BADGES */
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-green { background: rgba(48,200,96,0.1); color: var(--green); }
+    .badge-red { background: rgba(224,64,80,0.1); color: var(--red); }
+    .badge-blue { background: rgba(64,136,232,0.1); color: var(--blue); }
+    .badge-accent { background: var(--accent-dim); color: var(--accent); }
+    .badge-purple { background: rgba(136,96,232,0.1); color: var(--purple); }
+    .badge-dim { background: rgba(255,255,255,0.04); color: var(--text-dim); }
+
+    /* CHARTS (simple bar charts) */
+    .chart-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+    .chart-title { font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600; color: var(--text-bright); margin-bottom: 20px; }
+    .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding-top: 10px; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+    .bar { width: 100%; border-radius: 4px 4px 0 0; background: var(--accent); min-height: 4px; transition: height 0.6s ease; }
+    .bar.blue { background: var(--blue); }
+    .bar.green { background: var(--green); }
+    .bar.red { background: var(--red); }
+    .bar-label { font-size: 0.6rem; color: var(--text-dim); text-align: center; }
+    .bar-value { font-size: 0.65rem; font-weight: 600; color: var(--text-bright); }
+
+    /* GRID LAYOUTS */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+    /* INFO CARD */
+    .info-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .info-card h3 { font-family: var(--font-heading); font-size: 0.9rem; font-weight: 600; color: var(--text-bright); margin-bottom: 16px; }
+    .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
+    .info-row:last-child { border-bottom: none; }
+    .info-key { color: var(--text-dim); }
+    .info-val { color: var(--text-bright); font-weight: 500; font-family: var(--font-mono); font-size: 0.78rem; }
+
+    /* ACTIVITY FEED */
+    .feed { max-height: 400px; overflow-y: auto; }
+    .feed-item { padding: 14px 0; border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: flex-start; }
+    .feed-item:last-child { border-bottom: none; }
+    .feed-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+    .feed-dot.green { background: var(--green); }
+    .feed-dot.red { background: var(--red); }
+    .feed-dot.blue { background: var(--blue); }
+    .feed-dot.accent { background: var(--accent); }
+    .feed-text { font-size: 0.8rem; color: var(--text); }
+    .feed-time { font-size: 0.7rem; color: var(--text-dim); margin-top: 3px; }
+
+    /* REGION MAP */
+    .region-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .region-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+    .region-name { font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .region-status { font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; }
+    .region-latency { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 600; color: var(--text-bright); }
+    .region-detail { font-size: 0.7rem; color: var(--text-dim); margin-top: 4px; }
+
+    /* API KEY */
+    .api-key-box { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; }
+    .api-key-val { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-bright); flex: 1; letter-spacing: 0.5px; }
+    .api-key-btn { padding: 6px 12px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(232,160,32,0.2); cursor: pointer; font-family: var(--font); }
+    .api-key-btn:hover { background: rgba(232,160,32,0.15); }
+
+    @media (max-width: 1024px) {
+      .sidebar { width: 180px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .region-cards { grid-template-columns: 1fr; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .nav { padding: 14px 20px; }
+      .main { padding: 24px 16px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav class="nav">
+    <div style="display:flex;align-items:center;">
+      <a href="/" class="nav-brand">
+        <div class="nav-logo">C</div>
+        <div class="nav-wordmark">Cerbe<span>rus</span></div>
+      </a>
+      <span class="nav-badge">Dashboard</span>
+    </div>
+    <div class="nav-right">
+      <div class="nav-user"><strong id="navUser">Partner</strong> &middot; <span id="navStudio">Studio</span></div>
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-game" id="sidebarGame">
+        <div class="sidebar-game-name" id="sgName">Loading...</div>
+        <div class="sidebar-game-meta" id="sgMeta"></div>
+        <div class="sidebar-game-status"><div class="status-dot"></div> <span style="color:var(--green);font-weight:600;">Protected</span></div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Monitoring</div>
+        <div class="sidebar-item active" onclick="switchTab('overview')"><span class="sidebar-icon">~</span> Overview</div>
+        <div class="sidebar-item" onclick="switchTab('detections')"><span class="sidebar-icon">!</span> Detections</div>
+        <div class="sidebar-item" onclick="switchTab('sessions')"><span class="sidebar-icon">#</span> Sessions</div>
+        <div class="sidebar-item" onclick="switchTab('bans')"><span class="sidebar-icon">x</span> Bans</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Infrastructure</div>
+        <div class="sidebar-item" onclick="switchTab('servers')"><span class="sidebar-icon">@</span> Servers</div>
+        <div class="sidebar-item" onclick="switchTab('api')"><span class="sidebar-icon">/</span> API & Keys</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Account</div>
+        <div class="sidebar-item" onclick="switchTab('settings')"><span class="sidebar-icon">*</span> Settings</div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+      <!-- OVERVIEW -->
+      <div class="panel active" id="panel-overview">
+        <div class="main-header">
+          <h1>Overview</h1>
+          <p>Real-time protection status for your title</p>
+        </div>
+
+        <div class="stats-grid" id="overviewStats"></div>
+
+        <div class="grid-2">
+          <div class="chart-wrap">
+            <div class="chart-title">Detections (Last 14 Days)</div>
+            <div class="bar-chart" id="detChart"></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-title">Active Sessions (Last 14 Days)</div>
+            <div class="bar-chart" id="sessChart"></div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="table-title">Recent Activity</div>
+          </div>
+          <div style="padding:0 24px 16px;">
+            <div class="feed" id="activityFeed"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETECTIONS -->
+      <div class="panel" id="panel-detections">
+        <div class="main-header">
+          <h1>Detections</h1>
+          <p>Cheat detection events across all sessions</p>
+        </div>
+
+        <div class="stats-grid" id="detStats"></div>
+
+        <div class="grid-2">
+          <div class="chart-wrap">
+            <div class="chart-title">Detection by Type</div>
+            <div id="detTypeChart"></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-title">Detection by Layer</div>
+            <div id="detLayerChart"></div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">Recent Detections</div></div>
+          <table>
+            <thead><tr><th>Time</th><th>Type</th><th>Layer</th><th>Confidence</th><th>Action</th></tr></thead>
+            <tbody id="detTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SESSIONS -->
+      <div class="panel" id="panel-sessions">
+        <div class="main-header">
+          <h1>Sessions</h1>
+          <p>Player sessions and connection analytics</p>
+        </div>
+
+        <div class="stats-grid" id="sessStats"></div>
+
+        <div class="region-cards" id="regionCards"></div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">Active Sessions</div></div>
+          <table>
+            <thead><tr><th>Session ID</th><th>Region</th><th>Duration</th><th>Scans</th><th>Status</th></tr></thead>
+            <tbody id="sessTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BANS -->
+      <div class="panel" id="panel-bans">
+        <div class="main-header">
+          <h1>Bans</h1>
+          <p>Ban history and enforcement actions</p>
+        </div>
+
+        <div class="stats-grid" id="banStats"></div>
+
+        <div class="chart-wrap">
+          <div class="chart-title">Bans (Last 14 Days)</div>
+          <div class="bar-chart" id="banChart"></div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><div class="table-title">Recent Bans</div></div>
+          <table>
+            <thead><tr><th>Time</th><th>Account</th><th>Reason</th><th>Confidence</th><th>Status</th></tr></thead>
+            <tbody id="banTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SERVERS -->
+      <div class="panel" id="panel-servers">
+        <div class="main-header">
+          <h1>Servers</h1>
+          <p>Infrastructure health and regional performance</p>
+        </div>
+
+        <div class="stats-grid" id="srvStats"></div>
+
+        <div class="region-cards" id="srvRegions"></div>
+
+        <div class="grid-2">
+          <div class="chart-wrap">
+            <div class="chart-title">Scan Latency (Last 14 Days, ms)</div>
+            <div class="bar-chart" id="latencyChart"></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-title">API Requests (Last 14 Days)</div>
+            <div class="bar-chart" id="apiReqChart"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API & KEYS -->
+      <div class="panel" id="panel-api">
+        <div class="main-header">
+          <h1>API & Keys</h1>
+          <p>Integration credentials and SDK configuration</p>
+        </div>
+
+        <div class="info-card" style="margin-bottom:24px;">
+          <h3>Live API Key</h3>
+          <div class="api-key-box">
+            <div class="api-key-val" id="apiKeyDisplay">crbs_live_••••••••••••</div>
+            <button class="api-key-btn" onclick="toggleApiKey()">Reveal</button>
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-dim);">Use this key in your SDK initialization. Never expose it in client-side code.</div>
+        </div>
+
+        <div class="grid-2">
+          <div class="info-card">
+            <h3>SDK Configuration</h3>
+            <div class="info-row"><span class="info-key">SDK Version</span><span class="info-val">v0.4.2.0b</span></div>
+            <div class="info-row"><span class="info-key">Engine</span><span class="info-val" id="cfgEngine">Unreal Engine 5</span></div>
+            <div class="info-row"><span class="info-key">Integration</span><span class="info-val"><span class="badge badge-green">Active</span></span></div>
+            <div class="info-row"><span class="info-key">Driver</span><span class="info-val">EV Signed</span></div>
+            <div class="info-row"><span class="info-key">WHQL</span><span class="info-val"><span class="badge badge-accent">Pending</span></span></div>
+          </div>
+          <div class="info-card">
+            <h3>Webhook Endpoints</h3>
+            <div class="info-row"><span class="info-key">Ban Events</span><span class="info-val"><span class="badge badge-green">Connected</span></span></div>
+            <div class="info-row"><span class="info-key">Detection Alerts</span><span class="info-val"><span class="badge badge-green">Connected</span></span></div>
+            <div class="info-row"><span class="info-key">Session Events</span><span class="info-val"><span class="badge badge-dim">Disabled</span></span></div>
+            <div class="info-row"><span class="info-key">Daily Digest</span><span class="info-val"><span class="badge badge-green">Connected</span></span></div>
+          </div>
+        </div>
+
+        <div class="info-card" style="margin-top:24px;">
+          <h3>API Usage (This Month)</h3>
+          <div class="info-row"><span class="info-key">Total Requests</span><span class="info-val" id="apiTotal">0</span></div>
+          <div class="info-row"><span class="info-key">Session Init Calls</span><span class="info-val" id="apiSessInit">0</span></div>
+          <div class="info-row"><span class="info-key">Verdict Queries</span><span class="info-val" id="apiVerdicts">0</span></div>
+          <div class="info-row"><span class="info-key">Webhook Deliveries</span><span class="info-val" id="apiWebhooks">0</span></div>
+          <div class="info-row"><span class="info-key">Avg Response Time</span><span class="info-val" id="apiAvgResp">0ms</span></div>
+          <div class="info-row"><span class="info-key">Error Rate</span><span class="info-val" id="apiErrRate">0%</span></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="panel" id="panel-settings">
+        <div class="main-header">
+          <h1>Settings</h1>
+          <p>Account and integration configuration</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="info-card">
+            <h3>Account Details</h3>
+            <div class="info-row"><span class="info-key">Email</span><span class="info-val" id="setEmail">-</span></div>
+            <div class="info-row"><span class="info-key">Name</span><span class="info-val" id="setName">-</span></div>
+            <div class="info-row"><span class="info-key">Studio</span><span class="info-val" id="setStudio">-</span></div>
+            <div class="info-row"><span class="info-key">Tier</span><span class="info-val" id="setTier">-</span></div>
+            <div class="info-row"><span class="info-key">Joined</span><span class="info-val" id="setJoined">-</span></div>
+          </div>
+          <div class="info-card">
+            <h3>Game Configuration</h3>
+            <div class="info-row"><span class="info-key">Game Title</span><span class="info-val" id="setGame">-</span></div>
+            <div class="info-row"><span class="info-key">Genre</span><span class="info-val" id="setGenre">-</span></div>
+            <div class="info-row"><span class="info-key">Region</span><span class="info-val" id="setRegion">-</span></div>
+            <div class="info-row"><span class="info-key">Status</span><span class="info-val"><span class="badge badge-green">Active</span></span></div>
+            <div class="info-row"><span class="info-key">Detection Layers</span><span class="info-val">All 4 Active</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════
+    // AUTH CHECK
+    // ═══════════════════════════════════════
+    var partner = JSON.parse(localStorage.getItem('cerberus_partner') || sessionStorage.getItem('cerberus_partner') || 'null');
+    if (!partner) { window.location.href = '/login/'; }
+
+    // ═══════════════════════════════════════
+    // SEEDED RANDOM (consistent per-day data)
+    // ═══════════════════════════════════════
+    function seeded(s) { var x = Math.sin(s) * 10000; return x - Math.floor(x); }
+    function seedInt(s, min, max) { return min + Math.floor(seeded(s) * (max - min + 1)); }
+    var today = Math.floor(Date.now() / 86400000);
+
+    // ═══════════════════════════════════════
+    // INIT UI
+    // ═══════════════════════════════════════
+    if (partner) {
+      document.getElementById('navUser').textContent = partner.name || 'Partner';
+      document.getElementById('navStudio').textContent = partner.studio || 'Studio';
+      document.getElementById('sgName').textContent = partner.game || 'Your Game';
+      document.getElementById('sgMeta').textContent = (partner.genre || 'FPS') + ' · ' + (partner.tier || 'Watchdog') + ' tier';
+
+      // Settings
+      document.getElementById('setEmail').textContent = partner.email || '-';
+      document.getElementById('setName').textContent = partner.name || '-';
+      document.getElementById('setStudio').textContent = partner.studio || '-';
+      document.getElementById('setTier').textContent = partner.tier || '-';
+      document.getElementById('setJoined').textContent = partner.joined || '-';
+      document.getElementById('setGame').textContent = partner.game || '-';
+      document.getElementById('setGenre').textContent = partner.genre || '-';
+      document.getElementById('setRegion').textContent = partner.region || '-';
+    }
+
+    // ═══════════════════════════════════════
+    // TAB SWITCHING
+    // ═══════════════════════════════════════
+    function switchTab(tab) {
+      document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+      document.querySelectorAll('.sidebar-item').forEach(function(s) { s.classList.remove('active'); });
+      document.getElementById('panel-' + tab).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function logout() {
+      localStorage.removeItem('cerberus_partner');
+      localStorage.removeItem('cerberus_session');
+      sessionStorage.removeItem('cerberus_partner');
+      sessionStorage.removeItem('cerberus_session');
+      window.location.href = '/';
+    }
+
+    // ═══════════════════════════════════════
+    // GENERATE DASHBOARD DATA
+    // ═══════════════════════════════════════
+    var partnerSeed = 0;
+    if (partner) { for (var i = 0; i < partner.email.length; i++) partnerSeed += partner.email.charCodeAt(i); }
+
+    // Overview stats
+    var totalSessions = seedInt(today * 7 + partnerSeed, 180, 520);
+    var activeSessions = seedInt(today * 11 + partnerSeed, 20, 85);
+    var totalDetections = seedInt(today * 13 + partnerSeed, 8, 42);
+    var totalBans = seedInt(today * 17 + partnerSeed, 3, 18);
+    var detRate = (seeded(today * 19 + partnerSeed) * 8 + 86).toFixed(1);
+    var fpRate = '0.14';
+    var avgLatency = (seeded(today * 23 + partnerSeed) * 2.2 + 2.8).toFixed(1);
+    var uptime = (97 + seeded(today * 29 + partnerSeed) * 1.8).toFixed(1);
+
+    document.getElementById('overviewStats').innerHTML =
+      statCard('Active Sessions', activeSessions, '+' + seedInt(today*31+partnerSeed,1,8) + ' today', 'up', 'accent') +
+      statCard('Detections Today', totalDetections, (totalDetections > 20 ? 'Above' : 'Within') + ' avg range', totalDetections > 30 ? 'up' : 'neutral', 'blue') +
+      statCard('Bans Issued', totalBans, 'Last 24h', 'neutral', 'red') +
+      statCard('Detection Rate', detRate + '%', 'FP rate: ' + fpRate + '%', 'neutral', 'green');
+
+    // Detection stats
+    var sigMatches = seedInt(today*37+partnerSeed, 40, 65);
+    var aiFlags = seedInt(today*41+partnerSeed, 20, 35);
+    var hwFlags = seedInt(today*43+partnerSeed, 5, 15);
+    var netFlags = 100 - sigMatches - aiFlags - hwFlags;
+    document.getElementById('detStats').innerHTML =
+      statCard('Signature Matches', sigMatches + '%', 'of detections', 'neutral', 'accent') +
+      statCard('Behavioral AI', aiFlags + '%', 'of detections', 'neutral', 'purple') +
+      statCard('Hardware Flags', hwFlags + '%', 'of detections', 'neutral', 'blue') +
+      statCard('Network Sentinel', Math.max(netFlags, 3) + '%', 'of detections', 'neutral', 'green');
+
+    // Detection type breakdown
+    var types = [
+      { name: 'Aimbot', pct: seedInt(today*47+partnerSeed, 25, 38) },
+      { name: 'ESP/Wallhack', pct: seedInt(today*53+partnerSeed, 18, 28) },
+      { name: 'Kernel Driver', pct: seedInt(today*59+partnerSeed, 10, 20) },
+      { name: 'DMA Reader', pct: seedInt(today*61+partnerSeed, 4, 12) },
+      { name: 'HWID Spoofer', pct: seedInt(today*67+partnerSeed, 5, 14) },
+    ];
+    types.push({ name: 'Other', pct: Math.max(2, 100 - types.reduce(function(a,t){return a+t.pct;},0)) });
+
+    var typeHtml = '<div style="display:grid;gap:10px;">';
+    types.forEach(function(t) {
+      typeHtml += '<div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:0.78rem;color:var(--text-dim);">' + t.name + '</span>' +
+        '<div style="flex:1;height:20px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + t.pct + '%;background:var(--accent);border-radius:4px;"></div></div>' +
+        '<span style="width:40px;text-align:right;font-size:0.78rem;font-weight:600;color:var(--text-bright);">' + t.pct + '%</span></div>';
+    });
+    typeHtml += '</div>';
+    document.getElementById('detTypeChart').innerHTML = typeHtml;
+
+    // Detection layer breakdown
+    var layers = [
+      { name: 'L1: Kernel Integrity', pct: sigMatches },
+      { name: 'L2: Behavioral AI', pct: aiFlags },
+      { name: 'L3: Hardware FP', pct: hwFlags },
+      { name: 'L4: Network Sentinel', pct: Math.max(netFlags, 3) },
+    ];
+    var layerColors = ['var(--accent)', 'var(--purple)', 'var(--blue)', 'var(--green)'];
+    var layerHtml = '<div style="display:grid;gap:10px;">';
+    layers.forEach(function(l, i) {
+      layerHtml += '<div style="display:flex;align-items:center;gap:12px;"><span style="width:140px;font-size:0.78rem;color:var(--text-dim);">' + l.name + '</span>' +
+        '<div style="flex:1;height:20px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + l.pct + '%;background:' + layerColors[i] + ';border-radius:4px;"></div></div>' +
+        '<span style="width:40px;text-align:right;font-size:0.78rem;font-weight:600;color:var(--text-bright);">' + l.pct + '%</span></div>';
+    });
+    layerHtml += '</div>';
+    document.getElementById('detLayerChart').innerHTML = layerHtml;
+
+    // Session stats
+    document.getElementById('sessStats').innerHTML =
+      statCard('Active Now', activeSessions, 'across 3 regions', 'neutral', 'accent') +
+      statCard('Today Total', totalSessions, '+' + seedInt(today*71+partnerSeed,5,15) + '% vs yesterday', 'up', 'green') +
+      statCard('Avg Duration', seedInt(today*73+partnerSeed,25,55) + 'min', 'per session', 'neutral', 'blue') +
+      statCard('Scan Latency', avgLatency + 'ms', 'avg across regions', 'neutral', 'purple');
+
+    // Ban stats
+    document.getElementById('banStats').innerHTML =
+      statCard('Total Bans', totalBans, 'last 24 hours', 'neutral', 'red') +
+      statCard('Auto-Banned', Math.round(totalBans * 0.7), '>95% confidence', 'neutral', 'accent') +
+      statCard('Manual Review', Math.round(totalBans * 0.3), 'pending: ' + seedInt(today*79+partnerSeed,0,3), 'neutral', 'blue') +
+      statCard('Appeals', seedInt(today*83+partnerSeed,0,2), seedInt(today*89+partnerSeed,0,1) + ' overturned', 'neutral', 'purple');
+
+    // Server stats
+    document.getElementById('srvStats').innerHTML =
+      statCard('Uptime', uptime + '%', 'last 30 days', 'neutral', 'green') +
+      statCard('Avg Latency', avgLatency + 'ms', 'scan pipeline', 'neutral', 'blue') +
+      statCard('Regions', '3 / 3', 'all operational', 'neutral', 'accent') +
+      statCard('API Uptime', (98 + seeded(today*91+partnerSeed) * 1.5).toFixed(1) + '%', 'last 30 days', 'neutral', 'purple');
+
+    // ═══════════════════════════════════════
+    // BAR CHARTS
+    // ═══════════════════════════════════════
+    function buildBarChart(containerId, colorClass, seedOffset, minVal, maxVal) {
+      var days = ['S','M','T','W','T','F','S','S','M','T','W','T','F','S'];
+      var html = '';
+      var maxH = 140;
+      for (var d = 13; d >= 0; d--) {
+        var val = seedInt((today - d) * seedOffset + partnerSeed, minVal, maxVal);
+        var pct = (val / maxVal) * 100;
+        html += '<div class="bar-col"><div class="bar-value">' + val + '</div><div class="bar ' + colorClass + '" style="height:' + Math.max(pct, 5) + '%;"></div><div class="bar-label">' + days[13 - d] + '</div></div>';
+      }
+      document.getElementById(containerId).innerHTML = html;
+    }
+
+    buildBarChart('detChart', '', 37, 5, 45);
+    buildBarChart('sessChart', 'blue', 41, 120, 550);
+    buildBarChart('banChart', 'red', 43, 1, 20);
+    buildBarChart('latencyChart', 'green', 47, 22, 52);
+    buildBarChart('apiReqChart', 'blue', 53, 800, 3500);
+
+    // ═══════════════════════════════════════
+    // TABLES
+    // ═══════════════════════════════════════
+    var CHEAT_TYPES = ['Aimbot','ESP/Wallhack','Kernel Driver','DMA Reader','HWID Spoofer','Triggerbot','Recoil Script'];
+    var LAYERS = ['Kernel Integrity','Behavioral AI','Hardware FP','Network Sentinel'];
+    var REGIONS = ['US-East','EU-West','AP-Southeast'];
+
+    // Detection table
+    var detHtml = '';
+    for (var i = 0; i < 12; i++) {
+      var mins = seedInt(today*97+partnerSeed+i, 2, 180);
+      var ct = CHEAT_TYPES[seedInt(today*101+partnerSeed+i, 0, CHEAT_TYPES.length-1)];
+      var layer = LAYERS[seedInt(today*103+partnerSeed+i, 0, LAYERS.length-1)];
+      var conf = (seeded(today*107+partnerSeed+i) * 8 + 91).toFixed(1);
+      var action = parseFloat(conf) >= 95 ? '<span class="badge badge-red">Auto-Ban</span>' : '<span class="badge badge-accent">Review</span>';
+      detHtml += '<tr><td>' + mins + 'min ago</td><td>' + ct + '</td><td><span class="badge badge-blue">' + layer + '</span></td><td>' + conf + '%</td><td>' + action + '</td></tr>';
+    }
+    document.getElementById('detTable').innerHTML = detHtml;
+
+    // Session table
+    var sessHtml = '';
+    for (var i = 0; i < 10; i++) {
+      var sid = 'sess_' + (today * 100 + i).toString(36);
+      var reg = REGIONS[seedInt(today*109+partnerSeed+i, 0, 2)];
+      var dur = seedInt(today*113+partnerSeed+i, 3, 90);
+      var scans = seedInt(today*127+partnerSeed+i, 10, 200);
+      var status = seeded(today*131+partnerSeed+i) > 0.1 ? '<span class="badge badge-green">Clean</span>' : '<span class="badge badge-accent">Flagged</span>';
+      sessHtml += '<tr><td style="font-family:var(--font-mono);font-size:0.75rem;">' + sid + '</td><td>' + reg + '</td><td>' + dur + 'min</td><td>' + scans + '</td><td>' + status + '</td></tr>';
+    }
+    document.getElementById('sessTable').innerHTML = sessHtml;
+
+    // Ban table
+    var banHtml = '';
+    var BAN_REASONS = ['Aimbot detected','ESP overlay','Kernel driver tampering','DMA memory read','HWID spoofing','Triggerbot pattern','Coordinated boosting'];
+    for (var i = 0; i < 10; i++) {
+      var hrs = seedInt(today*137+partnerSeed+i, 1, 72);
+      var acct = 'user_' + seedInt(today*139+partnerSeed+i, 10000, 99999);
+      var reason = BAN_REASONS[seedInt(today*149+partnerSeed+i, 0, BAN_REASONS.length-1)];
+      var conf = (seeded(today*151+partnerSeed+i) * 5 + 94).toFixed(1);
+      var st = seeded(today*157+partnerSeed+i) > 0.15 ? '<span class="badge badge-red">Enforced</span>' : '<span class="badge badge-accent">Under Review</span>';
+      banHtml += '<tr><td>' + hrs + 'h ago</td><td style="font-family:var(--font-mono);font-size:0.75rem;">' + acct + '</td><td>' + reason + '</td><td>' + conf + '%</td><td>' + st + '</td></tr>';
+    }
+    document.getElementById('banTable').innerHTML = banHtml;
+
+    // ═══════════════════════════════════════
+    // REGIONS
+    // ═══════════════════════════════════════
+    var regionHtml = '';
+    REGIONS.forEach(function(r, i) {
+      var lat = (seeded(today*163+partnerSeed+i) * 3 + 1.5).toFixed(1);
+      var sess = seedInt(today*167+partnerSeed+i, 5, 35);
+      var up = (97 + seeded(today*173+partnerSeed+i) * 2.5).toFixed(1);
+      regionHtml += '<div class="region-card"><div class="region-name">' + r + '</div>' +
+        '<div class="region-status" style="color:var(--green);">Operational</div>' +
+        '<div class="region-latency">' + lat + 'ms</div>' +
+        '<div class="region-detail">' + sess + ' sessions &middot; ' + up + '% uptime</div></div>';
+    });
+    document.getElementById('regionCards').innerHTML = regionHtml;
+
+    // Server regions
+    var srvHtml = '';
+    REGIONS.forEach(function(r, i) {
+      var lat = (seeded(today*179+partnerSeed+i) * 3 + 1.5).toFixed(1);
+      var load = seedInt(today*181+partnerSeed+i, 15, 65);
+      var up = (97 + seeded(today*191+partnerSeed+i) * 2.5).toFixed(1);
+      srvHtml += '<div class="region-card"><div class="region-name">' + r + '</div>' +
+        '<div class="region-status" style="color:var(--green);">Healthy</div>' +
+        '<div class="region-latency">' + lat + 'ms avg</div>' +
+        '<div class="region-detail">Load: ' + load + '% &middot; Uptime: ' + up + '%</div></div>';
+    });
+    document.getElementById('srvRegions').innerHTML = srvHtml;
+
+    // ═══════════════════════════════════════
+    // ACTIVITY FEED
+    // ═══════════════════════════════════════
+    var feedEvents = [
+      { dot: 'green', text: 'Session scan completed — ' + activeSessions + ' active sessions, all clean', time: seedInt(today*193+partnerSeed, 1, 5) + 'min ago' },
+      { dot: 'red', text: 'Auto-ban issued: user_' + seedInt(today*197+partnerSeed, 10000, 99999) + ' — aimbot detected (97.2% confidence)', time: seedInt(today*199+partnerSeed, 8, 25) + 'min ago' },
+      { dot: 'blue', text: 'Signature database updated — ' + seedInt(today*211+partnerSeed, 2, 8) + ' new entries applied', time: seedInt(today*223+partnerSeed, 30, 90) + 'min ago' },
+      { dot: 'accent', text: 'Behavioral AI model v3.' + seedInt(today*227+partnerSeed, 1, 4) + ' checkpoint loaded', time: seedInt(today*229+partnerSeed, 1, 4) + 'h ago' },
+      { dot: 'green', text: 'Webhook delivery successful — ban event to ' + (partner ? partner.studio : 'Studio') + ' endpoint', time: seedInt(today*233+partnerSeed, 2, 6) + 'h ago' },
+      { dot: 'red', text: 'Detection spike: ' + seedInt(today*239+partnerSeed, 3, 8) + ' ESP detections in 15-minute window', time: seedInt(today*241+partnerSeed, 3, 8) + 'h ago' },
+      { dot: 'blue', text: 'Daily scan report generated — ' + totalSessions + ' sessions, ' + totalDetections + ' detections', time: seedInt(today*251+partnerSeed, 8, 16) + 'h ago' },
+      { dot: 'green', text: 'Hardware attestation scan completed — no anomalies across ' + seedInt(today*257+partnerSeed, 2, 3) + ' regions', time: seedInt(today*263+partnerSeed, 12, 20) + 'h ago' },
+    ];
+    var feedHtml = '';
+    feedEvents.forEach(function(ev) {
+      feedHtml += '<div class="feed-item"><div class="feed-dot ' + ev.dot + '"></div><div><div class="feed-text">' + ev.text + '</div><div class="feed-time">' + ev.time + '</div></div></div>';
+    });
+    document.getElementById('activityFeed').innerHTML = feedHtml;
+
+    // ═══════════════════════════════════════
+    // API PANEL
+    // ═══════════════════════════════════════
+    var apiKeyRevealed = false;
+    function toggleApiKey() {
+      apiKeyRevealed = !apiKeyRevealed;
+      document.getElementById('apiKeyDisplay').textContent = apiKeyRevealed ? (partner ? partner.apiKey : 'crbs_live_000000000000') : 'crbs_live_••••••••••••';
+      event.target.textContent = apiKeyRevealed ? 'Hide' : 'Reveal';
+    }
+
+    var apiTotalVal = seedInt(today*269+partnerSeed, 8000, 35000);
+    document.getElementById('apiTotal').textContent = apiTotalVal.toLocaleString();
+    document.getElementById('apiSessInit').textContent = seedInt(today*271+partnerSeed, 3000, 15000).toLocaleString();
+    document.getElementById('apiVerdicts').textContent = seedInt(today*277+partnerSeed, 2000, 10000).toLocaleString();
+    document.getElementById('apiWebhooks').textContent = seedInt(today*281+partnerSeed, 500, 3000).toLocaleString();
+    document.getElementById('apiAvgResp').textContent = (seeded(today*283+partnerSeed) * 15 + 12).toFixed(0) + 'ms';
+    document.getElementById('apiErrRate').textContent = (seeded(today*293+partnerSeed) * 0.3 + 0.01).toFixed(2) + '%';
+
+    // ═══════════════════════════════════════
+    // HELPERS
+    // ═══════════════════════════════════════
+    function statCard(label, value, change, dir, color) {
+      return '<div class="stat-card ' + color + '"><div class="stat-label">' + label + '</div><div class="stat-value">' + value + '</div><div class="stat-change ' + dir + '">' + change + '</div></div>';
+    }
+  </script>
+</body>
+</html>

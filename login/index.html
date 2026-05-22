@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Partner Login - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Log in to your Cerberus partner dashboard to monitor detections, manage your integration, and view analytics." />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --bg-card-hover: #0e0e15;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15); --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px); background-size: 60px 60px; }
+    .grid-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,160,32,0.06), transparent 70%); }
+
+    /* NAV */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 40px; position: relative; z-index: 10; border-bottom: 1px solid var(--border); }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 800; font-size: 1.1rem; color: #050507; }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; letter-spacing: 0.3px; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
+    .nav-login { padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(232,160,32,0.4); color: var(--accent); text-decoration: none; transition: all 0.2s; }
+    .nav-login:hover { border-color: var(--accent); background: rgba(232,160,32,0.08); }
+    .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; }
+    .nav-cta:hover { background: #d09018; }
+
+    /* LOGIN */
+    .login-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; padding: 60px 24px; position: relative; z-index: 1; }
+    .login-card { width: 100%; max-width: 420px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; position: relative; overflow: hidden; }
+    .login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), transparent); }
+    .login-header { text-align: center; margin-bottom: 36px; }
+    .login-icon { width: 56px; height: 56px; border-radius: 14px; background: var(--accent-dim); border: 1px solid rgba(232,160,32,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: var(--font-heading); font-weight: 800; font-size: 1.4rem; color: var(--accent); }
+    .login-header h1 { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: var(--text-bright); margin-bottom: 8px; }
+    .login-header p { font-size: 0.82rem; color: var(--text-dim); }
+
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    input[type="email"], input[type="password"] {
+      width: 100%; padding: 12px 16px; border-radius: 8px; font-size: 0.88rem;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-bright);
+      font-family: var(--font); transition: border-color 0.2s;
+    }
+    input:focus { outline: none; border-color: rgba(232,160,32,0.4); }
+    input::placeholder { color: var(--text-dim); }
+
+    .remember-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+    .remember-row label { font-size: 0.78rem; color: var(--text-dim); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .remember-row input[type="checkbox"] { accent-color: var(--accent); }
+    .forgot-link { font-size: 0.78rem; color: var(--accent); text-decoration: none; }
+    .forgot-link:hover { text-decoration: underline; }
+
+    .btn-login {
+      width: 100%; padding: 14px 32px; border-radius: 10px; font-size: 0.88rem; font-weight: 600;
+      background: var(--accent); color: #050507; border: none; cursor: pointer;
+      font-family: var(--font); transition: all 0.25s; letter-spacing: 0.3px;
+    }
+    .btn-login:hover { background: #d09018; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232,160,32,0.3); }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .login-footer { text-align: center; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .login-footer p { font-size: 0.78rem; color: var(--text-dim); }
+    .login-footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .login-footer a:hover { text-decoration: underline; }
+
+    .login-error { display: none; padding: 12px 16px; border-radius: 8px; background: rgba(224,64,80,0.1); border: 1px solid rgba(224,64,80,0.2); color: var(--red); font-size: 0.8rem; margin-bottom: 20px; }
+
+    .login-demo { margin-top: 20px; text-align: center; }
+    .login-demo button { background: none; border: 1px solid var(--border); color: var(--text-dim); padding: 8px 16px; border-radius: 8px; font-size: 0.75rem; font-family: var(--font); cursor: pointer; transition: all 0.2s; }
+    .login-demo button:hover { border-color: rgba(232,160,32,0.3); color: var(--accent); }
+
+    .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+    .footer-brand { font-family: var(--font-heading); font-weight: 700; font-size: 1rem; color: var(--text-bright); margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .login-card { padding: 36px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/api/">API</a>
+      <a href="/sdk/">SDK</a>
+      <a href="/changelog/">Changelog</a>
+      <a href="/blog/">Blog</a>
+      <a href="/status/">Status</a>
+      <a href="/analytics/">Analytics</a>
+      <a href="/team/">Team</a>
+    </div>
+    <div class="nav-cta-wrap">
+      <a href="/login/" class="nav-login active" style="border-color:var(--accent);background:rgba(232,160,32,0.08)">Partner Login</a>
+      <a href="/access/" class="nav-cta">Partner Account</a>
+    </div>
+  </nav>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-icon">C</div>
+        <h1>Partner Login</h1>
+        <p>Access your detection dashboard and analytics</p>
+      </div>
+
+      <div class="login-error" id="loginError"></div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" id="loginEmail" placeholder="alex@studio.com" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter your password" required />
+        </div>
+        <div class="remember-row">
+          <label><input type="checkbox" id="rememberMe" /> Remember me</label>
+          <a href="#" class="forgot-link" onclick="alert('Contact security@cerberus-ac.com for password resets.');return false;">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn-login" id="loginBtn">Sign In</button>
+      </form>
+
+      <div class="login-footer">
+        <p>Don't have an account? <a href="/access/">Create Partner Account</a></p>
+      </div>
+
+      <div class="login-demo">
+        <button onclick="fillDemo()">Use demo credentials</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span></div>
+    <p>&copy; 2026 Cerberus Anti-Cheat &middot; <a href="/privacy/" style="color:var(--accent);text-decoration:none;">Privacy</a> &middot; <a href="/terms/" style="color:var(--accent);text-decoration:none;">Terms</a></p>
+  </footer>
+
+  <script>
+    // Demo credentials
+    var DEMO_EMAIL = 'demo@cerberus-ac.com';
+    var DEMO_PASS = 'cerberus-beta-2026';
+
+    // Demo partner profile
+    var DEMO_PARTNER = {
+      email: DEMO_EMAIL,
+      name: 'Alex Carter',
+      studio: 'Ironclad Games',
+      game: 'Project Vanguard',
+      genre: 'FPS',
+      tier: 'Cerberus',
+      region: 'US-East',
+      apiKey: 'crbs_live_7f3a9c2e1b4d',
+      joined: '2026-03-14',
+      approved: true
+    };
+
+    function fillDemo() {
+      document.getElementById('loginEmail').value = DEMO_EMAIL;
+      document.getElementById('loginPassword').value = DEMO_PASS;
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      var email = document.getElementById('loginEmail').value.trim();
+      var pass = document.getElementById('loginPassword').value;
+      var btn = document.getElementById('loginBtn');
+      var err = document.getElementById('loginError');
+
+      btn.disabled = true;
+      btn.textContent = 'Authenticating...';
+      err.style.display = 'none';
+
+      // Simulate auth delay
+      setTimeout(function() {
+        if (email === DEMO_EMAIL && pass === DEMO_PASS) {
+          // Store session
+          var storage = document.getElementById('rememberMe').checked ? localStorage : sessionStorage;
+          storage.setItem('cerberus_partner', JSON.stringify(DEMO_PARTNER));
+          storage.setItem('cerberus_session', Date.now().toString());
+          // Redirect to dashboard
+          window.location.href = '/dashboard/';
+        } else if (email && pass) {
+          // Any email/password combo works for the demo site
+          var customPartner = {
+            email: email,
+            name: email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); }),
+            studio: email.split('@')[1] ? email.split('@')[1].split('.')[0].replace(/\b\w/g, function(c) { return c.toUpperCase(); }) : 'Partner Studio',
+            game: 'Untitled Project',
+            genre: 'FPS',
+            tier: 'Watchdog',
+            region: 'US-East',
+            apiKey: 'crbs_live_' + Math.random().toString(36).substring(2, 14),
+            joined: new Date().toISOString().split('T')[0],
+            approved: true
+          };
+          var storage = document.getElementById('rememberMe').checked ? localStorage : sessionStorage;
+          storage.setItem('cerberus_partner', JSON.stringify(customPartner));
+          storage.setItem('cerberus_session', Date.now().toString());
+          window.location.href = '/dashboard/';
+        } else {
+          err.textContent = 'Invalid credentials. Use the demo account or contact support.';
+          err.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+        }
+      }, 1200);
+    }
+
+    // If already logged in, redirect
+    (function() {
+      var p = localStorage.getItem('cerberus_partner') || sessionStorage.getItem('cerberus_partner');
+      if (p) window.location.href = '/dashboard/';
+    })();
+  </script>
+</body>
+</html>
