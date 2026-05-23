@@ -87,6 +87,28 @@
     .stat-value { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; color: var(--accent); }
     .stat-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
 
+    /* ACTIVITY PULSE */
+    .activity-section { max-width: 1100px; margin: 0 auto 48px; padding: 0 24px; position: relative; z-index: 1; }
+    .activity-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px 24px; overflow: hidden;
+    }
+    .activity-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .activity-title { font-family: var(--font-heading); font-size: 0.85rem; font-weight: 700; color: var(--text-bright); }
+    .activity-live { display: flex; align-items: center; gap: 6px; font-size: 0.65rem; color: var(--green); font-family: var(--font-mono); font-weight: 600; }
+    .activity-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: actPulse 2s ease-in-out infinite; }
+    @keyframes actPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(48,200,96,0.3); } 50% { box-shadow: 0 0 0 4px rgba(48,200,96,0); } }
+    .activity-feed { max-height: 200px; overflow-y: auto; }
+    .activity-feed::-webkit-scrollbar { width: 3px; }
+    .activity-feed::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
+    .activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.75rem; }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-avatar { width: 22px; height: 22px; border-radius: 6px; background: var(--accent-dim); display: flex; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 700; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+    .activity-text { color: var(--text-dim); line-height: 1.5; }
+    .activity-text strong { color: var(--text); font-weight: 600; }
+    .activity-text .act-file { color: var(--accent); font-family: var(--font-mono); font-size: 0.68rem; }
+    .activity-time { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-dim); margin-left: auto; white-space: nowrap; flex-shrink: 0; padding-top: 2px; }
+
     /* LEADERSHIP */
     .section { max-width: 1100px; margin: 0 auto; padding: 60px 24px; position: relative; z-index: 1; }
     .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
@@ -104,19 +126,38 @@
       transition: opacity 0.3s;
     }
     .lead-card:hover::after { opacity: 1; }
+    .lead-card-top { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
     .lead-avatar {
-      width: 56px; height: 56px; border-radius: 14px; margin-bottom: 20px;
+      width: 52px; height: 52px; border-radius: 14px;
       background: var(--accent-dim); display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-heading); font-weight: 800; font-size: 1.1rem; color: var(--accent);
+      font-family: var(--font-heading); font-weight: 800; font-size: 1rem; color: var(--accent); flex-shrink: 0;
+      position: relative;
     }
-    .lead-name { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: var(--text-bright); margin-bottom: 4px; }
-    .lead-role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
-    .lead-bio { font-size: 0.82rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 16px; }
-    .lead-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .lead-status {
+      position: absolute; bottom: -2px; right: -2px; width: 12px; height: 12px; border-radius: 50%;
+      border: 2px solid var(--bg-card); z-index: 2;
+    }
+    .lead-status-online { background: var(--green); }
+    .lead-status-busy { background: var(--red); }
+    .lead-status-away { background: var(--accent); }
+    .lead-status-offline { background: var(--text-dim); }
+    .lead-info { flex: 1; min-width: 0; }
+    .lead-name { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); }
+    .lead-role { font-size: 0.75rem; color: var(--accent); font-weight: 600; margin-top: 2px; }
+    .lead-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.68rem; color: var(--text-dim); }
+    .lead-meta-item { display: flex; align-items: center; gap: 4px; }
+    .lead-prior { font-size: 0.72rem; color: var(--text-dim); font-style: italic; margin-bottom: 10px; }
+    .lead-bio { font-size: 0.8rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 14px; }
+    .lead-focus { font-size: 0.68rem; color: var(--text-dim); padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.015); border: 1px solid var(--border); margin-bottom: 14px; }
+    .lead-focus strong { color: var(--text); font-weight: 600; }
+    .lead-tags { display: flex; flex-wrap: wrap; gap: 5px; }
     .lead-tag {
-      padding: 3px 10px; border-radius: 12px; font-size: 0.68rem; font-weight: 500;
+      padding: 2px 8px; border-radius: 10px; font-size: 0.62rem; font-weight: 500;
       background: rgba(255,255,255,0.02); color: var(--text-dim); border: 1px solid var(--border);
     }
+    .lead-contrib { display: flex; gap: 2px; align-items: flex-end; margin-top: 12px; height: 20px; }
+    .lead-contrib-bar { width: 4px; border-radius: 1px; background: var(--accent); opacity: 0.5; transition: opacity 0.2s; }
+    .lead-contrib-bar:hover { opacity: 1; }
 
     /* DEPARTMENT GRID */
     .dept-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 80px; }
@@ -132,8 +173,6 @@
     }
     .dept-icon-kernel { background: rgba(232,160,32,0.1); }
     .dept-icon-ai { background: rgba(136,96,232,0.1); }
-    .dept-icon-hw { background: rgba(64,136,232,0.1); }
-    .dept-icon-sec { background: rgba(224,64,80,0.1); }
     .dept-icon-sdk { background: rgba(48,200,96,0.1); }
     .dept-icon-qa { background: rgba(232,160,32,0.1); }
     .dept-name { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); }
@@ -147,10 +186,27 @@
     .dept-member-avatar {
       width: 24px; height: 24px; border-radius: 6px; background: var(--accent-dim);
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.6rem; font-weight: 700; color: var(--accent);
+      font-size: 0.6rem; font-weight: 700; color: var(--accent); position: relative;
+    }
+    .dept-member-status {
+      position: absolute; bottom: -1px; right: -1px; width: 8px; height: 8px; border-radius: 50%;
+      border: 1.5px solid var(--bg-card);
     }
     .dept-member-name { font-size: 0.75rem; color: var(--text); font-weight: 500; }
     .dept-member-title { font-size: 0.65rem; color: var(--text-dim); }
+
+    /* TIMEZONE MAP */
+    .tz-section { max-width: 1100px; margin: 0 auto 60px; padding: 0 24px; position: relative; z-index: 1; }
+    .tz-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px;
+    }
+    .tz-strip { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+    .tz-group { text-align: center; padding: 10px 16px; border-radius: 8px; background: rgba(255,255,255,0.015); border: 1px solid var(--border); min-width: 120px; }
+    .tz-city { font-size: 0.72rem; color: var(--text); font-weight: 600; margin-bottom: 2px; }
+    .tz-time { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); font-weight: 600; }
+    .tz-people { font-size: 0.62rem; color: var(--text-dim); margin-top: 4px; }
+    .tz-bar { display: flex; gap: 3px; justify-content: center; margin-top: 6px; }
+    .tz-dot { width: 6px; height: 6px; border-radius: 50%; }
 
     /* HIRING BANNER */
     .hiring-banner {
@@ -161,30 +217,13 @@
     .hiring-badge {
       display: inline-block; padding: 4px 16px; border-radius: 20px;
       font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
-      background: rgba(48,200,96,0.1); color: var(--green); border: 1px solid rgba(48,200,96,0.3);
-      margin-bottom: 16px; animation: hiringPulse 2s ease-in-out infinite;
-    }
-    @keyframes hiringPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(48,200,96,0.2); }
-      50% { box-shadow: 0 0 0 8px rgba(48,200,96,0); }
+      margin-bottom: 16px;
     }
     .hiring-banner h3 {
       font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700;
       color: var(--text-bright); margin-bottom: 12px;
     }
     .hiring-banner p { font-size: 0.88rem; color: var(--text-dim); margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto; }
-    .hiring-roles { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
-    .hiring-role {
-      padding: 6px 16px; border-radius: 8px; font-size: 0.78rem; font-weight: 500;
-      background: rgba(255,255,255,0.02); color: var(--text); border: 1px solid var(--border);
-    }
-    .btn-hire {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 12px 28px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
-      background: var(--accent); color: #050507; text-decoration: none; border: none; cursor: pointer;
-      transition: all 0.25s;
-    }
-    .btn-hire:hover { background: #d09018; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(232,160,32,0.3); }
 
     /* FOOTER */
     .footer {
@@ -198,16 +237,6 @@
     .footer a:hover { text-decoration: underline; }
 
     .divider { width: 60px; height: 2px; background: var(--accent); margin: 0 auto; opacity: 0.3; }
-    .dept-expand {
-      display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px;
-      border-radius: 8px; background: rgba(232,160,32,0.06); border: 1px solid rgba(232,160,32,0.15);
-      cursor: pointer; transition: all 0.2s;
-    }
-    .dept-expand:hover { background: rgba(232,160,32,0.12); border-color: rgba(232,160,32,0.25); }
-    .dept-expand .dept-member-avatar { background: rgba(232,160,32,0.15); }
-    .dept-expand .dept-member-name { font-size: 0.75rem; color: var(--accent); font-weight: 600; }
-    .dept-hidden { display: none; }
-    .dept-hidden.expanded { display: flex; }
 
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -276,155 +305,45 @@
     </div>
   </div>
 
+  <!-- LIVE ACTIVITY FEED -->
+  <div class="activity-section reveal">
+    <div class="activity-card">
+      <div class="activity-header">
+        <div class="activity-title">Recent Activity</div>
+        <div class="activity-live"><div class="activity-live-dot"></div> LIVE</div>
+      </div>
+      <div class="activity-feed" id="activityFeed"></div>
+    </div>
+  </div>
+
+  <!-- TIMEZONE DISTRIBUTION -->
+  <div class="tz-section reveal">
+    <div class="tz-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div class="section-label" style="margin-bottom:0;">Across Time Zones</div>
+        <div style="font-size:0.65rem;color:var(--text-dim);font-family:var(--font-mono);" id="onlineCount"></div>
+      </div>
+      <div class="tz-strip" id="tzStrip"></div>
+    </div>
+  </div>
+
   <!-- LEADERSHIP -->
   <div class="section">
     <div class="section-label reveal">Leadership</div>
     <div class="section-title reveal">Core team leads</div>
-    <div class="lead-grid">
-      <div class="lead-card reveal">
-        <div class="lead-avatar">NV</div>
-        <div class="lead-name">nvoronov</div>
-        <div class="lead-role">Lead Developer & System Architect</div>
-        <div class="lead-bio">Designed the four-head architecture and oversees all cross-team integration. 12 years in systems programming with prior experience building kernel-mode security products at two major endpoint protection vendors.</div>
-        <div class="lead-tags">
-          <span class="lead-tag">Architecture</span>
-          <span class="lead-tag">Systems Design</span>
-          <span class="lead-tag">C/C++</span>
-          <span class="lead-tag">Rust</span>
-        </div>
-      </div>
-      <div class="lead-card reveal">
-        <div class="lead-avatar">DK</div>
-        <div class="lead-name">dkrasov</div>
-        <div class="lead-role">Head of Kernel Engineering</div>
-        <div class="lead-bio">Former driver developer at a major security vendor. Specializes in ring-0 integrity monitoring, code-signing enforcement, and Windows kernel internals. Architected the driver verification pipeline.</div>
-        <div class="lead-tags">
-          <span class="lead-tag">Ring-0</span>
-          <span class="lead-tag">WDM/WDF</span>
-          <span class="lead-tag">C++</span>
-          <span class="lead-tag">Hypervisors</span>
-        </div>
-      </div>
-      <div class="lead-card reveal">
-        <div class="lead-avatar">SN</div>
-        <div class="lead-name">s.nakamura</div>
-        <div class="lead-role">Head of AI & Behavioral Analysis</div>
-        <div class="lead-bio">ML researcher focused on real-time anomaly detection in adversarial environments. Built the behavioral inference engine that processes input streams at sub-2ms latency. Background in competitive FPS analysis.</div>
-        <div class="lead-tags">
-          <span class="lead-tag">PyTorch</span>
-          <span class="lead-tag">ONNX Runtime</span>
-          <span class="lead-tag">Anomaly Detection</span>
-          <span class="lead-tag">Python</span>
-        </div>
-      </div>
-      <div class="lead-card reveal">
-        <div class="lead-avatar">AX</div>
-        <div class="lead-name">ArsenalRX</div>
-        <div class="lead-role">Head of Threat Research & Hardware Security</div>
-        <div class="lead-bio">Oversees red team operations and hardware security research. Self-taught from a young age — started by tearing apart systems at the binary level, building exploits and then building defenses against them. Leads DMA attack research, firmware reverse engineering, and coordinates threat intelligence operations across partner studios.</div>
-        <div class="lead-tags">
-          <span class="lead-tag">C/C++</span>
-          <span class="lead-tag">Python</span>
-          <span class="lead-tag">Ring-0</span>
-          <span class="lead-tag">DMA Research</span>
-          <span class="lead-tag">Firmware RE</span>
-          <span class="lead-tag">PCIe</span>
-          <span class="lead-tag">Threat Intel</span>
-        </div>
-      </div>
-      <div class="lead-card reveal">
-        <div class="lead-avatar">LW</div>
-        <div class="lead-name">lweber</div>
-        <div class="lead-role">Head of SDK & Integration</div>
-        <div class="lead-bio">Owns the developer experience end to end. Built the C/C++ SDK, C# bindings, Unreal plugin, and Unity package. Ensures Cerberus integrates cleanly with any engine or build system in under 10 minutes.</div>
-        <div class="lead-tags">
-          <span class="lead-tag">SDK Design</span>
-          <span class="lead-tag">Unreal</span>
-          <span class="lead-tag">Unity</span>
-          <span class="lead-tag">CMake</span>
-        </div>
-      </div>
-    </div>
+    <div class="lead-grid" id="leadGrid"></div>
 
     <div class="divider" style="margin-bottom: 80px;"></div>
 
     <!-- DEPARTMENTS -->
     <div class="section-label reveal">Departments</div>
     <div class="section-title reveal">How we're organized</div>
-    <div class="dept-grid">
-      <div class="dept-card reveal">
-        <div class="dept-header">
-          <div class="dept-icon dept-icon-kernel">&#x1F6E1;</div>
-          <div>
-            <div class="dept-name">Kernel & Hardware</div>
-            <div class="dept-count">6 engineers</div>
-          </div>
-        </div>
-        <div class="dept-desc">Develops the ring-0 driver, hardware fingerprinting pipeline, memory integrity verification, and PCIe/DMA detection. Owns everything that touches kernel mode or physical hardware.</div>
-        <div class="dept-members">
-          <div class="dept-member"><div class="dept-member-avatar">DK</div><div><div class="dept-member-name">dkrasov</div><div class="dept-member-title">Lead</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">AX</div><div><div class="dept-member-name">ArsenalRX</div><div class="dept-member-title">HW Security & Threat Research</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">AT</div><div><div class="dept-member-name">atorres</div><div class="dept-member-title">Driver Dev</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">VP</div><div><div class="dept-member-name">vpetrov</div><div class="dept-member-title">Kernel Security</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">MR</div><div><div class="dept-member-name">mradzinski</div><div class="dept-member-title">Firmware RE</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">TK</div><div><div class="dept-member-name">tkuznetsov</div><div class="dept-member-title">Hypervisor Eng.</div></div></div>
-        </div>
-      </div>
-      <div class="dept-card reveal">
-        <div class="dept-header">
-          <div class="dept-icon dept-icon-ai">&#x1F9E0;</div>
-          <div>
-            <div class="dept-name">AI & Detection</div>
-            <div class="dept-count">5 engineers</div>
-          </div>
-        </div>
-        <div class="dept-desc">Builds behavioral detection models, network sentinel analysis, and the verdict engine. Handles real-time inference, anomaly classification, and continuous retraining against new cheat variants.</div>
-        <div class="dept-members">
-          <div class="dept-member"><div class="dept-member-avatar">SN</div><div><div class="dept-member-name">s.nakamura</div><div class="dept-member-title">Lead</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">RH</div><div><div class="dept-member-name">rhuang</div><div class="dept-member-title">ML Engineer</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">EL</div><div><div class="dept-member-name">elindqvist</div><div class="dept-member-title">Data Scientist</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">MC</div><div><div class="dept-member-name">mcheng</div><div class="dept-member-title">Inference Eng.</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">JC</div><div><div class="dept-member-name">jcastillo</div><div class="dept-member-title">Threat Analyst</div></div></div>
-        </div>
-      </div>
-      <div class="dept-card reveal">
-        <div class="dept-header">
-          <div class="dept-icon dept-icon-sdk">&#x1F4E6;</div>
-          <div>
-            <div class="dept-name">SDK & Platform</div>
-            <div class="dept-count">4 engineers</div>
-          </div>
-        </div>
-        <div class="dept-desc">Builds the public SDK, engine plugins, REST API, dashboard, and integration tooling. Owns the developer experience from first API call to production deployment.</div>
-        <div class="dept-members">
-          <div class="dept-member"><div class="dept-member-avatar">LW</div><div><div class="dept-member-name">lweber</div><div class="dept-member-title">Lead</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">CP</div><div><div class="dept-member-name">cpark</div><div class="dept-member-title">Unreal Plugin</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">DA</div><div><div class="dept-member-name">dandrade</div><div class="dept-member-title">Unity Integration</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">ST</div><div><div class="dept-member-name">sthomas</div><div class="dept-member-title">API & Infra</div></div></div>
-        </div>
-      </div>
-      <div class="dept-card reveal">
-        <div class="dept-header">
-          <div class="dept-icon dept-icon-qa">&#x1F9EA;</div>
-          <div>
-            <div class="dept-name">QA & Stability</div>
-            <div class="dept-count">4 engineers</div>
-          </div>
-        </div>
-        <div class="dept-desc">Runs regression testing across 40+ hardware configurations, validates driver stability, monitors false-positive rates, and ensures Cerberus never degrades game performance.</div>
-        <div class="dept-members">
-          <div class="dept-member"><div class="dept-member-avatar">TM</div><div><div class="dept-member-name">tmoretti</div><div class="dept-member-title">Lead</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">BJ</div><div><div class="dept-member-name">bjensen</div><div class="dept-member-title">Test Automation</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">AZ</div><div><div class="dept-member-name">azhao</div><div class="dept-member-title">Perf Analyst</div></div></div>
-          <div class="dept-member"><div class="dept-member-avatar">PS</div><div><div class="dept-member-name">pschmidt</div><div class="dept-member-title">HW Compat.</div></div></div>
-        </div>
-      </div>
-    </div>
+    <div class="dept-grid" id="deptGrid"></div>
   </div>
 
   <!-- HIRING -->
   <div class="hiring-banner reveal">
-    <div class="hiring-badge" style="background:rgba(255,255,255,0.05);color:var(--text-dim);border-color:var(--border);animation:none;">TEAM UPDATE</div>
+    <div class="hiring-badge" style="background:rgba(255,255,255,0.05);color:var(--text-dim);border-color:var(--border);">TEAM UPDATE</div>
     <h3>We're fully staffed for closed beta</h3>
     <p>We may open new positions as we move toward public release. If you're interested in joining us, drop your resume at <a href="mailto:careers@arsenalrx.dev" style="color:var(--accent);">careers@arsenalrx.dev</a> and we'll keep it on file.</p>
   </div>
@@ -432,7 +351,14 @@
   <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-brand">Cerbe<span>rus</span></div>
-    <p>Four heads. Four layers. Nothing gets past the gate.</p>
+    <p>Four layers. Nothing gets past the gate.</p>
+    <div style="display:flex;justify-content:center;gap:20px;margin-top:12px;flex-wrap:wrap;">
+      <a href="/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Home</a>
+      <a href="/docs/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Docs</a>
+      <a href="/analytics/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Analytics</a>
+      <a href="/changelog/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Changelog</a>
+      <a href="/status/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Status</a>
+    </div>
     <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;flex-wrap:wrap;font-size:0.78rem;">
       <a href="/privacy/" style="color:var(--text-dim);">Privacy Policy</a>
       <a href="/terms/" style="color:var(--text-dim);">Terms of Service</a>
@@ -445,6 +371,279 @@
   <script src="/js/cerberus-shared.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ===== SEEDED RANDOM =====
+    var E = window.CerberusEngine;
+    var daySeed = E ? E.daySeed() : Math.floor(Date.now() / 86400000);
+    function seeded(s) { return E ? E.seeded(s) : (function(x){ x = Math.sin(s)*10000; return x-Math.floor(x); })(); }
+
+    // ===== TEAM DATA (single source of truth) =====
+    var team = [
+      { id: 'nvoronov', initials: 'NV', name: 'nvoronov', role: 'Lead Developer & System Architect', dept: 'kernel',
+        prior: 'Ex-CrowdStrike, ex-Kaspersky',
+        loc: 'Moscow', tz: 3, joined: 'Oct 2024',
+        bio: 'Designed the four-layer detection architecture and oversees all cross-team integration. 12 years in systems programming with prior work on kernel-mode EDR products and rootkit analysis frameworks.',
+        focus: 'Driver signing pipeline for WHQL certification',
+        tags: ['Architecture', 'Systems Design', 'C/C++', 'Rust'] },
+      { id: 'dkrasov', initials: 'DK', name: 'dkrasov', role: 'Head of Kernel Engineering', dept: 'kernel',
+        prior: 'Ex-ESET (driver team)',
+        loc: 'Prague', tz: 2, joined: 'Oct 2024',
+        bio: 'Ring-0 specialist with 8 years of WDM/WDF driver development. Built the integrity monitoring subsystem and manages the code-signing pipeline. Previously worked on HIPS drivers at a major AV vendor.',
+        focus: 'PTE manipulation detection for VT-d bypass attempts',
+        tags: ['Ring-0', 'WDM/WDF', 'C++', 'Hypervisors'] },
+      { id: 's.nakamura', initials: 'SN', name: 's.nakamura', role: 'Head of AI & Behavioral Analysis', dept: 'ai',
+        prior: 'PhD Tokyo Tech, ex-LINE Corp',
+        loc: 'Tokyo', tz: 9, joined: 'Nov 2024',
+        bio: 'ML researcher focused on real-time anomaly detection in adversarial environments. Designed the behavioral inference pipeline with sub-2ms latency using quantized TCN models on ONNX Runtime. Background in competitive FPS telemetry analysis.',
+        focus: 'Retraining v3.2 model on 1,200 new Cronus Zen macro samples',
+        tags: ['PyTorch', 'ONNX Runtime', 'Anomaly Detection', 'Python'] },
+      { id: 'ArsenalRX', initials: 'AX', name: 'ArsenalRX', role: 'Head of Threat Research & Hardware Security', dept: 'kernel',
+        prior: 'Self-taught, independent security research',
+        loc: 'Undisclosed', tz: -5, joined: 'Oct 2024',
+        bio: 'Oversees red team ops and hardware security research. Started by reverse-engineering game binaries as a teenager, pivoted to building defenses. Leads DMA attack research, firmware RE, and coordinates threat intel across partner studios.',
+        focus: 'Reverse engineering new KMBox firmware variant',
+        tags: ['C/C++', 'Python', 'Ring-0', 'DMA Research', 'Firmware RE', 'PCIe', 'Threat Intel'] },
+      { id: 'lweber', initials: 'LW', name: 'lweber', role: 'Head of SDK & Integration', dept: 'sdk',
+        prior: 'Ex-Epic Games (UE integrations)',
+        loc: 'Berlin', tz: 2, joined: 'Jan 2025',
+        bio: 'Owns the developer experience end to end. Built the C/C++ SDK, C# bindings, Unreal plugin, and Unity package. Previously worked on engine integration tooling at a major game engine company.',
+        focus: 'Unreal 5.5 plugin compatibility pass',
+        tags: ['SDK Design', 'Unreal', 'Unity', 'CMake', 'C#'] },
+    ];
+
+    var allMembers = [
+      // Kernel & Hardware
+      { id: 'atorres', initials: 'AT', name: 'atorres', title: 'Driver Dev', dept: 'kernel', loc: 'Madrid', tz: 2, joined: 'Dec 2024' },
+      { id: 'vpetrov', initials: 'VP', name: 'vpetrov', title: 'Kernel Security', dept: 'kernel', loc: 'Sofia', tz: 3, joined: 'Jan 2025' },
+      { id: 'mradzinski', initials: 'MR', name: 'mradzinski', title: 'Firmware RE', dept: 'kernel', loc: 'Warsaw', tz: 2, joined: 'Feb 2025' },
+      { id: 'tkuznetsov', initials: 'TK', name: 'tkuznetsov', title: 'Hypervisor Eng.', dept: 'kernel', loc: 'St. Petersburg', tz: 3, joined: 'Mar 2025' },
+      // AI & Detection
+      { id: 'rhuang', initials: 'RH', name: 'rhuang', title: 'ML Engineer', dept: 'ai', loc: 'Shanghai', tz: 8, joined: 'Dec 2024' },
+      { id: 'elindqvist', initials: 'EL', name: 'elindqvist', title: 'Data Scientist', dept: 'ai', loc: 'Stockholm', tz: 2, joined: 'Jan 2025' },
+      { id: 'mcheng', initials: 'MC', name: 'mcheng', title: 'Inference Eng.', dept: 'ai', loc: 'Taipei', tz: 8, joined: 'Feb 2025' },
+      { id: 'jcastillo', initials: 'JC', name: 'jcastillo', title: 'Threat Analyst', dept: 'ai', loc: 'Mexico City', tz: -6, joined: 'Mar 2025' },
+      // SDK & Platform
+      { id: 'cpark', initials: 'CP', name: 'cpark', title: 'Unreal Plugin', dept: 'sdk', loc: 'Seoul', tz: 9, joined: 'Feb 2025' },
+      { id: 'dandrade', initials: 'DA', name: 'dandrade', title: 'Unity Integration', dept: 'sdk', loc: 'Lisbon', tz: 1, joined: 'Feb 2025' },
+      { id: 'sthomas', initials: 'ST', name: 'sthomas', title: 'API & Infra', dept: 'sdk', loc: 'Toronto', tz: -4, joined: 'Mar 2025' },
+      // QA & Stability
+      { id: 'tmoretti', initials: 'TM', name: 'tmoretti', title: 'Lead', dept: 'qa', loc: 'Milan', tz: 2, joined: 'Jan 2025' },
+      { id: 'bjensen', initials: 'BJ', name: 'bjensen', title: 'Test Automation', dept: 'qa', loc: 'Copenhagen', tz: 2, joined: 'Feb 2025' },
+      { id: 'azhao', initials: 'AZ', name: 'azhao', title: 'Perf Analyst', dept: 'qa', loc: 'Shenzhen', tz: 8, joined: 'Mar 2025' },
+      { id: 'pschmidt', initials: 'PS', name: 'pschmidt', title: 'HW Compat.', dept: 'qa', loc: 'Munich', tz: 2, joined: 'Apr 2025' },
+    ];
+
+    // ===== STATUS SIMULATION =====
+    // Determine online/busy/away/offline based on local time at each person's location
+    function getStatus(tzOffset) {
+      var utcHour = new Date().getUTCHours();
+      var localHour = ((utcHour + tzOffset) % 24 + 24) % 24;
+      // Seeded jitter per person per day
+      if (localHour >= 9 && localHour < 18) return Math.random() < 0.7 ? 'online' : 'busy';
+      if (localHour >= 18 && localHour < 22) return Math.random() < 0.4 ? 'online' : 'away';
+      return 'offline';
+    }
+
+    function statusClass(tz) {
+      var s = getStatus(tz);
+      return 'lead-status-' + s;
+    }
+
+    function memberStatusClass(tz) {
+      var s = getStatus(tz);
+      return 'dept-member-status ' + 'lead-status-' + s;
+    }
+
+    // ===== CONTRIBUTION GRAPH (12-week mini bars) =====
+    function contribBars(personSeed) {
+      var html = '<div class="lead-contrib" title="12-week commit activity">';
+      for (var w = 0; w < 12; w++) {
+        var h = Math.floor(seeded(personSeed * 1000 + w * 31) * 18) + 2;
+        html += '<div class="lead-contrib-bar" style="height:' + h + 'px;"></div>';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    // ===== RENDER LEAD CARDS =====
+    var leadHTML = '';
+    team.forEach(function(t, i) {
+      var st = statusClass(t.tz);
+      leadHTML += '<div class="lead-card reveal">' +
+        '<div class="lead-card-top">' +
+        '<div class="lead-avatar">' + t.initials + '<div class="lead-status ' + st + '"></div></div>' +
+        '<div class="lead-info"><div class="lead-name">' + t.name + '</div><div class="lead-role">' + t.role + '</div></div></div>' +
+        '<div class="lead-meta">' +
+        '<div class="lead-meta-item"><span style="opacity:0.5;">&#x1F4CD;</span> ' + t.loc + '</div>' +
+        '<div class="lead-meta-item"><span style="opacity:0.5;">&#x1F4C5;</span> Joined ' + t.joined + '</div>' +
+        '</div>' +
+        '<div class="lead-prior">' + t.prior + '</div>' +
+        '<div class="lead-bio">' + t.bio + '</div>' +
+        '<div class="lead-focus"><strong>Current focus:</strong> ' + t.focus + '</div>' +
+        '<div class="lead-tags">' + t.tags.map(function(tag) { return '<span class="lead-tag">' + tag + '</span>'; }).join('') + '</div>' +
+        contribBars(daySeed + i * 137) +
+        '</div>';
+    });
+    document.getElementById('leadGrid').innerHTML = leadHTML;
+
+    // ===== RENDER DEPARTMENTS =====
+    var depts = [
+      { name: 'Kernel & Hardware', icon: '&#x1F6E1;', iconClass: 'dept-icon-kernel', count: 6,
+        desc: 'Develops the ring-0 driver, hardware fingerprinting pipeline, memory integrity verification, and PCIe/DMA detection. Owns everything that touches kernel mode or physical hardware.',
+        leadId: 'dkrasov', members: ['dkrasov', 'ArsenalRX', 'atorres', 'vpetrov', 'mradzinski', 'tkuznetsov'] },
+      { name: 'AI & Detection', icon: '&#x1F9E0;', iconClass: 'dept-icon-ai', count: 5,
+        desc: 'Builds behavioral detection models, network sentinel analysis, and the verdict engine. Handles real-time inference, anomaly classification, and continuous retraining against new cheat variants.',
+        leadId: 's.nakamura', members: ['s.nakamura', 'rhuang', 'elindqvist', 'mcheng', 'jcastillo'] },
+      { name: 'SDK & Platform', icon: '&#x1F4E6;', iconClass: 'dept-icon-sdk', count: 4,
+        desc: 'Builds the public SDK, engine plugins, REST API, dashboard, and integration tooling. Owns the developer experience from first API call to production deployment.',
+        leadId: 'lweber', members: ['lweber', 'cpark', 'dandrade', 'sthomas'] },
+      { name: 'QA & Stability', icon: '&#x1F9EA;', iconClass: 'dept-icon-qa', count: 4,
+        desc: 'Runs regression testing across 40+ hardware configurations, validates driver stability, monitors false-positive rates, and ensures Cerberus never degrades game performance.',
+        leadId: 'tmoretti', members: ['tmoretti', 'bjensen', 'azhao', 'pschmidt'] },
+    ];
+
+    function findMember(id) {
+      var lead = team.find(function(t) { return t.id === id; });
+      if (lead) return { initials: lead.initials, name: lead.name, title: lead.role.split(' & ')[0], tz: lead.tz };
+      var m = allMembers.find(function(m) { return m.id === id; });
+      return m || { initials: '??', name: id, title: '', tz: 0 };
+    }
+
+    var deptHTML = '';
+    depts.forEach(function(d) {
+      deptHTML += '<div class="dept-card reveal"><div class="dept-header"><div class="dept-icon ' + d.iconClass + '">' + d.icon + '</div><div><div class="dept-name">' + d.name + '</div><div class="dept-count">' + d.count + ' engineers</div></div></div>';
+      deptHTML += '<div class="dept-desc">' + d.desc + '</div>';
+      deptHTML += '<div class="dept-members">';
+      d.members.forEach(function(mid) {
+        var m = findMember(mid);
+        var isLead = d.members.indexOf(mid) === 0;
+        var mSt = memberStatusClass(m.tz);
+        deptHTML += '<div class="dept-member"><div class="dept-member-avatar">' + m.initials + '<div class="' + mSt + '"></div></div><div><div class="dept-member-name">' + m.name + '</div><div class="dept-member-title">' + (isLead ? 'Lead' : (m.title || '')) + '</div></div></div>';
+      });
+      deptHTML += '</div></div>';
+    });
+    document.getElementById('deptGrid').innerHTML = deptHTML;
+
+    // ===== TIMEZONE STRIP =====
+    (function() {
+      var zones = [
+        { city: 'New York', tz: -4, members: ['ArsenalRX', 'sthomas'] },
+        { city: 'Mexico City', tz: -6, members: ['jcastillo'] },
+        { city: 'Lisbon', tz: 1, members: ['dandrade'] },
+        { city: 'Berlin / Prague', tz: 2, members: ['dkrasov', 'lweber', 'atorres', 'mradzinski', 'elindqvist', 'tmoretti', 'bjensen', 'pschmidt'] },
+        { city: 'Moscow', tz: 3, members: ['nvoronov', 'vpetrov', 'tkuznetsov'] },
+        { city: 'Shanghai / Taipei', tz: 8, members: ['rhuang', 'mcheng', 'azhao'] },
+        { city: 'Tokyo / Seoul', tz: 9, members: ['s.nakamura', 'cpark'] },
+      ];
+
+      function renderTZ() {
+        var html = '';
+        var totalOnline = 0;
+        zones.forEach(function(z) {
+          var utcH = new Date().getUTCHours();
+          var utcM = new Date().getUTCMinutes();
+          var localH = ((utcH + z.tz) % 24 + 24) % 24;
+          var timeStr = String(localH).padStart(2, '0') + ':' + String(utcM).padStart(2, '0');
+          var isWork = localH >= 9 && localH < 18;
+          var dotsHTML = '';
+          z.members.forEach(function(mid) {
+            var m = findMember(mid);
+            var s = getStatus(m.tz);
+            if (s === 'online' || s === 'busy') totalOnline++;
+            var color = s === 'online' ? 'var(--green)' : s === 'busy' ? 'var(--red)' : s === 'away' ? 'var(--accent)' : 'var(--text-dim)';
+            dotsHTML += '<div class="tz-dot" style="background:' + color + ';" title="' + m.name + ' (' + s + ')"></div>';
+          });
+          html += '<div class="tz-group"><div class="tz-city">' + z.city + '</div><div class="tz-time" style="color:' + (isWork ? 'var(--accent)' : 'var(--text-dim)') + ';">' + timeStr + '</div><div class="tz-people">' + z.members.length + ' engineer' + (z.members.length > 1 ? 's' : '') + '</div><div class="tz-bar">' + dotsHTML + '</div></div>';
+        });
+        document.getElementById('tzStrip').innerHTML = html;
+        document.getElementById('onlineCount').textContent = totalOnline + '/19 online';
+      }
+      renderTZ();
+      setInterval(renderTZ, 30000);
+    })();
+
+    // ===== LIVE ACTIVITY FEED =====
+    (function() {
+      var feedEl = document.getElementById('activityFeed');
+      var allPeople = team.map(function(t) { return { initials: t.initials, name: t.name, dept: t.dept }; })
+        .concat(allMembers.map(function(m) { return { initials: m.initials, name: m.name, dept: m.dept }; }));
+
+      var commitFiles = {
+        kernel: ['cerberus-driver/src/integrity.c', 'cerberus-driver/src/pte_monitor.cpp', 'cerberus-driver/src/hwid.c', 'cerberus-driver/src/pcie_enum.cpp', 'cerberus-driver/src/dma_detect.c', 'cerberus-driver/src/hypervisor.cpp', 'cerberus-driver/src/callback_guard.c', 'firmware-db/scripts/crawl.py', 'cerberus-driver/src/minifilter.c', 'cerberus-driver/tests/bsod_regression.cpp'],
+        ai: ['behavioral-engine/src/tcn_model.py', 'behavioral-engine/src/inference.cpp', 'behavioral-engine/models/v3.1.4.onnx', 'behavioral-engine/src/feature_extract.py', 'behavioral-engine/src/aim_analyzer.py', 'behavioral-engine/data/macro_samples/', 'detection-pipeline/src/verdict.py', 'behavioral-engine/src/input_stream.cpp', 'network-sentinel/src/packet_verify.py'],
+        sdk: ['sdk/include/cerberus.h', 'sdk/src/cerberus_api.cpp', 'sdk/bindings/csharp/Cerberus.cs', 'plugins/unreal/CerberusPlugin.uplugin', 'plugins/unity/CerberusSDK.cs', 'api-server/src/routes/detection.ts', 'api-server/src/routes/webhook.ts', 'dashboard/src/components/ThreatMap.tsx', 'sdk/cmake/CerberusConfig.cmake'],
+        qa: ['tests/regression/hw_compat.py', 'tests/perf/frame_impact.cpp', 'tests/fp_tracker/false_positive_log.json', 'tests/driver_stability/soak_48h.py', 'tests/configs/amd_zen5.yaml', 'ci/pipeline.yml', 'tests/regression/overlay_whitelist.py', 'tests/perf/memory_footprint.cpp'],
+      };
+
+      var commitMsgs = {
+        kernel: ['fix PTE validation race on multi-core', 'add IOMMU group detection for Zen 5', 'update BYOVD blocklist (6 new drivers)', 'refactor minifilter callback ordering', 'fix crash on Intel Arc Option ROM parse', 'add TLP timing check for FPGA boards', 'harden IOCTL validation against replay', 'update EV code-signing cert path', 'add driver stack attestation for new chipset'],
+        ai: ['retrain v3.1.4 on 800 new samples', 'reduce inference batch size 64->32', 'add micro-movement entropy feature', 'fix ONNX model hot-swap memory leak', 'tune trigger-timing spectral threshold', 'add cross-session drift detector', 'update Cronus Zen macro classifier', 'improve humanization bypass detection', 'add per-player baseline convergence check'],
+        sdk: ['fix UE5.5 plugin compile error', 'add webhook retry with exponential backoff', 'update C# bindings for new ban API', 'fix dashboard chart timezone offset', 'add rate limiter to detection endpoint', 'update CMake find module for Linux', 'add Unity 6 async initialization', 'fix API 503 during reindex window', 'improve error messages in SDK init'],
+        qa: ['add AMD Ryzen 9950X to compat matrix', 'fix flaky overlay detection test', 'update FP regression baseline', 'add 48h soak test for driver memory', 'update CI pipeline for new build server', 'add Intel Arc A770 test config', 'fix perf test frame timing precision', 'add Discord Canary overlay to whitelist', 'update memory footprint budget to 22MB'],
+      };
+
+      var actions = ['pushed to', 'committed to', 'merged into'];
+      var branches = ['main', 'main', 'main', 'dev', 'dev', 'staging', 'hotfix/fp-spike', 'feature/dma-v2', 'feature/model-v3.2'];
+
+      function randomActivity(minutesAgo) {
+        var person = allPeople[Math.floor(Math.random() * allPeople.length)];
+        var dept = person.dept;
+        var files = commitFiles[dept] || commitFiles.kernel;
+        var msgs = commitMsgs[dept] || commitMsgs.kernel;
+        var file = files[Math.floor(Math.random() * files.length)];
+        var msg = msgs[Math.floor(Math.random() * msgs.length)];
+        var action = actions[Math.floor(Math.random() * actions.length)];
+        var branch = branches[Math.floor(Math.random() * branches.length)];
+        var timeStr;
+        if (minutesAgo < 1) timeStr = 'just now';
+        else if (minutesAgo < 60) timeStr = Math.floor(minutesAgo) + 'm ago';
+        else timeStr = Math.floor(minutesAgo / 60) + 'h ago';
+
+        var roll = Math.random();
+        var text;
+        if (roll < 0.55) {
+          text = '<strong>' + person.name + '</strong> ' + action + ' <span style="color:var(--blue);">' + branch + '</span>: ' + msg + ' <span class="act-file">' + file + '</span>';
+        } else if (roll < 0.75) {
+          text = '<strong>' + person.name + '</strong> opened PR #' + Math.floor(Math.random() * 400 + 100) + ': ' + msg;
+        } else if (roll < 0.88) {
+          text = '<strong>' + person.name + '</strong> reviewed PR #' + Math.floor(Math.random() * 400 + 100) + ' — ' + ['approved', 'requested changes', 'left comments'][Math.floor(Math.random() * 3)];
+        } else {
+          text = '<strong>' + person.name + '</strong> closed issue #' + Math.floor(Math.random() * 800 + 200) + ': ' + msg;
+        }
+
+        return { initials: person.initials, text: text, time: timeStr };
+      }
+
+      // Seed initial items (staggered timestamps)
+      for (var i = 0; i < 8; i++) {
+        var mins = Math.floor(seeded(daySeed * 801 + i * 17) * 180) + i * 20;
+        var act = randomActivity(mins);
+        var div = document.createElement('div');
+        div.className = 'activity-item';
+        div.innerHTML = '<div class="activity-avatar">' + act.initials + '</div><div class="activity-text">' + act.text + '</div><div class="activity-time">' + act.time + '</div>';
+        feedEl.appendChild(div);
+      }
+
+      // Add new activity every 30-90s
+      function scheduleActivity() {
+        var delay = 30000 + Math.floor(Math.random() * 60000);
+        setTimeout(function() {
+          var act = randomActivity(0);
+          var div = document.createElement('div');
+          div.className = 'activity-item';
+          div.style.opacity = '0';
+          div.style.transition = 'opacity 0.3s';
+          div.innerHTML = '<div class="activity-avatar">' + act.initials + '</div><div class="activity-text">' + act.text + '</div><div class="activity-time">' + act.time + '</div>';
+          feedEl.insertBefore(div, feedEl.firstChild);
+          requestAnimationFrame(function() { div.style.opacity = '1'; });
+          while (feedEl.children.length > 15) feedEl.removeChild(feedEl.lastChild);
+          scheduleActivity();
+        }, delay);
+      }
+      scheduleActivity();
+    })();
+
+    // ===== SCROLL REVEAL =====
     var reveals = document.querySelectorAll('.reveal');
     var observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
