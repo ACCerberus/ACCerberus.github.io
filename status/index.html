@@ -282,8 +282,8 @@
     var incidentHTML = '';
     var usedIndices = [];
     for (var i = 0; i < numIncidents; i++) {
-      var idx;
-      do { idx = Math.floor(seeded(today * 19 + i * 31) * incidentPool.length); } while (usedIndices.indexOf(idx) >= 0);
+      var idx, attempt = 0;
+      do { idx = Math.floor(seeded(today * 19 + i * 31 + attempt * 7) * incidentPool.length); attempt++; } while (usedIndices.indexOf(idx) >= 0 && attempt < 50);
       usedIndices.push(idx);
       var inc = incidentPool[idx];
       var incDaysAgo = Math.floor(2 + seeded(today * 23 + i * 37) * 40);
