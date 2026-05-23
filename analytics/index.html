@@ -320,10 +320,13 @@
 
     /* A7: Region Map */
     .region-map-container { position: relative; }
-    .region-map-dot { position: absolute; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, -50%); }
-    .region-map-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; animation: mapDotPulse 2s ease-in-out infinite; }
-    @keyframes mapDotPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(232,160,32,0.4); } 50% { box-shadow: 0 0 0 8px rgba(232,160,32,0); } }
-    .region-map-label { position: absolute; transform: translateX(-50%); font-size: 0.6rem; font-family: var(--font-mono); color: var(--text-dim); white-space: nowrap; text-align: center; }
+    .region-map-dot { position: absolute; width: 12px; height: 12px; border-radius: 50%; transform: translate(-50%, -50%); z-index: 3; }
+    .region-map-dot::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; animation: mapDotPulse 2s ease-in-out infinite; }
+    @keyframes mapDotPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(232,160,32,0.5); } 50% { box-shadow: 0 0 0 12px rgba(232,160,32,0); } }
+    .region-map-label { position: absolute; transform: translateX(-50%); font-size: 0.62rem; font-family: var(--font-mono); color: var(--text-dim); white-space: nowrap; text-align: center; z-index: 4; }
+    .region-map-label .region-ccu { font-size: 0.55rem; color: var(--text-dim); opacity: 0.7; }
+    .region-map-ring { position: absolute; border: 1px solid rgba(232,160,32,0.15); border-radius: 50%; transform: translate(-50%, -50%); animation: mapRingPulse 3s ease-in-out infinite; z-index: 2; pointer-events: none; }
+    @keyframes mapRingPulse { 0%,100% { opacity: 0.4; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 0.1; transform: translate(-50%,-50%) scale(1.5); } }
 
     /* A8: Feed Controls */
     .feed-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
@@ -927,31 +930,46 @@
     document.getElementById('sThreatChange').textContent = '+' + threatChange + '%';
 
     // ===== PARTNER TITLES (server instances) =====
-    var games = [
-      { name: 'TST-US-EAST-01', code: 'CRB-0117', genre: 'Tactical FPS', status: 'testing', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.2.0b-b2847' },
-      { name: 'TST-EU-WEST-01', code: 'CRB-0243', genre: 'Battle Royale', status: 'testing', tier: 'cerberus', engine: 'UE5.3', version: 'v0.4.2.0b-b2847' },
-      { name: 'TST-ASIA-SE-01', code: 'CRB-0389', genre: 'FPS', status: 'testing', tier: 'cerberus', engine: 'UE5.4', version: 'v0.4.3.0rc-b2851' },
+    var allServerPool = [
+      { name: 'TST-US-EAST-01', code: 'CRB-0117', genre: 'Tactical FPS', engine: 'UE5.4', region: 'US-East' },
+      { name: 'TST-US-EAST-02', code: 'CRB-0118', genre: 'Battle Royale', engine: 'UE5.3', region: 'US-East' },
+      { name: 'TST-US-WEST-01', code: 'CRB-0124', genre: 'Arena Shooter', engine: 'UE5.4', region: 'US-East' },
+      { name: 'TST-EU-WEST-01', code: 'CRB-0243', genre: 'Battle Royale', engine: 'UE5.3', region: 'EU-West' },
+      { name: 'TST-EU-WEST-02', code: 'CRB-0244', genre: 'Tactical FPS', engine: 'Unity 6', region: 'EU-West' },
+      { name: 'TST-EU-NORTH-01', code: 'CRB-0251', genre: 'Extraction Shooter', engine: 'UE5.4', region: 'EU-West' },
+      { name: 'TST-ASIA-SE-01', code: 'CRB-0389', genre: 'FPS', engine: 'UE5.4', region: 'AP-Southeast' },
+      { name: 'TST-ASIA-EAST-01', code: 'CRB-0392', genre: 'MMO', engine: 'Custom', region: 'AP-Southeast' },
+      { name: 'TST-OCE-01', code: 'CRB-0401', genre: 'Survival', engine: 'UE5.3', region: 'AP-Southeast' },
+      { name: 'STG-US-EAST-01', code: 'CRB-0510', genre: 'Open World', engine: 'UE5.4', region: 'US-East' },
+      { name: 'STG-EU-WEST-01', code: 'CRB-0521', genre: 'Racing', engine: 'Custom', region: 'EU-West' },
+      { name: 'STG-ASIA-SE-01', code: 'CRB-0534', genre: 'FPS', engine: 'UE5.4', region: 'AP-Southeast' },
+      { name: 'DEV-INTERNAL-01', code: 'CRB-0001', genre: 'Sandbox', engine: 'UE5.4', region: 'US-East' },
+      { name: 'TST-US-CENT-01', code: 'CRB-0131', genre: 'Survival', engine: 'Unity 6', region: 'US-East' },
+      { name: 'TST-EU-CENT-01', code: 'CRB-0260', genre: 'Open World', engine: 'CryEngine 5.7', region: 'EU-West' },
+      { name: 'TST-ASIA-JP-01', code: 'CRB-0395', genre: 'Arena Shooter', engine: 'Godot 4', region: 'AP-Southeast' },
     ];
+    var buildVersions = ['v0.4.2.0b-b2847', 'v0.4.2.0b-b2849', 'v0.4.3.0rc-b2851', 'v0.4.3.0rc-b2853', 'v0.4.2.1b-b2850'];
 
-    // Generate consistent daily stats per game
-    games.forEach(function(g, i) {
-      var s = seeded(daySeed + i * 7);
-      // Beta scale: ~160 avg CCU per game, 4-12 threats/day per game
-      g.threats = Math.floor(4 + s * 8);
-      g.ccu = Math.floor(80 + seeded(daySeed + i * 3) * 160);
-      g.bans24 = Math.floor(g.threats * (0.6 + seeded(daySeed + i * 11) * 0.2));
-      g.flags24 = g.threats - g.bans24;
-    });
-
-    // ===== DYNAMIC SERVER INSTANCE UPDATES =====
-    var allServerNames = [
-      'TST-US-EAST-01','TST-US-EAST-02','TST-US-WEST-01',
-      'TST-EU-WEST-01','TST-EU-WEST-02','TST-EU-NORTH-01',
-      'TST-ASIA-SE-01','TST-ASIA-EAST-01','TST-OCE-01',
-      'STG-US-EAST-01','STG-EU-WEST-01','STG-ASIA-SE-01','DEV-INTERNAL-01'
-    ];
-    var allGenres = ['Tactical FPS','Battle Royale','FPS','MMO','Extraction Shooter','Survival','Arena Shooter','Racing','Open World','Sandbox'];
-    var allEngines = ['UE5.4','UE5.3','Unity 6','Custom','Godot 4','CryEngine 5.7'];
+    // Seed initial active instances (5-8 on load)
+    var initialCount = 5 + Math.floor(seeded(daySeed * 701) * 4);
+    var games = [];
+    var usedPoolIdx = [];
+    for (var gi = 0; gi < initialCount; gi++) {
+      var pidx = Math.floor(seeded(daySeed * 703 + gi * 31) * allServerPool.length);
+      while (usedPoolIdx.indexOf(pidx) >= 0) pidx = (pidx + 1) % allServerPool.length;
+      usedPoolIdx.push(pidx);
+      var srv = allServerPool[pidx];
+      var statusRoll = seeded(daySeed * 709 + gi * 17);
+      var st = statusRoll < 0.55 ? 'testing' : statusRoll < 0.80 ? 'live' : statusRoll < 0.90 ? 'beta' : 'starting';
+      games.push({
+        name: srv.name, code: srv.code, genre: srv.genre, engine: srv.engine, region: srv.region,
+        status: st, version: buildVersions[Math.floor(seeded(daySeed * 711 + gi * 13) * buildVersions.length)],
+        threats: Math.floor(2 + seeded(daySeed + gi * 7) * 10),
+        ccu: Math.floor(20 + seeded(daySeed + gi * 3) * 180),
+        players: Math.floor(40 + seeded(daySeed + gi * 5) * 400),
+        launchedAt: Date.now() - Math.floor(seeded(daySeed * 713 + gi * 19) * 7200000)
+      });
+    }
 
     // Track last event time per instance
     var instanceLastEvent = {};
@@ -967,16 +985,20 @@
         var statusClass, statusLabel;
         if (g.status === 'restarting') { statusClass = 'game-status-beta'; statusLabel = 'Restarting'; }
         else if (g.status === 'starting') { statusClass = 'game-status-beta'; statusLabel = 'Starting'; }
+        else if (g.status === 'launching') { statusClass = 'game-status-beta'; statusLabel = 'Launching'; }
         else if (g.status === 'testing') { statusClass = 'game-status-beta'; statusLabel = 'Testing'; }
         else if (g.status === 'beta') { statusClass = 'game-status-beta'; statusLabel = 'Beta'; }
+        else if (g.status === 'shutting_down') { statusClass = 'game-status-beta'; statusLabel = 'Stopping'; }
         else { statusClass = 'game-status-live'; statusLabel = 'Live'; }
         var lastEvt = instanceLastEvent[g.code] || now;
         var secsAgo = Math.floor((now - lastEvt) / 1000);
         var lastEvtStr = secsAgo < 60 ? secsAgo + 's ago' : Math.floor(secsAgo / 60) + 'm ago';
-        html += '<tr><td><div style="font-weight:600;color:var(--text-bright);">' + g.name + '</div><div style="font-size:0.6rem;color:var(--text-dim);margin-top:1px;">' + g.code + ' \u00b7 ' + g.genre + ' \u00b7 ' + g.engine + ' \u00b7 <span style="color:var(--accent);">' + g.version + '</span> \u00b7 last detection: <span style="color:var(--green);">' + lastEvtStr + '</span></div></td>' +
+        var uptimeSec = Math.floor((now - (g.launchedAt || now)) / 1000);
+        var uptimeStr = uptimeSec < 60 ? uptimeSec + 's' : uptimeSec < 3600 ? Math.floor(uptimeSec/60) + 'm' : Math.floor(uptimeSec/3600) + 'h ' + Math.floor((uptimeSec%3600)/60) + 'm';
+        html += '<tr><td><div style="font-weight:600;color:var(--text-bright);">' + g.name + '</div><div style="font-size:0.6rem;color:var(--text-dim);margin-top:1px;">' + g.code + ' \u00b7 ' + g.genre + ' \u00b7 ' + g.engine + ' \u00b7 <span style="color:var(--accent);">' + g.version + '</span> \u00b7 ' + g.region + ' \u00b7 uptime: ' + uptimeStr + ' \u00b7 last detection: <span style="color:var(--green);">' + lastEvtStr + '</span></div></td>' +
           '<td><span class="game-status ' + statusClass + '"><span class="game-status-dot"></span>' + statusLabel + '</span></td>' +
           '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + g.threats.toLocaleString() + '</td>' +
-          '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + (g.status === 'restarting' ? '---' : g.ccu.toLocaleString()) + '</td></tr>';
+          '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + (g.status === 'restarting' || g.status === 'launching' || g.status === 'shutting_down' ? '---' : g.ccu.toLocaleString()) + '</td></tr>';
       });
       document.getElementById('gameTable').innerHTML = html;
     }
@@ -984,34 +1006,76 @@
     // Update last event timestamps every few seconds
     setInterval(function() {
       games.forEach(function(g) {
-        if (g.status !== 'restarting' && Math.random() < 0.3) {
+        if (g.status !== 'restarting' && g.status !== 'launching' && g.status !== 'shutting_down' && Math.random() < 0.35) {
           instanceLastEvent[g.code] = Date.now();
         }
       });
       renderGameTable();
-    }, 8000);
+    }, 6000);
 
     // Update server instance CCUs and statuses at random intervals
     setInterval(function() {
       games.forEach(function(g) {
+        if (g.status === 'launching') {
+          if (Math.random() < 0.5) { g.status = 'starting'; g.ccu = 0; g.launchedAt = Date.now(); }
+          return;
+        }
         if (g.status === 'restarting') {
           if (Math.random() < 0.4) { g.status = 'testing'; g.ccu = Math.floor(30 + Math.random() * 80); }
           return;
         }
         if (g.status === 'starting') {
-          g.status = 'live'; g.ccu = Math.floor(20 + Math.random() * 60);
+          g.status = Math.random() < 0.6 ? 'testing' : 'live';
+          g.ccu = Math.floor(20 + Math.random() * 60);
           return;
         }
-        // Fluctuate CCU by -5% to +5%
-        var delta = Math.floor(g.ccu * (Math.random() * 0.10 - 0.05));
-        g.ccu = Math.max(10, Math.min(240, g.ccu + delta));
-        // Slowly increment threats (rare — beta scale)
-        if (Math.random() < 0.1) g.threats += 1;
-        // Rare restart event (~0.5% per tick)
-        if (Math.random() < 0.005 && g.status === 'live') { g.status = 'restarting'; }
+        if (g.status === 'shutting_down') {
+          // Remove after shutdown
+          g._remove = true;
+          return;
+        }
+        // Fluctuate CCU by -8% to +8%
+        var delta = Math.floor(g.ccu * (Math.random() * 0.16 - 0.08));
+        g.ccu = Math.max(8, Math.min(280, g.ccu + delta));
+        // Player count fluctuates too
+        g.players = Math.max(10, g.players + Math.floor(Math.random() * 30) - 14);
+        // Slowly increment threats
+        if (Math.random() < 0.12) g.threats += 1;
+        // Rare restart event (~1% per tick)
+        if (Math.random() < 0.01 && g.status === 'live') { g.status = 'restarting'; }
+        // Rare shutdown (~0.3%)
+        if (Math.random() < 0.003 && games.length > 4) { g.status = 'shutting_down'; }
       });
+      // Remove shutdown instances
+      games = games.filter(function(g) { return !g._remove; });
       renderGameTable();
-    }, 8000 + Math.floor(Math.random() * 7000));
+    }, 7000 + Math.floor(Math.random() * 5000));
+
+    // Periodically launch NEW server instances (every 30-90s)
+    function scheduleNewServer() {
+      var delay = 30000 + Math.floor(Math.random() * 60000);
+      setTimeout(function() {
+        if (games.length < 12) {
+          // Find an unused server from the pool
+          var available = allServerPool.filter(function(s) {
+            return !games.some(function(g) { return g.code === s.code; });
+          });
+          if (available.length > 0) {
+            var srv = available[Math.floor(Math.random() * available.length)];
+            var newGame = {
+              name: srv.name, code: srv.code, genre: srv.genre, engine: srv.engine, region: srv.region,
+              status: 'launching', version: buildVersions[Math.floor(Math.random() * buildVersions.length)],
+              threats: 0, ccu: 0, players: 0, launchedAt: Date.now()
+            };
+            games.push(newGame);
+            instanceLastEvent[newGame.code] = Date.now();
+            renderGameTable();
+          }
+        }
+        scheduleNewServer();
+      }, delay);
+    }
+    scheduleNewServer();
 
     // ===== TIME-OF-DAY TRAFFIC MULTIPLIER (System 2) =====
     // Realistic global gaming traffic curve — peaks follow Asia, EU, NA timezones
@@ -1297,12 +1361,8 @@
 
     // ===== LIVE FEED — SIMULATED WEBSOCKET EVENT STREAM (System 1) =====
     var feedEl = document.getElementById('liveFeed');
-    // Map server instances to their correct regions (prevent name/region mismatch)
-    var serverRegionMap = [
-      { name: 'TST-US-EAST-01', region: 'US-East' },
-      { name: 'TST-EU-WEST-01', region: 'EU-West' },
-      { name: 'TST-ASIA-SE-01', region: 'AP-Southeast' }
-    ];
+    // Map server instances to their correct regions (pull from live games array)
+    var serverRegionMap = games.map(function(g) { return { name: g.name, region: g.region || 'US-East' }; });
     var feedRegions = ['US-East', 'EU-West', 'AP-Southeast'];
 
     var cheatProviders = [
@@ -2313,34 +2373,106 @@
     (function() {
       var regionListEl = document.getElementById('regionList');
       if (!regionListEl) return;
-      // Keep existing data from regions array
-      var mapSvg = '<svg viewBox="0 0 400 200" style="width:100%;height:auto;opacity:0.15;" xmlns="http://www.w3.org/2000/svg">' +
-        '<path d="M60,60 Q80,40 120,50 L140,45 Q160,55 150,70 L130,80 Q120,90 100,85 L80,90 Q60,80 60,60Z" fill="var(--text-dim)" />' +
-        '<path d="M55,95 Q65,85 80,92 L75,120 Q60,130 50,115 Z" fill="var(--text-dim)" />' +
-        '<path d="M180,40 Q200,30 230,35 L240,45 Q250,60 235,70 L200,65 Q185,55 180,40Z" fill="var(--text-dim)" />' +
-        '<path d="M195,70 Q210,65 220,72 L225,85 Q215,90 200,88 Z" fill="var(--text-dim)" />' +
-        '<path d="M240,45 Q260,35 290,40 L310,50 Q320,60 315,75 L290,80 Q270,85 255,70 Q245,55 240,45Z" fill="var(--text-dim)" />' +
-        '<path d="M300,90 Q310,85 330,95 L340,110 Q335,130 310,135 L295,120 Q290,100 300,90Z" fill="var(--text-dim)" />' +
-        '<path d="M340,120 Q350,115 360,125 L355,140 Q345,145 340,130Z" fill="var(--text-dim)" />' +
+
+      // Realistic world map SVG (simplified Natural Earth projection)
+      var mapSvg = '<svg viewBox="0 0 800 400" style="width:100%;height:auto;" xmlns="http://www.w3.org/2000/svg">' +
+        // Ocean grid lines (subtle)
+        '<defs><pattern id="mapGrid" width="40" height="40" patternUnits="userSpaceOnUse">' +
+        '<path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(232,160,32,0.04)" stroke-width="0.5"/>' +
+        '</pattern></defs>' +
+        '<rect width="800" height="400" fill="url(#mapGrid)"/>' +
+        // North America
+        '<path d="M80,50 L100,45 L130,40 L155,42 L170,50 L185,55 L200,70 L210,90 L205,100 L195,105 L190,120 L185,135 L178,145 L165,148 L155,155 L148,165 L140,168 L130,160 L120,148 L108,140 L100,130 L95,115 L85,100 L78,85 L72,70 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // Central America
+        '<path d="M140,168 L148,172 L155,180 L160,188 L158,195 L150,192 L145,185 L138,178 L135,172 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // South America
+        '<path d="M158,195 L168,198 L178,210 L188,230 L195,260 L198,290 L192,315 L180,340 L168,355 L158,360 L150,350 L145,330 L140,305 L138,280 L142,255 L148,235 L152,215 L155,200 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // Greenland
+        '<path d="M210,30 L230,25 L250,28 L258,38 L252,50 L238,55 L220,50 L212,42 Z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // Europe
+        '<path d="M350,55 L365,48 L380,50 L395,52 L410,58 L418,68 L422,80 L415,90 L405,95 L395,92 L385,98 L378,105 L370,100 L360,95 L352,88 L348,78 L345,68 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // UK/Ireland
+        '<path d="M340,60 L348,55 L352,62 L350,70 L344,72 L338,68 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // Scandinavia
+        '<path d="M370,30 L378,25 L390,28 L398,38 L395,50 L388,48 L380,42 L372,38 Z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // Africa
+        '<path d="M350,115 L370,110 L395,112 L415,120 L430,135 L440,160 L442,190 L438,220 L428,250 L415,270 L398,285 L380,290 L365,282 L355,265 L348,240 L345,215 L342,190 L340,165 L342,140 Z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // Middle East
+        '<path d="M420,95 L440,88 L460,92 L475,100 L480,115 L472,125 L458,128 L445,122 L432,118 L425,108 Z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // Russia/Central Asia (large mass)
+        '<path d="M410,58 L440,48 L480,40 L520,35 L560,32 L600,30 L640,35 L680,42 L710,50 L720,62 L715,75 L700,82 L680,78 L650,72 L620,68 L590,65 L560,62 L530,60 L500,58 L470,62 L445,65 L425,70 L418,68 Z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // India
+        '<path d="M520,110 L540,105 L558,112 L565,130 L560,155 L548,175 L535,185 L522,178 L515,160 L512,140 L515,125 Z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // China/East Asia
+        '<path d="M560,62 L590,58 L620,60 L650,65 L670,75 L675,90 L668,105 L655,115 L638,118 L620,115 L600,108 L585,100 L575,88 L565,78 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // Japan
+        '<path d="M688,78 L695,72 L700,78 L698,90 L692,98 L685,95 L683,85 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // Southeast Asia
+        '<path d="M600,130 L620,125 L640,128 L655,138 L660,155 L650,165 L635,168 L618,162 L608,150 L602,140 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // Indonesia
+        '<path d="M610,180 L630,175 L650,178 L668,182 L680,188 L675,195 L658,198 L638,196 L618,192 L610,188 Z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // Australia
+        '<path d="M640,240 L670,230 L700,232 L725,240 L738,258 L740,280 L732,300 L715,312 L695,315 L670,310 L650,298 L640,278 L635,258 Z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
+        // New Zealand
+        '<path d="M755,305 L762,298 L768,305 L765,318 L758,322 L752,315 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>' +
         '</svg>';
 
-      var html = '<div class="region-map-container" style="position:relative;min-height:180px;">';
+      // Compute live CCU per region from games array
+      var regionCCU = { 'US-East': 0, 'EU-West': 0, 'AP-Southeast': 0 };
+      games.forEach(function(g) { if (g.region && regionCCU[g.region] !== undefined && g.status !== 'launching' && g.status !== 'shutting_down') regionCCU[g.region] += g.ccu; });
+      var totalCCU = Math.max(1, regionCCU['US-East'] + regionCCU['EU-West'] + regionCCU['AP-Southeast']);
+
+      var html = '<div class="region-map-container" style="position:relative;min-height:250px;">';
       html += mapSvg;
-      // Dots with positions
+
+      // Server dots — positioned at real geographic locations
       var dots = [
-        { name: 'US-East', left: '25%', top: '40%', region: regions[0] },
-        { name: 'EU-West', left: '48%', top: '30%', region: regions[1] },
-        { name: 'AP-Southeast', left: '78%', top: '55%', region: regions[2] }
+        { name: 'US-East', left: '22%', top: '35%', region: regions[0], ccu: regionCCU['US-East'] },
+        { name: 'EU-West', left: '46%', top: '25%', region: regions[1], ccu: regionCCU['EU-West'] },
+        { name: 'AP-Southeast', left: '79%', top: '52%', region: regions[2], ccu: regionCCU['AP-Southeast'] }
       ];
       dots.forEach(function(d) {
-        var scale = 0.8 + (d.region.pct / 100) * 1.2;
+        var scale = 0.8 + (d.region.pct / 100) * 1.5;
+        var ringSize = Math.floor(28 + d.region.pct * 0.6);
+        // Outer ring
+        html += '<div class="region-map-ring" style="left:' + d.left + ';top:' + d.top + ';width:' + ringSize + 'px;height:' + ringSize + 'px;"></div>';
+        // Center dot
         html += '<div class="region-map-dot" style="left:' + d.left + ';top:' + d.top + ';background:var(--accent);transform:translate(-50%,-50%) scale(' + scale.toFixed(2) + ');"></div>';
-        html += '<div class="region-map-label" style="left:' + d.left + ';top:calc(' + d.top + ' + 16px);">' + d.name + '<br><span style="color:var(--accent);font-weight:600;">' + d.region.pct + '%</span></div>';
+        // Label
+        html += '<div class="region-map-label" style="left:' + d.left + ';top:calc(' + d.top + ' + 22px);">' +
+          '<span style="color:var(--text-bright);font-weight:600;">' + d.name + '</span><br>' +
+          '<span style="color:var(--accent);font-weight:600;">' + d.region.pct + '%</span>' +
+          '<span class="region-ccu"> \u00b7 ' + d.ccu + ' CCU</span></div>';
       });
+
+      // Connection lines between regions (subtle)
+      html += '<svg viewBox="0 0 800 400" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;" xmlns="http://www.w3.org/2000/svg">' +
+        '<line x1="22%" y1="35%" x2="46%" y2="25%" stroke="rgba(232,160,32,0.08)" stroke-width="1" stroke-dasharray="4,4"/>' +
+        '<line x1="46%" y1="25%" x2="79%" y2="52%" stroke="rgba(232,160,32,0.08)" stroke-width="1" stroke-dasharray="4,4"/>' +
+        '<line x1="22%" y1="35%" x2="79%" y2="52%" stroke="rgba(232,160,32,0.06)" stroke-width="1" stroke-dasharray="4,4"/>' +
+        '</svg>';
+
       html += '</div>';
-      // Keep the original bar list below the map
-      var origHTML = regionListEl.innerHTML;
-      regionListEl.innerHTML = html + '<div style="margin-top:8px;">' + origHTML + '</div>';
+
+      // Bar list below the map
+      var barHTML = '';
+      regions.forEach(function(r, i) {
+        var ccuVal = dots[i] ? dots[i].ccu : 0;
+        var srvCount = games.filter(function(g) { return g.region === r.name && g.status !== 'shutting_down'; }).length;
+        barHTML += '<div class="region-item"><span class="region-name">' + r.name + ' <span style="font-size:0.62rem;color:var(--text-dim);">(' + srvCount + ' servers \u00b7 ' + ccuVal + ' CCU)</span></span>' +
+          '<div class="region-bar-wrap"><div class="region-bar" style="width:' + (r.pct / maxRegPct * 100) + '%;"></div></div>' +
+          '<span class="region-pct">' + r.pct + '%</span></div>';
+      });
+      regionListEl.innerHTML = html + '<div style="margin-top:12px;">' + barHTML + '</div>';
+
+      // Live update CCU on map every 8s
+      setInterval(function() {
+        var rCCU = { 'US-East': 0, 'EU-West': 0, 'AP-Southeast': 0 };
+        games.forEach(function(g) { if (g.region && rCCU[g.region] !== undefined && g.status !== 'launching' && g.status !== 'shutting_down') rCCU[g.region] += g.ccu; });
+        var labels = regionListEl.querySelectorAll('.region-ccu');
+        var keys = ['US-East', 'EU-West', 'AP-Southeast'];
+        labels.forEach(function(lbl, i) { if (keys[i]) lbl.textContent = ' \u00b7 ' + rCCU[keys[i]] + ' CCU'; });
+      }, 8000);
     })();
 
     // ===== A8: LIVE FEED CONTROLS =====
