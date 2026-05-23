@@ -352,6 +352,36 @@
     .wh-status-warn { background: rgba(232,160,32,0.12); color: var(--accent); }
     .wh-status-err { background: rgba(224,64,80,0.12); color: var(--red); }
 
+    /* Detection confidence distribution */
+    .confidence-histogram { display: flex; align-items: flex-end; gap: 3px; height: 100px; padding-top: 8px; }
+    .conf-bar { flex: 1; border-radius: 3px 3px 0 0; transition: height 0.6s ease; position: relative; cursor: default; min-width: 0; }
+    .conf-bar:hover { opacity: 0.85; }
+    .conf-bar[data-tip]::after {
+      content: attr(data-tip); position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%);
+      padding: 2px 6px; border-radius: 3px; font-size: 0.55rem; font-family: var(--font-mono);
+      background: rgba(10,10,15,0.95); color: var(--text); white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity 0.15s; border: 1px solid var(--border); z-index: 10;
+    }
+    .conf-bar:hover::after { opacity: 1; }
+    .conf-x-labels { display: flex; justify-content: space-between; margin-top: 4px; font-size: 0.55rem; color: var(--text-dim); font-family: var(--font-mono); }
+
+    /* Peak hours */
+    .peak-hours-strip { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .peak-hour-item { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); background: rgba(255,255,255,0.01); }
+    .peak-hour-time { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); font-weight: 600; }
+    .peak-hour-label { font-size: 0.65rem; color: var(--text-dim); }
+
+    /* Geo anomaly feed */
+    .geo-anomaly-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .geo-anomaly-icon { width: 24px; height: 24px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; background: rgba(232,160,32,0.1); color: var(--accent); margin-top: 2px; }
+    .geo-anomaly-text { font-size: 0.75rem; color: var(--text); line-height: 1.4; }
+    .geo-anomaly-time { font-size: 0.6rem; color: var(--text-dim); font-family: var(--font-mono); margin-top: 2px; }
+
+    /* Model retraining */
+    .retrain-progress { margin-top: 8px; }
+    .retrain-bar-wrap { height: 6px; background: rgba(255,255,255,0.04); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+    .retrain-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--purple), var(--accent)); transition: width 1s ease; }
+
     @media (max-width: 1000px) {
       .comparison-grid { grid-template-columns: repeat(2, 1fr); }
     }
@@ -711,6 +741,52 @@
         </div>
       </div>
       <div id="perfMetrics"></div>
+    </div>
+  </div>
+
+  <!-- DETECTION CONFIDENCE + PEAK HOURS + GEO ANOMALIES + MODEL RETRAINING -->
+  <div class="dash-grid-2">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Detection Confidence Distribution</div>
+          <div class="dash-card-sub">Score distribution of last 24h detections</div>
+        </div>
+      </div>
+      <div class="confidence-histogram" id="confHistogram"></div>
+      <div class="conf-x-labels"><span>0-10%</span><span>50%</span><span>90-100%</span></div>
+      <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:0.65rem;color:var(--text-dim);">
+        <span>Auto-ban threshold: <span style="color:var(--accent);font-family:var(--font-mono);">95%+</span></span>
+        <span>Manual review: <span style="color:var(--accent);font-family:var(--font-mono);">67-95%</span></span>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Peak Detection Hours</div>
+          <div class="dash-card-sub">Highest threat activity windows (UTC)</div>
+        </div>
+      </div>
+      <div class="peak-hours-strip" id="peakHours"></div>
+      <div style="margin-top:16px;">
+        <div class="dash-card-title" style="font-size:0.8rem;">AI Model Retraining</div>
+        <div class="dash-card-sub" style="margin-bottom:8px;">Scheduled bi-weekly cycle</div>
+        <div id="retrainStatus"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GEO-IP ANOMALIES -->
+  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Geo-IP Anomaly Alerts</div>
+          <div class="dash-card-sub">Suspicious geographic patterns — last 24 hours</div>
+        </div>
+        <div class="dash-card-sub" id="geoAnomalyCount"></div>
+      </div>
+      <div id="geoAnomalyFeed" style="max-height:200px;overflow-y:auto;"></div>
     </div>
   </div>
 
@@ -1687,6 +1763,106 @@
         html += '<div class="perf-metric"><span class="perf-metric-name">' + m.name + '</span><div class="perf-metric-bar"><div class="perf-metric-fill" style="width:' + barPct + '%;background:' + color + ';"></div></div><span class="perf-metric-val">' + m.val + '</span></div>';
       });
       perfEl.innerHTML = html;
+    })();
+
+    // ===== DETECTION CONFIDENCE DISTRIBUTION =====
+    (function() {
+      var histEl = document.getElementById('confHistogram');
+      if (!histEl) return;
+      // 10 buckets: 0-10%, 10-20%, ..., 90-100%
+      // Realistic: most detections cluster at high confidence (auto-ban) and a smaller bump in the 67-95% manual review range
+      var bucketWeights = [0.02, 0.01, 0.02, 0.03, 0.04, 0.06, 0.12, 0.18, 0.22, 0.30];
+      var totalDetections = E ? E.snapshot().dailyDetections : Math.floor(18 + seeded(daySeed * 401) * 12);
+      var buckets = bucketWeights.map(function(w, i) {
+        var jitter = (seeded(daySeed * 403 + i * 17) - 0.5) * 0.03;
+        return Math.max(0, Math.round(totalDetections * (w + jitter)));
+      });
+      var maxBucket = Math.max.apply(null, buckets);
+      var colors = ['#e04050','#e04050','#e87830','#e87830','#e8a020','#e8a020','#e8a020','#e8a020','#30c860','#30c860'];
+      var labels = ['0-10','10-20','20-30','30-40','40-50','50-60','60-70','70-80','80-90','90-100'];
+      var html = '';
+      buckets.forEach(function(count, i) {
+        var pct = maxBucket > 0 ? (count / maxBucket * 100) : 0;
+        html += '<div class="conf-bar" style="height:' + Math.max(pct, 3) + '%;background:' + colors[i] + ';opacity:0.8;" data-tip="' + labels[i] + '%: ' + count + ' detections"></div>';
+      });
+      histEl.innerHTML = html;
+    })();
+
+    // ===== PEAK DETECTION HOURS =====
+    (function() {
+      var peakEl = document.getElementById('peakHours');
+      if (!peakEl) return;
+      // Determine 3 peak hours from diurnal pattern
+      var diurnal = [0.3,0.25,0.2,0.18,0.2,0.25,0.35,0.5,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0,0.98,0.95,0.9,0.85,0.75,0.6,0.45,0.35];
+      var indexed = diurnal.map(function(v, i) { return { hour: i, val: v + (seeded(daySeed * 411 + i * 7) - 0.5) * 0.1 }; });
+      indexed.sort(function(a, b) { return b.val - a.val; });
+      var top3 = indexed.slice(0, 3).sort(function(a, b) { return a.hour - b.hour; });
+      var regions = ['US-East', 'EU-West', 'AP-Southeast'];
+      var html = '';
+      top3.forEach(function(p, i) {
+        var hrStr = String(p.hour).padStart(2, '0') + ':00';
+        var detCount = Math.floor(3 + p.val * 8 + seeded(daySeed * 413 + i * 11) * 3);
+        html += '<div class="peak-hour-item"><span class="peak-hour-time">' + hrStr + ' UTC</span><div><div class="peak-hour-label">' + detCount + ' detections/hr</div><div class="peak-hour-label" style="font-size:0.58rem;">Peak region: ' + regions[i % 3] + '</div></div></div>';
+      });
+      peakEl.innerHTML = html;
+    })();
+
+    // ===== AI MODEL RETRAINING SCHEDULE =====
+    (function() {
+      var retrainEl = document.getElementById('retrainStatus');
+      if (!retrainEl) return;
+      // Bi-weekly cycle: compute days into cycle and days until next retrain
+      var cycleLength = 14;
+      var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+      var daysIntoCycle = dayOfYear % cycleLength;
+      var daysUntilRetrain = cycleLength - daysIntoCycle;
+      var progress = (daysIntoCycle / cycleLength * 100).toFixed(0);
+      var samplesCollected = Math.floor(800 + daysIntoCycle * 120 + seeded(daySeed * 421) * 200);
+      var nextDate = new Date(Date.now() + daysUntilRetrain * 86400000);
+      var dateStr = nextDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      var phase = daysIntoCycle < 8 ? 'Collecting training data' : daysIntoCycle < 11 ? 'Validating dataset' : 'Pre-training checks';
+      retrainEl.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.72rem;color:var(--text);">' + phase + '</span><span style="font-size:0.65rem;color:var(--text-dim);font-family:var(--font-mono);">Next: ' + dateStr + ' (' + daysUntilRetrain + 'd)</span></div>' +
+        '<div class="retrain-bar-wrap"><div class="retrain-bar-fill" style="width:' + progress + '%;"></div></div>' +
+        '<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.6rem;color:var(--text-dim);"><span>' + samplesCollected.toLocaleString() + ' training samples</span><span>' + progress + '% cycle complete</span></div>';
+    })();
+
+    // ===== GEO-IP ANOMALY ALERTS =====
+    (function() {
+      var feedEl = document.getElementById('geoAnomalyFeed');
+      var countEl = document.getElementById('geoAnomalyCount');
+      if (!feedEl) return;
+      var anomalyTemplates = [
+        { text: 'Session <strong>SID-{id}</strong> connected from <strong>{c1}</strong>, previously seen from <strong>{c2}</strong> ({dist}km apart, {mins}m gap)', icon: '\u26A0' },
+        { text: 'VPN cluster detected: <strong>{n}</strong> sessions sharing exit node <strong>{ip}</strong> in <strong>{c1}</strong>', icon: '\uD83D\uDD0D' },
+        { text: 'Impossible travel: <strong>SID-{id}</strong> switched <strong>{c1}</strong> \u2192 <strong>{c2}</strong> in <strong>{mins}m</strong> (min travel: {travel}h)', icon: '\u26A0' },
+        { text: 'Geo mismatch: session timezone <strong>UTC{tz}</strong> but IP geolocates to <strong>{c1}</strong>', icon: '\uD83C\uDF10' },
+        { text: 'Proxy chain detected on <strong>SID-{id}</strong>: {hops} hops through <strong>{c1}</strong>, <strong>{c2}</strong>', icon: '\uD83D\uDD17' },
+      ];
+      var countries = ['Germany','Poland','Romania','Ukraine','Russia','Brazil','Turkey','Vietnam','Indonesia','South Korea','China','USA','UK','France','Netherlands'];
+      var ips = ['185.220.xx.xx','91.243.xx.xx','45.134.xx.xx','103.152.xx.xx','194.26.xx.xx','78.142.xx.xx'];
+      var numAnomalies = 3 + Math.floor(seeded(daySeed * 431) * 5);
+      var html = '';
+      for (var i = 0; i < numAnomalies; i++) {
+        var tpl = anomalyTemplates[Math.floor(seeded(daySeed * 433 + i * 19) * anomalyTemplates.length)];
+        var c1 = countries[Math.floor(seeded(daySeed * 437 + i * 23) * countries.length)];
+        var c2Idx = Math.floor(seeded(daySeed * 439 + i * 29) * countries.length);
+        if (c2Idx === countries.indexOf(c1)) c2Idx = (c2Idx + 1) % countries.length;
+        var c2 = countries[c2Idx];
+        var id = Math.floor(10000 + seeded(daySeed * 441 + i * 31) * 89999);
+        var mins = Math.floor(2 + seeded(daySeed * 443 + i * 37) * 25);
+        var dist = Math.floor(800 + seeded(daySeed * 447 + i * 41) * 8000);
+        var travel = Math.floor(dist / 900);
+        var ip = ips[Math.floor(seeded(daySeed * 449 + i * 43) * ips.length)];
+        var hops = Math.floor(2 + seeded(daySeed * 451 + i * 47) * 4);
+        var tz = (seeded(daySeed * 453 + i * 51) > 0.5 ? '+' : '-') + Math.floor(1 + seeded(daySeed * 457 + i * 53) * 11);
+        var n = Math.floor(3 + seeded(daySeed * 459 + i * 59) * 8);
+        var text = tpl.text.replace('{id}', id).replace('{c1}', c1).replace('{c2}', c2).replace('{mins}', mins).replace('{dist}', dist.toLocaleString()).replace('{travel}', travel).replace('{ip}', ip).replace('{hops}', hops).replace('{tz}', tz).replace('{n}', n);
+        var minsAgo = Math.floor(5 + seeded(daySeed * 461 + i * 61) * 120);
+        var timeStr = minsAgo < 60 ? minsAgo + 'm ago' : Math.floor(minsAgo / 60) + 'h ' + (minsAgo % 60) + 'm ago';
+        html += '<div class="geo-anomaly-item"><div class="geo-anomaly-icon">' + tpl.icon + '</div><div><div class="geo-anomaly-text">' + text + '</div><div class="geo-anomaly-time">' + timeStr + '</div></div></div>';
+      }
+      feedEl.innerHTML = html;
+      if (countEl) countEl.textContent = numAnomalies + ' alerts today';
     })();
 
     // ===== REPORT BUG BUTTON =====
