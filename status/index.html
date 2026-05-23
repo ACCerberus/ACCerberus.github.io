@@ -1263,7 +1263,7 @@
         var d = item.dep;
         var dayOff = item.dayOffset;
         var style = typeStyles[d.type] || typeStyles.infra;
-        var timeStr = dayOff === 0 ? d.hour + 'h ago' : dayOff + 'd ago';
+        var timeStr = dayOff === 0 ? String(d.hour).padStart(2, '0') + ':00 today' : dayOff + 'd ago';
         var title, impact, rolloutLabel;
 
         if (d.type === 'signature') {
