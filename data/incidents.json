@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260521-5328",
+      "title": "Scan latency increase detected",
+      "startedAt": "2026-05-21T21:43:56Z",
+      "resolvedAt": "2026-05-22T10:54:17Z",
+      "duration": "13h 10m",
+      "impactPct": 2.8,
+      "rootCause": "Garbage collection pause in scan worker",
+      "timeline": [
+        {
+          "time": "2026-05-21T21:43:56Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-22T10:54:17Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement feature flag for rapid rollback capability",
+        "Add synthetic monitoring probe for early detection"
+      ],
+      "lessonsLearned": [
+        "Configuration changes need staged rollout validation"
+      ]
+    },
+    {
       "incidentId": "INC-003",
       "title": "Discord overlay false positive spike",
       "startedAt": "2026-05-14T08:22:00Z",
@@ -9,8 +37,16 @@
       "impactPct": 3.4,
       "rootCause": "Discord modified its overlay hook from SetWindowsHookEx to a direct IAT patch. Our kernel layer's DLL injection heuristic matched the new pattern.",
       "timeline": [
-        { "time": "2026-05-14T08:22:00Z", "status": "INVESTIGATING", "detail": "Automated monitoring detected anomaly" },
-        { "time": "2026-05-14T11:40:00Z", "status": "RESOLVED", "detail": "Root cause identified and remediated" }
+        {
+          "time": "2026-05-14T08:22:00Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-14T11:40:00Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
       ],
       "actionItems": [
         "Implement additional monitoring for affected subsystem",
