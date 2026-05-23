@@ -22,6 +22,19 @@
     body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
     ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
 
+    /* S7: Background effects */
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .noise-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.015;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
     .nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 40px;
       display: flex; align-items: center; justify-content: space-between;
@@ -41,7 +54,7 @@
     .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
     .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
 
-    .container { max-width: 800px; margin: 0 auto; padding: 120px 24px 80px; }
+    .container { max-width: 800px; margin: 0 auto; padding: 120px 24px 80px; position: relative; z-index: 1; }
     .page-title { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: var(--text-bright); letter-spacing: -1px; margin-bottom: 8px; }
     .page-desc { font-size: 1rem; color: var(--text-dim); margin-bottom: 48px; }
 
@@ -49,12 +62,36 @@
     .status-banner {
       display: flex; align-items: center; gap: 16px; padding: 24px 32px;
       background: var(--bg-card); border: 1px solid rgba(48,200,96,0.2); border-radius: 16px;
-      margin-bottom: 48px;
+      margin-bottom: 24px; flex-wrap: wrap;
     }
     .status-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px rgba(48,200,96,0.4); animation: pulse-status 2s ease-in-out infinite; }
     @keyframes pulse-status { 0%,100% { box-shadow: 0 0 12px rgba(48,200,96,0.4); } 50% { box-shadow: 0 0 20px rgba(48,200,96,0.2); } }
     .status-text { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 600; color: var(--green); }
+    .status-uptime { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim); margin-left: 4px; }
     .status-time { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-left: auto; }
+
+    /* S5: Subscribe section */
+    .subscribe-section {
+      display: flex; align-items: center; gap: 12px; padding: 16px 24px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      margin-bottom: 48px; flex-wrap: wrap;
+    }
+    .subscribe-section label {
+      font-family: var(--font-heading); font-size: 0.8rem; font-weight: 600; color: var(--text-dim); white-space: nowrap;
+    }
+    .subscribe-section input[type="email"] {
+      flex: 1; min-width: 180px; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03); color: var(--text-bright); font-family: var(--font-mono); font-size: 0.78rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .subscribe-section input[type="email"]:focus { border-color: rgba(232,160,32,0.4); }
+    .subscribe-section input[type="email"]::placeholder { color: var(--text-dim); }
+    .subscribe-btn {
+      padding: 8px 20px; border-radius: 8px; border: 1px solid rgba(232,160,32,0.4); background: transparent;
+      color: var(--accent); font-family: var(--font-heading); font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px;
+    }
+    .subscribe-btn:hover { border-color: var(--accent); background: rgba(232,160,32,0.08); }
 
     /* Uptime grid */
     .uptime-section { margin-bottom: 48px; }
@@ -68,7 +105,36 @@
     .uptime-day.degraded { background: var(--accent); }
     .uptime-day.down { background: var(--red); }
     .uptime-pct { min-width: 70px; text-align: right; font-family: var(--font-mono); font-size: 0.8rem; color: var(--green); font-weight: 600; }
+    .uptime-latency { min-width: 45px; text-align: right; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
     .uptime-legend { display: flex; gap: 4px; justify-content: space-between; margin-top: 4px; font-size: 0.65rem; color: var(--text-dim); }
+
+    /* S8: CSS tooltips */
+    .uptime-day[data-tip]::after {
+      content: attr(data-tip);
+      position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+      padding: 4px 8px; border-radius: 4px; font-size: 0.6rem; font-family: var(--font-mono);
+      background: rgba(10,10,15,0.95); color: var(--text); white-space: nowrap;
+      pointer-events: none; opacity: 0; transition: opacity 0.15s;
+      border: 1px solid var(--border); z-index: 10;
+    }
+    .uptime-day:hover::after { opacity: 1; }
+
+    /* S4: Incident summary strip */
+    .incident-summary {
+      padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      margin-bottom: 32px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); text-align: center;
+    }
+
+    /* S2: Response time chart */
+    .chart-card {
+      padding: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      margin-bottom: 48px;
+    }
+    .chart-title {
+      font-family: var(--font-heading); font-size: 0.85rem; font-weight: 600; color: var(--text-bright); margin-bottom: 16px;
+    }
+    .chart-canvas-wrap { position: relative; width: 100%; height: 180px; }
+    .chart-canvas-wrap canvas { width: 100%; height: 100%; }
 
     /* Incidents */
     .incidents-section { margin-bottom: 48px; }
@@ -112,14 +178,21 @@
     .incident-timeline-text { font-size: 0.82rem; color: var(--text); margin-top: 2px; }
     .incident-eta { margin-top: 12px; padding: 10px 14px; background: rgba(255,255,255,0.02); border-radius: 8px; font-size: 0.78rem; color: var(--text-dim); font-family: var(--font-mono); }
 
-    .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); }
+    /* S6: Footer */
+    .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); position: relative; z-index: 1; }
     .footer p { font-size: 0.75rem; color: var(--text-dim); }
     .footer a { color: var(--accent); text-decoration: none; }
+    .footer-brand { font-family: var(--font-heading); font-weight: 800; font-size: 1.4rem; color: var(--text-bright); margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
 
     @media (max-width: 600px) { .nav { padding: 12px 20px; } .nav-links { display: none; } .uptime-name { min-width: 120px; font-size: 0.78rem; } }
   </style>
 </head>
 <body>
+
+  <!-- S7: Background effects -->
+  <div class="grid-bg"></div>
+  <div class="noise-overlay"></div>
 
   <nav class="nav">
     <a href="/" class="nav-brand">
@@ -151,7 +224,15 @@
     <div class="status-banner" id="statusBanner">
       <div class="status-dot" id="statusDot"></div>
       <span class="status-text" id="statusText">All Systems Operational</span>
+      <span class="status-uptime" id="statusUptime"></span>
       <span class="status-time" id="statusTime"></span>
+    </div>
+
+    <!-- S5: Subscribe to Updates -->
+    <div class="subscribe-section" id="subscribeSection">
+      <label>Subscribe to Updates</label>
+      <input type="email" id="subEmail" placeholder="you@example.com" />
+      <button class="subscribe-btn" id="subBtn">Subscribe</button>
     </div>
 
     <!-- Active Incident Lifecycle (if any) -->
@@ -166,6 +247,17 @@
       </div>
     </div>
 
+    <!-- S2: Response time chart -->
+    <div class="chart-card">
+      <div class="chart-title">API Response Time — Last 24 Hours</div>
+      <div class="chart-canvas-wrap">
+        <canvas id="responseChart"></canvas>
+      </div>
+    </div>
+
+    <!-- S4: Incident summary strip -->
+    <div class="incident-summary" id="incidentSummary"></div>
+
     <div class="incidents-section">
       <div class="incidents-title">Scheduled Maintenance</div>
       <div id="scheduledMaint"></div>
@@ -177,13 +269,23 @@
     </div>
   </div>
 
+  <!-- S6: Footer upgrade -->
   <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span></div>
+    <p>Real-time infrastructure monitoring and incident reporting.</p>
+    <div style="display:flex;justify-content:center;gap:20px;margin-top:12px;flex-wrap:wrap;">
+      <a href="/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Home</a>
+      <a href="/docs/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Docs</a>
+      <a href="/analytics/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Analytics</a>
+      <a href="/changelog/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Changelog</a>
+      <a href="/team/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Team</a>
+    </div>
     <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;flex-wrap:wrap;font-size:0.78rem;">
       <a href="/privacy/" style="color:var(--text-dim);">Privacy Policy</a>
       <a href="/terms/" style="color:var(--text-dim);">Terms of Service</a>
       <a href="/.well-known/security.txt" style="color:var(--text-dim);">Security</a>
     </div>
-    <p>&copy; <script>document.write(new Date().getFullYear())</script> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/">Home</a> &nbsp;&middot;&nbsp; <a href="/docs/">Docs</a> &nbsp;&middot;&nbsp; <a href="/changelog/">Changelog</a></p>
+    <p style="margin-top: 12px;">&copy; <script>document.write(new Date().getFullYear())</script> Cerberus Team. All rights reserved.</p>
   </footer>
 
   <script src="/js/cerberus-engine.js"></script>
@@ -194,6 +296,7 @@
     var today = Math.floor(Date.now() / 86400000);
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     function fmtDate(d) { return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(); }
+    function fmtDateShort(d) { return months[d.getMonth()] + ' ' + d.getDate(); }
     function daysAgo(n) { return new Date(Date.now() - n * 86400000); }
 
     // ===== LIVE CLOCK =====
@@ -201,6 +304,49 @@
       document.getElementById('statusTime').textContent = 'Last checked: ' + new Date().toLocaleTimeString();
     }
     updateTime(); setInterval(updateTime, 1000);
+
+    // ===== S5: SUBSCRIBE TO UPDATES =====
+    (function() {
+      var btn = document.getElementById('subBtn');
+      var input = document.getElementById('subEmail');
+      var existing = localStorage.getItem('cerberus_status_sub');
+      if (existing) {
+        input.value = existing;
+        input.disabled = true;
+        btn.textContent = 'Subscribed';
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'default';
+      }
+      btn.addEventListener('click', function() {
+        if (existing) return;
+        var email = input.value.trim();
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          input.style.borderColor = 'var(--red)';
+          setTimeout(function() { input.style.borderColor = ''; }, 1500);
+          return;
+        }
+        localStorage.setItem('cerberus_status_sub', email);
+        existing = email;
+        input.disabled = true;
+        btn.textContent = 'Subscribed';
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'default';
+        // Show toast if cerberus-shared provides it
+        if (window.CerberusShared && window.CerberusShared.toast) {
+          window.CerberusShared.toast('Subscribed to status updates', 'success');
+        } else if (window.showToast) {
+          window.showToast('Subscribed to status updates', 'success');
+        } else {
+          // Inline toast fallback
+          var t = document.createElement('div');
+          t.textContent = 'Subscribed to status updates';
+          t.style.cssText = 'position:fixed;bottom:24px;right:24px;padding:12px 20px;background:var(--bg-card);border:1px solid var(--green);border-radius:8px;color:var(--green);font-size:0.8rem;font-family:var(--font-mono);z-index:999;opacity:0;transition:opacity 0.3s;';
+          document.body.appendChild(t);
+          requestAnimationFrame(function() { t.style.opacity = '1'; });
+          setTimeout(function() { t.style.opacity = '0'; setTimeout(function() { t.remove(); }, 300); }, 3000);
+        }
+      });
+    })();
 
     // ===== UPTIME BARS (date-seeded, per-region) =====
     var E = window.CerberusEngine;
@@ -211,14 +357,14 @@
     serviceNames.forEach(function(svcName, si) {
       regionNames.forEach(function(regName, ri) {
         svcId++;
-        services.push({ name: svcName + ' — ' + regName, svcIdx: si, regIdx: ri, id: svcId });
+        services.push({ name: svcName + ' \u2014 ' + regName, svcIdx: si, regIdx: ri, id: svcId });
       });
     });
 
+    var allPcts = [];
     var uptimeHTML = '';
     var lastSvc = '';
     services.forEach(function(svc) {
-      // Section divider for each service group
       var svcLabel = serviceNames[svc.svcIdx];
       if (svcLabel !== lastSvc) {
         if (lastSvc) uptimeHTML += '<div style="height:12px;"></div>';
@@ -231,23 +377,45 @@
       }
       var pct = (100 - degradedDays.length * (0.5 + seeded(today + svc.id * 7) * 0.8)).toFixed(1);
       if (degradedDays.length === 0) pct = '100';
+      allPcts.push(parseFloat(pct));
 
-      uptimeHTML += '<div class="uptime-row"><span class="uptime-name">' + svc.name + '</span><div class="uptime-bar" id="bar' + svc.id + '"></div><span class="uptime-pct" style="color:' + (parseFloat(pct) >= 99.5 ? 'var(--green)' : 'var(--accent)') + ';">' + pct + '%</span></div>';
+      // S3: initial response time per service
+      var initLatency = Math.floor(38 + seeded(today * 41 + svc.id * 13) * 28);
+
+      uptimeHTML += '<div class="uptime-row"><span class="uptime-name">' + svc.name + '</span><div class="uptime-bar" id="bar' + svc.id + '"></div><span class="uptime-pct" style="color:' + (parseFloat(pct) >= 99.5 ? 'var(--green)' : 'var(--accent)') + ';">' + pct + '%</span><span class="uptime-latency" data-svc-id="' + svc.id + '">' + initLatency + 'ms</span></div>';
       svc.degraded = degradedDays;
     });
     document.getElementById('uptimeRows').innerHTML = uptimeHTML;
 
+    // S1: Aggregate uptime
+    var aggUptime = (allPcts.reduce(function(a, b) { return a + b; }, 0) / allPcts.length).toFixed(1);
+    document.getElementById('statusUptime').textContent = aggUptime + '% over 30 days';
+
+    // S8: Render uptime day cells with data-tip tooltips
     services.forEach(function(svc) {
       var bar = document.getElementById('bar' + svc.id);
       for (var i = 0; i < 30; i++) {
         var day = document.createElement('div');
         day.className = 'uptime-day';
-        if (svc.degraded.indexOf(i) >= 0) day.className += ' degraded';
+        var isDegraded = svc.degraded.indexOf(i) >= 0;
+        if (isDegraded) day.className += ' degraded';
         var dd = daysAgo(30 - i);
-        day.title = fmtDate(dd);
+        day.setAttribute('data-tip', fmtDateShort(dd) + ' \u2014 ' + (isDegraded ? 'Degraded' : 'Operational'));
         bar.appendChild(day);
       }
     });
+
+    // S3: Fluctuate response times
+    setInterval(function() {
+      services.forEach(function(svc) {
+        var el = document.querySelector('.uptime-latency[data-svc-id="' + svc.id + '"]');
+        if (!el) return;
+        var cur = parseInt(el.textContent);
+        var delta = Math.floor(Math.random() * 5) - 2; // -2 to +2
+        cur = Math.max(38, Math.min(66, cur + delta));
+        el.textContent = cur + 'ms';
+      });
+    }, 2000);
 
     // ===== SCHEDULED MAINTENANCE (engine-derived, always future) =====
     var E = window.CerberusEngine;
@@ -256,7 +424,7 @@
     var maintTasks = [
       { title: 'Signature DB reindex and optimization', desc: 'Reindexing signature database for faster lookup times. Detection engine falls back to cached signatures. No client downtime.' },
       { title: 'Kernel driver certificate rotation', desc: 'Rotating WHQL code-signing certificate for the kernel driver. Partners will need to pull updated SDK binaries within 48h.' },
-      { title: 'AI model weight deployment — v' + Math.floor(seeded(today * 9) * 5 + 5) + '.' + Math.floor(seeded(today * 11) * 99), desc: 'Deploying retrained behavioral AI model. Brief inference latency spike expected (~5ms) during hot-swap. No restarts needed.' },
+      { title: 'AI model weight deployment \u2014 v' + Math.floor(seeded(today * 9) * 5 + 5) + '.' + Math.floor(seeded(today * 11) * 99), desc: 'Deploying retrained behavioral AI model. Brief inference latency spike expected (~5ms) during hot-swap. No restarts needed.' },
       { title: 'Ban API rate limiter migration', desc: 'Migrating rate limiter to new infrastructure. API may return 429s briefly during cutover. Webhook delivery unaffected.' },
       { title: 'Database failover test', desc: 'Planned failover test for threat database replicas. Dashboard may show stale data for ~2 minutes during switchover.' },
     ];
@@ -265,7 +433,7 @@
 
     // ===== RECENT INCIDENTS (pool of incidents, pick 3-4 based on date) =====
     var incidentPool = [
-      { title: 'False positive spike on UE5 overlay rendering', body: 'Behavioral AI flagged legitimate Unreal Engine overlay rendering as an external screen reader. Affected sessions held in manual review — no bans issued.', root: 'Engine overlay GDI hook pattern changed. Whitelist updated.', time: '22 minutes', sev: 'minor' },
+      { title: 'False positive spike on UE5 overlay rendering', body: 'Behavioral AI flagged legitimate Unreal Engine overlay rendering as an external screen reader. Affected sessions held in manual review \u2014 no bans issued.', root: 'Engine overlay GDI hook pattern changed. Whitelist updated.', time: '22 minutes', sev: 'minor' },
       { title: 'Elevated scan latency on AMD Zen 5', body: 'PCIe bus enumeration exceeded 3ms scan budget on Ryzen 9000 series due to new IOMMU topology.', root: 'Added topology-aware enumeration path for Zen 5 IOMMU groups.', time: '4 hours (patch deployed)', sev: 'minor' },
       { title: 'Webhook delivery delays', body: 'Ban event webhooks delayed 45-90 seconds during concurrent pentest burst across all titles.', root: 'Queue worker pool undersized. Scaled from 2 to 6 workers.', time: '35 minutes', sev: 'minor' },
       { title: 'Dashboard API 503 errors', body: 'Threat dashboard returned 503 during signature database reindex. Detection engine unaffected.', root: 'DB reindex locked read replica. Moved to off-peak window.', time: '8 minutes', sev: 'minor' },
@@ -274,13 +442,14 @@
       { title: 'PCIe enumeration crash on Intel Arc GPUs', body: 'Driver crashed during PCIe firmware verification on Intel Arc A770/A750 GPUs. Game session continued without hardware scanning.', root: 'Intel Arc Option ROM returns non-standard descriptor format. Added parser fallback.', time: '2 hours (hotfix deployed)', sev: 'minor' },
       { title: 'Ban API elevated error rate', body: 'Ban API returned 500 errors for ~3% of requests during database migration window.', root: 'Connection pool exhausted during schema migration. Pre-warmed pool before migration.', time: '12 minutes', sev: 'minor' },
       { title: 'Memory footprint regression', body: 'Client memory usage spiked to 38MB (from 22MB baseline) after AI model update. No crashes reported.', root: 'New model weights not properly memory-mapped. Fixed allocation strategy.', time: '6 hours (patch in next release)', sev: 'minor' },
-      { title: 'Discord overlay false flag', body: 'Discord overlay detected as suspicious screen reader on 12 sessions. All held in review — no bans.', root: 'Discord updated their overlay injection method. Added to trusted whitelist.', time: '15 minutes', sev: 'minor' },
+      { title: 'Discord overlay false flag', body: 'Discord overlay detected as suspicious screen reader on 12 sessions. All held in review \u2014 no bans.', root: 'Discord updated their overlay injection method. Added to trusted whitelist.', time: '15 minutes', sev: 'minor' },
     ];
 
     // Pick 3-4 incidents based on date seed, assign dates in the past 1-45 days
     var numIncidents = 3 + Math.floor(seeded(today * 17) * 2);
     var incidentHTML = '';
     var usedIndices = [];
+    var incidentMeta = []; // for S4 summary
     for (var i = 0; i < numIncidents; i++) {
       var idx, attempt = 0;
       do { idx = Math.floor(seeded(today * 19 + i * 31 + attempt * 7) * incidentPool.length); attempt++; } while (usedIndices.indexOf(idx) >= 0 && attempt < 50);
@@ -288,9 +457,119 @@
       var inc = incidentPool[idx];
       var incDaysAgo = Math.floor(2 + seeded(today * 23 + i * 37) * 40);
       var incDate = daysAgo(incDaysAgo);
+
+      // Parse resolution time for S4
+      var resMinutes = 0;
+      var timeStr = inc.time;
+      if (timeStr.indexOf('hour') >= 0) {
+        resMinutes = parseInt(timeStr) * 60;
+      } else {
+        resMinutes = parseInt(timeStr);
+      }
+      if (incDaysAgo <= 30) {
+        incidentMeta.push({ daysAgo: incDaysAgo, resMinutes: resMinutes });
+      }
+
       incidentHTML += '<div class="incident"><div class="incident-header"><span class="incident-severity sev-resolved">RESOLVED</span><span class="incident-title">' + inc.title + '</span><span class="incident-date">' + fmtDate(incDate) + '</span></div><div class="incident-body">' + inc.body + '</div><div class="incident-update"><strong>Root cause:</strong> ' + inc.root + ' <strong>Resolution time:</strong> ' + inc.time + '.</div></div>';
     }
     document.getElementById('recentIncidents').innerHTML = incidentHTML;
+
+    // S4: Incident summary strip
+    (function() {
+      var count = incidentMeta.length;
+      if (count === 0) {
+        document.getElementById('incidentSummary').textContent = '0 incidents in last 30 days';
+        return;
+      }
+      var totalRes = 0, maxRes = 0;
+      incidentMeta.forEach(function(m) { totalRes += m.resMinutes; if (m.resMinutes > maxRes) maxRes = m.resMinutes; });
+      var avgRes = Math.round(totalRes / count);
+      document.getElementById('incidentSummary').textContent = count + ' incident' + (count > 1 ? 's' : '') + ' in last 30 days \u00B7 Avg resolution: ' + avgRes + 'm \u00B7 Longest: ' + maxRes + 'm';
+    })();
+
+    // ===== S2: RESPONSE TIME CHART =====
+    (function() {
+      var canvas = document.getElementById('responseChart');
+      var dpr = window.devicePixelRatio || 1;
+      var rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      var ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      var w = rect.width, h = rect.height;
+
+      // Generate 24 data points (one per hour), seeded
+      var hourNow = new Date().getHours();
+      // Diurnal pattern: busier 14-22, quieter 2-8
+      var diurnal = [0.4,0.35,0.3,0.28,0.25,0.28,0.32,0.4,0.5,0.55,0.6,0.65,0.7,0.75,0.85,0.9,0.95,1.0,0.95,0.9,0.85,0.75,0.6,0.5];
+      var pts = [];
+      var minMs = 38, maxMs = 66;
+      for (var i = 0; i < 24; i++) {
+        var hr = (hourNow - 23 + i + 24) % 24;
+        var base = minMs + diurnal[hr] * (maxMs - minMs);
+        var jitter = (seeded(today * 53 + i * 17) - 0.5) * 6;
+        var val = Math.max(minMs, Math.min(maxMs, base + jitter));
+        pts.push({ x: 40 + (w - 60) * i / 23, y: 10 + (h - 30) * (1 - (val - minMs) / (maxMs - minMs)), val: val });
+      }
+
+      // Y-axis grid
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.lineWidth = 1;
+      ctx.font = '10px JetBrains Mono';
+      ctx.fillStyle = 'rgba(107,112,132,0.6)';
+      for (var y = 0; y < 4; y++) {
+        var gy = 10 + (h - 30) * y / 3;
+        var label = Math.round(maxMs - (maxMs - minMs) * y / 3) + 'ms';
+        ctx.beginPath(); ctx.moveTo(40, gy); ctx.lineTo(w - 20, gy); ctx.stroke();
+        ctx.fillText(label, 2, gy + 4);
+      }
+
+      // X-axis labels every 4 hours
+      ctx.fillStyle = 'rgba(107,112,132,0.6)';
+      ctx.textAlign = 'center';
+      for (var i = 0; i < 24; i += 4) {
+        var hr = (hourNow - 23 + i + 24) % 24;
+        var lbl = String(hr).padStart(2, '0') + ':00';
+        var lx = 40 + (w - 60) * i / 23;
+        ctx.fillText(lbl, lx, h - 4);
+      }
+      ctx.textAlign = 'left';
+
+      // Filled area
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (var i = 1; i < pts.length; i++) {
+        var cx = (pts[i-1].x + pts[i].x) / 2;
+        ctx.bezierCurveTo(cx, pts[i-1].y, cx, pts[i].y, pts[i].x, pts[i].y);
+      }
+      ctx.lineTo(pts[pts.length-1].x, h - 20);
+      ctx.lineTo(pts[0].x, h - 20);
+      ctx.closePath();
+      var grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, 'rgba(232,160,32,0.15)');
+      grad.addColorStop(1, 'rgba(232,160,32,0)');
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Stroke line
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (var i = 1; i < pts.length; i++) {
+        var cx = (pts[i-1].x + pts[i].x) / 2;
+        ctx.bezierCurveTo(cx, pts[i-1].y, cx, pts[i].y, pts[i].x, pts[i].y);
+      }
+      ctx.strokeStyle = '#e8a020';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Dots at data points
+      pts.forEach(function(p) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#e8a020';
+        ctx.fill();
+      });
+    })();
 
     // ===== ACTIVE INCIDENT (reads from state.json first, falls back to client-side sim) =====
     (function() {
