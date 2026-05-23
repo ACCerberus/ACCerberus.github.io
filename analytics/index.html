@@ -956,14 +956,23 @@
         var bmEl = document.getElementById('sBmVer');
         if (bmEl) bmEl.textContent = state.behavioralModelVersion;
       }
-      // Arms race cycle visualization
+      // Arms race cycle visualization — use engine lifecycle phase if available
       var armsStages = [
         { label: 'BYPASS DETECTED', color: '#e04050' },
         { label: 'ANALYSIS', color: '#e87830' },
         { label: 'SIGS DEPLOYING', color: '#e8a020' },
         { label: 'NEUTRALIZED', color: '#30c860' }
       ];
-      var arcCycle = state.armsRaceCycle !== undefined ? state.armsRaceCycle : 3;
+      var arcPhaseMap = { DETECTED: 0, ANALYSIS: 1, DEPLOYING: 2, NEUTRALIZED: 3, COOLDOWN: 3 };
+      var engineArc = window.CerberusEngine ? window.CerberusEngine.armsRaceEvent() : null;
+      var arcCycle;
+      if (engineArc && engineArc.isSpike && engineArc.phaseName) {
+        arcCycle = arcPhaseMap[engineArc.phaseName] !== undefined ? arcPhaseMap[engineArc.phaseName] : 3;
+      } else if (engineArc && !engineArc.isSpike) {
+        arcCycle = 3; // no active event = neutralized
+      } else {
+        arcCycle = state.armsRaceCycle !== undefined ? state.armsRaceCycle : 3;
+      }
       var arcStage = armsStages[arcCycle] || armsStages[3];
       var arcLabel = document.getElementById('armsRaceLabel');
       var arcDot = document.getElementById('armsRaceDot');
@@ -984,8 +993,9 @@
     document.getElementById('sDetRateChange').textContent = (detRateChange >= 0 ? '+' : '') + detRateChange + '%';
     document.getElementById('sDetRateChange').className = 'stat-card-change ' + (detRateChange >= 0 ? 'stat-up' : 'stat-down');
 
-    // Latency: fluctuates 2.0ms - 3.2ms daily (kernel + AI overhead)
-    var latency = (2.0 + seeded(daySeed * 107) * 1.2).toFixed(1);
+    // Latency: engine's log-normal scan latency with brownian drift, fallback to local seeded
+    var enginePerf = E ? E.performanceMetrics() : null;
+    var latency = enginePerf ? enginePerf.scanLatency.toFixed(1) : (2.0 + seeded(daySeed * 107) * 1.2).toFixed(1);
     var latChange = (seeded(daySeed * 109) * 0.4 - 0.2).toFixed(1);
     document.getElementById('sLatency').textContent = latency + 'ms';
     removeSkeleton('sLatency');
@@ -1154,7 +1164,7 @@
     scheduleNewServer();
 
     // ===== TIME-OF-DAY TRAFFIC MULTIPLIER (System 2) =====
-    // Realistic global gaming traffic curve — peaks follow Asia, EU, NA timezones
+    // Use engine's diurnal multiplier (region-weighted, cosine-interpolated) when available
     var hourNow = new Date().getHours();
     var todMultipliers = [
       0.35, 0.28, 0.22, 0.20, 0.18, 0.22, // 00-05: late night NA, early morning
@@ -1163,7 +1173,7 @@
       1.55, 1.60, 1.52, 1.40, 1.20, 0.85,  // 18-23: EU + NA peak, then decline
     ];
     var isWeekend = (new Date().getDay() === 0 || new Date().getDay() === 6);
-    var todMult = todMultipliers[hourNow] * (isWeekend ? 1.35 : 1.0);
+    var todMult = E ? E.diurnalMultiplier() * E.weeklyMultiplier() : todMultipliers[hourNow] * (isWeekend ? 1.35 : 1.0);
 
     // ===== STAT CARDS (with localStorage persistence + cumulative history) =====
     // Base numbers derived from CerberusEngine (beta scale: ~480 peak CCU, 3 titles)
@@ -1253,7 +1263,7 @@
     var sessionEl = document.getElementById('sActiveSessions');
     setInterval(function() {
       // Gradually drift CCU toward engine-derived target
-      var targetCCU = E ? E.activeSessions() : Math.floor(dailyBaseCCU * todMultipliers[new Date().getHours()] * (isWeekend ? 1.35 : 1.0));
+      var targetCCU = E ? E.activeSessions() : Math.floor(dailyBaseCCU * (E ? E.diurnalMultiplier() * E.weeklyMultiplier() : todMultipliers[new Date().getHours()] * (isWeekend ? 1.35 : 1.0)));
       var drift = Math.floor((targetCCU - totalCCU) * 0.05);
       totalCCU += drift + Math.floor(Math.random() * 10) - 4;
       if (totalCCU < 40) totalCCU = 40 + Math.floor(Math.random() * 20);
@@ -1464,10 +1474,20 @@
       { provider: 'SpecterVM', cheats: ['Hypervisor ESP', 'VM-Isolated Aimbot', 'Ring -1 Read'], method: 'Hypervisor' },
     ];
 
-    // ===== ARMS RACE NARRATIVE (System 4) =====
-    // Today's "hot" provider — simulates a provider releasing an update and Cerberus responding
-    var todaysHotProvider = cheatProviders[Math.floor(seeded(daySeed * 151) * cheatProviders.length)];
-    var armsRaceStage = Math.floor(seeded(daySeed * 199) * 4); // 0=new release, 1=wave detected, 2=sigs pushed, 3=mopped up
+    // ===== ARMS RACE NARRATIVE (System 4) — engine lifecycle-aware =====
+    var engineArcNarr = E ? E.armsRaceEvent() : null;
+    var todaysHotProvider;
+    var armsRaceStage;
+    if (engineArcNarr && engineArcNarr.isSpike) {
+      // Map engine phase to narrative stage
+      var phaseToStage = { DETECTED: 0, ANALYSIS: 1, DEPLOYING: 2, NEUTRALIZED: 3, COOLDOWN: 3 };
+      armsRaceStage = phaseToStage[engineArcNarr.phaseName] !== undefined ? phaseToStage[engineArcNarr.phaseName] : 3;
+      // Find the matching provider in cheatProviders array
+      todaysHotProvider = cheatProviders.find(function(p) { return p.provider === engineArcNarr.provider; }) || cheatProviders[Math.floor(seeded(daySeed * 151) * cheatProviders.length)];
+    } else {
+      todaysHotProvider = cheatProviders[Math.floor(seeded(daySeed * 151) * cheatProviders.length)];
+      armsRaceStage = Math.floor(seeded(daySeed * 199) * 4);
+    }
     var armsRaceVersion = 'v' + Math.floor(seeded(daySeed * 201) * 5 + 2) + '.' + Math.floor(seeded(daySeed * 203) * 9) + '.' + Math.floor(seeded(daySeed * 205) * 9);
     var armsRaceBanCount = E ? E.banWaveSize() : Math.floor(seeded(daySeed * 207) * 11 + 5);
     var armsRaceResponseTime = Math.floor(seeded(daySeed * 209) * 45 + 8); // minutes to respond
@@ -1666,59 +1686,77 @@
     }
     scheduleBatch();
 
-    // ===== CHEAT PROVIDER DETECTION STATUS =====
+    // ===== CHEAT PROVIDER DETECTION STATUS (engine v2 ecosystem + static methods/notes) =====
     (function() {
-      var providerData = [
-        { name: 'AimStar', method: 'Internal Injection', status: 'detected', note: 'All known variants covered. Signature match + behavioral correlation.' },
-        { name: 'NeverLose', method: 'Manual Map', status: 'detected', note: 'Loader obfuscation bypassed. Memory pattern + IAT reconstruction detected.' },
-        { name: 'Skeet/Gamesense', method: 'Injector', status: 'detected', note: 'Invite-only provider. All public and leaked builds covered.' },
-        { name: 'Iniuria', method: 'DMA PCIe', status: 'partial', note: 'Known boards detected via TLP timing. Custom firmware variants under active research — hardware team expanding fingerprint DB.' },
-        { name: 'Phantom Overlay', method: 'External Overlay', status: 'detected', note: 'Screen reader detection + pixel analysis correlation.' },
-        { name: 'Project Infinity', method: 'Mapped Driver', status: 'detected', note: 'Kernel integrity scan detects unsigned driver code in kernel space.' },
-        { name: 'Fatality', method: 'Internal', status: 'detected', note: 'Behavioral AI detects aim pattern. Signature DB covers all versions.' },
-        { name: 'EngineOwning', method: 'BYOVD', status: 'detected', note: 'Vulnerable driver blocklist + callback integrity verification.' },
-        { name: 'Onetap', method: 'Loader / Injector', status: 'detected', note: 'Binary integrity check + loader pattern recognition. All public configs covered.' },
-        { name: 'Nixware', method: 'Stream-Proof Internal', status: 'undetected', note: 'v4.2 uses novel stream-proof rendering. Team is developing overlay fingerprint analysis — expected coverage in next patch cycle.' },
-        { name: 'xhook.gg', method: 'Kernel Exploit', status: 'undetected', note: 'Uses unpublished kernel exploit chain. Coordinating with Microsoft MSRC for vuln disclosure. Behavioral AI flags 73% of users.' },
-        { name: 'Aimware', method: 'External Memory Edit', status: 'detected', note: 'Memory access pattern anomaly detection. All public builds and legacy versions covered.' },
-        { name: 'Private/Custom Builds', method: 'Various', status: 'monitoring', note: 'Behavioral AI layer catches ~94% of unknown/custom cheats without signatures.' },
-        { name: 'Interium', method: 'Internal', status: 'detected', note: 'Rage features trigger instant behavioral detection. All configs covered.' },
-        { name: 'Spirthack', method: 'Injector', status: 'detected', note: 'Injection method + aim smoothing pattern detected via AI layer.' },
-        { name: 'Cronus Zen', method: 'USB Hardware Device', status: 'partial', note: 'Hardware macro variants harder to distinguish from human input. AI team training new model on 1,200+ macro samples — ETA 2 weeks.' },
-        { name: 'Pandora.gg', method: 'Hypervisor', status: 'undetected', note: 'Type-1 hypervisor runs below OS. CPUID timing checks catch 41% — dedicated hypervisor detection module in development.' },
-        { name: 'KMBox/Vezax', method: 'Firmware DMA', status: 'partial', note: 'Custom firmware on DMA boards. TLP timing catches 67% — firmware CRC database being expanded with new hardware samples.' },
-        { name: 'HydraDMA', method: 'Custom FPGA (Artix-7)', status: 'partial', note: 'Custom bitstream with randomized TLP timing. BAR region analysis catches 58% — each new firmware revision requires new timing profiles.' },
-        { name: 'GhostInput', method: 'KMBox B+ Pro (Firmware)', status: 'monitoring', note: 'Firmware-based HID injection. USB polling jitter analysis detects 44% of known variants — expanding HID fingerprint database.' },
-        { name: 'SpecterVM', method: 'Type-1 Hypervisor + DMA', status: 'undetected', note: 'Bare-metal hypervisor with pass-through DMA. Runs below OS — no client artifact. Intel PT research is primary detection path.' },
-      ];
+      // Static provider details (methods + notes) — engine provides dynamic status/activity
+      var providerDetails = {
+        'AimStar': { method: 'Internal Injection', notes: { detected: 'All known variants covered. Signature match + behavioral correlation.', partial: 'Detection coverage reduced after provider update. Signatures being refreshed.', monitoring: 'Reassessing detection coverage. Samples submitted for analysis.', undetected: 'Provider pushed new build. Analysis in progress — behavioral AI providing interim coverage.' }},
+        'NeverLose': { method: 'Manual Map', notes: { detected: 'Loader obfuscation bypassed. Memory pattern + IAT reconstruction detected.', partial: 'New loader variant partially evades signature DB. Behavioral layer catching 82%.', monitoring: 'Reassessing coverage after reported evasion.', undetected: 'New build uses novel manual-map technique. Analysis in progress.' }},
+        'Iniuria': { method: 'DMA PCIe', notes: { detected: 'All known boards detected via TLP timing + BAR analysis.', partial: 'Custom firmware variants under active research — hardware team expanding fingerprint DB.', monitoring: 'New hardware samples submitted for timing profile analysis.', undetected: 'Custom FPGA firmware evades current TLP profiles. Hardware team investigating.' }},
+        'Phantom Overlay': { method: 'External Overlay', notes: { detected: 'Screen reader detection + pixel analysis correlation.', partial: 'New overlay rendering method partially evades detection.', monitoring: 'Monitoring new overlay technique reports.', undetected: 'Novel overlay method. Team developing fingerprint analysis.' }},
+        'EngineOwning': { method: 'BYOVD', notes: { detected: 'Vulnerable driver blocklist + callback integrity verification.', partial: 'New vulnerable driver not yet in blocklist. Behavioral layer active.', monitoring: 'Monitoring for new driver abuse patterns.', undetected: 'Uses previously unknown vulnerable driver. Coordinating with vendor.' }},
+        'Onetap': { method: 'Loader / Injector', notes: { detected: 'Binary integrity check + loader pattern recognition. All public configs covered.', partial: 'Updated loader partially evades detection.', monitoring: 'Tracking loader update reports.', undetected: 'New loader with polymorphic stub. Behavioral AI flags 78% of users.' }},
+        'Private Build': { method: 'Various', notes: { detected: 'All sampled builds covered by behavioral + signature layers.', partial: 'Some custom variants evade signature matching.', monitoring: 'Behavioral AI layer catches ~94% of unknown/custom cheats without signatures.', undetected: 'Novel technique in circulation. Behavioral AI providing interim coverage.' }},
+        'Interium': { method: 'Internal', notes: { detected: 'Rage features trigger instant behavioral detection. All configs covered.', partial: 'Updated build partially evades signature matching.', monitoring: 'Reassessing after reported evasion.', undetected: 'New obfuscation layer. Behavioral AI provides partial coverage.' }},
+      };
+      // Default note generator for providers without specific notes
+      var defaultNotes = {
+        detected: 'All known variants now covered by signature + behavioral layers.',
+        partial: 'Detection coverage reduced after provider update. Signatures being refreshed.',
+        undetected: 'Provider pushed new build. Analysis in progress — behavioral AI providing interim coverage.',
+        monitoring: 'Reassessing detection coverage. Samples submitted for analysis.'
+      };
 
-      // TODO #7: Provider Status Auto-Rotation — one provider flips daily
-      var flipIdx = Math.floor(seeded(daySeed * 331) * providerData.length);
-      var flipStatuses = ['detected', 'partial', 'undetected', 'monitoring'];
-      var currentStatus = providerData[flipIdx].status;
-      var newStatus = flipStatuses[Math.floor(seeded(daySeed * 337) * flipStatuses.length)];
-      if (newStatus !== currentStatus) {
-        providerData[flipIdx].status = newStatus;
-        var flipNotes = {
-          detected: 'New signatures deployed. All known variants now covered.',
-          partial: 'Detection coverage reduced after provider update. Signatures being refreshed.',
-          undetected: 'Provider pushed new build. Analysis in progress — behavioral AI providing interim coverage.',
-          monitoring: 'Reassessing detection coverage. Samples submitted for analysis.'
-        };
-        providerData[flipIdx].note = flipNotes[newStatus] || providerData[flipIdx].note;
+      // Method lookup for engine providers not in details
+      var methodLookup = {
+        'AimStar': 'Internal Injection', 'NeverLose': 'Manual Map', 'Iniuria': 'DMA PCIe',
+        'Phantom Overlay': 'External Overlay', 'EngineOwning': 'BYOVD', 'Onetap': 'Loader / Injector',
+        'Private Build': 'Various', 'Interium': 'Internal'
+      };
+
+      var engineProviders = E ? E.providerEcosystem() : null;
+      var providerData;
+
+      if (engineProviders) {
+        providerData = engineProviders.map(function(ep) {
+          var details = providerDetails[ep.name];
+          var method = details ? details.method : methodLookup[ep.name] || 'Unknown';
+          var notes = details ? details.notes : defaultNotes;
+          var note = notes[ep.detection] || defaultNotes[ep.detection] || '';
+          // Add activity context
+          if (ep.activity === 'aggressive') note += ' Activity level: AGGRESSIVE.';
+          else if (ep.activity === 'dormant') note = 'Provider appears dormant. ' + note;
+          return { name: ep.name, method: method, status: ep.detection, note: note, lastSeen: ep.lastSeen, activity: ep.activity, tier: ep.tier };
+        });
+      } else {
+        // Fallback: static provider data
+        providerData = [
+          { name: 'AimStar', method: 'Internal Injection', status: 'detected', note: 'All known variants covered. Signature match + behavioral correlation.' },
+          { name: 'NeverLose', method: 'Manual Map', status: 'detected', note: 'Loader obfuscation bypassed. Memory pattern + IAT reconstruction detected.' },
+          { name: 'Iniuria', method: 'DMA PCIe', status: 'partial', note: 'Known boards detected via TLP timing. Custom firmware variants under active research.' },
+          { name: 'Phantom Overlay', method: 'External Overlay', status: 'detected', note: 'Screen reader detection + pixel analysis correlation.' },
+          { name: 'EngineOwning', method: 'BYOVD', status: 'detected', note: 'Vulnerable driver blocklist + callback integrity verification.' },
+          { name: 'Onetap', method: 'Loader / Injector', status: 'detected', note: 'Binary integrity check + loader pattern recognition.' },
+          { name: 'Private Build', method: 'Various', status: 'monitoring', note: 'Behavioral AI layer catches ~94% of unknown/custom cheats.' },
+          { name: 'Interium', method: 'Internal', status: 'detected', note: 'Rage features trigger instant behavioral detection.' },
+        ];
+        // Apply daily flip
+        var flipIdx = Math.floor(seeded(daySeed * 331) * providerData.length);
+        var flipStatuses = ['detected', 'partial', 'undetected', 'monitoring'];
+        providerData[flipIdx].status = flipStatuses[Math.floor(seeded(daySeed * 337) * flipStatuses.length)];
       }
 
-      // Shuffle detection dates based on seed
       var html = '';
       providerData.forEach(function(p, i) {
         var daysAgo = Math.floor(seeded(daySeed * 223 + i * 13) * 14) + 1;
-        var detDate = new Date(Date.now() - daysAgo * 86400000);
-        var dateStr = detDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        var dateStr = p.lastSeen || (function() {
+          var detDate = new Date(Date.now() - daysAgo * 86400000);
+          return detDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        })();
         var statusMap = { detected: ['det-detected','DETECTED'], partial: ['det-partial','PARTIAL'], monitoring: ['det-monitoring','MONITORING'], undetected: ['det-undetected','UNDETECTED'] };
         var sm = statusMap[p.status] || statusMap.monitoring;
-        var statusClass = sm[0];
-        var statusLabel = sm[1];
-        html += '<tr><td>' + p.name + '</td><td><span class="det-status ' + statusClass + '">' + statusLabel + '</span></td><td style="font-family:var(--font-mono);font-size:0.72rem;">' + p.method + '</td><td style="font-family:var(--font-mono);font-size:0.72rem;">' + dateStr + '</td><td><div class="provider-note">' + p.note + '</div></td></tr>';
+        var activityBadge = p.activity ? '<span style="font-size:0.6rem;color:' + (p.activity === 'aggressive' ? 'var(--red)' : p.activity === 'active' ? 'var(--accent)' : 'var(--text-dim)') + ';margin-left:4px;">(' + p.activity + ')</span>' : '';
+        html += '<tr><td>' + p.name + activityBadge + '</td><td><span class="det-status ' + sm[0] + '">' + sm[1] + '</span></td><td style="font-family:var(--font-mono);font-size:0.72rem;">' + p.method + '</td><td style="font-family:var(--font-mono);font-size:0.72rem;">' + dateStr + '</td><td><div class="provider-note">' + p.note + '</div></td></tr>';
       });
       document.getElementById('providerTable').innerHTML = html;
       document.getElementById('providerLastSync').textContent = 'Synced: ' + new Date().toLocaleTimeString();
@@ -1745,22 +1783,31 @@
       banEl.innerHTML = html;
     })();
 
-    // ===== ENGINE PERFORMANCE (date-seeded) =====
+    // ===== ENGINE PERFORMANCE (engine v2 or fallback to date-seeded) =====
     (function() {
       var perfEl = document.getElementById('perfMetrics');
-      var cpu = (0.15 + seeded(daySeed * 179) * 0.12).toFixed(2);
-      var mem = (18 + seeded(daySeed * 181) * 8).toFixed(0);
-      var netUp = (0.8 + seeded(daySeed * 187) * 0.6).toFixed(1);
-      var netDown = (1.2 + seeded(daySeed * 191) * 0.8).toFixed(1);
-      var scanRate = (840 + seeded(daySeed * 193) * 160).toFixed(0);
-      var queueDepth = Math.floor(seeded(daySeed * 197) * 12);
+      var ep = E ? E.performanceMetrics() : null;
+      var cpu, mem, net, scanRate, queueDepth;
+      if (ep) {
+        cpu = ep.cpu.toFixed(1);
+        mem = ep.memory.toFixed(0);
+        net = ep.network.toFixed(1);
+        scanRate = Math.round(1000 / ep.scanLatency).toFixed(0);
+        queueDepth = ep.queueDepth;
+      } else {
+        cpu = (0.15 + seeded(daySeed * 179) * 0.12).toFixed(2);
+        mem = (18 + seeded(daySeed * 181) * 8).toFixed(0);
+        net = (0.8 + seeded(daySeed * 187) * 0.6 + 1.2 + seeded(daySeed * 191) * 0.8).toFixed(1);
+        scanRate = (840 + seeded(daySeed * 193) * 160).toFixed(0);
+        queueDepth = Math.floor(seeded(daySeed * 197) * 12);
+      }
       var metrics = [
-        { name: 'CPU Overhead (avg)', val: cpu + '%', pct: parseFloat(cpu) * 200 },
-        { name: 'Memory Usage (driver)', val: mem + ' MB', pct: parseFloat(mem) / 0.5 },
-        { name: 'Network Upload', val: netUp + ' KB/s', pct: parseFloat(netUp) * 40 },
-        { name: 'Network Download', val: netDown + ' KB/s', pct: parseFloat(netDown) * 30 },
+        { name: 'CPU Overhead (avg)', val: cpu + '%', pct: parseFloat(cpu) * (ep ? 2.5 : 200) },
+        { name: 'Memory Usage (driver)', val: mem + ' MB', pct: parseFloat(mem) / (ep ? 4 : 0.5) },
+        { name: 'Network I/O', val: net + ' KB/s', pct: parseFloat(net) * (ep ? 12 : 30) },
         { name: 'Scan Throughput', val: scanRate + '/s', pct: parseFloat(scanRate) / 12 },
-        { name: 'Review Queue Depth', val: String(queueDepth), pct: queueDepth * 8 },
+        { name: 'Review Queue Depth', val: String(queueDepth), pct: queueDepth * (ep ? 3.5 : 8) },
+        { name: 'API Response', val: ep ? ep.apiResponse.toFixed(0) + 'ms' : Math.floor(30 + seeded(daySeed * 195) * 60) + 'ms', pct: ep ? ep.apiResponse / 1.2 : (30 + seeded(daySeed * 195) * 60) / 1.2 },
       ];
       var html = '';
       metrics.forEach(function(m) {

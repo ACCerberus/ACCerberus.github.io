@@ -490,8 +490,29 @@
     }
     .currency-btn:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
     .currency-btn.active { background: var(--accent); color: #050507; border-color: var(--accent); }
+    .genre-selector { display: flex; justify-content: center; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+    .genre-pill {
+      padding: 7px 18px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+      background: rgba(255,255,255,0.02); color: var(--text-dim); border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.2s; font-family: var(--font); letter-spacing: 0.2px;
+    }
+    .genre-pill:hover { border-color: rgba(232,160,32,0.3); color: var(--text); }
+    .genre-pill.active { background: var(--accent); color: #050507; border-color: var(--accent); }
+    .pricing-recommended {
+      position: absolute; top: -10px; left: 20px;
+      padding: 4px 12px; border-radius: 12px; font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      background: var(--green); color: #050507; display: none; z-index: 2;
+    }
+    .pricing-card.genre-recommended .pricing-recommended { display: block; }
+    .pricing-annotation {
+      font-size: 0.65rem; color: var(--green); font-weight: 600; margin-left: 4px;
+      opacity: 0; transition: opacity 0.3s; display: none;
+    }
+    .pricing-annotation.visible { opacity: 1; display: inline; }
+    .pricing-desc { transition: opacity 0.25s ease; }
     @media (max-width: 1000px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; } .genre-selector { gap: 6px; } .genre-pill { padding: 5px 12px; font-size: 0.7rem; } }
 
     /* ===== TEAM ===== */
     .team-banner {
@@ -1239,11 +1260,20 @@
       <h2 class="section-title">Protection that scales with you</h2>
       <p class="section-desc">From indie studios to AAA publishers. Every tier includes zero telemetry, runtime-only activation, and clean session exits.</p>
     </div>
-    <div class="pricing-grid">
-      <div class="pricing-card reveal">
+    <div class="genre-selector" id="genreSelector">
+      <button class="genre-pill active" data-genre="all">All Games</button>
+      <button class="genre-pill" data-genre="fps">FPS / Tactical Shooter</button>
+      <button class="genre-pill" data-genre="br">Battle Royale</button>
+      <button class="genre-pill" data-genre="rpg">RPG / MMO</button>
+      <button class="genre-pill" data-genre="racing">Racing / Sports</button>
+      <button class="genre-pill" data-genre="sandbox">Sandbox / Survival</button>
+    </div>
+    <div class="pricing-grid" id="pricingGrid">
+      <div class="pricing-card reveal" data-tier="argus">
+        <div class="pricing-recommended">RECOMMENDED</div>
         <div class="pricing-tier">Starter</div>
         <div class="pricing-name">Argus</div>
-        <div class="pricing-desc">Kernel-level protection for qualifying indie studios and early-access titles. Up to 10K CCU.</div>
+        <div class="pricing-desc" data-default="Kernel-level protection for qualifying indie studios and early-access titles. Up to 10K CCU.">Kernel-level protection for qualifying indie studios and early-access titles. Up to 10K CCU.</div>
         <div class="pricing-price" data-usd="0">Free*</div>
         <div class="pricing-period">*Application reviewed manually — must demonstrate a shipped or near-launch title</div>
         <ul class="pricing-features">
@@ -1265,10 +1295,11 @@
         </ul>
         <a href="/access/" class="pricing-btn pricing-btn-outline">Apply for Access</a>
       </div>
-      <div class="pricing-card reveal">
+      <div class="pricing-card reveal" data-tier="aegis">
+        <div class="pricing-recommended">RECOMMENDED</div>
         <div class="pricing-tier">Professional</div>
         <div class="pricing-name">Aegis</div>
-        <div class="pricing-desc">Full AI-powered behavioral detection for competitive titles. Up to 100K CCU.</div>
+        <div class="pricing-desc" data-default="Full AI-powered behavioral detection for competitive titles. Up to 100K CCU.">Full AI-powered behavioral detection for competitive titles. Up to 100K CCU.</div>
         <div class="pricing-price" data-usd="0">Contact Sales</div>
         <div class="pricing-period">Volume-based pricing — tailored to your CCU</div>
         <ul class="pricing-features">
@@ -1292,10 +1323,11 @@
         </ul>
         <a href="/access/" class="pricing-btn pricing-btn-outline">Create Account</a>
       </div>
-      <div class="pricing-card reveal">
+      <div class="pricing-card reveal" data-tier="cerberus">
+        <div class="pricing-recommended">RECOMMENDED</div>
         <div class="pricing-tier">Complete</div>
         <div class="pricing-name">Cerberus</div>
-        <div class="pricing-desc">All four detection layers. Kernel + AI + hardware + network sentinel protection. Up to 500K CCU.</div>
+        <div class="pricing-desc" data-default="All four detection layers. Kernel + AI + hardware + network sentinel protection. Up to 500K CCU.">All four detection layers. Kernel + AI + hardware + network sentinel protection. Up to 500K CCU.</div>
         <div class="pricing-price" data-usd="0">Contact Sales</div>
         <div class="pricing-period">Volume-based pricing — tailored to your CCU</div>
         <ul class="pricing-features">
@@ -1320,10 +1352,11 @@
         </ul>
         <a href="/access/" class="pricing-btn pricing-btn-outline">Create Account</a>
       </div>
-      <div class="pricing-card reveal">
+      <div class="pricing-card reveal" data-tier="olympus">
+        <div class="pricing-recommended">RECOMMENDED</div>
         <div class="pricing-tier">Enterprise</div>
         <div class="pricing-name">Olympus</div>
-        <div class="pricing-desc">Custom-engineered protection for AAA publishers and live-service titles at any scale.</div>
+        <div class="pricing-desc" data-default="Custom-engineered protection for AAA publishers and live-service titles at any scale.">Custom-engineered protection for AAA publishers and live-service titles at any scale.</div>
         <div class="pricing-price" data-usd="0">Custom</div>
         <div class="pricing-period">Volume pricing negotiated per title</div>
         <ul class="pricing-features">
@@ -2058,6 +2091,131 @@
           btn.disabled = false;
         });
       });
+    })();
+
+    // ===== GENRE-BASED PRICING =====
+    (function() {
+      var genreData = {
+        all: {
+          descs: {},
+          recommended: null,
+          annotations: {}
+        },
+        fps: {
+          descs: {
+            argus: 'Kernel-level aimbot and wallhack detection for competitive shooters. Up to 10K CCU.',
+            aegis: 'Full behavioral aim analysis with 500Hz input sampling for tactical shooters. Up to 100K CCU.',
+            cerberus: 'All four detection layers — critical for competitive FPS integrity at scale. Up to 500K CCU.',
+            olympus: 'Custom-tuned detection models trained on your title\'s specific competitive meta.'
+          },
+          recommended: 'cerberus',
+          annotations: {
+            aegis: { '500Hz input sampling': 'Critical for aim detection' },
+            cerberus: { 'Cross-player anomaly correlation': 'Detects coordinated boosting' }
+          }
+        },
+        br: {
+          descs: {
+            argus: 'Signature-based cheat detection for battle royale titles. Up to 10K CCU.',
+            aegis: 'Behavioral AI tuned for large-lobby competitive play with input pattern analysis. Up to 100K CCU.',
+            cerberus: 'Full protection with Network Sentinel — essential for large-lobby integrity. Up to 500K CCU.',
+            olympus: 'Enterprise-scale protection for live-service battle royale titles at any CCU.'
+          },
+          recommended: 'cerberus',
+          annotations: {
+            cerberus: { 'Network Sentinel (full)': 'Essential for 100+ player lobbies', 'Matchmaking integrity scoring': 'Rank manipulation prevention' }
+          }
+        },
+        rpg: {
+          descs: {
+            argus: 'Basic cheat scanning for RPG and MMO titles. Covers speed hacks and memory edits. Up to 10K CCU.',
+            aegis: 'Economy exploit detection and speed-hack prevention for persistent worlds. Up to 100K CCU.',
+            cerberus: 'Full stack protection including cross-player anomaly correlation for gold farming rings. Up to 500K CCU.',
+            olympus: 'Custom economy monitoring and title-specific exploit detection models.'
+          },
+          recommended: 'aegis',
+          annotations: {
+            aegis: { 'Per-player behavioral baselines': 'Detects economy exploits over time' },
+            cerberus: { 'Cross-player anomaly correlation': 'Detects gold farming rings', 'Cheat-ring &amp; cluster detection': 'Catches organized RMT operations' }
+          }
+        },
+        racing: {
+          descs: {
+            argus: 'Basic integrity checks for racing and sports titles. Covers input manipulation. Up to 10K CCU.',
+            aegis: 'Input manipulation and teleport detection with cadence anomaly analysis for fair competition. Up to 100K CCU.',
+            cerberus: 'Full protection with hardware fingerprinting to catch controller macro devices. Up to 500K CCU.',
+            olympus: 'Custom detection models trained on your title\'s physics and input characteristics.'
+          },
+          recommended: 'aegis',
+          annotations: {
+            aegis: { 'Input cadence anomaly detection': 'Catches controller macros', '500Hz input sampling': 'Detects rapid-fire exploits' }
+          }
+        },
+        sandbox: {
+          descs: {
+            argus: 'Modular kernel protection that adapts to custom game modes and modding support. Up to 10K CCU.',
+            aegis: 'Behavioral detection with configurable thresholds for sandbox environments. Up to 100K CCU.',
+            cerberus: 'Full protection with SDK extensibility for custom game mode rulesets. Up to 500K CCU.',
+            olympus: 'White-glove integration with custom rule authoring for unique sandbox mechanics.'
+          },
+          recommended: 'argus',
+          annotations: {
+            argus: { 'SDK documentation &amp; sample projects': 'Extensible via custom rules' }
+          }
+        }
+      };
+
+      var selector = document.getElementById('genreSelector');
+      if (!selector) return;
+
+      selector.addEventListener('click', function(e) {
+        var pill = e.target.closest('.genre-pill');
+        if (!pill) return;
+        selector.querySelectorAll('.genre-pill').forEach(function(p) { p.classList.remove('active'); });
+        pill.classList.add('active');
+        applyGenre(pill.dataset.genre);
+      });
+
+      function applyGenre(genre) {
+        var data = genreData[genre] || genreData.all;
+        var cards = document.querySelectorAll('.pricing-card[data-tier]');
+
+        cards.forEach(function(card) {
+          var tier = card.dataset.tier;
+          // Update description
+          var descEl = card.querySelector('.pricing-desc');
+          if (descEl) {
+            if (data.descs && data.descs[tier]) {
+              descEl.textContent = data.descs[tier];
+            } else {
+              descEl.textContent = descEl.dataset.default;
+            }
+          }
+          // Update recommended badge
+          card.classList.remove('genre-recommended');
+          if (data.recommended === tier) {
+            card.classList.add('genre-recommended');
+          }
+          // Remove old annotations
+          card.querySelectorAll('.pricing-annotation').forEach(function(a) { a.remove(); });
+          // Add new annotations
+          if (data.annotations && data.annotations[tier]) {
+            var annotations = data.annotations[tier];
+            card.querySelectorAll('.pricing-features li').forEach(function(li) {
+              var text = li.innerHTML.split('<span')[0].trim();
+              // Check each annotation key against the li text
+              for (var key in annotations) {
+                if (li.textContent.indexOf(key.replace(/&amp;/g, '&')) !== -1) {
+                  var ann = document.createElement('span');
+                  ann.className = 'pricing-annotation visible';
+                  ann.textContent = ' \u2014 ' + annotations[key];
+                  li.appendChild(ann);
+                }
+              }
+            });
+          }
+        });
+      }
     })();
   </script>
 

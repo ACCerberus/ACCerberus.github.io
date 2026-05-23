@@ -514,8 +514,27 @@
           changes.push({t:'FIXED', c:compatUpdates[Math.floor(seeded(seed * 69) * compatUpdates.length)]});
         }
 
-        // 18% chance of arms race narrative entry (System 4)
-        if (seeded(seed * 71) < 0.18) {
+        // Arms race lifecycle-correlated entries (from engine v2)
+        if (window.CerberusEngine) {
+          var arcDay = new Date(seed * 86400000);
+          var arcEvent = window.CerberusEngine.armsRaceEvent(arcDay);
+          if (arcEvent.isSpike && arcEvent.phaseName) {
+            var arcProv = arcEvent.provider;
+            var arcPhase = arcEvent.phaseName;
+            var arcSev = arcEvent.severity || 'moderate';
+            if (arcPhase === 'DETECTED') {
+              changes.push({t:'SECURITY', c:'DETECTED: New bypass from ' + arcProv + ' identified \u2014 scanning intensified, behavioral AI flagging anomalies'});
+            } else if (arcPhase === 'ANALYSIS') {
+              changes.push({t:'SECURITY', c:'ANALYSIS: ' + arcProv + ' variant under reverse engineering \u2014 signature patterns being developed'});
+            } else if (arcPhase === 'DEPLOYING') {
+              changes.push({t:'ADDED', c:'DEPLOYING: +' + arcEvent.spikeSigs + ' emergency signatures pushed for ' + arcProv + ' variant (' + arcSev + ' severity)'});
+            } else if (arcPhase === 'NEUTRALIZED') {
+              changes.push({t:'SECURITY', c:'NEUTRALIZED: ' + arcProv + ' threat fully covered \u2014 ban wave processed, monitoring for follow-up variants'});
+            }
+          }
+        }
+        // 18% chance of additional arms race narrative (legacy system)
+        if (seeded(seed * 71) < 0.18 && !(window.CerberusEngine && window.CerberusEngine.armsRaceEvent(new Date(seed * 86400000)).isSpike)) {
           var armsProvider = providers[Math.floor(seeded(seed * 73) * providers.length)];
           var armsVer = 'v' + Math.floor(seeded(seed * 75) * 5 + 2) + '.' + Math.floor(seeded(seed * 77) * 9) + '.' + Math.floor(seeded(seed * 79) * 9);
           var armsBans = Math.floor(seeded(seed * 81) * 10 + 5);
@@ -527,6 +546,19 @@
             'Rapid response: ' + armsProvider + ' ' + armsVer + ' bypass attempt neutralized in ' + armsTime + 'min \u2014 ' + armsBans + ' accounts suspended, hardware fingerprints logged.',
           ];
           changes.push({t:'SECURITY', c:armsNarratives[Math.floor(seeded(seed * 87) * armsNarratives.length)]});
+        }
+        // Engine-derived deployment entries
+        if (window.CerberusEngine) {
+          var depDay = new Date(seed * 86400000);
+          var deps = window.CerberusEngine.dailyDeployments(depDay);
+          var modelDeps = deps.filter(function(d) { return d.type === 'model'; });
+          var driverDeps = deps.filter(function(d) { return d.type === 'driver'; });
+          if (modelDeps.length > 0) {
+            changes.push({t:'IMPROVED', c:'Behavioral model update deployed: ' + modelDeps[0].version + ' (' + modelDeps[0].stage + ')'});
+          }
+          if (driverDeps.length > 0) {
+            changes.push({t:'SECURITY', c:'Driver patch deployed: ' + driverDeps[0].version});
+          }
         }
 
         var buildNum = Math.floor(parseInt(baseVer.replace(/\D/g,'')) * 100 + daysSinceStart * 3 + seeded(seed * 59) * 5);
