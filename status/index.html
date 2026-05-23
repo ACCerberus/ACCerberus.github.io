@@ -714,7 +714,8 @@
       }
       var degradedDays = [];
       for (var d = 0; d < 30; d++) {
-        var status = E ? E.regionUptime(svc.svcIdx, svc.regIdx, d) : 'operational';
+        var status;
+        try { status = E ? E.regionUptime(svc.svcIdx, svc.regIdx, d) : 'operational'; } catch(e) { status = 'operational'; }
         if (status === 'degraded') degradedDays.push(d);
       }
       var pct = (100 - degradedDays.length * (0.5 + seeded(today + svc.id * 7) * 0.8)).toFixed(1);
@@ -735,7 +736,8 @@
 
     // Arms race phase pill — injected into status banner when a spike is active
     (function() {
-      var arc = E ? E.armsRaceEvent(new Date()) : null;
+      var arc = null;
+      try { arc = E ? E.armsRaceEvent(new Date()) : null; } catch(e) {}
       if (!arc || !arc.isSpike || !arc.phaseName) return;
       var phaseColors = {
         DETECTED:    { bg: 'rgba(232,160,32,0.12)', color: '#e8a020', border: 'rgba(232,160,32,0.3)' },
@@ -782,7 +784,8 @@
 
     // ===== SCHEDULED MAINTENANCE (engine-derived, always future) =====
     var E = window.CerberusEngine;
-    var maintDate = E ? E.nextMaintenance() : new Date(Date.now() + 5 * 86400000);
+    var maintDate;
+    try { maintDate = E ? E.nextMaintenance() : new Date(Date.now() + 5 * 86400000); } catch(e) { maintDate = new Date(Date.now() + 5 * 86400000); }
     var maintHour = maintDate.getUTCHours();
     var maintTasks = [
       { title: 'Signature DB reindex and optimization', desc: 'Reindexing signature database for faster lookup times. Detection engine falls back to cached signatures. No client downtime.' },
@@ -854,7 +857,8 @@
     var totalShown = 0;
     for (var dOffset = 1; dOffset <= 45 && totalShown < 4; dOffset++) {
       var pastDay = new Date(now_inc.getTime() - dOffset * 86400000);
-      var dayIncs = E ? E.dailyIncidents(pastDay) : [];
+      var dayIncs = [];
+      try { dayIncs = E ? E.dailyIncidents(pastDay) : []; } catch(e) {}
       if (dayIncs.length === 0) continue;
       if (shownDays.indexOf(dOffset) >= 0) continue;
       shownDays.push(dOffset);
@@ -909,8 +913,9 @@
 
       // Generate 24 data points (one per hour), seeded
       // Use engine-derived API response as anchor for today's baseline
-      var _perf = E ? E.performanceMetrics(new Date()) : null;
-      var _arc = E ? E.armsRaceEvent(new Date()) : null;
+      var _perf = null, _arc = null;
+      try { _perf = E ? E.performanceMetrics(new Date()) : null; } catch(e) {}
+      try { _arc = E ? E.armsRaceEvent(new Date()) : null; } catch(e) {}
       var hourNow = new Date().getHours();
       // Diurnal pattern: busier 14-22, quieter 2-8
       var diurnal = [0.4,0.35,0.3,0.28,0.25,0.28,0.32,0.4,0.5,0.55,0.6,0.65,0.7,0.75,0.85,0.9,0.95,1.0,0.95,0.9,0.85,0.75,0.6,0.5];
@@ -1070,7 +1075,8 @@
         }
 
         // Fall back to client-side simulation, arms-race-aware
-        var _arcNow = E ? E.armsRaceEvent(new Date()) : null;
+        var _arcNow = null;
+        try { _arcNow = E ? E.armsRaceEvent(new Date()) : null; } catch(e) {}
 
         // During an arms race spike, show an active incident derived from the phase
         if (_arcNow && _arcNow.isSpike) {
@@ -1120,9 +1126,10 @@
 
     // ===== COMPONENT VERSIONS =====
     (function() {
-      var driverVer = 'v' + (E ? E.CONFIG.version : '0.4.2.0b');
+      var driverVer = 'v' + ((E && E.CONFIG) ? E.CONFIG.version : '0.4.2.0b');
       var apiVer = 'v2.' + Math.floor(seeded(today * 301) * 8 + 3) + '.' + Math.floor(seeded(today * 303) * 20);
-      var sigVer = (E ? E.signatureCount() : 4891);
+      var sigVer;
+      try { sigVer = E ? E.signatureCount() : 4891; } catch(e) { sigVer = 4891; }
       var modelVer = 'v3.' + Math.floor(seeded(today * 307) * 6 + 2) + '.' + Math.floor(seeded(today * 309) * 40);
       var components = [
         { icon: '\uD83D\uDEE1\uFE0F', label: 'Kernel Driver', val: driverVer },
@@ -1143,7 +1150,8 @@
       var throughputEl = document.getElementById('throughputVal');
       var p99El = document.getElementById('throughputP99');
       // Engine-derived API response base for p99 scaling
-      var _perfBase = E ? E.performanceMetrics(new Date()) : null;
+      var _perfBase = null;
+      try { _perfBase = E ? E.performanceMetrics(new Date()) : null; } catch(e) {}
       var _p99Base = _perfBase ? Math.max(28, Math.min(100, _perfBase.apiResponse)) : 48;
       function updateThroughput() {
         var hour = new Date().getHours();
@@ -1246,7 +1254,8 @@
       var now_dep = new Date();
       for (var dayOff = 0; dayOff <= 3; dayOff++) {
         var queryDay = new Date(now_dep.getTime() - dayOff * 86400000);
-        var deps = E ? E.dailyDeployments(queryDay) : [];
+        var deps = [];
+        try { deps = E ? E.dailyDeployments(queryDay) : []; } catch(e) {}
         deps.forEach(function(d) {
           allDeploys.push({ dep: d, dayOffset: dayOff });
         });
