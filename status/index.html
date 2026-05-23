@@ -185,7 +185,41 @@
     .footer-brand { font-family: var(--font-heading); font-weight: 800; font-size: 1.4rem; color: var(--text-bright); margin-bottom: 8px; }
     .footer-brand span { color: var(--accent); }
 
-    @media (max-width: 600px) { .nav { padding: 12px 20px; } .nav-links { display: none; } .uptime-name { min-width: 120px; font-size: 0.78rem; } }
+    /* Component versions strip */
+    .component-versions {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px;
+      margin-bottom: 32px;
+    }
+    .comp-ver-item {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+    }
+    .comp-ver-icon { font-size: 1rem; opacity: 0.7; }
+    .comp-ver-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.4px; }
+    .comp-ver-val { font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent); font-weight: 600; }
+
+    /* Historical monthly uptime */
+    .monthly-uptime { margin-bottom: 48px; }
+    .monthly-uptime-title { font-family: var(--font-heading); font-size: 0.9rem; font-weight: 600; color: var(--text-bright); margin-bottom: 16px; }
+    .monthly-table { width: 100%; border-collapse: collapse; }
+    .monthly-table th { text-align: left; font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 0; border-bottom: 1px solid var(--border); font-weight: 600; }
+    .monthly-table td { font-size: 0.78rem; padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--text); }
+    .monthly-table td:first-child { color: var(--text-bright); font-weight: 500; }
+    .monthly-pct { font-family: var(--font-mono); font-weight: 600; }
+    .monthly-bar-wrap { width: 100%; height: 4px; background: rgba(255,255,255,0.04); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+    .monthly-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+
+    /* API throughput */
+    .throughput-strip {
+      display: flex; align-items: center; gap: 16px; padding: 14px 24px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      margin-bottom: 32px; flex-wrap: wrap;
+    }
+    .throughput-label { font-size: 0.72rem; color: var(--text-dim); font-weight: 500; }
+    .throughput-val { font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent); font-weight: 600; }
+    .throughput-sub { font-size: 0.65rem; color: var(--text-dim); margin-left: auto; }
+
+    @media (max-width: 600px) { .nav { padding: 12px 20px; } .nav-links { display: none; } .uptime-name { min-width: 120px; font-size: 0.78rem; } .component-versions { grid-template-columns: repeat(2, 1fr); } }
   </style>
 </head>
 <body>
@@ -235,6 +269,17 @@
       <button class="subscribe-btn" id="subBtn">Subscribe</button>
     </div>
 
+    <!-- Component Versions -->
+    <div class="component-versions" id="componentVersions"></div>
+
+    <!-- API Throughput -->
+    <div class="throughput-strip">
+      <span class="throughput-label">API Throughput</span>
+      <span class="throughput-val" id="throughputVal">--</span>
+      <span class="throughput-label">req/min</span>
+      <span class="throughput-sub" id="throughputP99">p99: --</span>
+    </div>
+
     <!-- Active Incident Lifecycle (if any) -->
     <div id="activeIncident" style="display:none;"></div>
 
@@ -257,6 +302,17 @@
 
     <!-- S4: Incident summary strip -->
     <div class="incident-summary" id="incidentSummary"></div>
+
+    <!-- Historical Monthly Uptime -->
+    <div class="monthly-uptime">
+      <div class="monthly-uptime-title">Monthly Uptime History</div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;">
+        <table class="monthly-table">
+          <thead><tr><th>Month</th><th>Uptime</th><th>Incidents</th><th>Avg Resolution</th></tr></thead>
+          <tbody id="monthlyUptimeBody"></tbody>
+        </table>
+      </div>
+    </div>
 
     <div class="incidents-section">
       <div class="incidents-title">Scheduled Maintenance</div>
@@ -679,6 +735,61 @@
           startedAt: new Date(Date.now() - 4 * 3600000).toISOString()
         });
       });
+    })();
+
+    // ===== COMPONENT VERSIONS =====
+    (function() {
+      var driverVer = 'v' + (E ? E.CONFIG.version : '0.4.2.0b');
+      var apiVer = 'v2.' + Math.floor(seeded(today * 301) * 8 + 3) + '.' + Math.floor(seeded(today * 303) * 20);
+      var sigVer = (E ? E.signatureCount() : 4891);
+      var modelVer = 'v3.' + Math.floor(seeded(today * 307) * 6 + 2) + '.' + Math.floor(seeded(today * 309) * 40);
+      var components = [
+        { icon: '\uD83D\uDEE1\uFE0F', label: 'Kernel Driver', val: driverVer },
+        { icon: '\uD83D\uDD17', label: 'API Version', val: apiVer },
+        { icon: '\uD83D\uDCC4', label: 'Signature DB', val: sigVer.toLocaleString() + ' sigs' },
+        { icon: '\uD83E\uDDE0', label: 'AI Model', val: modelVer },
+      ];
+      var html = '';
+      components.forEach(function(c) {
+        html += '<div class="comp-ver-item"><span class="comp-ver-icon">' + c.icon + '</span><div><div class="comp-ver-label">' + c.label + '</div><div class="comp-ver-val">' + c.val + '</div></div></div>';
+      });
+      document.getElementById('componentVersions').innerHTML = html;
+    })();
+
+    // ===== API THROUGHPUT (fluctuating) =====
+    (function() {
+      var baseReq = 120 + Math.floor(seeded(today * 311) * 80);
+      var throughputEl = document.getElementById('throughputVal');
+      var p99El = document.getElementById('throughputP99');
+      function updateThroughput() {
+        var hour = new Date().getHours();
+        var diurnal = [0.3,0.25,0.2,0.18,0.2,0.25,0.35,0.5,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0,0.98,0.95,0.9,0.85,0.75,0.6,0.45,0.35];
+        var load = diurnal[hour];
+        var val = Math.floor(baseReq * load + (Math.random() - 0.5) * 20);
+        throughputEl.textContent = val;
+        var p99 = Math.floor(38 + load * 20 + Math.random() * 8);
+        p99El.textContent = 'p99: ' + p99 + 'ms';
+      }
+      updateThroughput();
+      setInterval(updateThroughput, 3000);
+    })();
+
+    // ===== HISTORICAL MONTHLY UPTIME =====
+    (function() {
+      var body = document.getElementById('monthlyUptimeBody');
+      var now = new Date();
+      var html = '';
+      for (var m = 1; m <= 6; m++) {
+        var d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+        var monthName = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        var seed = d.getFullYear() * 12 + d.getMonth();
+        var uptime = (96.5 + seeded(seed * 43) * 2.5).toFixed(2);
+        var incidents = Math.floor(seeded(seed * 47) * 4);
+        var avgRes = incidents > 0 ? Math.floor(8 + seeded(seed * 53) * 40) : 0;
+        var color = parseFloat(uptime) >= 99 ? 'var(--green)' : parseFloat(uptime) >= 97 ? 'var(--accent)' : 'var(--red)';
+        html += '<tr><td>' + monthName + '</td><td><span class="monthly-pct" style="color:' + color + ';">' + uptime + '%</span><div class="monthly-bar-wrap"><div class="monthly-bar-fill" style="width:' + uptime + '%;background:' + color + ';"></div></div></td><td style="font-family:var(--font-mono);font-size:0.75rem;">' + incidents + '</td><td style="font-family:var(--font-mono);font-size:0.75rem;">' + (avgRes > 0 ? avgRes + 'm' : '\u2014') + '</td></tr>';
+      }
+      body.innerHTML = html;
     })();
 
     // ===== POST-MORTEMS (from server data) =====
