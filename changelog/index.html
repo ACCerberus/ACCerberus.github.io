@@ -143,6 +143,7 @@
     <div class="roadmap">
       <div class="roadmap-title"><span style="font-size:1.2rem;">&#9776;</span> Product Roadmap</div>
       <div id="roadmapShort" style="margin-bottom:16px;"></div>
+      <div id="roadmapResearch" style="margin-bottom:16px;"></div>
       <div id="roadmapCompleted" style="margin-top:16px;"></div>
     </div>
 
@@ -200,6 +201,13 @@
       (data.items.short || []).forEach(function(item, i) { shortHTML += renderRoadmapItem(item, 'IN PROGRESS', 'eta-progress', i); });
       shortHTML += '</div>';
       document.getElementById('roadmapShort').innerHTML = shortHTML;
+
+      if (data.items.mid && data.items.mid.length > 0) {
+        var resHTML = '<div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600;">Researching</div><div class="roadmap-grid">';
+        (data.items.mid || []).forEach(function(item, i) { resHTML += renderRoadmapItem(item, 'RESEARCHING', 'eta-research', i); });
+        resHTML += '</div>';
+        document.getElementById('roadmapResearch').innerHTML = resHTML;
+      }
 
       if (data.items.completed && data.items.completed.length > 0) {
         var compHTML = '<div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600;">Recently Completed</div>';

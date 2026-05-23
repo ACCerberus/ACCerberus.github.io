@@ -19,14 +19,6 @@
         "added": "2026-02-15"
       },
       {
-        "id": "r-s3",
-        "name": "Zero-Footprint Mode",
-        "desc": "Kernel module unloads completely between scan cycles — leaves zero memory residue, making Cerberus undetectable by cheat developers during reverse engineering",
-        "progress": 87,
-        "color": "var(--accent)",
-        "added": "2026-01-20"
-      },
-      {
         "id": "r-s4",
         "name": "Cross-Session Behavioral Graph",
         "desc": "Graph neural network that builds player identity from behavioral patterns across sessions — detects ban evaders even with new hardware and accounts",
@@ -36,6 +28,14 @@
       }
     ],
     "mid": [
+      {
+        "id": "r-s3",
+        "name": "Zero-Footprint Mode",
+        "desc": "Kernel module unloads completely between scan cycles — leaves zero memory residue, making Cerberus undetectable by cheat developers during reverse engineering",
+        "progress": 18,
+        "color": "var(--accent)",
+        "added": "2026-01-20"
+      },
       {
         "id": "r-m1",
         "name": "Proof-of-Play Protocol",

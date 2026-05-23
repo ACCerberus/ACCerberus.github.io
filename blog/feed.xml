@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Cerberus Anti-Cheat Blog</title>
+  <subtitle>Developer blog, security advisories, and engineering updates from the Cerberus team.</subtitle>
+  <link href="https://cerberusac.dev/blog/" rel="alternate"/>
+  <link href="https://cerberusac.dev/blog/feed.xml" rel="self"/>
+  <id>https://cerberusac.dev/blog/</id>
+  <updated>2026-05-21T14:00:00Z</updated>
+  <author>
+    <name>Cerberus Team</name>
+    <email>cerberus@arsenalrx.dev</email>
+  </author>
+
+  <entry>
+    <title>Behavioral AI v3.1: Detecting Humanized Aim Assistance</title>
+    <link href="https://cerberusac.dev/blog/#behavioral-ai-v3-1" rel="alternate"/>
+    <id>https://cerberusac.dev/blog/behavioral-ai-v3-1</id>
+    <updated>2026-05-21T14:00:00Z</updated>
+    <author><name>s.nakamura</name></author>
+    <summary>Our behavioral classifier now detects humanized aim assistance that mimics natural mouse movement, including micro-jitter injection and variable smoothing curves.</summary>
+  </entry>
+
+  <entry>
+    <title>Kernel Integrity: BYOVD Blocking in v0.4.2</title>
+    <link href="https://cerberusac.dev/blog/#byovd-blocking" rel="alternate"/>
+    <id>https://cerberusac.dev/blog/byovd-blocking</id>
+    <updated>2026-05-14T10:30:00Z</updated>
+    <author><name>dkrasov</name></author>
+    <summary>v0.4.2 introduces driver stack attestation to block Bring Your Own Vulnerable Driver attacks. We walk through the detection approach and early results from beta testing.</summary>
+  </entry>
+
+  <entry>
+    <title>Threat Report: New DMA-Based Read Primitive in the Wild</title>
+    <link href="https://cerberusac.dev/blog/#dma-read-primitive" rel="alternate"/>
+    <id>https://cerberusac.dev/blog/dma-read-primitive</id>
+    <updated>2026-05-08T09:15:00Z</updated>
+    <author><name>ArsenalRX</name></author>
+    <summary>Our threat research team identified a new DMA-based memory read primitive being sold on cheat forums. We detail how Layer 3 hardware fingerprinting detects the anomalous PCIe timing patterns.</summary>
+  </entry>
+
+  <entry>
+    <title>SDK Integration Guide: From Zero to Protected in Under 2 Hours</title>
+    <link href="https://cerberusac.dev/blog/#sdk-integration-guide" rel="alternate"/>
+    <id>https://cerberusac.dev/blog/sdk-integration-guide</id>
+    <updated>2026-04-29T16:00:00Z</updated>
+    <author><name>lweber</name></author>
+    <summary>A step-by-step walkthrough for integrating the Cerberus SDK into an Unreal Engine 5 project, covering initialization, session binding, and webhook configuration.</summary>
+  </entry>
+
+  <entry>
+    <title>False Positive Engineering: How We Maintain 0.14% FP Rate</title>
+    <link href="https://cerberusac.dev/blog/#false-positive-engineering" rel="alternate"/>
+    <id>https://cerberusac.dev/blog/false-positive-engineering</id>
+    <updated>2026-04-18T11:00:00Z</updated>
+    <author><name>nvoronov</name></author>
+    <summary>Maintaining a low false positive rate is harder than catching cheats. We explain our multi-stage confirmation pipeline and how cross-layer consensus reduces wrongful detections.</summary>
+  </entry>
+</feed>

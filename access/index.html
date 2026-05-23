@@ -630,7 +630,7 @@ White-label SDK</span>
   <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-brand">Cerbe<span>rus</span></div>
-    <p>Four heads. Four layers. Nothing gets past the gate.</p>
+    <p>Four layers. Nothing gets past the gate.</p>
     <div style="display:flex;justify-content:center;gap:24px;margin-top:16px;flex-wrap:wrap;">
       <a href="/docs/">Documentation</a>
       <a href="/api/">API Reference</a>
@@ -698,6 +698,9 @@ White-label SDK</span>
         var gameTitleVal = (form.querySelector('input[name="game_title"]').value || '').trim();
         var engineVal = (form.querySelector('select[name="engine"]').value || '');
         var genreVal = (form.querySelector('select[name="genre"]').value || '');
+        var tierRadio = form.querySelector('input[name="tier"]:checked');
+        var tierVal = tierRadio ? tierRadio.value.split(' ')[0] : 'Argus';
+        var tierPrefix = tierVal.toLowerCase();
 
         // SHA-256 hash the password
         var pwBuf = new TextEncoder().encode(pw);
@@ -749,9 +752,9 @@ White-label SDK</span>
                 game: gameTitleVal,
                 engine: engineVal,
                 genre: genreVal,
-                tier: 'Argus',
+                tier: tierVal,
                 status: 'pending',
-                apiKey: 'argus_live_' + Math.random().toString(36).substring(2, 14),
+                apiKey: tierPrefix + '_live_' + Math.random().toString(36).substring(2, 14),
                 joined: new Date().toISOString().split('T')[0]
               });
 
