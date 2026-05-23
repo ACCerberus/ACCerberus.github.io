@@ -903,6 +903,7 @@
     // ===== SEED-BASED RANDOM (consistent per-day) =====
     var daySeed = Math.floor(Date.now() / 86400000);
     function seeded(seed) { var x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+    var E = window.CerberusEngine;
 
     // ===== PULL LIVE STATE FROM state.json (updated by GitHub Actions heartbeat) =====
     fetch('/data/state.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(state) {
@@ -1177,7 +1178,6 @@
 
     // ===== STAT CARDS (with localStorage persistence + cumulative history) =====
     // Base numbers derived from CerberusEngine (beta scale: ~480 peak CCU, 3 titles)
-    var E = window.CerberusEngine;
     var dailyBaseThreats = E ? E.dailyDetections() : Math.floor(12 + seeded(daySeed * 121) * 26); // 12-38 threats/day
     var dailyBaseCCU = E ? E.activeSessions() : Math.floor(200 + seeded(daySeed * 123) * 280); // ~200-480 CCU
 
