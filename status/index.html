@@ -692,7 +692,8 @@
     // ===== UPTIME BARS (date-seeded, per-region) =====
     var E = window.CerberusEngine;
     var serviceNames = ['Detection Engine', 'API & Dashboard', 'Data Pipeline'];
-    var regionNames = E ? E.CONFIG.regions.map(function(r) { return r.name; }) : ['US-East', 'EU-West', 'AP-Southeast'];
+    var regionNames;
+    try { regionNames = (E && E.CONFIG) ? E.CONFIG.regions.map(function(r) { return r.name; }) : ['US-East', 'EU-West', 'AP-Southeast']; } catch(e) { regionNames = ['US-East', 'EU-West', 'AP-Southeast']; }
     var services = [];
     var svcId = 0;
     serviceNames.forEach(function(svcName, si) {
