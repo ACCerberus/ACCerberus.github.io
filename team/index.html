@@ -133,14 +133,7 @@
       font-family: var(--font-heading); font-weight: 800; font-size: 1rem; color: var(--accent); flex-shrink: 0;
       position: relative;
     }
-    .lead-status {
-      position: absolute; bottom: -2px; right: -2px; width: 12px; height: 12px; border-radius: 50%;
-      border: 2px solid var(--bg-card); z-index: 2;
-    }
-    .lead-status-online { background: var(--green); }
-    .lead-status-busy { background: var(--red); }
-    .lead-status-away { background: var(--accent); }
-    .lead-status-offline { background: var(--text-dim); }
+    .lead-status { display: none; }
     .lead-info { flex: 1; min-width: 0; }
     .lead-name { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); }
     .lead-role { font-size: 0.75rem; color: var(--accent); font-weight: 600; margin-top: 2px; }
@@ -188,10 +181,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 0.6rem; font-weight: 700; color: var(--accent); position: relative;
     }
-    .dept-member-status {
-      position: absolute; bottom: -1px; right: -1px; width: 8px; height: 8px; border-radius: 50%;
-      border: 1.5px solid var(--bg-card);
-    }
+    .dept-member-status { display: none; }
     .dept-member-name { font-size: 0.75rem; color: var(--text); font-weight: 500; }
     .dept-member-title { font-size: 0.65rem; color: var(--text-dim); }
 
@@ -321,7 +311,7 @@
     <div class="tz-card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
         <div class="section-label" style="margin-bottom:0;">Across Time Zones</div>
-        <div style="font-size:0.65rem;color:var(--text-dim);font-family:var(--font-mono);" id="onlineCount"></div>
+        <div style="font-size:0.65rem;color:var(--text-dim);font-family:var(--font-mono);" id="onlineCount">19 engineers</div>
       </div>
       <div class="tz-strip" id="tzStrip"></div>
     </div>
@@ -549,15 +539,12 @@
           var dotsHTML = '';
           z.members.forEach(function(mid) {
             var m = findMember(mid);
-            var s = getStatus(m.tz);
-            if (s === 'online' || s === 'busy') totalOnline++;
-            var color = s === 'online' ? 'var(--green)' : s === 'busy' ? 'var(--red)' : s === 'away' ? 'var(--accent)' : 'var(--text-dim)';
-            dotsHTML += '<div class="tz-dot" style="background:' + color + ';" title="' + m.name + ' (' + s + ')"></div>';
+            dotsHTML += '<div class="tz-dot" style="background:var(--accent);opacity:0.5;" title="' + m.name + '"></div>';
           });
           html += '<div class="tz-group"><div class="tz-city">' + z.city + '</div><div class="tz-time" style="color:' + (isWork ? 'var(--accent)' : 'var(--text-dim)') + ';">' + timeStr + '</div><div class="tz-people">' + z.members.length + ' engineer' + (z.members.length > 1 ? 's' : '') + '</div><div class="tz-bar">' + dotsHTML + '</div></div>';
         });
         document.getElementById('tzStrip').innerHTML = html;
-        document.getElementById('onlineCount').textContent = totalOnline + '/19 online';
+        document.getElementById('onlineCount').textContent = '19 engineers';
       }
       renderTZ();
       setInterval(renderTZ, 30000);
