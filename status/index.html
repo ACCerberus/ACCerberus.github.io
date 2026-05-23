@@ -201,44 +201,73 @@
     .ud-section { margin-bottom: 40px; }
     .ud-section-title { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 16px; letter-spacing: -0.3px; }
     .ud-pipeline {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
       margin-bottom: 32px;
     }
     .ud-pipe-card {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-      padding: 20px; position: relative; overflow: hidden;
+      padding: 22px; position: relative; overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
     }
+    .ud-pipe-card:hover { transform: translateY(-3px); }
+    .ud-pipe-card.pipe-sig:hover { border-color: var(--green); box-shadow: 0 4px 24px rgba(48,200,96,0.08); }
+    .ud-pipe-card.pipe-model:hover { border-color: var(--purple); box-shadow: 0 4px 24px rgba(160,100,255,0.08); }
+    .ud-pipe-card.pipe-driver:hover { border-color: var(--accent); box-shadow: 0 4px 24px rgba(232,160,32,0.08); }
+    .ud-pipe-card.pipe-hotfix:hover { border-color: var(--red); box-shadow: 0 4px 24px rgba(232,64,64,0.08); }
     .ud-pipe-card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
     }
-    .ud-pipe-card.pipe-sig::before { background: var(--green); }
-    .ud-pipe-card.pipe-model::before { background: var(--purple); }
-    .ud-pipe-card.pipe-driver::before { background: var(--accent); }
-    .ud-pipe-card.pipe-hotfix::before { background: var(--red); }
-    .ud-pipe-icon { font-size: 1.4rem; margin-bottom: 10px; }
-    .ud-pipe-name { font-family: var(--font-heading); font-size: 0.88rem; font-weight: 700; color: var(--text-bright); margin-bottom: 4px; }
-    .ud-pipe-freq { font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent); margin-bottom: 8px; }
-    .ud-pipe-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 10px; }
-    .ud-pipe-action { font-size: 0.72rem; padding: 4px 10px; border-radius: 5px; font-weight: 600; font-family: var(--font-mono); display: inline-block; }
-    .ud-pipe-action.auto { background: rgba(48,200,96,0.1); color: var(--green); }
-    .ud-pipe-action.manual { background: rgba(232,160,32,0.1); color: var(--accent); }
-    .ud-pipe-action.pull { background: rgba(64,136,232,0.1); color: var(--blue); }
+    .ud-pipe-card.pipe-sig::before { background: linear-gradient(90deg, var(--green), rgba(48,200,96,0.3)); }
+    .ud-pipe-card.pipe-model::before { background: linear-gradient(90deg, var(--purple), rgba(160,100,255,0.3)); }
+    .ud-pipe-card.pipe-driver::before { background: linear-gradient(90deg, var(--accent), rgba(232,160,32,0.3)); }
+    .ud-pipe-card.pipe-hotfix::before { background: linear-gradient(90deg, var(--red), rgba(232,64,64,0.3)); }
+    .ud-pipe-icon { font-size: 1.5rem; margin-bottom: 12px; }
+    .ud-pipe-name { font-family: var(--font-heading); font-size: 0.88rem; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
+    .ud-pipe-freq { font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent); margin-bottom: 10px; }
+    .ud-pipe-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 14px; }
+    .ud-pipe-action { font-size: 0.68rem; padding: 5px 12px; border-radius: 6px; font-weight: 600; font-family: var(--font-mono); display: inline-block; letter-spacing: 0.3px; }
+    .ud-pipe-action.auto { background: rgba(48,200,96,0.1); color: var(--green); border: 1px solid rgba(48,200,96,0.15); }
+    .ud-pipe-action.manual { background: rgba(232,160,32,0.1); color: var(--accent); border: 1px solid rgba(232,160,32,0.15); }
+    .ud-pipe-action.pull { background: rgba(64,136,232,0.1); color: var(--blue); border: 1px solid rgba(64,136,232,0.15); }
 
-    .ud-table { width: 100%; border-collapse: collapse; }
-    .ud-table th { text-align: left; font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 12px; border-bottom: 1px solid var(--border); font-weight: 600; }
-    .ud-table td { font-size: 0.78rem; padding: 12px; border-bottom: 1px solid var(--border); color: var(--text); }
-    .ud-table tr:hover { background: rgba(255,255,255,0.01); }
-
-    .ud-flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 24px 0; }
-    .ud-flow-step {
-      display: flex; flex-direction: column; align-items: center; padding: 14px 20px;
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
-      min-width: 120px; text-align: center;
+    .ud-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .ud-table th {
+      text-align: left; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;
+      letter-spacing: 0.6px; padding: 12px 16px; border-bottom: 1px solid var(--border);
+      font-weight: 600; background: rgba(255,255,255,0.01);
     }
-    .ud-flow-step-num { font-family: var(--font-mono); font-size: 0.65rem; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
-    .ud-flow-step-name { font-size: 0.78rem; color: var(--text-bright); font-weight: 600; }
-    .ud-flow-step-desc { font-size: 0.65rem; color: var(--text-dim); margin-top: 4px; }
-    .ud-flow-arrow { color: var(--text-dim); font-size: 1.2rem; padding: 0 8px; flex-shrink: 0; }
+    .ud-table td {
+      font-size: 0.78rem; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.03);
+      color: var(--text); vertical-align: middle; transition: background 0.2s;
+    }
+    .ud-table tbody tr { transition: background 0.2s; }
+    .ud-table tbody tr:hover { background: rgba(255,255,255,0.025); }
+    .ud-table tbody tr:last-child td { border-bottom: none; }
+    .ud-table td:last-child { text-align: center; }
+    .ud-table th:last-child { text-align: center; }
+
+    .ud-flow { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; margin: 24px 0; position: relative; }
+    .ud-flow-step {
+      display: flex; flex-direction: column; align-items: center; padding: 18px 22px 16px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      min-width: 130px; text-align: center; position: relative; flex: 1;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+    .ud-flow-step:hover {
+      border-color: var(--accent); box-shadow: 0 0 20px rgba(232,160,32,0.1);
+      transform: translateY(-2px);
+    }
+    .ud-flow-step-num {
+      font-family: var(--font-mono); font-size: 0.6rem; color: var(--bg); font-weight: 700;
+      background: var(--accent); width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 8px;
+    }
+    .ud-flow-step-name { font-size: 0.82rem; color: var(--text-bright); font-weight: 600; }
+    .ud-flow-step-desc { font-size: 0.65rem; color: var(--text-dim); margin-top: 6px; line-height: 1.4; }
+    .ud-flow-arrow {
+      color: var(--accent); font-size: 1rem; padding: 0 6px; flex-shrink: 0;
+      display: flex; align-items: center; opacity: 0.5;
+    }
 
     .ud-recent-item {
       display: flex; align-items: center; gap: 14px; padding: 14px 16px;
@@ -486,45 +515,45 @@
           <tbody>
             <tr>
               <td style="color:var(--text-bright);font-weight:500;">New cheat detected in the wild</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.72rem;">Signature</span></td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(48,200,96,0.1);color:var(--green);padding:3px 8px;border-radius:4px;">Signature</span></td>
               <td style="color:var(--green);">None</td>
               <td>None — signatures sync silently</td>
-              <td style="color:var(--green);font-weight:600;">Zero</td>
+              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
             </tr>
             <tr>
               <td style="color:var(--text-bright);font-weight:500;">Improved aim analysis model</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.72rem;">AI Model</span></td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(160,100,255,0.1);color:var(--purple);padding:3px 8px;border-radius:4px;">AI Model</span></td>
               <td style="color:var(--green);">None</td>
               <td>~5ms latency spike during swap</td>
-              <td style="color:var(--green);font-weight:600;">Zero</td>
+              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
             </tr>
             <tr>
               <td style="color:var(--text-bright);font-weight:500;">New hardware fingerprinting capability</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.72rem;">Driver + SDK</span></td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(64,136,232,0.1);color:var(--blue);padding:3px 8px;border-radius:4px;">Driver + SDK</span></td>
               <td style="color:var(--blue);">Pull new SDK, ship in next patch</td>
               <td>Included in your regular game update</td>
-              <td style="color:var(--green);font-weight:600;">Zero</td>
+              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
             </tr>
             <tr>
               <td style="color:var(--text-bright);font-weight:500;">False positive spike on a game overlay</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.72rem;">Hotfix (Signature)</span></td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(232,64,64,0.1);color:var(--red);padding:3px 8px;border-radius:4px;">Hotfix (Sig)</span></td>
               <td style="color:var(--green);">None — whitelist pushed automatically</td>
               <td>Affected sessions released from hold</td>
-              <td style="color:var(--green);font-weight:600;">Zero</td>
+              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
             </tr>
             <tr>
               <td style="color:var(--text-bright);font-weight:500;">Critical kernel vulnerability patched</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.72rem;">Hotfix (Driver)</span></td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(232,64,64,0.1);color:var(--red);padding:3px 8px;border-radius:4px;">Hotfix (Driver)</span></td>
               <td style="color:var(--accent);">Emergency SDK pull recommended</td>
               <td>Players update on next game launch</td>
-              <td style="color:var(--accent);font-weight:600;">Minimal</td>
+              <td><span style="color:var(--accent);font-weight:600;background:rgba(232,160,32,0.08);padding:3px 10px;border-radius:4px;">Minimal</span></td>
             </tr>
             <tr>
               <td style="color:var(--text-bright);font-weight:500;">Scheduled maintenance window</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.72rem;">Infrastructure</span></td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(64,136,232,0.1);color:var(--blue);padding:3px 8px;border-radius:4px;">Infrastructure</span></td>
               <td style="color:var(--green);">None — detection falls back to cached sigs</td>
               <td>Dashboard may lag briefly</td>
-              <td style="color:var(--accent);font-weight:600;">2-4 min</td>
+              <td><span style="color:var(--accent);font-weight:600;background:rgba(232,160,32,0.08);padding:3px 10px;border-radius:4px;">2-4 min</span></td>
             </tr>
           </tbody>
         </table>
@@ -703,6 +732,27 @@
     var aggUptime = (allPcts.reduce(function(a, b) { return a + b; }, 0) / allPcts.length).toFixed(1);
     document.getElementById('statusUptime').textContent = aggUptime + '% over 30 days';
 
+    // Arms race phase pill — injected into status banner when a spike is active
+    (function() {
+      var arc = E ? E.armsRaceEvent(new Date()) : null;
+      if (!arc || !arc.isSpike || !arc.phaseName) return;
+      var phaseColors = {
+        DETECTED:    { bg: 'rgba(232,160,32,0.12)', color: '#e8a020', border: 'rgba(232,160,32,0.3)' },
+        ANALYSIS:    { bg: 'rgba(232,160,32,0.12)', color: '#e8a020', border: 'rgba(232,160,32,0.3)' },
+        DEPLOYING:   { bg: 'rgba(64,136,232,0.12)', color: '#4088e8', border: 'rgba(64,136,232,0.3)' },
+        NEUTRALIZED: { bg: 'rgba(48,200,96,0.12)',  color: '#30c860', border: 'rgba(48,200,96,0.3)' },
+      };
+      var pc = phaseColors[arc.phaseName] || phaseColors.DETECTED;
+      var pill = document.createElement('span');
+      pill.title = 'Arms race event active — ' + (arc.affectedCategory ? arc.affectedCategory + ' layer affected' : 'multi-layer');
+      pill.style.cssText = 'font-family:var(--font-mono);font-size:0.65rem;font-weight:700;padding:3px 10px;border-radius:5px;background:' + pc.bg + ';color:' + pc.color + ';border:1px solid ' + pc.border + ';letter-spacing:0.4px;cursor:default;white-space:nowrap;';
+      pill.textContent = 'ARMS RACE \u00B7 ' + arc.phaseName;
+      var banner = document.getElementById('statusBanner');
+      // Insert before the time span so it sits on the right side
+      var timeEl = document.getElementById('statusTime');
+      if (banner && timeEl) banner.insertBefore(pill, timeEl);
+    })();
+
     // S8: Render uptime day cells with data-tip tooltips
     services.forEach(function(svc) {
       var bar = document.getElementById('bar' + svc.id);
@@ -743,46 +793,92 @@
     var maintTask = maintTasks[Math.floor(seeded(today * 13) * maintTasks.length)];
     document.getElementById('scheduledMaint').innerHTML = '<div class="scheduled"><div class="incident-header"><span class="incident-severity" style="background:rgba(64,136,232,0.1);color:#4088e8;">SCHEDULED</span><span class="incident-title">' + maintTask.title + '</span><span class="incident-date">' + fmtDate(maintDate) + ' ' + String(maintHour).padStart(2,'0') + ':00-' + String(maintHour+2).padStart(2,'0') + ':00 UTC</span></div><div class="incident-body">' + maintTask.desc + '</div></div>';
 
-    // ===== RECENT INCIDENTS (pool of incidents, pick 3-4 based on date) =====
-    var incidentPool = [
-      { title: 'False positive spike on UE5 overlay rendering', body: 'Behavioral AI flagged legitimate Unreal Engine overlay rendering as an external screen reader. Affected sessions held in manual review \u2014 no bans issued.', root: 'Engine overlay GDI hook pattern changed. Whitelist updated.', time: '22 minutes', sev: 'minor' },
-      { title: 'Elevated scan latency on AMD Zen 5', body: 'PCIe bus enumeration exceeded 3ms scan budget on Ryzen 9000 series due to new IOMMU topology.', root: 'Added topology-aware enumeration path for Zen 5 IOMMU groups.', time: '4 hours (patch deployed)', sev: 'minor' },
-      { title: 'Webhook delivery delays', body: 'Ban event webhooks delayed 45-90 seconds during concurrent pentest burst across all titles.', root: 'Queue worker pool undersized. Scaled from 2 to 6 workers.', time: '35 minutes', sev: 'minor' },
-      { title: 'Dashboard API 503 errors', body: 'Threat dashboard returned 503 during signature database reindex. Detection engine unaffected.', root: 'DB reindex locked read replica. Moved to off-peak window.', time: '8 minutes', sev: 'minor' },
-      { title: 'Signature sync delay', body: 'New signature batch deployment delayed by 4 hours due to CDN cache propagation issue. Existing signatures continued functioning.', root: 'CDN purge API rate-limited. Added retry with backoff.', time: '4 hours', sev: 'minor' },
-      { title: 'AI inference timeout on batch processing', body: 'ONNX Runtime inference exceeded 10ms timeout during peak load. Affected titles fell back to kernel-only scanning.', root: 'Model batch size too large for concurrent sessions. Reduced batch size from 64 to 32.', time: '18 minutes', sev: 'minor' },
-      { title: 'PCIe enumeration crash on Intel Arc GPUs', body: 'Driver crashed during PCIe firmware verification on Intel Arc A770/A750 GPUs. Game session continued without hardware scanning.', root: 'Intel Arc Option ROM returns non-standard descriptor format. Added parser fallback.', time: '2 hours (hotfix deployed)', sev: 'minor' },
-      { title: 'Ban API elevated error rate', body: 'Ban API returned 500 errors for ~3% of requests during database migration window.', root: 'Connection pool exhausted during schema migration. Pre-warmed pool before migration.', time: '12 minutes', sev: 'minor' },
-      { title: 'Memory footprint regression', body: 'Client memory usage spiked to 38MB (from 22MB baseline) after AI model update. No crashes reported.', root: 'New model weights not properly memory-mapped. Fixed allocation strategy.', time: '6 hours (patch in next release)', sev: 'minor' },
-      { title: 'Discord overlay false flag', body: 'Discord overlay detected as suspicious screen reader on 12 sessions. All held in review \u2014 no bans.', root: 'Discord updated their overlay injection method. Added to trusted whitelist.', time: '15 minutes', sev: 'minor' },
-    ];
+    // ===== RECENT INCIDENTS (engine-derived from CerberusEngine.dailyIncidents()) =====
+    // Category → human-readable incident titles and descriptions
+    var incidentTitleMap = {
+      kernel: [
+        { title: 'Kernel driver communication stall', body: 'Driver communication timeout between ring-0 monitor and user-mode relay. Affected sessions continued with behavioral-layer detection only.', root: null },
+        { title: 'Minifilter callback stall on write path', body: 'Minifilter callback stall triggered during high-throughput write operations. No detection gaps — scan pipeline fell back gracefully.', root: null },
+        { title: 'PTE scan race condition', body: 'Page-table entry scanner encountered a race condition during concurrent process exit. Handled safely — no false positives or missed scans.', root: null },
+        { title: 'Hypervisor integrity check false alarm', body: 'Hypervisor-assisted memory check returned a false anomaly on Intel 14th-gen systems with E-core scheduling. No bans issued.', root: null },
+      ],
+      ai: [
+        { title: 'AI inference latency spike', body: 'ONNX Runtime inference exceeded 10ms scan budget during peak load. Affected titles fell back to kernel-only scanning for the duration.', root: null },
+        { title: 'Behavioral baseline corruption', body: 'Feature extraction pipeline produced corrupted baseline samples after a model hot-swap. Affected scan window held pending revalidation.', root: null },
+        { title: 'Model memory pressure on high-CCU sessions', body: 'AI model weight cache evicted under memory pressure during concurrent high-CCU session burst. Inference latency spiked ~15ms before stabilizing.', root: null },
+        { title: 'Input stream desync on controller input', body: 'Behavioral AI input stream lost sync on sessions using high-polling-rate controllers. Resolved after scan cycle reset.', root: null },
+      ],
+      network: [
+        { title: 'Webhook delivery delays', body: 'Ban event webhooks delayed 45\u201390 seconds during a concurrent pentest burst across all titles. Queue worker pool scaled to resolve.', root: null },
+        { title: 'Signature sync CDN propagation delay', body: 'Signature batch deployment delayed due to CDN cache propagation issue. Existing signatures continued functioning during the window.', root: null },
+        { title: 'Cross-player correlation backlog', body: 'Network Sentinel correlation engine fell behind during a session burst. Backlog cleared within the window with no missed events.', root: null },
+        { title: 'Rate limiter misconfiguration on ban API', body: 'Ban API rate limiter applied incorrect per-IP thresholds after config push. Reverted automatically after 8 minutes.', root: null },
+      ],
+      hardware: [
+        { title: 'PCIe enumeration timeout on Intel Arc', body: 'PCIe bus enumeration exceeded scan budget on Intel Arc A770/A750 GPUs. Hardware layer disabled for affected sessions; behavioral scanning continued.', root: null },
+        { title: 'DMA timing check false positive', body: 'DMA timing anomaly check produced false positives on certain Thunderbolt 4 docks. Sessions held in review \u2014 no bans issued.', root: null },
+        { title: 'TPM attestation timeout', body: 'TPM 2.0 attestation timed out on systems with firmware-level TPM (fTPM) under heavy CPU load. Attestation retried successfully on next cycle.', root: null },
+        { title: 'GPU shader tamper check stall', body: 'Shader integrity check stalled on AMD RX 7000 series due to driver API change. Patch deployed to restore full hardware layer coverage.', root: null },
+      ],
+    };
+    var incidentRootMap = {
+      'Driver communication timeout': 'IPC channel reconnect logic updated to handle ring-0 delays.',
+      'Minifilter callback stall': 'Write path synchronization improved; callback queue depth limit raised.',
+      'PTE scan race condition': 'Added process-exit fence in scanner; race condition eliminated.',
+      'IOCTL buffer overflow protection triggered': 'Buffer bounds check tightened; false trigger threshold adjusted.',
+      'Hypervisor check false alarm': 'Whitelist extended for E-core CPUID signatures on Raptor Lake.',
+      'Model inference latency spike': 'Batch size reduced from 64 to 32; inference pipeline back-pressure added.',
+      'Feature extraction pipeline stall': 'Pipeline queue depth limit raised and stall watchdog added.',
+      'Behavioral baseline corruption': 'Added checksum validation on baseline snapshots before promotion.',
+      'ONNX runtime memory pressure': 'Model weight cache eviction policy updated; memory ceiling raised.',
+      'Input stream desync': 'Input stream sync heartbeat added for high-polling-rate HID devices.',
+      'Packet integrity check timeout': 'Timeout threshold adjusted for regional latency variance.',
+      'Cross-player correlation backlog': 'Correlation engine worker pool scaled from 4 to 8 workers.',
+      'WebSocket connection storm': 'Connection storm protection added; exponential backoff enforced.',
+      'Signature sync CDN failure': 'CDN purge API retry with backoff added; fallback origin enabled.',
+      'Rate limiter misconfiguration': 'Config validation pipeline updated to reject out-of-range thresholds.',
+      'PCIe enumeration timeout': 'Timeout budget raised for discrete GPU topologies; async path added.',
+      'DMA timing check false positive': 'Thunderbolt 4 dock timing profile added to hardware allowlist.',
+      'Firmware DB sync failure': 'Firmware hash DB sync retried with exponential backoff.',
+      'TPM attestation timeout': 'fTPM attestation timeout raised from 800ms to 1400ms.',
+      'GPU shader check stall': 'AMD RDNA3 driver API compatibility layer added to shader verifier.',
+    };
 
-    // Pick 3-4 incidents based on date seed, assign dates in the past 1-45 days
-    var numIncidents = 3 + Math.floor(seeded(today * 17) * 2);
     var incidentHTML = '';
-    var usedIndices = [];
     var incidentMeta = []; // for S4 summary
-    for (var i = 0; i < numIncidents; i++) {
-      var idx, attempt = 0;
-      do { idx = Math.floor(seeded(today * 19 + i * 31 + attempt * 7) * incidentPool.length); attempt++; } while (usedIndices.indexOf(idx) >= 0 && attempt < 50);
-      usedIndices.push(idx);
-      var inc = incidentPool[idx];
-      var incDaysAgo = Math.floor(2 + seeded(today * 23 + i * 37) * 40);
-      var incDate = daysAgo(incDaysAgo);
+    var now_inc = new Date();
 
-      // Parse resolution time for S4
-      var resMinutes = 0;
-      var timeStr = inc.time;
-      if (timeStr.indexOf('hour') >= 0) {
-        resMinutes = parseInt(timeStr) * 60;
-      } else {
-        resMinutes = parseInt(timeStr);
-      }
-      if (incDaysAgo <= 30) {
-        incidentMeta.push({ daysAgo: incDaysAgo, resMinutes: resMinutes });
-      }
+    // Collect incidents across last 30 days (show up to 4 recent, deduplicate by day)
+    var shownDays = [];
+    var totalShown = 0;
+    for (var dOffset = 1; dOffset <= 45 && totalShown < 4; dOffset++) {
+      var pastDay = new Date(now_inc.getTime() - dOffset * 86400000);
+      var dayIncs = E ? E.dailyIncidents(pastDay) : [];
+      if (dayIncs.length === 0) continue;
+      if (shownDays.indexOf(dOffset) >= 0) continue;
+      shownDays.push(dOffset);
 
-      incidentHTML += '<div class="incident"><div class="incident-header"><span class="incident-severity sev-resolved">RESOLVED</span><span class="incident-title">' + inc.title + '</span><span class="incident-date">' + fmtDate(incDate) + '</span></div><div class="incident-body">' + inc.body + '</div><div class="incident-update"><strong>Root cause:</strong> ' + inc.root + ' <strong>Resolution time:</strong> ' + inc.time + '.</div></div>';
+      dayIncs.forEach(function(inc) {
+        if (totalShown >= 4) return;
+        var pool = incidentTitleMap[inc.category] || incidentTitleMap.kernel;
+        var poolIdx = Math.floor(seeded(today * 1901 + dOffset * 37 + totalShown * 13) * pool.length);
+        var tpl = pool[poolIdx];
+        var root = incidentRootMap[inc.cause] || inc.cause + ' \u2014 issue investigated and patched.';
+        var durationStr = inc.durationMinutes >= 60
+          ? Math.round(inc.durationMinutes / 60) + ' hour' + (Math.round(inc.durationMinutes / 60) > 1 ? 's' : '')
+          : inc.durationMinutes + ' minutes';
+        var incDateObj = daysAgo(dOffset);
+        var sevClass = inc.severity === 'critical' ? 'sev-major' : 'sev-resolved';
+        var sevLabel = inc.severity === 'critical' ? 'MAJOR' : inc.severity === 'high' ? 'RESOLVED' : 'RESOLVED';
+        incidentHTML += '<div class="incident"><div class="incident-header"><span class="incident-severity ' + sevClass + '">' + sevLabel + '</span><span class="incident-title">' + tpl.title + '</span><span class="incident-date">' + fmtDate(incDateObj) + '</span></div><div class="incident-body">' + tpl.body + ' Affected region: ' + inc.region + '.</div><div class="incident-update"><strong>Root cause:</strong> ' + root + ' <strong>Resolution time:</strong> ' + durationStr + '.</div></div>';
+        if (dOffset <= 30) incidentMeta.push({ daysAgo: dOffset, resMinutes: inc.durationMinutes });
+        totalShown++;
+      });
+    }
+
+    // If engine produced nothing today (low-incident period), show at least one historic entry
+    if (totalShown === 0) {
+      incidentHTML = '<div class="incident"><div class="incident-header"><span class="incident-severity sev-resolved">RESOLVED</span><span class="incident-title">No incidents in the last 30 days</span><span class="incident-date">' + fmtDate(now_inc) + '</span></div><div class="incident-body">All systems have been operating normally. No degradation events recorded.</div></div>';
     }
     document.getElementById('recentIncidents').innerHTML = incidentHTML;
 
@@ -811,11 +907,21 @@
       var w = rect.width, h = rect.height;
 
       // Generate 24 data points (one per hour), seeded
+      // Use engine-derived API response as anchor for today's baseline
+      var _perf = E ? E.performanceMetrics(new Date()) : null;
+      var _arc = E ? E.armsRaceEvent(new Date()) : null;
       var hourNow = new Date().getHours();
       // Diurnal pattern: busier 14-22, quieter 2-8
       var diurnal = [0.4,0.35,0.3,0.28,0.25,0.28,0.32,0.4,0.5,0.55,0.6,0.65,0.7,0.75,0.85,0.9,0.95,1.0,0.95,0.9,0.85,0.75,0.6,0.5];
       var pts = [];
-      var minMs = 38, maxMs = 66;
+      // Anchor min/max to engine's apiResponse (jitter ±12ms around it)
+      var _apiBase = _perf ? Math.max(28, Math.min(90, _perf.apiResponse)) : 48;
+      // Arms race DETECTED/ANALYSIS phases push latency up slightly
+      if (_arc && _arc.isSpike && (_arc.phaseName === 'DETECTED' || _arc.phaseName === 'ANALYSIS')) {
+        _apiBase = Math.min(90, _apiBase + 8);
+      }
+      var minMs = Math.max(20, Math.round(_apiBase - 12));
+      var maxMs = Math.round(_apiBase + 12);
       for (var i = 0; i < 24; i++) {
         var hr = (hourNow - 23 + i + 24) % 24;
         var base = minMs + diurnal[hr] * (maxMs - minMs);
@@ -962,7 +1068,25 @@
           if (recentEl) recentEl.innerHTML = histHTML + recentEl.innerHTML;
         }
 
-        // Fall back to client-side simulation
+        // Fall back to client-side simulation, arms-race-aware
+        var _arcNow = E ? E.armsRaceEvent(new Date()) : null;
+
+        // During an arms race spike, show an active incident derived from the phase
+        if (_arcNow && _arcNow.isSpike) {
+          var phaseIncidentMap = {
+            DETECTED:     { title: 'Threat research alert \u2014 new cheat vector under analysis', status: 'INVESTIGATING', rootCause: (_arcNow.affectedCategory || 'Detection layer') + ': ' + _arcNow.phaseName + ' phase active. Signature and model team engaged.' },
+            ANALYSIS:     { title: 'Elevated detection activity \u2014 signature analysis in progress', status: 'IDENTIFIED',    rootCause: 'Threat analysis ongoing for ' + (_arcNow.provider || 'unknown provider') + '. Countermeasures being prepared.' },
+            DEPLOYING:    { title: 'Countermeasure deployment \u2014 signature push in progress', status: 'MONITORING',   rootCause: 'Countermeasure signatures deploying across all regions. Monitoring for efficacy and false positives.' },
+            NEUTRALIZED:  { title: 'Arms race event resolved \u2014 post-deployment monitoring', status: 'RESOLVING',    rootCause: 'Threat neutralized. Monitoring for recurrence. Post-incident review scheduled.' },
+          };
+          var phaseInc = phaseIncidentMap[_arcNow.phaseName] || phaseIncidentMap['DETECTED'];
+          phaseInc.startedAt = new Date(Date.now() - (2 + seeded(today * 217) * 6) * 3600000).toISOString();
+          // Attach phase label to id field for display
+          phaseInc.id = 'ARMS-RACE \u00B7 ' + (_arcNow.phaseName || 'ACTIVE') + ' \u00B7 ' + (_arcNow.affectedCategory ? _arcNow.affectedCategory.toUpperCase() + ' LAYER' : 'MULTI-LAYER');
+          renderActiveIncident(phaseInc);
+          return;
+        }
+
         var activeIncidentRoll = seeded(today * 211);
         if (activeIncidentRoll > 0.20) return;
 
@@ -1012,18 +1136,23 @@
       document.getElementById('componentVersions').innerHTML = html;
     })();
 
-    // ===== API THROUGHPUT (fluctuating) =====
+    // ===== API THROUGHPUT (fluctuating, anchored to engine performanceMetrics) =====
     (function() {
       var baseReq = 120 + Math.floor(seeded(today * 311) * 80);
       var throughputEl = document.getElementById('throughputVal');
       var p99El = document.getElementById('throughputP99');
+      // Engine-derived API response base for p99 scaling
+      var _perfBase = E ? E.performanceMetrics(new Date()) : null;
+      var _p99Base = _perfBase ? Math.max(28, Math.min(100, _perfBase.apiResponse)) : 48;
       function updateThroughput() {
         var hour = new Date().getHours();
         var diurnal = [0.3,0.25,0.2,0.18,0.2,0.25,0.35,0.5,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0,0.98,0.95,0.9,0.85,0.75,0.6,0.45,0.35];
         var load = diurnal[hour];
         var val = Math.floor(baseReq * load + (Math.random() - 0.5) * 20);
         throughputEl.textContent = val;
-        var p99 = Math.floor(38 + load * 20 + Math.random() * 8);
+        // p99 anchored to engine's apiResponse, scaled by diurnal load
+        var p99 = Math.floor(_p99Base * (0.85 + load * 0.2) + (Math.random() - 0.5) * 8);
+        p99 = Math.max(20, Math.min(110, p99));
         p99El.textContent = 'p99: ' + p99 + 'ms';
       }
       updateThroughput();
@@ -1083,45 +1212,87 @@
       });
     });
 
-    // ===== RECENT DEPLOYMENTS (seeded) =====
+    // ===== RECENT DEPLOYMENTS (engine-derived from CerberusEngine.dailyDeployments()) =====
     (function() {
       var el = document.getElementById('recentDeployments');
       if (!el) return;
-      var deployTypes = [
-        { type: 'SIGNATURE', color: 'var(--green)', bg: 'rgba(48,200,96,0.1)' },
-        { type: 'AI MODEL', color: 'var(--purple)', bg: 'rgba(136,96,232,0.1)' },
-        { type: 'SDK', color: 'var(--accent)', bg: 'rgba(232,160,32,0.1)' },
-        { type: 'HOTFIX', color: 'var(--red)', bg: 'rgba(224,64,80,0.1)' },
-        { type: 'INFRA', color: 'var(--blue)', bg: 'rgba(64,136,232,0.1)' },
+
+      var typeStyles = {
+        signature: { label: 'SIGNATURE', color: 'var(--green)', bg: 'rgba(48,200,96,0.1)' },
+        model:     { label: 'AI MODEL',  color: '#8860e8',      bg: 'rgba(136,96,232,0.1)' },
+        driver:    { label: 'DRIVER',    color: 'var(--accent)', bg: 'rgba(232,160,32,0.1)' },
+        hotfix:    { label: 'HOTFIX',    color: 'var(--red)',    bg: 'rgba(224,64,80,0.1)' },
+        infra:     { label: 'INFRA',     color: 'var(--blue)',   bg: 'rgba(64,136,232,0.1)' },
+      };
+
+      var sigDescPool = [
+        'new DMA loader patterns',
+        'ESP overlay variant signatures',
+        'kernel injection fingerprints',
+        'HWID spoof detection signatures',
+        'trigger timing spectral patterns',
+        'user-mode hook bypass signatures',
       ];
-      var titles = [
-        'Signature batch #SIG-{n}: {c} new patterns for DMA loaders',
-        'Signature batch #SIG-{n}: {c} ESP overlay variant signatures',
-        'AI model v3.{v} deployed — improved aimbot micro-movement detection',
-        'AI model v3.{v} — expanded training dataset for humanization bypass',
-        'SDK v0.4.2.{p}b released — UE5.4 compatibility fixes',
-        'Hotfix: whitelist update for Discord overlay v{v}.{p}',
-        'Hotfix: AMD Zen 5 PCIe enumeration race condition',
-        'Infra: CDN edge cache purge — signature propagation optimized',
-        'Signature batch #SIG-{n}: {c} kernel injection patterns',
-        'Infra: webhook delivery queue scaled to 6 workers',
-        'Signature batch #SIG-{n}: {c} HWID spoof fingerprints',
-        'AI model v3.{v} — triggerbot spectral analysis refinement',
+      var modelDescPool = [
+        'improved aimbot micro-movement detection',
+        'expanded training dataset for humanization bypass',
+        'triggerbot spectral analysis refinement',
+        'cross-session drift recalibration',
       ];
+
+      // Gather deployments from today + last 3 days (show most recent first, max 8 entries)
+      var allDeploys = [];
+      var now_dep = new Date();
+      for (var dayOff = 0; dayOff <= 3; dayOff++) {
+        var queryDay = new Date(now_dep.getTime() - dayOff * 86400000);
+        var deps = E ? E.dailyDeployments(queryDay) : [];
+        deps.forEach(function(d) {
+          allDeploys.push({ dep: d, dayOffset: dayOff });
+        });
+      }
+      // Sort: today's first, then by hour descending within each day
+      allDeploys.sort(function(a, b) {
+        if (a.dayOffset !== b.dayOffset) return a.dayOffset - b.dayOffset;
+        return b.dep.hour - a.dep.hour;
+      });
+
       var html = '';
-      for (var i = 0; i < 8; i++) {
-        var hoursAgo = Math.floor(2 + seeded(today * 501 + i * 19) * 70);
-        var dType = deployTypes[Math.floor(seeded(today * 503 + i * 23) * deployTypes.length)];
-        var titleTpl = titles[Math.floor(seeded(today * 507 + i * 29) * titles.length)];
-        var n = Math.floor(4800 + seeded(today * 509 + i * 31) * 200);
-        var c = Math.floor(8 + seeded(today * 511 + i * 37) * 35);
-        var v = Math.floor(seeded(today * 513 + i * 41) * 6 + 2);
-        var p = Math.floor(seeded(today * 517 + i * 43) * 20);
-        var title = titleTpl.replace('{n}', n).replace('{c}', c).replace('{v}', v).replace('{p}', p);
-        var timeStr = hoursAgo < 24 ? hoursAgo + 'h ago' : Math.floor(hoursAgo / 24) + 'd ago';
-        var regions = 'US-East, EU-West, AP-Southeast';
-        var rollout = seeded(today * 519 + i * 47) > 0.3 ? '100%' : Math.floor(10 + seeded(today * 521 + i * 51) * 90) + '%';
-        html += '<div class="ud-recent-item"><span class="ud-recent-type" style="background:' + dType.bg + ';color:' + dType.color + ';">' + dType.type + '</span><span class="ud-recent-title">' + title + '</span><span class="ud-recent-impact">' + rollout + ' rolled out</span><span class="ud-recent-date">' + timeStr + '</span></div>';
+      var shown = 0;
+      allDeploys.forEach(function(item) {
+        if (shown >= 8) return;
+        var d = item.dep;
+        var dayOff = item.dayOffset;
+        var style = typeStyles[d.type] || typeStyles.infra;
+        var timeStr = dayOff === 0 ? d.hour + 'h ago' : dayOff + 'd ago';
+        var title, impact, rolloutLabel;
+
+        if (d.type === 'signature') {
+          var descIdx = Math.floor(seeded(today * 7001 + shown * 37) * sigDescPool.length);
+          title = 'Signature batch: ' + d.count + ' ' + sigDescPool[descIdx];
+          rolloutLabel = d.stage === 'complete' ? '100% rolled out' : 'in progress';
+          impact = d.region === 'all' ? 'All regions' : d.region;
+        } else if (d.type === 'model') {
+          var mDescIdx = Math.floor(seeded(today * 7003 + shown * 41) * modelDescPool.length);
+          title = 'AI model ' + d.version + ' \u2014 ' + modelDescPool[mDescIdx];
+          rolloutLabel = d.stage === 'rolling' ? 'canary \u2192 10%' : '100% rolled out';
+          impact = 'All regions';
+        } else if (d.type === 'driver') {
+          title = 'Kernel driver ' + d.version + ' \u2014 EV signed, staged rollout';
+          rolloutLabel = 'staged \u2014 SDK pull required';
+          impact = 'All regions';
+        } else {
+          title = 'Infrastructure maintenance \u2014 ' + d.version;
+          rolloutLabel = d.stage || 'complete';
+          impact = d.region === 'all' ? 'All regions' : d.region;
+        }
+
+        html += '<div class="ud-recent-item"><span class="ud-recent-type" style="background:' + style.bg + ';color:' + style.color + ';">' + style.label + '</span><span class="ud-recent-title">' + title + '</span><span class="ud-recent-impact">' + impact + ' \u00B7 ' + rolloutLabel + '</span><span class="ud-recent-date">' + timeStr + '</span></div>';
+        shown++;
+      });
+
+      // Fallback if engine gives nothing
+      if (shown === 0) {
+        html = '<div style="font-size:0.8rem;color:var(--text-dim);padding:12px 0;">No deployments recorded in the last 3 days.</div>';
       }
       el.innerHTML = html;
 

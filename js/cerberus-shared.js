@@ -310,19 +310,32 @@
       { icon: 'block', text: '<strong>Memory anomaly</strong> \u2014 RWX region detected in game process' },
       { icon: 'info', text: '<strong>Network sentinel</strong> \u2014 packet integrity check passed' },
     ];
-    // Arms race spike messages — shown when engine detects a spike day
-    var spikeMsgs = [
-      { icon: 'block', text: '<strong>Arms race spike</strong> \u2014 new bypass variant detected, emergency sigs deploying' },
-      { icon: 'info', text: '<strong>Signature burst</strong> \u2014 {n} new signatures pushed in response to provider update' },
-      { icon: 'block', text: '<strong>Elevated threat</strong> \u2014 detection rate surge from new cheat loader' },
-      { icon: 'info', text: '<strong>Threat intel</strong> \u2014 provider "{provider}" released new build, analysis in progress' },
-    ];
+    // Phase-aware arms race messages
+    var phaseMsgs = {
+      DETECTED: [
+        { icon: 'block', text: '<strong>DETECTED</strong> \u2014 new bypass from {provider} identified, scanning intensified' },
+        { icon: 'info', text: '<strong>Threat intel</strong> \u2014 {provider} released new build, behavioral AI flagging anomalies' },
+      ],
+      ANALYSIS: [
+        { icon: 'info', text: '<strong>Analysis in progress</strong> \u2014 {provider} variant under reverse engineering' },
+        { icon: 'info', text: '<strong>Signature development</strong> \u2014 generating detection patterns for {provider} update' },
+      ],
+      DEPLOYING: [
+        { icon: 'ok', text: '<strong>Deploying signatures</strong> \u2014 {n} new sigs pushed across all regions for {provider}' },
+        { icon: 'ok', text: '<strong>Signature burst</strong> \u2014 bulk push complete, detection rate recovering' },
+      ],
+      NEUTRALIZED: [
+        { icon: 'ok', text: '<strong>Threat neutralized</strong> \u2014 {provider} variant fully covered, ban wave processing' },
+        { icon: 'info', text: '<strong>Cooldown</strong> \u2014 {provider} bypass neutralized, monitoring for follow-up variants' },
+      ]
+    };
     var E = window.CerberusEngine;
     var arc = E ? E.armsRaceEvent() : null;
     var msgs = baseMsgs.slice();
-    if (arc && arc.isSpike) {
-      spikeMsgs.forEach(function(m) {
-        var text = m.text.replace('{n}', arc.spikeSigs).replace('{provider}', arc.provider);
+    if (arc && arc.isSpike && arc.phaseName) {
+      var phasePool = phaseMsgs[arc.phaseName] || phaseMsgs.DETECTED;
+      phasePool.forEach(function(m) {
+        var text = m.text.replace('{n}', arc.spikeSigs).replace(/\{provider\}/g, arc.provider);
         msgs.push({ icon: m.icon, text: text });
       });
     }

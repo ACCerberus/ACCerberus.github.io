@@ -17,7 +17,8 @@
       --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15); --accent-glow: rgba(232,160,32,0.08);
       --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
       --border: rgba(255,255,255,0.06);
-      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8; --teal: #20b2aa;
+      --dept-kernel: #4088e8; --dept-ai: #8860e8; --dept-sdk: #30c860; --dept-qa: #20b2aa;
       --font: 'Inter', -apple-system, sans-serif;
       --font-heading: 'Sora', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
@@ -101,9 +102,11 @@
     .activity-feed { max-height: 200px; overflow-y: auto; }
     .activity-feed::-webkit-scrollbar { width: 3px; }
     .activity-feed::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
-    .activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.75rem; }
+    .activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.75rem; transition: background 0.15s; }
+    .activity-item:hover { background: rgba(255,255,255,0.015); }
     .activity-item:last-child { border-bottom: none; }
-    .activity-avatar { width: 22px; height: 22px; border-radius: 6px; background: var(--accent-dim); display: flex; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 700; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+    .activity-avatar { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .activity-icon { font-size: 0.7rem; margin-right: 2px; flex-shrink: 0; margin-top: 2px; }
     .activity-text { color: var(--text-dim); line-height: 1.5; }
     .activity-text strong { color: var(--text); font-weight: 600; }
     .activity-text .act-file { color: var(--accent); font-family: var(--font-mono); font-size: 0.68rem; }
@@ -115,11 +118,17 @@
     .section-title { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; color: var(--text-bright); letter-spacing: -0.5px; margin-bottom: 40px; }
 
     .lead-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 80px; }
+    /* Center last row (2 cards) */
+    .lead-grid > .lead-card:nth-child(4) { grid-column: 1 / 2; margin-left: auto; margin-right: 0; }
+    .lead-grid-last-row { display: flex; justify-content: center; gap: 24px; margin-top: -56px; margin-bottom: 80px; }
     .lead-card {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
       padding: 32px; transition: all 0.3s; position: relative; overflow: hidden;
     }
-    .lead-card:hover { border-color: rgba(232,160,32,0.15); transform: translateY(-4px); }
+    .lead-card:hover { transform: translateY(-4px); }
+    .lead-card[data-dept="kernel"]:hover { border-color: rgba(64,136,232,0.25); box-shadow: 0 8px 30px rgba(64,136,232,0.06); }
+    .lead-card[data-dept="ai"]:hover { border-color: rgba(136,96,232,0.25); box-shadow: 0 8px 30px rgba(136,96,232,0.06); }
+    .lead-card[data-dept="sdk"]:hover { border-color: rgba(48,200,96,0.25); box-shadow: 0 8px 30px rgba(48,200,96,0.06); }
     .lead-card::after {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, var(--accent), transparent); opacity: 0;
@@ -133,55 +142,102 @@
       font-family: var(--font-heading); font-weight: 800; font-size: 1rem; color: var(--accent); flex-shrink: 0;
       position: relative;
     }
-    .lead-status { display: none; }
+    .lead-status {
+      position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px;
+      border-radius: 50%; border: 2px solid var(--bg-card);
+    }
+    .lead-status-online { background: var(--green); box-shadow: 0 0 6px rgba(48,200,96,0.5); }
+    .lead-status-busy { background: var(--accent); box-shadow: 0 0 6px rgba(232,160,32,0.4); }
+    .lead-status-away { background: var(--text-dim); opacity: 0.6; }
+    .lead-status-offline { background: #333; }
     .lead-info { flex: 1; min-width: 0; }
-    .lead-name { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); }
+    .lead-name { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); display: flex; align-items: center; gap: 8px; }
+    .lead-dept-badge {
+      font-size: 0.55rem; font-weight: 700; padding: 1px 7px; border-radius: 8px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .lead-dept-badge-kernel { background: rgba(64,136,232,0.12); color: var(--dept-kernel); }
+    .lead-dept-badge-ai { background: rgba(136,96,232,0.12); color: var(--dept-ai); }
+    .lead-dept-badge-sdk { background: rgba(48,200,96,0.12); color: var(--dept-sdk); }
     .lead-role { font-size: 0.75rem; color: var(--accent); font-weight: 600; margin-top: 2px; }
     .lead-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.68rem; color: var(--text-dim); }
     .lead-meta-item { display: flex; align-items: center; gap: 4px; }
     .lead-prior { font-size: 0.72rem; color: var(--text-dim); font-style: italic; margin-bottom: 10px; }
     .lead-bio { font-size: 0.8rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 14px; }
-    .lead-focus { font-size: 0.68rem; color: var(--text-dim); padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.015); border: 1px solid var(--border); margin-bottom: 14px; }
+    .lead-focus {
+      font-size: 0.68rem; color: var(--text-dim); padding: 10px 14px; border-radius: 8px;
+      background: rgba(255,255,255,0.015); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent); margin-bottom: 14px; position: relative;
+    }
     .lead-focus strong { color: var(--text); font-weight: 600; }
+    .lead-focus-active {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+      animation: focusPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes focusPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
     .lead-tags { display: flex; flex-wrap: wrap; gap: 5px; }
     .lead-tag {
       padding: 2px 8px; border-radius: 10px; font-size: 0.62rem; font-weight: 500;
       background: rgba(255,255,255,0.02); color: var(--text-dim); border: 1px solid var(--border);
     }
-    .lead-contrib { display: flex; gap: 2px; align-items: flex-end; margin-top: 12px; height: 20px; }
-    .lead-contrib-bar { width: 4px; border-radius: 1px; background: var(--accent); opacity: 0.5; transition: opacity 0.2s; }
-    .lead-contrib-bar:hover { opacity: 1; }
+    .lead-commits-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+    .lead-commits-count { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); white-space: nowrap; }
+    .lead-last-seen { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-dim); margin-left: auto; }
+
+    /* GitHub-style heatmap */
+    .lead-heatmap { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(7, 1fr); gap: 2px; flex: 1; }
+    .hm-cell { width: 100%; aspect-ratio: 1; border-radius: 2px; }
+    .hm-0 { background: rgba(255,255,255,0.03); }
+    .hm-1 { background: rgba(48,200,96,0.15); }
+    .hm-2 { background: rgba(48,200,96,0.30); }
+    .hm-3 { background: rgba(48,200,96,0.50); }
+    .hm-4 { background: rgba(48,200,96,0.75); }
 
     /* DEPARTMENT GRID */
     .dept-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 80px; }
     .dept-card {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 28px 32px; transition: all 0.3s;
+      padding: 28px 32px; transition: all 0.3s; position: relative;
     }
     .dept-card:hover { border-color: rgba(232,160,32,0.1); }
-    .dept-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .dept-card[data-dept="kernel"] { border-top: 2px solid rgba(64,136,232,0.2); }
+    .dept-card[data-dept="ai"] { border-top: 2px solid rgba(136,96,232,0.2); }
+    .dept-card[data-dept="sdk"] { border-top: 2px solid rgba(48,200,96,0.2); }
+    .dept-card[data-dept="qa"] { border-top: 2px solid rgba(32,178,170,0.2); }
+    .dept-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
     .dept-icon {
       width: 40px; height: 40px; border-radius: 10px; display: flex;
       align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
     }
-    .dept-icon-kernel { background: rgba(232,160,32,0.1); }
+    .dept-icon-kernel { background: rgba(64,136,232,0.1); }
     .dept-icon-ai { background: rgba(136,96,232,0.1); }
     .dept-icon-sdk { background: rgba(48,200,96,0.1); }
-    .dept-icon-qa { background: rgba(232,160,32,0.1); }
+    .dept-icon-qa { background: rgba(32,178,170,0.1); }
     .dept-name { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); }
     .dept-count { font-size: 0.72rem; color: var(--text-dim); }
-    .dept-desc { font-size: 0.82rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 16px; }
+    .dept-desc { font-size: 0.82rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 10px; }
+    .dept-stats { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); margin-bottom: 10px; padding: 8px 12px; background: rgba(255,255,255,0.015); border-radius: 6px; border: 1px solid var(--border); }
+    .dept-active-project {
+      font-size: 0.68rem; color: var(--text); margin-bottom: 14px; padding: 6px 10px;
+      border-radius: 6px; background: rgba(255,255,255,0.02); display: inline-flex; align-items: center; gap: 6px;
+    }
+    .dept-active-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: focusPulse 2.5s ease-in-out infinite; }
     .dept-members { display: flex; flex-wrap: wrap; gap: 8px; }
     .dept-member {
       display: flex; align-items: center; gap: 8px; padding: 6px 12px;
       border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      position: relative;
     }
     .dept-member-avatar {
-      width: 24px; height: 24px; border-radius: 6px; background: var(--accent-dim);
+      width: 24px; height: 24px; border-radius: 6px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.6rem; font-weight: 700; color: var(--accent); position: relative;
+      font-size: 0.6rem; font-weight: 700; position: relative;
     }
-    .dept-member-status { display: none; }
+    .dept-member-status {
+      position: absolute; bottom: -1px; right: -1px; width: 8px; height: 8px;
+      border-radius: 50%; border: 1.5px solid var(--bg-card);
+    }
     .dept-member-name { font-size: 0.75rem; color: var(--text); font-weight: 500; }
     .dept-member-title { font-size: 0.65rem; color: var(--text-dim); }
 
@@ -191,12 +247,18 @@
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px;
     }
     .tz-strip { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
-    .tz-group { text-align: center; padding: 10px 16px; border-radius: 8px; background: rgba(255,255,255,0.015); border: 1px solid var(--border); min-width: 120px; }
+    .tz-group {
+      text-align: center; padding: 10px 16px; border-radius: 8px;
+      background: rgba(255,255,255,0.015); border: 1px solid var(--border); min-width: 120px;
+      transition: border-color 0.3s, background 0.3s; cursor: default;
+    }
+    .tz-group.tz-work { border-color: rgba(48,200,96,0.15); background: rgba(48,200,96,0.02); }
+    .tz-group.tz-hub { min-width: 140px; }
     .tz-city { font-size: 0.72rem; color: var(--text); font-weight: 600; margin-bottom: 2px; }
-    .tz-time { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); font-weight: 600; }
+    .tz-time { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; }
     .tz-people { font-size: 0.62rem; color: var(--text-dim); margin-top: 4px; }
     .tz-bar { display: flex; gap: 3px; justify-content: center; margin-top: 6px; }
-    .tz-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .tz-dot { width: 6px; height: 6px; border-radius: 50%; transition: background 0.3s; }
 
     /* HIRING BANNER */
     .hiring-banner {
@@ -230,6 +292,8 @@
 
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
     @media (max-width: 900px) {
       .lead-grid { grid-template-columns: 1fr; }
@@ -365,150 +429,214 @@
     // ===== SEEDED RANDOM =====
     var E = window.CerberusEngine;
     var daySeed = E ? E.daySeed() : Math.floor(Date.now() / 86400000);
-    function seeded(s) { return E ? E.seeded(s) : (function(x){ x = Math.sin(s)*10000; return x-Math.floor(x); })(); }
+    function seeded(s) { return E ? E.seeded(s) : (function(){ var x = Math.sin(s)*10000; return x-Math.floor(x); })(); }
+    function seededInt(s, min, max) { return min + Math.floor(seeded(s) * (max - min + 1)); }
 
-    // ===== TEAM DATA (single source of truth) =====
+    // Dept color map
+    var DEPT_COLORS = {
+      kernel: { color: 'var(--dept-kernel)', bg: 'rgba(64,136,232,0.12)', avatarBg: 'rgba(64,136,232,0.15)' },
+      ai:     { color: 'var(--dept-ai)',     bg: 'rgba(136,96,232,0.12)', avatarBg: 'rgba(136,96,232,0.15)' },
+      sdk:    { color: 'var(--dept-sdk)',     bg: 'rgba(48,200,96,0.12)',  avatarBg: 'rgba(48,200,96,0.15)' },
+      qa:     { color: 'var(--dept-qa)',      bg: 'rgba(32,178,170,0.12)', avatarBg: 'rgba(32,178,170,0.15)' }
+    };
+
+    // ===== TEAM DATA =====
     var team = [
       { id: 'nvoronov', initials: 'NV', name: 'nvoronov', role: 'Lead Developer & System Architect', dept: 'kernel',
-        prior: 'Ex-CrowdStrike, ex-Kaspersky',
-        loc: 'Moscow', tz: 3, joined: 'Oct 2024',
+        prior: 'Ex-CrowdStrike, ex-Kaspersky', loc: 'Moscow', tz: 3, joined: 'Oct 2024',
         bio: 'Designed the four-layer detection architecture and oversees all cross-team integration. 12 years in systems programming with prior work on kernel-mode EDR products and rootkit analysis frameworks.',
         focus: 'Driver signing pipeline for WHQL certification',
         tags: ['Architecture', 'Systems Design', 'C/C++', 'Rust'] },
       { id: 'dkrasov', initials: 'DK', name: 'dkrasov', role: 'Head of Kernel Engineering', dept: 'kernel',
-        prior: 'Ex-ESET (driver team)',
-        loc: 'Prague', tz: 2, joined: 'Oct 2024',
+        prior: 'Ex-ESET (driver team)', loc: 'Prague', tz: 2, joined: 'Oct 2024',
         bio: 'Ring-0 specialist with 8 years of WDM/WDF driver development. Built the integrity monitoring subsystem and manages the code-signing pipeline. Previously worked on HIPS drivers at a major AV vendor.',
         focus: 'PTE manipulation detection for VT-d bypass attempts',
         tags: ['Ring-0', 'WDM/WDF', 'C++', 'Hypervisors'] },
       { id: 's.nakamura', initials: 'SN', name: 's.nakamura', role: 'Head of AI & Behavioral Analysis', dept: 'ai',
-        prior: 'PhD Tokyo Tech, ex-LINE Corp',
-        loc: 'Tokyo', tz: 9, joined: 'Nov 2024',
+        prior: 'PhD Tokyo Tech, ex-LINE Corp', loc: 'Tokyo', tz: 9, joined: 'Nov 2024',
         bio: 'ML researcher focused on real-time anomaly detection in adversarial environments. Designed the behavioral inference pipeline with sub-2ms latency using quantized TCN models on ONNX Runtime. Background in competitive FPS telemetry analysis.',
         focus: 'Retraining v3.2 model on 1,200 new Cronus Zen macro samples',
         tags: ['PyTorch', 'ONNX Runtime', 'Anomaly Detection', 'Python'] },
       { id: 'ArsenalRX', initials: 'AX', name: 'ArsenalRX', role: 'Head of Threat Research & Hardware Security', dept: 'kernel',
-        prior: 'Self-taught, independent security research',
-        loc: 'USA', tz: -4, joined: 'Oct 2024',
+        prior: 'Self-taught, independent security research', loc: 'USA', tz: -4, joined: 'Oct 2024',
         bio: 'Oversees red team ops and hardware security research. Started by reverse-engineering game binaries as a teenager, pivoted to building defenses. Leads DMA attack research, firmware RE, and coordinates threat intel across partner studios.',
         focus: 'Reverse engineering new KMBox firmware variant',
         tags: ['C/C++', 'Python', 'Ring-0', 'DMA Research', 'Firmware RE', 'PCIe', 'Threat Intel'] },
       { id: 'lweber', initials: 'LW', name: 'lweber', role: 'Head of SDK & Integration', dept: 'sdk',
-        prior: 'Ex-Epic Games (UE integrations)',
-        loc: 'Berlin', tz: 2, joined: 'Jan 2025',
+        prior: 'Ex-Epic Games (UE integrations)', loc: 'Berlin', tz: 2, joined: 'Jan 2025',
         bio: 'Owns the developer experience end to end. Built the C/C++ SDK, C# bindings, Unreal plugin, and Unity package. Previously worked on engine integration tooling at a major game engine company.',
         focus: 'Unreal 5.5 plugin compatibility pass',
         tags: ['SDK Design', 'Unreal', 'Unity', 'CMake', 'C#'] },
     ];
 
     var allMembers = [
-      // Kernel & Hardware
       { id: 'atorres', initials: 'AT', name: 'atorres', title: 'Driver Dev', dept: 'kernel', loc: 'Madrid', tz: 2, joined: 'Dec 2024' },
       { id: 'vpetrov', initials: 'VP', name: 'vpetrov', title: 'Kernel Security', dept: 'kernel', loc: 'Sofia', tz: 3, joined: 'Jan 2025' },
       { id: 'mradzinski', initials: 'MR', name: 'mradzinski', title: 'Firmware RE', dept: 'kernel', loc: 'Warsaw', tz: 2, joined: 'Feb 2025' },
       { id: 'tkuznetsov', initials: 'TK', name: 'tkuznetsov', title: 'Hypervisor Eng.', dept: 'kernel', loc: 'St. Petersburg', tz: 3, joined: 'Mar 2025' },
-      // AI & Detection
       { id: 'rhuang', initials: 'RH', name: 'rhuang', title: 'ML Engineer', dept: 'ai', loc: 'Shanghai', tz: 8, joined: 'Dec 2024' },
       { id: 'elindqvist', initials: 'EL', name: 'elindqvist', title: 'Data Scientist', dept: 'ai', loc: 'Stockholm', tz: 2, joined: 'Jan 2025' },
       { id: 'mcheng', initials: 'MC', name: 'mcheng', title: 'Inference Eng.', dept: 'ai', loc: 'Taipei', tz: 8, joined: 'Feb 2025' },
       { id: 'jcastillo', initials: 'JC', name: 'jcastillo', title: 'Threat Analyst', dept: 'ai', loc: 'Los Angeles, USA', tz: -7, joined: 'Mar 2025' },
-      // SDK & Platform
       { id: 'cpark', initials: 'CP', name: 'cpark', title: 'Unreal Plugin', dept: 'sdk', loc: 'Seoul', tz: 9, joined: 'Feb 2025' },
       { id: 'dandrade', initials: 'DA', name: 'dandrade', title: 'Unity Integration', dept: 'sdk', loc: 'Lisbon', tz: 1, joined: 'Feb 2025' },
       { id: 'sthomas', initials: 'ST', name: 'sthomas', title: 'API & Infra', dept: 'sdk', loc: 'Austin, USA', tz: -5, joined: 'Mar 2025' },
-      // QA & Stability
       { id: 'tmoretti', initials: 'TM', name: 'tmoretti', title: 'Lead', dept: 'qa', loc: 'Milan', tz: 2, joined: 'Jan 2025' },
       { id: 'bjensen', initials: 'BJ', name: 'bjensen', title: 'Test Automation', dept: 'qa', loc: 'Copenhagen', tz: 2, joined: 'Feb 2025' },
       { id: 'azhao', initials: 'AZ', name: 'azhao', title: 'Perf Analyst', dept: 'qa', loc: 'Shenzhen', tz: 8, joined: 'Mar 2025' },
       { id: 'pschmidt', initials: 'PS', name: 'pschmidt', title: 'HW Compat.', dept: 'qa', loc: 'Munich', tz: 2, joined: 'Apr 2025' },
     ];
 
-    // ===== STATUS SIMULATION =====
-    // Determine online/busy/away/offline based on local time at each person's location
-    function getStatus(tzOffset) {
+    // ===== STATUS (deterministic per person per day) =====
+    function getStatus(tzOffset, personSeed) {
       var utcHour = new Date().getUTCHours();
       var localHour = ((utcHour + tzOffset) % 24 + 24) % 24;
-      // Seeded jitter per person per day
-      if (localHour >= 9 && localHour < 18) return Math.random() < 0.7 ? 'online' : 'busy';
-      if (localHour >= 18 && localHour < 22) return Math.random() < 0.4 ? 'online' : 'away';
+      var jitter = seeded(daySeed * 113 + (personSeed || 0));
+      if (localHour >= 9 && localHour < 18) return jitter < 0.7 ? 'online' : 'busy';
+      if (localHour >= 18 && localHour < 22) return jitter < 0.4 ? 'online' : 'away';
       return 'offline';
     }
 
-    function statusClass(tz) {
-      var s = getStatus(tz);
-      return 'lead-status-' + s;
+    function lastSeenText(tz, personSeed) {
+      var s = getStatus(tz, personSeed);
+      if (s === 'online') return 'Online now';
+      if (s === 'busy') return 'Busy';
+      var utcHour = new Date().getUTCHours();
+      var localHour = ((utcHour + tz) % 24 + 24) % 24;
+      if (localHour >= 22 || localHour < 6) {
+        var hoursOff = localHour >= 22 ? localHour - 18 : localHour + 6;
+        return 'Active ' + hoursOff + 'h ago';
+      }
+      return 'Active ' + seededInt(daySeed * 211 + (personSeed || 0), 1, 4) + 'h ago';
     }
 
-    function memberStatusClass(tz) {
-      var s = getStatus(tz);
-      return 'dept-member-status ' + 'lead-status-' + s;
-    }
-
-    // ===== CONTRIBUTION GRAPH (12-week mini bars) =====
-    function contribBars(personSeed) {
-      var html = '<div class="lead-contrib" title="12-week commit activity">';
+    // ===== HEATMAP (GitHub-style 12-week, 7 rows) =====
+    function heatmapHTML(personSeed) {
+      var html = '<div class="lead-heatmap">';
       for (var w = 0; w < 12; w++) {
-        var h = Math.floor(seeded(personSeed * 1000 + w * 31) * 18) + 2;
-        html += '<div class="lead-contrib-bar" style="height:' + h + 'px;"></div>';
+        for (var d = 0; d < 7; d++) {
+          var val = seeded(personSeed * 1000 + w * 31 + d * 7);
+          var level = val < 0.25 ? 0 : val < 0.45 ? 1 : val < 0.65 ? 2 : val < 0.82 ? 3 : 4;
+          html += '<div class="hm-cell hm-' + level + '"></div>';
+        }
       }
       html += '</div>';
       return html;
     }
 
+    // ===== COMMITS THIS WEEK (seeded) =====
+    function weeklyCommits(personSeed) {
+      return seededInt(daySeed * 331 + personSeed, 4, 28);
+    }
+
     // ===== RENDER LEAD CARDS =====
     var leadHTML = '';
     team.forEach(function(t, i) {
-      var st = statusClass(t.tz);
-      leadHTML += '<div class="lead-card reveal">' +
+      var status = getStatus(t.tz, i);
+      var deptC = DEPT_COLORS[t.dept] || DEPT_COLORS.kernel;
+      var deptLabel = t.dept === 'kernel' ? 'KERNEL' : t.dept === 'ai' ? 'AI' : t.dept === 'sdk' ? 'SDK' : 'QA';
+      var commits = weeklyCommits(i);
+      var seen = lastSeenText(t.tz, i);
+
+      leadHTML += '<div class="lead-card reveal" data-dept="' + t.dept + '">' +
         '<div class="lead-card-top">' +
-        '<div class="lead-avatar">' + t.initials + '<div class="lead-status ' + st + '"></div></div>' +
-        '<div class="lead-info"><div class="lead-name">' + t.name + '</div><div class="lead-role">' + t.role + '</div></div></div>' +
+        '<div class="lead-avatar" style="background:' + deptC.avatarBg + ';color:' + deptC.color + ';">' + t.initials +
+        '<div class="lead-status lead-status-' + status + '"></div></div>' +
+        '<div class="lead-info"><div class="lead-name">' + t.name +
+        ' <span class="lead-dept-badge lead-dept-badge-' + t.dept + '">' + deptLabel + '</span></div>' +
+        '<div class="lead-role">' + t.role + '</div></div></div>' +
         '<div class="lead-meta">' +
         '<div class="lead-meta-item"><span style="opacity:0.5;">&#x1F4CD;</span> ' + t.loc + '</div>' +
         '<div class="lead-meta-item"><span style="opacity:0.5;">&#x1F4C5;</span> Joined ' + t.joined + '</div>' +
         '</div>' +
         '<div class="lead-prior">' + t.prior + '</div>' +
         '<div class="lead-bio">' + t.bio + '</div>' +
-        '<div class="lead-focus"><strong>Current focus:</strong> ' + t.focus + '</div>' +
+        '<div class="lead-focus"><strong>Current focus:</strong> ' + t.focus +
+        '<div class="lead-focus-active"></div></div>' +
         '<div class="lead-tags">' + t.tags.map(function(tag) { return '<span class="lead-tag">' + tag + '</span>'; }).join('') + '</div>' +
-        contribBars(daySeed + i * 137) +
-        '</div>';
+        '<div class="lead-commits-row">' +
+        heatmapHTML(daySeed + i * 137) +
+        '<div style="text-align:right;"><div class="lead-commits-count">' + commits + ' commits this week</div>' +
+        '<div class="lead-last-seen">' + seen + '</div></div>' +
+        '</div></div>';
     });
     document.getElementById('leadGrid').innerHTML = leadHTML;
 
+    // ===== DEPARTMENT STATS (seeded) =====
+    var deptStatsData = {
+      kernel: function() {
+        return seededInt(daySeed * 401, 8, 16) + ' patches this month \u00b7 ' +
+               seededInt(daySeed * 403, 2, 4) + ' drivers signed \u00b7 ' +
+               seededInt(daySeed * 405, 1, 3) + ' CVEs addressed';
+      },
+      ai: function() {
+        return seededInt(daySeed * 411, 3, 6) + ' model retrains \u00b7 ' +
+               seededInt(daySeed * 413, 800, 1400) + ' samples processed \u00b7 v3.1.' +
+               seededInt(daySeed * 415, 2, 8) + ' deployed';
+      },
+      sdk: function() {
+        return seededInt(daySeed * 421, 5, 12) + ' PRs merged \u00b7 ' +
+               seededInt(daySeed * 423, 1, 3) + ' plugin updates \u00b7 99.' +
+               seededInt(daySeed * 425, 2, 6) + '% API uptime';
+      },
+      qa: function() {
+        return seededInt(daySeed * 431, 250, 420) + ' test runs \u00b7 ' +
+               seededInt(daySeed * 433, 38, 48) + ' HW configs \u00b7 0 regressions';
+      }
+    };
+
+    var deptActiveProjects = {
+      kernel: ['WHQL certification pipeline', 'Intel Arrow Lake driver compat', 'VT-d bypass detection', 'DMA board firmware DB update'],
+      ai: ['Cronus Zen macro detection v2', 'TCN model v3.2 retrain', 'Humanization bypass patterns', 'Input entropy feature extraction'],
+      sdk: ['Unreal 5.5 plugin update', 'Unity 6 async init', 'Webhook v2 protocol', 'Dashboard analytics redesign'],
+      qa: ['48h soak test automation', 'AMD Zen 5 compat testing', 'FP regression baseline update', 'CI pipeline migration']
+    };
+
     // ===== RENDER DEPARTMENTS =====
     var depts = [
-      { name: 'Kernel & Hardware', icon: '&#x1F6E1;', iconClass: 'dept-icon-kernel', count: 6,
+      { key: 'kernel', name: 'Kernel & Hardware', icon: '&#x1F6E1;', iconClass: 'dept-icon-kernel', count: 6,
         desc: 'Develops the ring-0 driver, hardware fingerprinting pipeline, memory integrity verification, and PCIe/DMA detection. Owns everything that touches kernel mode or physical hardware.',
-        leadId: 'dkrasov', members: ['dkrasov', 'ArsenalRX', 'atorres', 'vpetrov', 'mradzinski', 'tkuznetsov'] },
-      { name: 'AI & Detection', icon: '&#x1F9E0;', iconClass: 'dept-icon-ai', count: 5,
+        members: ['dkrasov', 'ArsenalRX', 'atorres', 'vpetrov', 'mradzinski', 'tkuznetsov'] },
+      { key: 'ai', name: 'AI & Detection', icon: '&#x1F9E0;', iconClass: 'dept-icon-ai', count: 5,
         desc: 'Builds behavioral detection models, network sentinel analysis, and the verdict engine. Handles real-time inference, anomaly classification, and continuous retraining against new cheat variants.',
-        leadId: 's.nakamura', members: ['s.nakamura', 'rhuang', 'elindqvist', 'mcheng', 'jcastillo'] },
-      { name: 'SDK & Platform', icon: '&#x1F4E6;', iconClass: 'dept-icon-sdk', count: 4,
+        members: ['s.nakamura', 'rhuang', 'elindqvist', 'mcheng', 'jcastillo'] },
+      { key: 'sdk', name: 'SDK & Platform', icon: '&#x1F4E6;', iconClass: 'dept-icon-sdk', count: 4,
         desc: 'Builds the public SDK, engine plugins, REST API, dashboard, and integration tooling. Owns the developer experience from first API call to production deployment.',
-        leadId: 'lweber', members: ['lweber', 'cpark', 'dandrade', 'sthomas'] },
-      { name: 'QA & Stability', icon: '&#x1F9EA;', iconClass: 'dept-icon-qa', count: 4,
+        members: ['lweber', 'cpark', 'dandrade', 'sthomas'] },
+      { key: 'qa', name: 'QA & Stability', icon: '&#x1F9EA;', iconClass: 'dept-icon-qa', count: 4,
         desc: 'Runs regression testing across 40+ hardware configurations, validates driver stability, monitors false-positive rates, and ensures Cerberus never degrades game performance.',
-        leadId: 'tmoretti', members: ['tmoretti', 'bjensen', 'azhao', 'pschmidt'] },
+        members: ['tmoretti', 'bjensen', 'azhao', 'pschmidt'] },
     ];
 
     function findMember(id) {
       var lead = team.find(function(t) { return t.id === id; });
-      if (lead) return { initials: lead.initials, name: lead.name, title: lead.role.split(' & ')[0], tz: lead.tz };
+      if (lead) return { initials: lead.initials, name: lead.name, title: lead.role.split(' & ')[0], tz: lead.tz, dept: lead.dept, loc: lead.loc };
       var m = allMembers.find(function(m) { return m.id === id; });
-      return m || { initials: '??', name: id, title: '', tz: 0 };
+      return m || { initials: '??', name: id, title: '', tz: 0, dept: 'kernel', loc: '' };
     }
 
     var deptHTML = '';
-    depts.forEach(function(d) {
-      deptHTML += '<div class="dept-card reveal"><div class="dept-header"><div class="dept-icon ' + d.iconClass + '">' + d.icon + '</div><div><div class="dept-name">' + d.name + '</div><div class="dept-count">' + d.count + ' engineers</div></div></div>';
+    depts.forEach(function(d, di) {
+      var deptC = DEPT_COLORS[d.key];
+      var stats = deptStatsData[d.key] ? deptStatsData[d.key]() : '';
+      var activeProject = deptActiveProjects[d.key][seededInt(daySeed * 441 + di * 13, 0, deptActiveProjects[d.key].length - 1)];
+
+      deptHTML += '<div class="dept-card reveal" data-dept="' + d.key + '"><div class="dept-header"><div class="dept-icon ' + d.iconClass + '">' + d.icon + '</div><div><div class="dept-name">' + d.name + '</div><div class="dept-count">' + d.count + ' engineers</div></div></div>';
       deptHTML += '<div class="dept-desc">' + d.desc + '</div>';
+      deptHTML += '<div class="dept-stats">' + stats + '</div>';
+      deptHTML += '<div class="dept-active-project"><div class="dept-active-dot"></div> ' + activeProject + '</div>';
       deptHTML += '<div class="dept-members">';
-      d.members.forEach(function(mid) {
+      d.members.forEach(function(mid, mi) {
         var m = findMember(mid);
-        var isLead = d.members.indexOf(mid) === 0;
-        var mSt = memberStatusClass(m.tz);
-        deptHTML += '<div class="dept-member"><div class="dept-member-avatar">' + m.initials + '<div class="' + mSt + '"></div></div><div><div class="dept-member-name">' + m.name + '</div><div class="dept-member-title">' + (isLead ? 'Lead' : (m.title || '')) + '</div></div></div>';
+        var isLead = mi === 0;
+        var status = getStatus(m.tz, di * 100 + mi);
+        var avatarBg = deptC.avatarBg;
+        var avatarColor = deptC.color;
+        deptHTML += '<div class="dept-member" title="' + m.name + ' \u00b7 ' + (m.loc || '') + '">' +
+          '<div class="dept-member-avatar" style="background:' + avatarBg + ';color:' + avatarColor + ';">' + m.initials +
+          '<div class="dept-member-status lead-status-' + status + '"></div></div>' +
+          '<div><div class="dept-member-name">' + m.name + '</div>' +
+          '<div class="dept-member-title">' + (isLead ? 'Lead' : (m.title || '')) + '</div></div></div>';
       });
       deptHTML += '</div></div>';
     });
@@ -533,28 +661,43 @@
         zones.forEach(function(z) {
           var utcH = new Date().getUTCHours();
           var utcM = new Date().getUTCMinutes();
+          var utcS = new Date().getUTCSeconds();
           var localH = ((utcH + z.tz) % 24 + 24) % 24;
-          var timeStr = String(localH).padStart(2, '0') + ':' + String(utcM).padStart(2, '0');
+          var timeStr = String(localH).padStart(2, '0') + ':' + String(utcM).padStart(2, '0') + ':' + String(utcS).padStart(2, '0');
           var isWork = localH >= 9 && localH < 18;
+          var isEvening = localH >= 18 && localH < 22;
+          var isHub = z.members.length >= 6;
+
           var dotsHTML = '';
-          z.members.forEach(function(mid) {
+          z.members.forEach(function(mid, mi) {
             var m = findMember(mid);
-            dotsHTML += '<div class="tz-dot" style="background:var(--accent);opacity:0.5;" title="' + m.name + '"></div>';
+            var s = getStatus(m.tz, mi);
+            var dotColor = s === 'online' ? 'var(--green)' : s === 'busy' ? 'var(--accent)' : s === 'away' ? 'var(--text-dim)' : '#333';
+            if (s === 'online' || s === 'busy') totalOnline++;
+            dotsHTML += '<div class="tz-dot" style="background:' + dotColor + ';" title="' + m.name + ' (' + s + ')"></div>';
           });
-          html += '<div class="tz-group"><div class="tz-city">' + z.city + '</div><div class="tz-time" style="color:' + (isWork ? 'var(--accent)' : 'var(--text-dim)') + ';">' + timeStr + '</div><div class="tz-people">' + z.members.length + ' engineer' + (z.members.length > 1 ? 's' : '') + '</div><div class="tz-bar">' + dotsHTML + '</div></div>';
+
+          var groupClass = 'tz-group' + (isWork ? ' tz-work' : '') + (isHub ? ' tz-hub' : '');
+          var timeColor = isWork ? 'var(--green)' : isEvening ? 'var(--accent)' : 'var(--text-dim)';
+
+          html += '<div class="' + groupClass + '" title="' + z.members.map(function(mid) { return findMember(mid).name; }).join(', ') + '">' +
+            '<div class="tz-city">' + z.city + (isHub ? ' (' + z.members.length + ')' : '') + '</div>' +
+            '<div class="tz-time" style="color:' + timeColor + ';">' + timeStr + '</div>' +
+            '<div class="tz-people">' + z.members.length + ' engineer' + (z.members.length > 1 ? 's' : '') + '</div>' +
+            '<div class="tz-bar">' + dotsHTML + '</div></div>';
         });
         document.getElementById('tzStrip').innerHTML = html;
-        document.getElementById('onlineCount').textContent = '19 engineers';
+        document.getElementById('onlineCount').textContent = totalOnline + ' online now';
       }
       renderTZ();
-      setInterval(renderTZ, 30000);
+      setInterval(renderTZ, 1000);
     })();
 
-    // ===== LIVE ACTIVITY FEED =====
+    // ===== LIVE ACTIVITY FEED (seeded, dept-colored, typed icons) =====
     (function() {
       var feedEl = document.getElementById('activityFeed');
-      var allPeople = team.map(function(t) { return { initials: t.initials, name: t.name, dept: t.dept }; })
-        .concat(allMembers.map(function(m) { return { initials: m.initials, name: m.name, dept: m.dept }; }));
+      var allPeople = team.map(function(t) { return { initials: t.initials, name: t.name, dept: t.dept, tz: t.tz }; })
+        .concat(allMembers.map(function(m) { return { initials: m.initials, name: m.name, dept: m.dept, tz: m.tz }; }));
 
       var commitFiles = {
         kernel: ['cerberus-driver/src/integrity.c', 'cerberus-driver/src/pte_monitor.cpp', 'cerberus-driver/src/hwid.c', 'cerberus-driver/src/pcie_enum.cpp', 'cerberus-driver/src/dma_detect.c', 'cerberus-driver/src/hypervisor.cpp', 'cerberus-driver/src/callback_guard.c', 'firmware-db/scripts/crawl.py', 'cerberus-driver/src/minifilter.c', 'cerberus-driver/tests/bsod_regression.cpp'],
@@ -562,68 +705,93 @@
         sdk: ['sdk/include/cerberus.h', 'sdk/src/cerberus_api.cpp', 'sdk/bindings/csharp/Cerberus.cs', 'plugins/unreal/CerberusPlugin.uplugin', 'plugins/unity/CerberusSDK.cs', 'api-server/src/routes/detection.ts', 'api-server/src/routes/webhook.ts', 'dashboard/src/components/ThreatMap.tsx', 'sdk/cmake/CerberusConfig.cmake'],
         qa: ['tests/regression/hw_compat.py', 'tests/perf/frame_impact.cpp', 'tests/fp_tracker/false_positive_log.json', 'tests/driver_stability/soak_48h.py', 'tests/configs/amd_zen5.yaml', 'ci/pipeline.yml', 'tests/regression/overlay_whitelist.py', 'tests/perf/memory_footprint.cpp'],
       };
-
       var commitMsgs = {
         kernel: ['fix PTE validation race on multi-core', 'add IOMMU group detection for Zen 5', 'update BYOVD blocklist (6 new drivers)', 'refactor minifilter callback ordering', 'fix crash on Intel Arc Option ROM parse', 'add TLP timing check for FPGA boards', 'harden IOCTL validation against replay', 'update EV code-signing cert path', 'add driver stack attestation for new chipset'],
         ai: ['retrain v3.1.4 on 800 new samples', 'reduce inference batch size 64->32', 'add micro-movement entropy feature', 'fix ONNX model hot-swap memory leak', 'tune trigger-timing spectral threshold', 'add cross-session drift detector', 'update Cronus Zen macro classifier', 'improve humanization bypass detection', 'add per-player baseline convergence check'],
         sdk: ['fix UE5.5 plugin compile error', 'add webhook retry with exponential backoff', 'update C# bindings for new ban API', 'fix dashboard chart timezone offset', 'add rate limiter to detection endpoint', 'update CMake find module for Linux', 'add Unity 6 async initialization', 'fix API 503 during reindex window', 'improve error messages in SDK init'],
         qa: ['add AMD Ryzen 9950X to compat matrix', 'fix flaky overlay detection test', 'update FP regression baseline', 'add 48h soak test for driver memory', 'update CI pipeline for new build server', 'add Intel Arc A770 test config', 'fix perf test frame timing precision', 'add Discord Canary overlay to whitelist', 'update memory footprint budget to 22MB'],
       };
-
-      var actions = ['pushed to', 'committed to', 'merged into'];
+      var extraActions = [
+        function(p, s) { return { icon: '\u{1F680}', text: '<strong>' + p.name + '</strong> deployed hotfix to staging' }; },
+        function(p, s) { return { icon: '\u{2699}', text: '<strong>' + p.name + '</strong> updated CI config for ' + p.dept + ' pipeline' }; },
+        function(p, s) { return { icon: '\u{1F4E6}', text: '<strong>' + p.name + '</strong> released v0.4.2.0b-p' + seededInt(s, 1, 9) }; },
+      ];
       var branches = ['main', 'main', 'main', 'dev', 'dev', 'staging', 'hotfix/fp-spike', 'feature/dma-v2', 'feature/model-v3.2'];
 
-      function randomActivity(minutesAgo) {
-        var person = allPeople[Math.floor(Math.random() * allPeople.length)];
+      // Activity icons by type
+      var typeIcons = {
+        commit: '\u{1F4BB}', pr: '\u{1F500}', review: '\u{1F50D}', issue: '\u{2714}', deploy: '\u{1F680}'
+      };
+
+      function seededActivity(seed, minutesAgo) {
+        // Only generate from people in working hours
+        var person = allPeople[Math.floor(seeded(seed) * allPeople.length)];
         var dept = person.dept;
+        var deptC = DEPT_COLORS[dept] || DEPT_COLORS.kernel;
         var files = commitFiles[dept] || commitFiles.kernel;
         var msgs = commitMsgs[dept] || commitMsgs.kernel;
-        var file = files[Math.floor(Math.random() * files.length)];
-        var msg = msgs[Math.floor(Math.random() * msgs.length)];
-        var action = actions[Math.floor(Math.random() * actions.length)];
-        var branch = branches[Math.floor(Math.random() * branches.length)];
+
         var timeStr;
         if (minutesAgo < 1) timeStr = 'just now';
         else if (minutesAgo < 60) timeStr = Math.floor(minutesAgo) + 'm ago';
         else timeStr = Math.floor(minutesAgo / 60) + 'h ago';
 
-        var roll = Math.random();
-        var text;
-        if (roll < 0.55) {
-          text = '<strong>' + person.name + '</strong> ' + action + ' <span style="color:var(--blue);">' + branch + '</span>: ' + msg + ' <span class="act-file">' + file + '</span>';
-        } else if (roll < 0.75) {
-          text = '<strong>' + person.name + '</strong> opened PR #' + Math.floor(Math.random() * 400 + 100) + ': ' + msg;
+        var roll = seeded(seed + 100);
+        var text, icon;
+        if (roll < 0.45) {
+          icon = typeIcons.commit;
+          var file = files[Math.floor(seeded(seed + 200) * files.length)];
+          var msg = msgs[Math.floor(seeded(seed + 300) * msgs.length)];
+          var branch = branches[Math.floor(seeded(seed + 400) * branches.length)];
+          text = '<strong>' + person.name + '</strong> pushed to <span style="color:var(--blue);">' + branch + '</span>: ' + msg + ' <span class="act-file">' + file + '</span>';
+        } else if (roll < 0.62) {
+          icon = typeIcons.pr;
+          text = '<strong>' + person.name + '</strong> opened PR #' + seededInt(seed + 500, 100, 499) + ': ' + msgs[Math.floor(seeded(seed + 600) * msgs.length)];
+        } else if (roll < 0.76) {
+          icon = typeIcons.review;
+          text = '<strong>' + person.name + '</strong> reviewed PR #' + seededInt(seed + 700, 100, 499) + ' \u2014 ' + ['approved', 'requested changes', 'left comments'][seededInt(seed + 800, 0, 2)];
         } else if (roll < 0.88) {
-          text = '<strong>' + person.name + '</strong> reviewed PR #' + Math.floor(Math.random() * 400 + 100) + ' — ' + ['approved', 'requested changes', 'left comments'][Math.floor(Math.random() * 3)];
+          icon = typeIcons.issue;
+          text = '<strong>' + person.name + '</strong> closed issue #' + seededInt(seed + 900, 200, 799) + ': ' + msgs[Math.floor(seeded(seed + 1000) * msgs.length)];
         } else {
-          text = '<strong>' + person.name + '</strong> closed issue #' + Math.floor(Math.random() * 800 + 200) + ': ' + msg;
+          var extra = extraActions[Math.floor(seeded(seed + 1100) * extraActions.length)];
+          var result = extra(person, seed + 1200);
+          icon = result.icon;
+          text = result.text;
         }
 
-        return { initials: person.initials, text: text, time: timeStr };
+        return { initials: person.initials, text: text, time: timeStr, icon: icon, deptC: deptC };
       }
 
-      // Seed initial items (staggered timestamps)
+      function renderItem(act) {
+        return '<div class="activity-avatar" style="background:' + act.deptC.bg + ';color:' + act.deptC.color + ';">' + act.initials + '</div>' +
+          '<div class="activity-icon">' + act.icon + '</div>' +
+          '<div class="activity-text">' + act.text + '</div>' +
+          '<div class="activity-time">' + act.time + '</div>';
+      }
+
+      // Seed initial items with realistic spacing
+      var cumulativeMinutes = 0;
       for (var i = 0; i < 8; i++) {
-        var mins = Math.floor(seeded(daySeed * 801 + i * 17) * 180) + i * 20;
-        var act = randomActivity(mins);
+        cumulativeMinutes += seededInt(daySeed * 801 + i * 17, 8, 45);
+        var act = seededActivity(daySeed * 802 + i * 19, cumulativeMinutes);
         var div = document.createElement('div');
         div.className = 'activity-item';
-        div.innerHTML = '<div class="activity-avatar">' + act.initials + '</div><div class="activity-text">' + act.text + '</div><div class="activity-time">' + act.time + '</div>';
+        div.innerHTML = renderItem(act);
         feedEl.appendChild(div);
       }
 
-      // Add new activity every 30-90s
+      // Live: add new activity every 2-5 minutes
       function scheduleActivity() {
-        var delay = 30000 + Math.floor(Math.random() * 60000);
+        var delay = 120000 + Math.floor(Math.random() * 180000);
         setTimeout(function() {
-          var act = randomActivity(0);
+          var act = seededActivity(Date.now(), 0);
           var div = document.createElement('div');
           div.className = 'activity-item';
           div.style.opacity = '0';
-          div.style.transition = 'opacity 0.3s';
-          div.innerHTML = '<div class="activity-avatar">' + act.initials + '</div><div class="activity-text">' + act.text + '</div><div class="activity-time">' + act.time + '</div>';
+          div.style.animation = 'slideIn 0.3s ease forwards';
+          div.innerHTML = renderItem(act);
           feedEl.insertBefore(div, feedEl.firstChild);
-          requestAnimationFrame(function() { div.style.opacity = '1'; });
           while (feedEl.children.length > 15) feedEl.removeChild(feedEl.lastChild);
           scheduleActivity();
         }, delay);

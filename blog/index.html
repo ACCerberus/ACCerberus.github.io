@@ -601,35 +601,128 @@
       scanDay--;
     }
 
-    // Inject arms-race-correlated post if today is a spike day
+    // Inject arms-race-correlated post — phase-aware lifecycle
     var BE = window.CerberusEngine;
     if (BE) {
       var arc = BE.armsRaceEvent();
       if (arc.isSpike) {
         var arcAuthor = AUTHORS[3]; // ArsenalRX — Threat Research
-        var arcPost = {
-          type: 'threat', catClass: 'cat-threat', catLabel: 'THREAT ALERT',
-          title: 'Active Bypass Detected \u2014 ' + arc.provider + ' Update',
-          author: arcAuthor, date: fmtDate(today), readTime: 3,
-          excerpt: 'Our detection engine identified a new bypass variant from ' + arc.provider + ' earlier today. ' + arc.spikeSigs + ' emergency signatures have been deployed across all regions. Detection rate for this variant is now at 94% and climbing as behavioral models retrain.',
-          tags: ['arms-race', 'threat-alert', 'signatures', arc.provider.toLowerCase()],
-          sevBadge: { label: 'ELEVATED', cls: 'sev-high' },
-          statsBoxes: [
-            { value: '+' + arc.spikeSigs, label: 'Emergency Sigs' },
-            { value: '94%', label: 'Current Detection' },
-            { value: arc.provider, label: 'Provider' },
-            { value: '<2h', label: 'Response Time' },
-          ],
-          categoryBreakdown: null,
-          body: [
-            'Our detection engine identified a new bypass variant from ' + arc.provider + ' earlier today. The update appears to target our kernel integrity checks with a modified driver loading sequence.',
-            'Within 90 minutes of first detection, ' + arc.spikeSigs + ' emergency signatures were generated and pushed to all 3 regions. The behavioral AI layer was already flagging suspicious patterns before signature deployment, providing zero-gap coverage.',
-            'All affected accounts have been flagged for review. Partners have been notified via webhook. We will publish a full analysis once the threat is fully contained.',
-          ],
-          timeline: null,
-          advisoryMeta: null,
-        };
-        posts.unshift(arcPost);
+        var arcPhase = arc.phaseName;
+        var arcProvider = arc.provider;
+        var arcCat = arc.affectedCategory;
+        var arcSev = arc.severity; // 'major', 'moderate', 'minor'
+
+        // Severity → badge mapping
+        var arcSevBadge = arcSev === 'major'
+          ? { label: 'HIGH', cls: 'sev-high' }
+          : arcSev === 'moderate'
+            ? { label: 'ELEVATED', cls: 'sev-high' }
+            : { label: 'MODERATE', cls: 'sev-medium' };
+
+        var arcPost;
+
+        if (arcPhase === 'DETECTED') {
+          // Day 0 — first detection
+          arcPost = {
+            type: 'threat', catClass: 'cat-threat', catLabel: 'THREAT ALERT',
+            title: 'Active Bypass Detected \u2014 ' + arcProvider + ' Update',
+            author: arcAuthor, date: fmtDate(today), readTime: 3,
+            excerpt: 'Our detection engine identified a new ' + arcSev + '-severity bypass variant from ' + arcProvider + ' earlier today targeting ' + arcCat + '. Immediate triage is underway and behavioral models have begun flagging suspicious sessions.',
+            tags: ['arms-race', 'threat-alert', arcCat.toLowerCase().replace(/\s*\/\s*/g, '-').replace(/\s+/g, '-'), arcProvider.toLowerCase()],
+            sevBadge: arcSevBadge,
+            statsBoxes: [
+              { value: arcSev.toUpperCase(), label: 'Severity' },
+              { value: 'DAY 0', label: 'Lifecycle' },
+              { value: arcProvider, label: 'Provider' },
+              { value: arcCat, label: 'Affected Category' },
+            ],
+            categoryBreakdown: null,
+            body: [
+              'Our detection engine flagged a new bypass variant from ' + arcProvider + ' earlier today. The technique appears to target ' + arcCat + ' detection with an updated evasion method rated ' + arcSev + ' severity.',
+              'Behavioral AI flagged anomalous session patterns within minutes of the first occurrence. The kernel integrity layer has logged related driver attestation failures. Triage is ongoing and signature generation has been prioritised.',
+              'Affected sessions are being held for manual review. Partners have been notified via webhook. Further updates will follow as analysis progresses.',
+            ],
+            timeline: null,
+            advisoryMeta: null,
+          };
+
+        } else if (arcPhase === 'ANALYSIS') {
+          // Days 1-2 — under investigation
+          arcPost = {
+            type: 'threat', catClass: 'cat-threat', catLabel: 'THREAT UPDATE',
+            title: 'Threat Analysis Update \u2014 ' + arcProvider + ' Variant Under Investigation',
+            author: arcAuthor, date: fmtDate(today), readTime: 4,
+            excerpt: 'The ' + arcProvider + ' bypass variant first detected ' + arc.dayOffset + ' day' + (arc.dayOffset === 1 ? '' : 's') + ' ago is under active investigation. ' + arcCat + ' coverage is being re-evaluated as the team isolates the evasion mechanism.',
+            tags: ['arms-race', 'analysis', arcCat.toLowerCase().replace(/\s*\/\s*/g, '-').replace(/\s+/g, '-'), arcProvider.toLowerCase()],
+            sevBadge: arcSevBadge,
+            statsBoxes: [
+              { value: 'DAY ' + arc.dayOffset, label: 'Lifecycle' },
+              { value: 'ANALYSIS', label: 'Phase' },
+              { value: arcProvider, label: 'Provider' },
+              { value: arcCat, label: 'Affected Category' },
+            ],
+            categoryBreakdown: null,
+            body: [
+              'Analysis of the ' + arcProvider + ' variant is continuing into day ' + arc.dayOffset + '. The team has isolated the evasion mechanism to ' + arcCat + ' and is reverse-engineering the specific bypass path.',
+              'Current detection of this variant is partial. Behavioral models are retraining on session data collected since initial detection. No additional signature deployment has occurred yet — the team is completing root-cause analysis before pushing updates.',
+              'Detection rates for unrelated categories remain unaffected. We expect to move into the deployment phase within 24 hours pending QA sign-off.',
+            ],
+            timeline: null,
+            advisoryMeta: null,
+          };
+
+        } else if (arcPhase === 'DEPLOYING') {
+          // Days 3-4 — signatures rolling out
+          arcPost = {
+            type: 'threat', catClass: 'cat-threat', catLabel: 'DEPLOYMENT UPDATE',
+            title: 'Signature Deployment in Progress \u2014 ' + arcProvider + ' Coverage Expanding',
+            author: arcAuthor, date: fmtDate(today), readTime: 3,
+            excerpt: arc.spikeSigs + ' signatures targeting the ' + arcProvider + ' variant are being pushed to all 3 regions. ' + arcCat + ' detection rates are recovering as rollout progresses.',
+            tags: ['arms-race', 'signatures', 'deployment', arcProvider.toLowerCase()],
+            sevBadge: arcSevBadge,
+            statsBoxes: [
+              { value: '+' + arc.spikeSigs, label: 'Sigs Deploying' },
+              { value: 'DAY ' + arc.dayOffset, label: 'Lifecycle' },
+              { value: arcProvider, label: 'Provider' },
+              { value: '3 / 3', label: 'Regions Updated' },
+            ],
+            categoryBreakdown: null,
+            body: [
+              'Signature deployment for the ' + arcProvider + ' variant is now underway. ' + arc.spikeSigs + ' new signatures have been generated following root-cause analysis and are being rolled to all three regions: US-East, EU-West, and AP-Southeast.',
+              arcCat + ' detection rates are climbing as the signatures propagate. The behavioral AI layer has also been updated with new training data from sessions flagged during the analysis phase.',
+              'Ban actions for sessions flagged since day 0 are being processed in batches. Full deployment is expected to complete within the current maintenance window.',
+            ],
+            timeline: null,
+            advisoryMeta: null,
+          };
+
+        } else if (arcPhase === 'NEUTRALIZED') {
+          // Days 5-6 — post-incident report
+          arcPost = {
+            type: 'threat', catClass: 'cat-threat', catLabel: 'POST-INCIDENT',
+            title: arcProvider + ' Threat Neutralized \u2014 Post-Incident Report',
+            author: arcAuthor, date: fmtDate(today), readTime: 5,
+            excerpt: 'The ' + arcSev + '-severity ' + arcProvider + ' bypass affecting ' + arcCat + ' has been fully neutralized. All deployed signatures are confirmed active across all 3 regions. A full incident timeline is available below.',
+            tags: ['arms-race', 'post-incident', arcCat.toLowerCase().replace(/\s*\/\s*/g, '-').replace(/\s+/g, '-'), arcProvider.toLowerCase()],
+            sevBadge: { label: 'RESOLVED', cls: 'sev-medium' },
+            statsBoxes: [
+              { value: arc.dayOffset + 'd', label: 'Incident Duration' },
+              { value: '+' + arc.spikeSigs, label: 'Sigs Deployed' },
+              { value: arcProvider, label: 'Provider' },
+              { value: arcCat, label: 'Affected Category' },
+            ],
+            categoryBreakdown: null,
+            body: [
+              'The ' + arcProvider + ' bypass variant first identified ' + arc.dayOffset + ' days ago has been fully neutralized. Detection rates for ' + arcCat + ' have returned to baseline and all ' + arc.spikeSigs + ' emergency signatures are confirmed active across US-East, EU-West, and AP-Southeast.',
+              'Root cause: the variant exploited a timing gap in the ' + arcCat + ' detection pipeline. The fix involved both signature-level coverage and a structural update to the relevant behavioral model, preventing the same technique from being re-used with minor modifications.',
+              'All sessions flagged during the incident have been reviewed and actioned. A full retrospective is scheduled with the QA & Stability team. No changes to the reported false positive rate were observed during the incident window.',
+            ],
+            timeline: null,
+            advisoryMeta: null,
+          };
+        }
+
+        if (arcPost) posts.unshift(arcPost);
       }
     }
 
