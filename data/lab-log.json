@@ -45,6 +45,33 @@
       "startDate": "2026-05-23",
       "lastUpdate": "2026-05-23",
       "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-006",
+      "title": "UEFI Bootkit Detection via Measured Boot",
+      "desc": "Parsing TCG event logs and TPM PCR[7] measurements to detect unauthorized UEFI modules loaded before OS initialization.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-05-20",
+      "lastUpdate": "2026-05-22",
+      "findings": "TCG event log parsing successfully detects unauthorized UEFI modules on 3 of 4 test boards (ASRock, ASUS, MSI). Gigabyte board uses non-standard event log format requiring custom parser. Vendor BIOS variations introduce noise in PCR measurements — need baseline per motherboard family."
+    },
+    {
+      "id": "lab-007",
+      "title": "Instrumentation Callback Injection Analysis",
+      "desc": "Cataloging NtSetInformationProcess(ProcessInstrumentationCallback) abuse patterns and developing kernel-level monitoring for callback registration.",
+      "status": "EXPERIMENT",
+      "startDate": "2026-05-15",
+      "lastUpdate": "2026-05-21",
+      "findings": "4 distinct callback registration patterns cataloged across known cheat loaders. Kernel-level monitoring catches new registrations in real-time but cannot detect pre-existing callbacks set before Cerberus driver loads. Investigating early-boot driver load ordering to close this gap."
+    },
+    {
+      "id": "lab-008",
+      "title": "CUDA/DirectCompute Dispatch Anomaly Analysis",
+      "desc": "Instrumenting GPU driver layer via DXGI/Vulkan intercepts to detect unauthorized compute shader dispatches during gameplay.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-05-22",
+      "lastUpdate": "2026-05-23",
+      "findings": "Proof-of-concept intercept layer working via DXGI hooks. Can enumerate active compute dispatches and flag unknown shader programs. Performance overhead is a concern — naive approach adds 3-5ms per frame. Investigating selective sampling to reduce overhead to sub-1ms."
     }
   ],
   "templatePool": [

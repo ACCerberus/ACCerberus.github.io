@@ -1459,6 +1459,9 @@
       { provider: 'EngineOwning', cheats: ['Ring-0 Aimbot', 'Kernel ESP', 'Callback Remover'], method: 'BYOVD' },
       { provider: 'Nixware', cheats: ['Stream-Proof ESP', 'Silent Aim', 'No-Recoil'], method: 'Internal' },
       { provider: 'xhook.gg', cheats: ['Memory Editor', 'Speed Hack', 'Teleport'], method: 'External' },
+      { provider: 'HydraDMA', cheats: ['FPGA Memory Read', 'DMA Radar', 'External ESP'], method: 'Custom FPGA' },
+      { provider: 'GhostInput', cheats: ['Firmware Aimbot', 'HID Macro Inject', 'Recoil Script'], method: 'Firmware HID' },
+      { provider: 'SpecterVM', cheats: ['Hypervisor ESP', 'VM-Isolated Aimbot', 'Ring -1 Read'], method: 'Hypervisor' },
     ];
 
     // ===== ARMS RACE NARRATIVE (System 4) =====
@@ -1684,6 +1687,9 @@
         { name: 'Cronus Zen', method: 'USB Hardware Device', status: 'partial', note: 'Hardware macro variants harder to distinguish from human input. AI team training new model on 1,200+ macro samples — ETA 2 weeks.' },
         { name: 'Pandora.gg', method: 'Hypervisor', status: 'undetected', note: 'Type-1 hypervisor runs below OS. CPUID timing checks catch 41% — dedicated hypervisor detection module in development.' },
         { name: 'KMBox/Vezax', method: 'Firmware DMA', status: 'partial', note: 'Custom firmware on DMA boards. TLP timing catches 67% — firmware CRC database being expanded with new hardware samples.' },
+        { name: 'HydraDMA', method: 'Custom FPGA (Artix-7)', status: 'partial', note: 'Custom bitstream with randomized TLP timing. BAR region analysis catches 58% — each new firmware revision requires new timing profiles.' },
+        { name: 'GhostInput', method: 'KMBox B+ Pro (Firmware)', status: 'monitoring', note: 'Firmware-based HID injection. USB polling jitter analysis detects 44% of known variants — expanding HID fingerprint database.' },
+        { name: 'SpecterVM', method: 'Type-1 Hypervisor + DMA', status: 'undetected', note: 'Bare-metal hypervisor with pass-through DMA. Runs below OS — no client artifact. Intel PT research is primary detection path.' },
       ];
 
       // TODO #7: Provider Status Auto-Rotation — one provider flips daily
