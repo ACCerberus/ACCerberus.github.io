@@ -986,6 +986,7 @@
     }).catch(function() {});
 
     // ===== DATE-SEEDED DAILY VALUES =====
+    try {
     // Detection rate: blended ~78% with daily drift (beta-realistic)
     var detRate = E ? E.snapshot().blendedDetectionRate.toFixed(1) : (76.0 + seeded(daySeed * 101) * 4).toFixed(1);
     var detRateChange = (seeded(daySeed * 103) * 1.2 - 0.5).toFixed(1);
@@ -995,7 +996,8 @@
     document.getElementById('sDetRateChange').className = 'stat-card-change ' + (detRateChange >= 0 ? 'stat-up' : 'stat-down');
 
     // Latency: engine's log-normal scan latency with brownian drift, fallback to local seeded
-    var enginePerf = E ? E.performanceMetrics() : null;
+    var enginePerf = null;
+    try { enginePerf = E ? E.performanceMetrics() : null; } catch(e2) {}
     var latency = enginePerf ? enginePerf.scanLatency.toFixed(1) : (2.0 + seeded(daySeed * 107) * 1.2).toFixed(1);
     var latChange = (seeded(daySeed * 109) * 0.4 - 0.2).toFixed(1);
     document.getElementById('sLatency').textContent = latency + 'ms';
@@ -1004,7 +1006,7 @@
     document.getElementById('sLatencyChange').className = 'stat-card-change ' + (parseFloat(latChange) <= 0 ? 'stat-down' : 'stat-up');
 
     // False positive rate: locked at 0.14% (consistent with engine CONFIG)
-    var fpRate = E ? E.CONFIG.falsePositiveRate * 100 : 0.14;
+    var fpRate = (E && E.CONFIG) ? E.CONFIG.falsePositiveRate * 100 : 0.14;
     fpRate = fpRate.toFixed(2);
     var fpChange = (seeded(daySeed * 117) * 0.04 - 0.02).toFixed(2);
     document.getElementById('sFalsePos').textContent = fpRate + '%';
@@ -1015,6 +1017,7 @@
     // Threat change percentage — daily
     var threatChange = (2 + seeded(daySeed * 119) * 5).toFixed(1);
     document.getElementById('sThreatChange').textContent = '+' + threatChange + '%';
+    } catch(e) { console.error('Stat card init error:', e); }
 
     // ===== PARTNER TITLES (server instances) =====
     var allServerPool = [
@@ -1174,12 +1177,14 @@
       1.55, 1.60, 1.52, 1.40, 1.20, 0.85,  // 18-23: EU + NA peak, then decline
     ];
     var isWeekend = (new Date().getDay() === 0 || new Date().getDay() === 6);
-    var todMult = E ? E.diurnalMultiplier() * E.weeklyMultiplier() : todMultipliers[hourNow] * (isWeekend ? 1.35 : 1.0);
+    var todMult;
+    try { todMult = E ? E.diurnalMultiplier() * E.weeklyMultiplier() : todMultipliers[hourNow] * (isWeekend ? 1.35 : 1.0); } catch(e) { todMult = todMultipliers[hourNow] * (isWeekend ? 1.35 : 1.0); }
 
     // ===== STAT CARDS (with localStorage persistence + cumulative history) =====
     // Base numbers derived from CerberusEngine (beta scale: ~480 peak CCU, 3 titles)
-    var dailyBaseThreats = E ? E.dailyDetections() : Math.floor(12 + seeded(daySeed * 121) * 26); // 12-38 threats/day
-    var dailyBaseCCU = E ? E.activeSessions() : Math.floor(200 + seeded(daySeed * 123) * 280); // ~200-480 CCU
+    var dailyBaseThreats, dailyBaseCCU;
+    try { dailyBaseThreats = E ? E.dailyDetections() : Math.floor(12 + seeded(daySeed * 121) * 26); } catch(e) { dailyBaseThreats = Math.floor(12 + seeded(daySeed * 121) * 26); }
+    try { dailyBaseCCU = E ? E.activeSessions() : Math.floor(200 + seeded(daySeed * 123) * 280); } catch(e) { dailyBaseCCU = Math.floor(200 + seeded(daySeed * 123) * 280); }
 
     // Persist counters across page refreshes — use a single key that survives across days
     var statsKey = 'cerberusAnalytics_v4'; // bumped to reset inflated counters
@@ -1475,7 +1480,8 @@
     ];
 
     // ===== ARMS RACE NARRATIVE (System 4) — engine lifecycle-aware =====
-    var engineArcNarr = E ? E.armsRaceEvent() : null;
+    var engineArcNarr = null;
+    try { engineArcNarr = E ? E.armsRaceEvent() : null; } catch(e) {}
     var todaysHotProvider;
     var armsRaceStage;
     if (engineArcNarr && engineArcNarr.isSpike) {
@@ -1714,7 +1720,8 @@
         'Private Build': 'Various', 'Interium': 'Internal'
       };
 
-      var engineProviders = E ? E.providerEcosystem() : null;
+      var engineProviders = null;
+      try { engineProviders = E ? E.providerEcosystem() : null; } catch(e) {}
       var providerData;
 
       if (engineProviders) {
@@ -1786,7 +1793,8 @@
     // ===== ENGINE PERFORMANCE (engine v2 or fallback to date-seeded) =====
     (function() {
       var perfEl = document.getElementById('perfMetrics');
-      var ep = E ? E.performanceMetrics() : null;
+      var ep = null;
+      try { ep = E ? E.performanceMetrics() : null; } catch(e) {}
       var cpu, mem, net, scanRate, queueDepth;
       if (ep) {
         cpu = ep.cpu.toFixed(1);
