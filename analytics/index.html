@@ -297,6 +297,61 @@
       color: transparent !important;
     }
     .skeleton * { visibility: hidden; }
+
+    /* A1: Weekly Heatmap */
+    .chart-view-toggle { display: flex; gap: 4px; }
+    .chart-view-btn { padding: 3px 10px; border-radius: 5px; font-size: 0.65rem; font-weight: 600; font-family: var(--font-mono); border: 1px solid var(--border); background: none; color: var(--text-dim); cursor: pointer; transition: all 0.2s; }
+    .chart-view-btn.active { background: var(--accent-dim); color: var(--accent); border-color: rgba(232,160,32,0.3); }
+    .heatmap-grid { display: grid; grid-template-columns: 40px repeat(24, 1fr); gap: 2px; }
+    .heatmap-cell { aspect-ratio: 1; border-radius: 2px; cursor: default; position: relative; }
+    .heatmap-cell:hover { outline: 1px solid var(--accent); z-index: 1; }
+    .heatmap-cell[title]:hover::after { content: attr(title); position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%); background: var(--bg-card); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: var(--text); white-space: nowrap; z-index: 10; pointer-events: none; }
+    .heatmap-label { font-size: 0.55rem; color: var(--text-dim); font-family: var(--font-mono); display: flex; align-items: center; justify-content: center; }
+
+    /* A3: Layer Breakdown */
+    .layer-bar-container { display: flex; height: 28px; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+    .layer-bar-segment { display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: #050507; transition: width 0.6s ease; min-width: 30px; }
+    .layer-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+    .layer-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-dim); }
+    .layer-legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+    /* A5: Sparklines */
+    .stat-sparkline { margin-top: 6px; }
+
+    /* A7: Region Map */
+    .region-map-container { position: relative; }
+    .region-map-dot { position: absolute; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, -50%); }
+    .region-map-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; animation: mapDotPulse 2s ease-in-out infinite; }
+    @keyframes mapDotPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(232,160,32,0.4); } 50% { box-shadow: 0 0 0 8px rgba(232,160,32,0); } }
+    .region-map-label { position: absolute; transform: translateX(-50%); font-size: 0.6rem; font-family: var(--font-mono); color: var(--text-dim); white-space: nowrap; text-align: center; }
+
+    /* A8: Feed Controls */
+    .feed-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .feed-ctrl-btn { padding: 3px 10px; border-radius: 5px; font-size: 0.62rem; font-weight: 600; font-family: var(--font-mono); border: 1px solid var(--border); background: none; color: var(--text-dim); cursor: pointer; transition: all 0.2s; }
+    .feed-ctrl-btn.active { background: var(--accent-dim); color: var(--accent); border-color: rgba(232,160,32,0.3); }
+    .feed-ctrl-btn.feed-pause-btn.paused { background: rgba(224,64,80,0.1); color: var(--red); border-color: rgba(224,64,80,0.3); }
+    .feed-event-badge { font-size: 0.6rem; font-family: var(--font-mono); color: var(--text-dim); margin-left: auto; }
+    .feed-item.feed-hidden { display: none; }
+
+    /* A9: Today vs Yesterday */
+    .comparison-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .comparison-item { text-align: center; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: rgba(255,255,255,0.01); }
+    .comparison-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
+    .comparison-today { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--text-bright); }
+    .comparison-yesterday { font-size: 0.72rem; color: var(--text-dim); font-family: var(--font-mono); margin-top: 2px; }
+    .comparison-delta { font-size: 0.65rem; font-weight: 600; margin-top: 4px; }
+    .comparison-delta.positive { color: var(--green); }
+    .comparison-delta.negative { color: var(--red); }
+
+    /* A10: Webhook badges */
+    .wh-status-badge { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 0.62rem; font-weight: 700; }
+    .wh-status-ok { background: rgba(48,200,96,0.12); color: var(--green); }
+    .wh-status-warn { background: rgba(232,160,32,0.12); color: var(--accent); }
+    .wh-status-err { background: rgba(224,64,80,0.12); color: var(--red); }
+
+    @media (max-width: 1000px) {
+      .comparison-grid { grid-template-columns: repeat(2, 1fr); }
+    }
   </style>
 </head>
 <body>
@@ -339,7 +394,7 @@
         <div class="dash-label">Early Access Beta Dashboard — Real-time threat monitoring across all partner titles</div>
       </div>
       <div style="text-align:right;">
-        <div class="dash-badge"><div class="dash-badge-dot"></div> LIVE — ALL SYSTEMS OPERATIONAL</div>
+        <div class="dash-badge" id="dashBadge"><div class="dash-badge-dot" id="dashBadgeDot"></div> <span id="dashBadgeText">LIVE — ALL SYSTEMS OPERATIONAL</span></div>
         <div class="dash-time" id="dashTime"></div>
         <div style="margin-top:6px;">
           <select id="tzSelect" style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--text-dim);font-family:var(--font-mono);font-size:0.65rem;cursor:pointer;outline:none;">
@@ -371,22 +426,27 @@
     <div class="stat-card">
       <div class="stat-card-label"><span>Threats Blocked (24h)</span><span class="stat-card-change stat-up" id="sThreatChange"></span></div>
       <div class="stat-card-value" id="sThreat24">0</div>
+      <canvas class="stat-sparkline" id="sparkThreats" width="60" height="20"></canvas>
     </div>
     <div class="stat-card">
       <div class="stat-card-label"><span>Active Sessions</span><span class="stat-card-change stat-up">LIVE</span></div>
       <div class="stat-card-value" id="sActiveSessions">0</div>
+      <canvas class="stat-sparkline" id="sparkSessions" width="60" height="20"></canvas>
     </div>
     <div class="stat-card">
       <div class="stat-card-label"><span>Detection Rate</span><span class="stat-card-change stat-up" id="sDetRateChange"></span></div>
       <div class="stat-card-value" id="sDetRate"></div>
+      <canvas class="stat-sparkline" id="sparkDetRate" width="60" height="20"></canvas>
     </div>
     <div class="stat-card">
       <div class="stat-card-label"><span>Avg Latency</span><span class="stat-card-change stat-down" id="sLatencyChange"></span></div>
       <div class="stat-card-value" id="sLatency"></div>
+      <canvas class="stat-sparkline" id="sparkLatency" width="60" height="20"></canvas>
     </div>
     <div class="stat-card">
       <div class="stat-card-label"><span>False Positive Rate</span><span class="stat-card-change stat-down" id="sFPChange"></span></div>
       <div class="stat-card-value" id="sFalsePos"></div>
+      <canvas class="stat-sparkline" id="sparkFP" width="60" height="20"></canvas>
     </div>
   </div>
 
@@ -476,12 +536,21 @@
           <div class="dash-card-title">Threats Blocked — Last 24 Hours</div>
           <div class="dash-card-sub">Detections per hour across all partner titles</div>
         </div>
-        <div class="dash-card-sub" id="chartTotal">Total: 0</div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="dash-card-sub" id="chartTotal">Total: 0</div>
+          <div class="chart-view-toggle">
+            <button class="chart-view-btn active" data-view="chart" onclick="toggleChartView('chart')">24h Chart</button>
+            <button class="chart-view-btn" data-view="heatmap" onclick="toggleChartView('heatmap')">Weekly Heatmap</button>
+          </div>
+        </div>
       </div>
-      <div class="chart-container">
-        <canvas class="chart-canvas" id="threatChart"></canvas>
+      <div id="chartViewWrap">
+        <div class="chart-container">
+          <canvas class="chart-canvas" id="threatChart"></canvas>
+        </div>
+        <div class="chart-x-axis" id="chartXAxis"></div>
       </div>
-      <div class="chart-x-axis" id="chartXAxis"></div>
+      <div id="heatmapView" style="display:none;"></div>
     </div>
     <div class="dash-card">
       <div class="dash-card-header">
@@ -489,6 +558,14 @@
           <div class="dash-card-title">Live Detection Feed</div>
           <div class="dash-card-sub">Real-time events across all titles</div>
         </div>
+      </div>
+      <div class="feed-controls">
+        <button class="feed-ctrl-btn feed-pause-btn active" id="feedPauseBtn" onclick="toggleFeedPause()">Live</button>
+        <button class="feed-ctrl-btn feed-filter-btn active" data-filter="all" onclick="setFeedFilter('all')">All</button>
+        <button class="feed-ctrl-btn feed-filter-btn" data-filter="detections" onclick="setFeedFilter('detections')">Detections</button>
+        <button class="feed-ctrl-btn feed-filter-btn" data-filter="system" onclick="setFeedFilter('system')">System</button>
+        <button class="feed-ctrl-btn feed-filter-btn" data-filter="armsrace" onclick="setFeedFilter('armsrace')">Arms Race</button>
+        <span class="feed-event-badge" id="feedEventCount">0 events</span>
       </div>
       <div class="feed" id="liveFeed"></div>
     </div>
@@ -528,6 +605,19 @@
     </div>
   </div>
 
+  <!-- DETECTION LAYER BREAKDOWN (A3) -->
+  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Detection Layer Breakdown</div>
+          <div class="dash-card-sub">Which layer caught each threat — last 24 hours</div>
+        </div>
+      </div>
+      <div id="layerBreakdown"></div>
+    </div>
+  </div>
+
   <!-- PROVIDER DETECTION STATUS -->
   <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div class="dash-card">
@@ -538,6 +628,7 @@
         </div>
         <div class="dash-card-sub" id="providerLastSync"></div>
       </div>
+      <div id="providerSummaryBar" style="margin-bottom:14px;"></div>
       <table class="provider-table">
         <thead><tr><th>Provider</th><th>Status</th><th>Method</th><th>Last Detected</th><th>Notes</th></tr></thead>
         <tbody id="providerTable"></tbody>
@@ -631,6 +722,19 @@
         <span style="font-family:var(--font-mono);font-size:0.85rem;color:var(--green);font-weight:600;">0 confirmed FPs in <span id="fpDaysClean">--</span> days</span>
         <span style="font-size:0.68rem;color:var(--text-dim);padding:3px 10px;border-radius:4px;background:rgba(48,200,96,0.08);border:1px solid rgba(48,200,96,0.15);color:var(--green);">CLEAN</span>
       </div>
+    </div>
+  </div>
+
+  <!-- A9: TODAY vs YESTERDAY COMPARISON -->
+  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Today vs Yesterday</div>
+          <div class="dash-card-sub">Daily comparison — engine-derived metrics</div>
+        </div>
+      </div>
+      <div id="todayVsYesterday" class="comparison-grid"></div>
     </div>
   </div>
 
@@ -1978,12 +2082,16 @@
         var time = new Date().toTimeString().split(' ')[0];
         var row = document.createElement('div');
         row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);opacity:0;transition:opacity 0.3s;';
+        // A10: Status badge styling
+        var statusBadgeClass = (st.code >= 200 && st.code < 300) ? 'wh-status-ok' : (st.code >= 400 && st.code < 500) ? 'wh-status-warn' : 'wh-status-err';
+        // A10: Latency color
+        var latColor = lat < 100 ? 'var(--green)' : lat < 200 ? 'var(--accent)' : 'var(--red)';
         row.innerHTML = '<span style="color:var(--text-dim);min-width:65px;">' + time + '</span>' +
-          '<span style="color:var(--accent);min-width:120px;">POST</span>' +
-          '<span style="color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + ep.url + '">' + ep.name + '</span>' +
-          '<span style="min-width:80px;">' + ev + '</span>' +
-          '<span style="color:' + st.color + ';min-width:75px;">' + st.text + '</span>' +
-          '<span style="color:var(--text-dim);min-width:45px;">' + lat + 'ms</span>';
+          '<span style="color:var(--accent);min-width:50px;">POST</span>' +
+          '<span style="color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:default;" title="' + ep.url + '">' + ep.name + ' <span style="font-size:0.58rem;color:var(--text-dim);">' + ep.url.substring(0, 28) + '...</span></span>' +
+          '<span style="min-width:90px;">' + ev + '</span>' +
+          '<span class="wh-status-badge ' + statusBadgeClass + '" style="min-width:75px;text-align:center;">' + st.text + '</span>' +
+          '<span style="color:' + latColor + ';min-width:50px;font-weight:600;">' + lat + 'ms</span>';
         logEl.insertBefore(row, logEl.firstChild);
         requestAnimationFrame(function() { row.style.opacity = '1'; });
         while (logEl.children.length > 20) logEl.removeChild(logEl.lastChild);
@@ -2023,6 +2131,358 @@
       }
       // First possible error after 2-5 minutes on page
       setTimeout(showReconnect, 120000 + Math.floor(Math.random() * 180000));
+    })();
+
+    // ===== A1: WEEKLY DETECTION HEATMAP =====
+    (function() {
+      var heatmapEl = document.getElementById('heatmapView');
+      if (!heatmapEl) return;
+      var dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      var diurnal = [0.35,0.28,0.22,0.20,0.18,0.22,0.30,0.42,0.55,0.65,0.72,0.80,0.92,1.05,1.18,1.30,1.42,1.50,1.55,1.60,1.52,1.40,1.20,0.85];
+      var html = '<div class="heatmap-grid">';
+      // Header row
+      html += '<div class="heatmap-label"></div>';
+      for (var h = 0; h < 24; h++) {
+        html += '<div class="heatmap-label">' + (h % 3 === 0 ? String(h).padStart(2,'0') : '') + '</div>';
+      }
+      // Data rows
+      for (var d = 0; d < 7; d++) {
+        html += '<div class="heatmap-label">' + dayNames[d] + '</div>';
+        for (var h = 0; h < 24; h++) {
+          var intensity = seeded(daySeed * 500 + d * 100 + h) * diurnal[h];
+          var weekendBoost = (d >= 5) ? 1.3 : 1.0;
+          intensity *= weekendBoost;
+          var color;
+          if (intensity < 0.3) color = 'rgba(232,160,32,0.05)';
+          else if (intensity < 0.7) color = 'rgba(232,160,32,0.3)';
+          else if (intensity < 1.1) color = 'rgba(232,160,32,0.6)';
+          else color = 'rgba(224,64,80,0.7)';
+          var count = Math.floor(intensity * 3);
+          html += '<div class="heatmap-cell" style="background:' + color + ';" title="' + dayNames[d] + ' ' + String(h).padStart(2,'0') + ':00 — ' + count + ' detections"></div>';
+        }
+      }
+      html += '</div>';
+      html += '<div style="display:flex;align-items:center;gap:12px;margin-top:8px;justify-content:flex-end;">';
+      html += '<span style="font-size:0.6rem;color:var(--text-dim);">Less</span>';
+      ['rgba(232,160,32,0.05)','rgba(232,160,32,0.3)','rgba(232,160,32,0.6)','rgba(224,64,80,0.7)'].forEach(function(c) {
+        html += '<div style="width:12px;height:12px;border-radius:2px;background:' + c + ';"></div>';
+      });
+      html += '<span style="font-size:0.6rem;color:var(--text-dim);">More</span></div>';
+      heatmapEl.innerHTML = html;
+    })();
+
+    function toggleChartView(view) {
+      var chartWrap = document.getElementById('chartViewWrap');
+      var heatmap = document.getElementById('heatmapView');
+      document.querySelectorAll('.chart-view-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('.chart-view-btn[data-view="' + view + '"]').classList.add('active');
+      if (view === 'heatmap') {
+        chartWrap.style.display = 'none';
+        heatmap.style.display = 'block';
+      } else {
+        chartWrap.style.display = 'block';
+        heatmap.style.display = 'none';
+      }
+    }
+
+    // ===== A2: DYNAMIC THREAT LEVEL BADGE =====
+    (function() {
+      var badge = document.getElementById('dashBadge');
+      var dot = document.getElementById('dashBadgeDot');
+      var text = document.getElementById('dashBadgeText');
+      if (!badge || !E) return;
+      var level = E.threatLevel();
+      var config = {
+        'LOW':      { text: 'LIVE \u2014 ALL CLEAR',         color: 'var(--green)',  bg: 'rgba(48,200,96,0.08)',   border: 'rgba(48,200,96,0.2)' },
+        'MODERATE': { text: 'LIVE \u2014 ELEVATED ACTIVITY',  color: 'var(--accent)', bg: 'rgba(232,160,32,0.08)',  border: 'rgba(232,160,32,0.2)' },
+        'ELEVATED': { text: 'LIVE \u2014 ELEVATED THREAT',    color: 'var(--orange)', bg: 'rgba(232,120,48,0.08)',  border: 'rgba(232,120,48,0.2)' },
+        'HIGH':     { text: 'LIVE \u2014 ACTIVE THREAT',      color: 'var(--red)',    bg: 'rgba(224,64,80,0.08)',   border: 'rgba(224,64,80,0.2)' }
+      };
+      var c = config[level] || config['LOW'];
+      text.textContent = c.text;
+      badge.style.background = c.bg;
+      badge.style.borderColor = c.border;
+      badge.style.color = c.color;
+      dot.style.background = c.color;
+    })();
+
+    // ===== A3: DETECTION LAYER BREAKDOWN =====
+    (function() {
+      var el = document.getElementById('layerBreakdown');
+      if (!el) return;
+      // Generate seeded percentages that sum to 100
+      var raw1 = 30 + seeded(daySeed * 701) * 10; // 30-40
+      var raw2 = 25 + seeded(daySeed * 703) * 10; // 25-35
+      var raw3 = 15 + seeded(daySeed * 707) * 10; // 15-25
+      var raw4 = 10 + seeded(daySeed * 709) * 5;  // 10-15
+      var total = raw1 + raw2 + raw3 + raw4;
+      var layers = [
+        { name: 'Layer 1: Kernel Integrity', pct: Math.round(raw1 / total * 100), color: 'var(--red)' },
+        { name: 'Layer 2: Behavioral AI', pct: Math.round(raw2 / total * 100), color: 'var(--purple)' },
+        { name: 'Layer 3: Hardware Fingerprint', pct: Math.round(raw3 / total * 100), color: 'var(--blue)' },
+        { name: 'Layer 4: Network Sentinel', pct: 0, color: 'var(--accent)' }
+      ];
+      // Ensure sum is 100
+      layers[3].pct = 100 - layers[0].pct - layers[1].pct - layers[2].pct;
+
+      var html = '<div class="layer-bar-container">';
+      layers.forEach(function(l) {
+        html += '<div class="layer-bar-segment" style="width:' + l.pct + '%;background:' + l.color + ';">' + l.pct + '%</div>';
+      });
+      html += '</div>';
+      html += '<div class="layer-legend">';
+      layers.forEach(function(l) {
+        html += '<div class="layer-legend-item"><div class="layer-legend-dot" style="background:' + l.color + ';"></div>' + l.name + ' (' + l.pct + '%)</div>';
+      });
+      html += '</div>';
+      el.innerHTML = html;
+    })();
+
+    // ===== A4: PER-REGION LATENCY EXPANSION =====
+    (function() {
+      var container = document.getElementById('avgLatencyLive');
+      if (!container) return;
+      var parentCard = container.parentElement;
+      // Replace entire inner content of the card
+      parentCard.innerHTML = '<div style="font-size:0.68rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Region Latency (live)</div>' +
+        '<div id="regionLatencies"></div>';
+      var latEl = document.getElementById('regionLatencies');
+      var regionNames = ['US-East', 'EU-West', 'AP-SE'];
+      var baseLats = [35, 42, 58];
+
+      function updateRegionLatencies() {
+        var html = '';
+        regionNames.forEach(function(r, i) {
+          var lat = baseLats[i] + Math.floor(Math.random() * 20) - 5;
+          lat = Math.max(18, lat);
+          var color = lat < 50 ? 'var(--green)' : lat < 80 ? 'var(--accent)' : 'var(--red)';
+          var dotColor = lat < 50 ? '#30c860' : lat < 80 ? '#e8a020' : '#e04050';
+          html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;' + (i < regionNames.length - 1 ? 'border-bottom:1px solid var(--border);' : '') + '">' +
+            '<div style="display:flex;align-items:center;gap:6px;">' +
+            '<div style="width:6px;height:6px;border-radius:50%;background:' + dotColor + ';"></div>' +
+            '<span style="font-size:0.72rem;color:var(--text);">' + r + '</span></div>' +
+            '<span style="font-family:var(--font-mono);font-size:0.82rem;font-weight:600;color:' + color + ';">' + lat + 'ms</span></div>';
+        });
+        latEl.innerHTML = html;
+      }
+      updateRegionLatencies();
+      setInterval(updateRegionLatencies, 5000);
+    })();
+
+    // ===== A5: STAT CARD SPARKLINES =====
+    (function() {
+      function drawSparkline(canvasId, seedBase, valueGen) {
+        var canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        var pts = [];
+        for (var d = 6; d >= 0; d--) {
+          pts.push(valueGen(daySeed - d, seedBase));
+        }
+        var w = 60, h = 20;
+        var min = Math.min.apply(null, pts);
+        var max = Math.max.apply(null, pts);
+        var range = max - min || 1;
+        ctx.clearRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(232,160,32,0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        pts.forEach(function(v, i) {
+          var x = (i / 6) * (w - 4) + 2;
+          var y = h - 2 - ((v - min) / range) * (h - 4);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+        // Fill dot at end
+        var lastX = w - 2;
+        var lastY = h - 2 - ((pts[6] - min) / range) * (h - 4);
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#e8a020';
+        ctx.fill();
+      }
+      drawSparkline('sparkThreats', 121, function(ds, sb) { return 12 + seeded(ds * sb) * 26; });
+      drawSparkline('sparkSessions', 123, function(ds, sb) { return 200 + seeded(ds * sb) * 280; });
+      drawSparkline('sparkDetRate', 101, function(ds, sb) { return 76 + seeded(ds * sb) * 4; });
+      drawSparkline('sparkLatency', 107, function(ds, sb) { return 2.0 + seeded(ds * sb) * 1.2; });
+      drawSparkline('sparkFP', 117, function(ds, sb) { return 0.12 + seeded(ds * sb) * 0.04; });
+    })();
+
+    // ===== A7: REGION MAP VISUALIZATION =====
+    (function() {
+      var regionListEl = document.getElementById('regionList');
+      if (!regionListEl) return;
+      // Keep existing data from regions array
+      var mapSvg = '<svg viewBox="0 0 400 200" style="width:100%;height:auto;opacity:0.15;" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M60,60 Q80,40 120,50 L140,45 Q160,55 150,70 L130,80 Q120,90 100,85 L80,90 Q60,80 60,60Z" fill="var(--text-dim)" />' +
+        '<path d="M55,95 Q65,85 80,92 L75,120 Q60,130 50,115 Z" fill="var(--text-dim)" />' +
+        '<path d="M180,40 Q200,30 230,35 L240,45 Q250,60 235,70 L200,65 Q185,55 180,40Z" fill="var(--text-dim)" />' +
+        '<path d="M195,70 Q210,65 220,72 L225,85 Q215,90 200,88 Z" fill="var(--text-dim)" />' +
+        '<path d="M240,45 Q260,35 290,40 L310,50 Q320,60 315,75 L290,80 Q270,85 255,70 Q245,55 240,45Z" fill="var(--text-dim)" />' +
+        '<path d="M300,90 Q310,85 330,95 L340,110 Q335,130 310,135 L295,120 Q290,100 300,90Z" fill="var(--text-dim)" />' +
+        '<path d="M340,120 Q350,115 360,125 L355,140 Q345,145 340,130Z" fill="var(--text-dim)" />' +
+        '</svg>';
+
+      var html = '<div class="region-map-container" style="position:relative;min-height:180px;">';
+      html += mapSvg;
+      // Dots with positions
+      var dots = [
+        { name: 'US-East', left: '25%', top: '40%', region: regions[0] },
+        { name: 'EU-West', left: '48%', top: '30%', region: regions[1] },
+        { name: 'AP-Southeast', left: '78%', top: '55%', region: regions[2] }
+      ];
+      dots.forEach(function(d) {
+        var scale = 0.8 + (d.region.pct / 100) * 1.2;
+        html += '<div class="region-map-dot" style="left:' + d.left + ';top:' + d.top + ';background:var(--accent);transform:translate(-50%,-50%) scale(' + scale.toFixed(2) + ');"></div>';
+        html += '<div class="region-map-label" style="left:' + d.left + ';top:calc(' + d.top + ' + 16px);">' + d.name + '<br><span style="color:var(--accent);font-weight:600;">' + d.region.pct + '%</span></div>';
+      });
+      html += '</div>';
+      // Keep the original bar list below the map
+      var origHTML = regionListEl.innerHTML;
+      regionListEl.innerHTML = html + '<div style="margin-top:8px;">' + origHTML + '</div>';
+    })();
+
+    // ===== A8: LIVE FEED CONTROLS =====
+    var feedPaused = false;
+    var feedQueue = [];
+    var feedEventTotal = 0;
+    var currentFeedFilter = 'all';
+
+    function toggleFeedPause() {
+      feedPaused = !feedPaused;
+      var btn = document.getElementById('feedPauseBtn');
+      if (feedPaused) {
+        btn.textContent = 'Paused';
+        btn.classList.remove('active');
+        btn.classList.add('paused');
+      } else {
+        btn.textContent = 'Live';
+        btn.classList.add('active');
+        btn.classList.remove('paused');
+        // Flush queue
+        while (feedQueue.length > 0) {
+          var item = feedQueue.shift();
+          _originalAddFeedItem(item);
+        }
+      }
+    }
+
+    function setFeedFilter(filter) {
+      currentFeedFilter = filter;
+      document.querySelectorAll('.feed-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('.feed-filter-btn[data-filter="' + filter + '"]').classList.add('active');
+      // Apply filter to existing items
+      document.querySelectorAll('.feed-item').forEach(function(item) {
+        if (filter === 'all') { item.classList.remove('feed-hidden'); return; }
+        var text = item.textContent.toLowerCase();
+        var show = false;
+        if (filter === 'detections' && (text.indexOf('banned') !== -1 || text.indexOf('flagged') !== -1 || text.indexOf('detected') !== -1 || text.indexOf('confidence') !== -1)) show = true;
+        if (filter === 'system' && (text.indexOf('synced') !== -1 || text.indexOf('scan') !== -1 || text.indexOf('cycle') !== -1 || text.indexOf('cleanup') !== -1 || text.indexOf('batch') !== -1 || text.indexOf('patch') !== -1 || text.indexOf('cert') !== -1 || text.indexOf('baseline') !== -1)) show = true;
+        if (filter === 'armsrace' && text.indexOf('arms race') !== -1) show = true;
+        if (show) item.classList.remove('feed-hidden');
+        else item.classList.add('feed-hidden');
+      });
+    }
+
+    // Wrap the original addFeedItem
+    var _originalAddFeedItem = addFeedItem;
+    addFeedItem = function(item) {
+      feedEventTotal++;
+      var countEl = document.getElementById('feedEventCount');
+      if (countEl) countEl.textContent = feedEventTotal + ' events';
+      if (feedPaused) {
+        feedQueue.push(item);
+        if (countEl) countEl.textContent = feedEventTotal + ' events (' + feedQueue.length + ' queued)';
+        return;
+      }
+      _originalAddFeedItem(item);
+      // Apply current filter to new item
+      if (currentFeedFilter !== 'all') {
+        var lastItem = feedEl.firstChild;
+        if (lastItem) {
+          var text = lastItem.textContent.toLowerCase();
+          var show = false;
+          if (currentFeedFilter === 'detections' && (text.indexOf('banned') !== -1 || text.indexOf('flagged') !== -1 || text.indexOf('detected') !== -1 || text.indexOf('confidence') !== -1)) show = true;
+          if (currentFeedFilter === 'system' && (text.indexOf('synced') !== -1 || text.indexOf('scan') !== -1 || text.indexOf('cycle') !== -1 || text.indexOf('cleanup') !== -1)) show = true;
+          if (currentFeedFilter === 'armsrace' && text.indexOf('arms race') !== -1) show = true;
+          if (!show) lastItem.classList.add('feed-hidden');
+        }
+      }
+    };
+    // Update count for initial items
+    feedEventTotal = feedEl.children.length;
+    var fecEl = document.getElementById('feedEventCount');
+    if (fecEl) fecEl.textContent = feedEventTotal + ' events';
+
+    // ===== A9: TODAY VS YESTERDAY COMPARISON =====
+    (function() {
+      var el = document.getElementById('todayVsYesterday');
+      if (!el) return;
+      var digest = E ? E.dailyDigest() : null;
+      var todayThreats = totalThreats24;
+      var yesterdayThreats = digest ? Math.round(todayThreats / (1 + (digest.deltaPercent || 0) / 100)) : Math.floor(12 + seeded((daySeed - 1) * 121) * 26);
+      var todayBans = E ? E.dailyBans() : Math.floor(todayThreats * 0.7);
+      var yesterdayBans = Math.floor(yesterdayThreats * (0.65 + seeded((daySeed - 1) * 131) * 0.1));
+      var todaySessions = totalCCU;
+      var yesterdaySessions = Math.floor(200 + seeded((daySeed - 1) * 123) * 280);
+      var todayFP = fpRate;
+      var yesterdayFP = (0.12 + seeded((daySeed - 1) * 117) * 0.04).toFixed(2);
+
+      function deltaArrow(today, yesterday, invertGood) {
+        var diff = today - yesterday;
+        var pct = yesterday > 0 ? ((diff / yesterday) * 100).toFixed(1) : '0.0';
+        var isGood = invertGood ? diff <= 0 : diff >= 0;
+        var arrow = diff >= 0 ? '\u25B2' : '\u25BC';
+        return '<div class="comparison-delta ' + (isGood ? 'positive' : 'negative') + '">' + arrow + ' ' + (diff >= 0 ? '+' : '') + pct + '%</div>';
+      }
+
+      var items = [
+        { label: 'Threats', today: todayThreats, yesterday: yesterdayThreats, invertGood: false },
+        { label: 'Bans', today: todayBans, yesterday: yesterdayBans, invertGood: false },
+        { label: 'Sessions', today: todaySessions, yesterday: yesterdaySessions, invertGood: false },
+        { label: 'FP Rate', today: parseFloat(todayFP), yesterday: parseFloat(yesterdayFP), invertGood: true }
+      ];
+
+      var html = '';
+      items.forEach(function(item) {
+        var todayStr = item.label === 'FP Rate' ? item.today.toFixed(2) + '%' : item.today.toLocaleString();
+        var ydayStr = item.label === 'FP Rate' ? item.yesterday.toFixed(2) + '%' : item.yesterday.toLocaleString();
+        html += '<div class="comparison-item">' +
+          '<div class="comparison-label">' + item.label + '</div>' +
+          '<div class="comparison-today">' + todayStr + '</div>' +
+          '<div class="comparison-yesterday">Yesterday: ' + ydayStr + '</div>' +
+          deltaArrow(item.today, item.yesterday, item.invertGood) +
+          '</div>';
+      });
+      el.innerHTML = html;
+    })();
+
+    // ===== A6: PROVIDER COVERAGE SUMMARY BAR =====
+    // (runs after providerData is rendered — delay to ensure table exists)
+    (function() {
+      var summaryEl = document.getElementById('providerSummaryBar');
+      if (!summaryEl) return;
+      // Count statuses from the rendered table
+      setTimeout(function() {
+        var rows = document.querySelectorAll('#providerTable tr');
+        var counts = { detected: 0, partial: 0, undetected: 0, monitoring: 0 };
+        var total = rows.length;
+        rows.forEach(function(row) {
+          var statusEl = row.querySelector('.det-status');
+          if (!statusEl) return;
+          var text = statusEl.textContent.trim().toLowerCase();
+          if (counts.hasOwnProperty(text)) counts[text]++;
+        });
+        var coveragePct = total > 0 ? Math.round(((counts.detected + counts.partial * 0.5) / total) * 100) : 0;
+        summaryEl.innerHTML = '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:10px 14px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;font-size:0.75rem;">' +
+          '<span style="color:var(--green);font-weight:600;">' + counts.detected + '/' + total + ' fully detected</span>' +
+          '<span style="color:var(--accent);">' + counts.partial + ' partial</span>' +
+          '<span style="color:var(--red);">' + counts.undetected + ' undetected</span>' +
+          '<span style="color:var(--blue);">' + counts.monitoring + ' monitoring</span>' +
+          '<span style="margin-left:auto;font-family:var(--font-mono);font-weight:600;color:var(--text-bright);">' + coveragePct + '% coverage</span>' +
+          '</div>';
+      }, 100);
     })();
   </script>
 
