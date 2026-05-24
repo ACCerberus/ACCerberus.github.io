@@ -253,5 +253,29 @@
         "text": "scan latency reduced by 8%"
       }
     ]
+  },
+  {
+    "date": "2026-05-24",
+    "timestamp": "2026-05-24T08:11:30Z",
+    "version": "v0.4.2.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule speedhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+3 signatures — 5000 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "ban accuracy improved by 2.1%"
+      }
+    ]
   }
 ]

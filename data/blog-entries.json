@@ -70,5 +70,13 @@
     "author": "s.nakamura",
     "summary": "A detection system is only as good as its false positive rate. Here's how our multi-layer confidence scoring, adaptive thresholds, and manual review pipeline keep innocent players safe.",
     "content": "Every anti-cheat faces the same fundamental tradeoff: aggressive detection catches more cheaters but risks banning innocent players. A single false positive can destroy trust in your game's competitive integrity.\n\nCerberus approaches this with layered confidence scoring. No single layer can trigger an auto-ban alone. The verdict engine requires corroboration — a kernel anomaly must correlate with behavioral evidence, or a hardware flag must align with network-level data.\n\nOur auto-ban threshold is 95% confidence from the verdict engine. Detections below this enter the manual review queue, where a threat analyst reviews the full session data within 4 hours (Cerberus tier SLA).\n\nWe also use adaptive thresholds per game title. A fighting game has legitimately faster input patterns than an RTS. A competitive FPS player's aim correction speed may be 3x faster than a casual player's. Our models account for this by maintaining per-title and per-skill-bracket baselines.\n\nThe result: 0.14% false positive rate across all partner titles, with zero confirmed false bans in the last 60 days."
+  },
+  {
+    "date": "2026-05-24",
+    "timestamp": "2026-05-24T08:11:30Z",
+    "type": "advisory",
+    "title": "Security Notice: False Positive Correction",
+    "author": "akovacs",
+    "generated": true
   }
 ]
