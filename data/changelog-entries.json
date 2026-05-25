@@ -277,5 +277,29 @@
         "text": "ban accuracy improved by 2.1%"
       }
     ]
+  },
+  {
+    "date": "2026-05-25",
+    "timestamp": "2026-05-25T09:41:59Z",
+    "version": "v0.4.2.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule silent aim variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 5025 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on ASUS Aura SDK"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
   }
 ]
