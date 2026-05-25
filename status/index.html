@@ -185,100 +185,6 @@
     .footer-brand { font-family: var(--font-heading); font-weight: 800; font-size: 1.4rem; color: var(--text-bright); margin-bottom: 8px; }
     .footer-brand span { color: var(--accent); }
 
-    /* Tabs */
-    .status-tabs { display: flex; gap: 0; margin-bottom: 32px; }
-    .status-tab {
-      padding: 10px 24px; font-size: 0.82rem; font-weight: 600; color: var(--text-dim);
-      background: none; border: 1px solid var(--border); border-bottom: none;
-      border-radius: 10px 10px 0 0; cursor: pointer; font-family: var(--font); transition: all 0.2s;
-    }
-    .status-tab.active { color: var(--accent); background: var(--bg-card); border-color: var(--accent); }
-    .status-tab:hover:not(.active) { color: var(--text-bright); }
-    .status-tab-content { display: none; }
-    .status-tab-content.active { display: block; }
-
-    /* Update delivery page */
-    .ud-section { margin-bottom: 40px; }
-    .ud-section-title { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 16px; letter-spacing: -0.3px; }
-    .ud-pipeline {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
-      margin-bottom: 32px;
-    }
-    .ud-pipe-card {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-      padding: 22px; position: relative; overflow: hidden;
-      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
-    }
-    .ud-pipe-card:hover { transform: translateY(-3px); }
-    .ud-pipe-card.pipe-sig:hover { border-color: var(--green); box-shadow: 0 4px 24px rgba(48,200,96,0.08); }
-    .ud-pipe-card.pipe-model:hover { border-color: var(--purple); box-shadow: 0 4px 24px rgba(160,100,255,0.08); }
-    .ud-pipe-card.pipe-driver:hover { border-color: var(--accent); box-shadow: 0 4px 24px rgba(232,160,32,0.08); }
-    .ud-pipe-card.pipe-hotfix:hover { border-color: var(--red); box-shadow: 0 4px 24px rgba(232,64,64,0.08); }
-    .ud-pipe-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    }
-    .ud-pipe-card.pipe-sig::before { background: linear-gradient(90deg, var(--green), rgba(48,200,96,0.3)); }
-    .ud-pipe-card.pipe-model::before { background: linear-gradient(90deg, var(--purple), rgba(160,100,255,0.3)); }
-    .ud-pipe-card.pipe-driver::before { background: linear-gradient(90deg, var(--accent), rgba(232,160,32,0.3)); }
-    .ud-pipe-card.pipe-hotfix::before { background: linear-gradient(90deg, var(--red), rgba(232,64,64,0.3)); }
-    .ud-pipe-icon { font-size: 1.5rem; margin-bottom: 12px; }
-    .ud-pipe-name { font-family: var(--font-heading); font-size: 0.88rem; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
-    .ud-pipe-freq { font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent); margin-bottom: 10px; }
-    .ud-pipe-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 14px; }
-    .ud-pipe-action { font-size: 0.68rem; padding: 5px 12px; border-radius: 6px; font-weight: 600; font-family: var(--font-mono); display: inline-block; letter-spacing: 0.3px; }
-    .ud-pipe-action.auto { background: rgba(48,200,96,0.1); color: var(--green); border: 1px solid rgba(48,200,96,0.15); }
-    .ud-pipe-action.manual { background: rgba(232,160,32,0.1); color: var(--accent); border: 1px solid rgba(232,160,32,0.15); }
-    .ud-pipe-action.pull { background: rgba(64,136,232,0.1); color: var(--blue); border: 1px solid rgba(64,136,232,0.15); }
-
-    .ud-table { width: 100%; border-collapse: separate; border-spacing: 0; }
-    .ud-table th {
-      text-align: left; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;
-      letter-spacing: 0.6px; padding: 12px 16px; border-bottom: 1px solid var(--border);
-      font-weight: 600; background: rgba(255,255,255,0.01);
-    }
-    .ud-table td {
-      font-size: 0.78rem; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.03);
-      color: var(--text); vertical-align: middle; transition: background 0.2s;
-    }
-    .ud-table tbody tr { transition: background 0.2s; }
-    .ud-table tbody tr:hover { background: rgba(255,255,255,0.025); }
-    .ud-table tbody tr:last-child td { border-bottom: none; }
-    .ud-table td:last-child { text-align: center; }
-    .ud-table th:last-child { text-align: center; }
-
-    .ud-flow { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; margin: 24px 0; position: relative; }
-    .ud-flow-step {
-      display: flex; flex-direction: column; align-items: center; padding: 18px 22px 16px;
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-      min-width: 130px; text-align: center; position: relative; flex: 1;
-      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
-    }
-    .ud-flow-step:hover {
-      border-color: var(--accent); box-shadow: 0 0 20px rgba(232,160,32,0.1);
-      transform: translateY(-2px);
-    }
-    .ud-flow-step-num {
-      font-family: var(--font-mono); font-size: 0.6rem; color: var(--bg); font-weight: 700;
-      background: var(--accent); width: 22px; height: 22px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; margin-bottom: 8px;
-    }
-    .ud-flow-step-name { font-size: 0.82rem; color: var(--text-bright); font-weight: 600; }
-    .ud-flow-step-desc { font-size: 0.65rem; color: var(--text-dim); margin-top: 6px; line-height: 1.4; }
-    .ud-flow-arrow {
-      color: var(--accent); font-size: 1rem; padding: 0 6px; flex-shrink: 0;
-      display: flex; align-items: center; opacity: 0.5;
-    }
-
-    .ud-recent-item {
-      display: flex; align-items: center; gap: 14px; padding: 14px 16px;
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
-      margin-bottom: 8px;
-    }
-    .ud-recent-type { font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
-    .ud-recent-title { font-size: 0.82rem; color: var(--text-bright); font-weight: 500; flex: 1; }
-    .ud-recent-date { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim); }
-    .ud-recent-impact { font-size: 0.68rem; color: var(--text-dim); }
-
     /* Component versions strip */
     .component-versions {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px;
@@ -336,6 +242,7 @@
       <a href="/changelog/">Changelog</a>
       <a href="/blog/">Blog</a>
       <a href="/status/" class="active">Status</a>
+      <a href="/updates/">Updates</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
     </div>
@@ -363,14 +270,7 @@
       <button class="subscribe-btn" id="subBtn">Subscribe</button>
     </div>
 
-    <!-- TABS -->
-    <div class="status-tabs">
-      <button class="status-tab active" data-stab="status">System Status</button>
-      <button class="status-tab" data-stab="updates">Update Delivery</button>
-    </div>
-
-    <!-- TAB: SYSTEM STATUS -->
-    <div class="status-tab-content active" id="stab-status">
+    <!-- SYSTEM STATUS -->
 
     <!-- Component Versions -->
     <div class="component-versions" id="componentVersions"></div>
@@ -426,188 +326,6 @@
       <div class="incidents-title">Recent Incidents</div>
       <div id="recentIncidents"></div>
     </div>
-  </div><!-- end stab-status -->
-
-  <!-- TAB: UPDATE DELIVERY -->
-  <div class="status-tab-content" id="stab-updates">
-
-    <div class="ud-section">
-      <div class="ud-section-title">How Updates Reach Your Game</div>
-      <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:20px;">
-        Cerberus uses a layered update pipeline so your game stays protected without requiring downtime or client patches.
-        Most updates are transparent — your players never notice them. Here's how each type flows from our team to your live environment.
-      </p>
-
-      <div class="ud-flow">
-        <div class="ud-flow-step">
-          <div class="ud-flow-step-num">01</div>
-          <div class="ud-flow-step-name">Threat Research</div>
-          <div class="ud-flow-step-desc">New cheat sample analyzed</div>
-        </div>
-        <div class="ud-flow-arrow">&rarr;</div>
-        <div class="ud-flow-step">
-          <div class="ud-flow-step-num">02</div>
-          <div class="ud-flow-step-name">Signature / Model</div>
-          <div class="ud-flow-step-desc">Pattern or weights generated</div>
-        </div>
-        <div class="ud-flow-arrow">&rarr;</div>
-        <div class="ud-flow-step">
-          <div class="ud-flow-step-num">03</div>
-          <div class="ud-flow-step-name">Internal QA</div>
-          <div class="ud-flow-step-desc">FP tested on replay corpus</div>
-        </div>
-        <div class="ud-flow-arrow">&rarr;</div>
-        <div class="ud-flow-step">
-          <div class="ud-flow-step-num">04</div>
-          <div class="ud-flow-step-name">Staged Rollout</div>
-          <div class="ud-flow-step-desc">Canary &rarr; 10% &rarr; 100%</div>
-        </div>
-        <div class="ud-flow-arrow">&rarr;</div>
-        <div class="ud-flow-step">
-          <div class="ud-flow-step-num">05</div>
-          <div class="ud-flow-step-name">Live</div>
-          <div class="ud-flow-step-desc">Active across all regions</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="ud-section">
-      <div class="ud-section-title">Update Types</div>
-      <div class="ud-pipeline">
-        <div class="ud-pipe-card pipe-sig">
-          <div class="ud-pipe-icon">&#x1F4C4;</div>
-          <div class="ud-pipe-name">Signature Updates</div>
-          <div class="ud-pipe-freq">Continuous &middot; multiple times per day</div>
-          <div class="ud-pipe-desc">New cheat signatures pushed to all regions via CDN. The client-side engine pulls fresh signatures on session start and periodically during play. No restart required.</div>
-          <div class="ud-pipe-action auto">NO ACTION REQUIRED</div>
-        </div>
-        <div class="ud-pipe-card pipe-model">
-          <div class="ud-pipe-icon">&#x1F9E0;</div>
-          <div class="ud-pipe-name">AI Model Updates</div>
-          <div class="ud-pipe-freq">Bi-weekly &middot; hot-swapped</div>
-          <div class="ud-pipe-desc">Retrained behavioral AI weights are deployed via hot-swap — the engine loads the new model between scan cycles. Brief inference latency spike (~5ms) during transition, no downtime.</div>
-          <div class="ud-pipe-action auto">NO ACTION REQUIRED</div>
-        </div>
-        <div class="ud-pipe-card pipe-driver">
-          <div class="ud-pipe-icon">&#x1F6E1;&#xFE0F;</div>
-          <div class="ud-pipe-name">Driver Updates</div>
-          <div class="ud-pipe-freq">Monthly &middot; with SDK release</div>
-          <div class="ud-pipe-desc">Kernel driver updates ship with the SDK. Partners pull the new SDK version and include the updated driver in their next game patch. EV code-signed, WHQL certification pending.</div>
-          <div class="ud-pipe-action pull">SDK PULL REQUIRED</div>
-        </div>
-        <div class="ud-pipe-card pipe-hotfix">
-          <div class="ud-pipe-icon">&#x26A1;</div>
-          <div class="ud-pipe-name">Emergency Hotfixes</div>
-          <div class="ud-pipe-freq">As needed &middot; fast-tracked</div>
-          <div class="ud-pipe-desc">Critical fixes (FP spikes, security patches) bypass the normal cycle and deploy within hours. Partners are notified via webhook and status page. May require an SDK pull for driver-level fixes.</div>
-          <div class="ud-pipe-action manual">WEBHOOK NOTIFICATION</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="ud-section">
-      <div class="ud-section-title">What This Means for Partners</div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:4px 20px;overflow-x:auto;">
-        <table class="ud-table">
-          <thead>
-            <tr><th>Scenario</th><th>Update Type</th><th>Partner Action</th><th>Player Impact</th><th>Downtime</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="color:var(--text-bright);font-weight:500;">New cheat detected in the wild</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(48,200,96,0.1);color:var(--green);padding:3px 8px;border-radius:4px;">Signature</span></td>
-              <td style="color:var(--green);">None</td>
-              <td>None — signatures sync silently</td>
-              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
-            </tr>
-            <tr>
-              <td style="color:var(--text-bright);font-weight:500;">Improved aim analysis model</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(160,100,255,0.1);color:var(--purple);padding:3px 8px;border-radius:4px;">AI Model</span></td>
-              <td style="color:var(--green);">None</td>
-              <td>~5ms latency spike during swap</td>
-              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
-            </tr>
-            <tr>
-              <td style="color:var(--text-bright);font-weight:500;">New hardware fingerprinting capability</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(64,136,232,0.1);color:var(--blue);padding:3px 8px;border-radius:4px;">Driver + SDK</span></td>
-              <td style="color:var(--blue);">Pull new SDK, ship in next patch</td>
-              <td>Included in your regular game update</td>
-              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
-            </tr>
-            <tr>
-              <td style="color:var(--text-bright);font-weight:500;">False positive spike on a game overlay</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(232,64,64,0.1);color:var(--red);padding:3px 8px;border-radius:4px;">Hotfix (Sig)</span></td>
-              <td style="color:var(--green);">None — whitelist pushed automatically</td>
-              <td>Affected sessions released from hold</td>
-              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
-            </tr>
-            <tr>
-              <td style="color:var(--text-bright);font-weight:500;">Critical kernel vulnerability patched</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(232,64,64,0.1);color:var(--red);padding:3px 8px;border-radius:4px;">Hotfix (Driver)</span></td>
-              <td style="color:var(--accent);">Emergency SDK pull recommended</td>
-              <td>Players update on next game launch</td>
-              <td><span style="color:var(--accent);font-weight:600;background:rgba(232,160,32,0.08);padding:3px 10px;border-radius:4px;">Minimal</span></td>
-            </tr>
-            <tr>
-              <td style="color:var(--text-bright);font-weight:500;">Scheduled maintenance window</td>
-              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(64,136,232,0.1);color:var(--blue);padding:3px 8px;border-radius:4px;">Infrastructure</span></td>
-              <td style="color:var(--green);">None — detection falls back to cached sigs</td>
-              <td>Dashboard may lag briefly</td>
-              <td><span style="color:var(--accent);font-weight:600;background:rgba(232,160,32,0.08);padding:3px 10px;border-radius:4px;">2-4 min</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="ud-section">
-      <div class="ud-section-title">Recent Deployments</div>
-      <div id="recentDeployments"></div>
-    </div>
-
-    <div class="ud-section">
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;">
-        <div class="ud-section-title" style="margin-bottom:8px;">SDK Compatibility</div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;">
-          <div>
-            <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Current SDK</div>
-            <div style="font-family:var(--font-mono);font-size:0.9rem;color:var(--accent);font-weight:600;" id="udSdkCurrent">--</div>
-          </div>
-          <div>
-            <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Minimum Supported</div>
-            <div style="font-family:var(--font-mono);font-size:0.9rem;color:var(--text);font-weight:600;">v0.4.0.0b</div>
-          </div>
-          <div>
-            <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Deprecation Notice</div>
-            <div style="font-size:0.78rem;color:var(--text-dim);">v0.3.x EOL — no longer receives signature updates</div>
-          </div>
-          <div>
-            <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Supported Engines</div>
-            <div style="font-size:0.78rem;color:var(--text);">UE5.3+, UE5.4, Unity 6, CryEngine 5.7, Godot 4, Custom (C++ SDK)</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="ud-section">
-      <div style="background:rgba(64,136,232,0.05);border:1px solid rgba(64,136,232,0.15);border-radius:12px;padding:20px 24px;">
-        <div style="display:flex;align-items:flex-start;gap:12px;">
-          <div style="font-size:1.2rem;">&#x1F4E1;</div>
-          <div>
-            <div style="font-family:var(--font-heading);font-size:0.88rem;font-weight:700;color:var(--text-bright);margin-bottom:6px;">Webhook Notifications</div>
-            <p style="font-size:0.78rem;color:var(--text-dim);line-height:1.6;margin:0;">
-              Partners receive webhook notifications for all update types. Configure your endpoint in the
-              <a href="/api/" style="color:var(--accent);">API dashboard</a> to receive real-time deployment events.
-              Each payload includes the update type, affected components, changelog summary, and whether any partner action is required.
-              Webhooks fire at each rollout stage (canary, 10%, 100%) so you can track deployment progress.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- end stab-updates -->
-
   </div><!-- end container -->
 
   <!-- S6: Footer upgrade -->
@@ -1126,7 +844,7 @@
 
     // ===== COMPONENT VERSIONS =====
     (function() {
-      var driverVer = 'v' + ((E && E.CONFIG) ? E.CONFIG.version : '0.4.2.0b');
+      var driverVer = (E && E.CONFIG) ? E.CONFIG.engineVersion : 'v0.4.2.0b';
       var apiVer = 'v2.' + Math.floor(seeded(today * 301) * 8 + 3) + '.' + Math.floor(seeded(today * 303) * 20);
       var sigVer;
       try { sigVer = E ? E.signatureCount() : 4891; } catch(e) { sigVer = 4891; }
@@ -1212,104 +930,7 @@
     })();
 
     // ===== TAB SWITCHING =====
-    document.querySelectorAll('.status-tab').forEach(function(tab) {
-      tab.addEventListener('click', function() {
-        document.querySelectorAll('.status-tab').forEach(function(t) { t.classList.remove('active'); });
-        document.querySelectorAll('.status-tab-content').forEach(function(c) { c.classList.remove('active'); });
-        tab.classList.add('active');
-        document.getElementById('stab-' + tab.dataset.stab).classList.add('active');
-      });
-    });
 
-    // ===== RECENT DEPLOYMENTS (engine-derived from CerberusEngine.dailyDeployments()) =====
-    (function() {
-      var el = document.getElementById('recentDeployments');
-      if (!el) return;
-
-      var typeStyles = {
-        signature: { label: 'SIGNATURE', color: 'var(--green)', bg: 'rgba(48,200,96,0.1)' },
-        model:     { label: 'AI MODEL',  color: '#8860e8',      bg: 'rgba(136,96,232,0.1)' },
-        driver:    { label: 'DRIVER',    color: 'var(--accent)', bg: 'rgba(232,160,32,0.1)' },
-        hotfix:    { label: 'HOTFIX',    color: 'var(--red)',    bg: 'rgba(224,64,80,0.1)' },
-        infra:     { label: 'INFRA',     color: 'var(--blue)',   bg: 'rgba(64,136,232,0.1)' },
-      };
-
-      var sigDescPool = [
-        'new DMA loader patterns',
-        'ESP overlay variant signatures',
-        'kernel injection fingerprints',
-        'HWID spoof detection signatures',
-        'trigger timing spectral patterns',
-        'user-mode hook bypass signatures',
-      ];
-      var modelDescPool = [
-        'improved aimbot micro-movement detection',
-        'expanded training dataset for humanization bypass',
-        'triggerbot spectral analysis refinement',
-        'cross-session drift recalibration',
-      ];
-
-      // Gather deployments from today + last 3 days (show most recent first, max 8 entries)
-      var allDeploys = [];
-      var now_dep = new Date();
-      for (var dayOff = 0; dayOff <= 3; dayOff++) {
-        var queryDay = new Date(now_dep.getTime() - dayOff * 86400000);
-        var deps = [];
-        try { deps = E ? E.dailyDeployments(queryDay) : []; } catch(e) {}
-        deps.forEach(function(d) {
-          allDeploys.push({ dep: d, dayOffset: dayOff });
-        });
-      }
-      // Sort: today's first, then by hour descending within each day
-      allDeploys.sort(function(a, b) {
-        if (a.dayOffset !== b.dayOffset) return a.dayOffset - b.dayOffset;
-        return b.dep.hour - a.dep.hour;
-      });
-
-      var html = '';
-      var shown = 0;
-      allDeploys.forEach(function(item) {
-        if (shown >= 8) return;
-        var d = item.dep;
-        var dayOff = item.dayOffset;
-        var style = typeStyles[d.type] || typeStyles.infra;
-        var timeStr = dayOff === 0 ? String(d.hour).padStart(2, '0') + ':00 today' : dayOff + 'd ago';
-        var title, impact, rolloutLabel;
-
-        if (d.type === 'signature') {
-          var descIdx = Math.floor(seeded(today * 7001 + shown * 37) * sigDescPool.length);
-          title = 'Signature batch: ' + d.count + ' ' + sigDescPool[descIdx];
-          rolloutLabel = d.stage === 'complete' ? '100% rolled out' : 'in progress';
-          impact = d.region === 'all' ? 'All regions' : d.region;
-        } else if (d.type === 'model') {
-          var mDescIdx = Math.floor(seeded(today * 7003 + shown * 41) * modelDescPool.length);
-          title = 'AI model ' + d.version + ' \u2014 ' + modelDescPool[mDescIdx];
-          rolloutLabel = d.stage === 'rolling' ? 'canary \u2192 10%' : '100% rolled out';
-          impact = 'All regions';
-        } else if (d.type === 'driver') {
-          title = 'Kernel driver ' + d.version + ' \u2014 EV signed, staged rollout';
-          rolloutLabel = 'staged \u2014 SDK pull required';
-          impact = 'All regions';
-        } else {
-          title = 'Infrastructure maintenance \u2014 ' + d.version;
-          rolloutLabel = d.stage || 'complete';
-          impact = d.region === 'all' ? 'All regions' : d.region;
-        }
-
-        html += '<div class="ud-recent-item"><span class="ud-recent-type" style="background:' + style.bg + ';color:' + style.color + ';">' + style.label + '</span><span class="ud-recent-title">' + title + '</span><span class="ud-recent-impact">' + impact + ' \u00B7 ' + rolloutLabel + '</span><span class="ud-recent-date">' + timeStr + '</span></div>';
-        shown++;
-      });
-
-      // Fallback if engine gives nothing
-      if (shown === 0) {
-        html = '<div style="font-size:0.8rem;color:var(--text-dim);padding:12px 0;">No deployments recorded in the last 3 days.</div>';
-      }
-      el.innerHTML = html;
-
-      // SDK version
-      var sdkEl = document.getElementById('udSdkCurrent');
-      if (sdkEl) sdkEl.textContent = E ? E.CONFIG.version : 'v0.4.2.0b';
-    })();
 
   </script>
 

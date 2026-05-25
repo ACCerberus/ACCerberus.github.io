@@ -176,6 +176,13 @@
       animation: focusPulse 2.5s ease-in-out infinite;
     }
     @keyframes focusPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+    .lead-activity {
+      font-family: var(--font-mono); font-size: 0.62rem; color: var(--accent);
+      padding: 6px 0 2px; opacity: 0.85; letter-spacing: 0.2px;
+    }
+    .lead-activity::before {
+      content: '\25B6'; margin-right: 5px; font-size: 0.5rem; vertical-align: middle;
+    }
     .lead-tags { display: flex; flex-wrap: wrap; gap: 5px; }
     .lead-tag {
       padding: 2px 8px; border-radius: 10px; font-size: 0.62rem; font-weight: 500;
@@ -323,6 +330,7 @@
       <a href="/changelog/">Changelog</a>
       <a href="/blog/">Blog</a>
       <a href="/status/">Status</a>
+      <a href="/updates/">Updates</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/" class="active">Team</a>
     </div>
@@ -561,6 +569,40 @@
         '</div></div>';
     });
     document.getElementById('leadGrid').innerHTML = leadHTML;
+
+    // ===== DYNAMIC "CURRENTLY WORKING ON" ACTIVITY =====
+    (function() {
+      if (!E) return;
+      var arms = E.armsRaceEvent();
+      var threat = E.threatLevel();
+      var fpStreak = E.fpStreak();
+      var banWave = E.banWaveSchedule ? E.banWaveSchedule() : null;
+      var isBanWaveDay = banWave && banWave.isWaveDay;
+      var isArmsRace = arms && arms.isSpike;
+      var provider = isArmsRace ? arms.provider : '';
+
+      var activities = {
+        'nvoronov': isBanWaveDay ? 'Overseeing ban wave deployment' : 'Reviewing deployment pipeline',
+        'dkrasov': fpStreak < 3 ? 'Investigating false positive report' : (isArmsRace ? 'Patching kernel signatures' : 'Driver stability testing'),
+        's.nakamura': isArmsRace ? 'Retraining behavioral weights' : 'TCN model evaluation',
+        'ArsenalRX': isArmsRace ? 'Analyzing ' + provider + ' variant' : 'Monitoring cheat forums',
+        'lweber': 'SDK integration testing'
+      };
+
+      var cards = document.querySelectorAll('.lead-card');
+      cards.forEach(function(card) {
+        var nameEl = card.querySelector('.lead-name');
+        if (!nameEl) return;
+        var name = nameEl.textContent.trim().split(' ')[0];
+        if (!activities[name]) return;
+        var roleEl = card.querySelector('.lead-role');
+        if (!roleEl) return;
+        var actDiv = document.createElement('div');
+        actDiv.className = 'lead-activity';
+        actDiv.textContent = 'Active: ' + activities[name];
+        roleEl.parentNode.insertBefore(actDiv, roleEl.nextSibling);
+      });
+    })();
 
     // ===== DEPARTMENT STATS (seeded) =====
     var deptStatsData = {

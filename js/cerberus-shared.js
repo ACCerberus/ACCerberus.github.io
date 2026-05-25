@@ -364,6 +364,48 @@
       }
       scheduleNext();
     }, 60000 + Math.floor(Math.random() * 60000));
+
+    // ─── AMBIENT ENGINE-AWARE TOASTS ───
+    // After 45-90s on page, show contextual ambient events from the engine.
+    // Then every 3-5min, show the next one. Max 3 per page load.
+    (function initAmbientToasts() {
+      var E = window.CerberusEngine;
+      if (!E || !E.ambientEvents) return;
+
+      var now = new Date();
+      var events = E.ambientEvents(now);
+      if (!events || !events.length) return;
+
+      var ambientIndex = 0;
+      var ambientMax = 3;
+      var ambientShown = 0;
+
+      function showAmbientToast() {
+        if (ambientShown >= ambientMax || ambientIndex >= events.length) return;
+        var evt = events[ambientIndex++];
+        ambientShown++;
+
+        var toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = '<div class="toast-icon toast-icon-info">!</div>' +
+          '<div class="toast-text">' + evt.icon + ' ' + evt.message +
+          '<div class="toast-time">' + new Date().toLocaleTimeString() + '</div></div>';
+        container.appendChild(toast);
+        setTimeout(function () { toast.classList.add('out'); }, 5000);
+        setTimeout(function () { if (toast.parentNode) toast.remove(); }, 5300);
+        while (container.children.length > 3) container.removeChild(container.firstChild);
+
+        // Schedule next ambient toast (3-5 minutes)
+        if (ambientShown < ambientMax && ambientIndex < events.length) {
+          var nextDelay = 180000 + Math.floor(Math.random() * 120000);
+          setTimeout(showAmbientToast, nextDelay);
+        }
+      }
+
+      // First ambient toast after 45-90 seconds
+      var initialDelay = 45000 + Math.floor(Math.random() * 45000);
+      setTimeout(showAmbientToast, initialDelay);
+    })();
   }
 
   // ─── NAV AUTH STATE ───

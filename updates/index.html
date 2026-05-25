@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Update Delivery - Cerberus Anti-Cheat</title>
+  <meta name="description" content="How Cerberus delivers updates — signature pushes, AI model swaps, driver releases, and emergency hotfixes." />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084; --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #a064ff;
+      --font: 'Inter', -apple-system, sans-serif; --font-heading: 'Sora', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .noise-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.015;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), #c07818); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507; }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-login { border: 1px solid var(--border); padding: 6px 16px; border-radius: 8px; }
+    .nav-cta { background: var(--accent) !important; color: #050507 !important; padding: 6px 16px; border-radius: 8px; font-weight: 600 !important; }
+
+    .container { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 120px 32px 60px; }
+
+    .page-title { font-family: var(--font-heading); font-size: 2rem; font-weight: 800; color: var(--text-bright); margin-bottom: 8px; letter-spacing: -0.5px; }
+    .page-desc { font-size: 0.88rem; color: var(--text-dim); margin-bottom: 48px; }
+
+    /* Update delivery styles */
+    .ud-section { margin-bottom: 40px; }
+    .ud-section-title { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 16px; letter-spacing: -0.3px; }
+    .ud-pipeline {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
+      margin-bottom: 32px;
+    }
+    .ud-pipe-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 22px; position: relative; overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+    .ud-pipe-card:hover { transform: translateY(-3px); }
+    .ud-pipe-card.pipe-sig:hover { border-color: var(--green); box-shadow: 0 4px 24px rgba(48,200,96,0.08); }
+    .ud-pipe-card.pipe-model:hover { border-color: var(--purple); box-shadow: 0 4px 24px rgba(160,100,255,0.08); }
+    .ud-pipe-card.pipe-driver:hover { border-color: var(--accent); box-shadow: 0 4px 24px rgba(232,160,32,0.08); }
+    .ud-pipe-card.pipe-hotfix:hover { border-color: var(--red); box-shadow: 0 4px 24px rgba(232,64,64,0.08); }
+    .ud-pipe-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .ud-pipe-card.pipe-sig::before { background: linear-gradient(90deg, var(--green), rgba(48,200,96,0.3)); }
+    .ud-pipe-card.pipe-model::before { background: linear-gradient(90deg, var(--purple), rgba(160,100,255,0.3)); }
+    .ud-pipe-card.pipe-driver::before { background: linear-gradient(90deg, var(--accent), rgba(232,160,32,0.3)); }
+    .ud-pipe-card.pipe-hotfix::before { background: linear-gradient(90deg, var(--red), rgba(232,64,64,0.3)); }
+    .ud-pipe-icon { font-size: 1.5rem; margin-bottom: 12px; }
+    .ud-pipe-name { font-family: var(--font-heading); font-size: 0.88rem; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
+    .ud-pipe-freq { font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent); margin-bottom: 10px; }
+    .ud-pipe-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 14px; }
+    .ud-pipe-action { font-size: 0.68rem; padding: 5px 12px; border-radius: 6px; font-weight: 600; font-family: var(--font-mono); display: inline-block; letter-spacing: 0.3px; }
+    .ud-pipe-action.auto { background: rgba(48,200,96,0.1); color: var(--green); border: 1px solid rgba(48,200,96,0.15); }
+    .ud-pipe-action.manual { background: rgba(232,160,32,0.1); color: var(--accent); border: 1px solid rgba(232,160,32,0.15); }
+    .ud-pipe-action.pull { background: rgba(64,136,232,0.1); color: var(--blue); border: 1px solid rgba(64,136,232,0.15); }
+
+    .ud-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .ud-table th {
+      text-align: left; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;
+      letter-spacing: 0.6px; padding: 12px 16px; border-bottom: 1px solid var(--border);
+      font-weight: 600; background: rgba(255,255,255,0.01);
+    }
+    .ud-table td {
+      font-size: 0.78rem; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.03);
+      color: var(--text); vertical-align: middle; transition: background 0.2s;
+    }
+    .ud-table tbody tr { transition: background 0.2s; }
+    .ud-table tbody tr:hover { background: rgba(255,255,255,0.025); }
+    .ud-table tbody tr:last-child td { border-bottom: none; }
+    .ud-table td:last-child { text-align: center; }
+    .ud-table th:last-child { text-align: center; }
+
+    .ud-flow { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; margin: 24px 0; position: relative; }
+    .ud-flow-step {
+      display: flex; flex-direction: column; align-items: center; padding: 18px 22px 16px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      min-width: 130px; text-align: center; position: relative; flex: 1;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+    .ud-flow-step:hover {
+      border-color: var(--accent); box-shadow: 0 0 20px rgba(232,160,32,0.1);
+      transform: translateY(-2px);
+    }
+    .ud-flow-step-num {
+      font-family: var(--font-mono); font-size: 0.6rem; color: var(--bg); font-weight: 700;
+      background: var(--accent); width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 8px;
+    }
+    .ud-flow-step-name { font-size: 0.82rem; color: var(--text-bright); font-weight: 600; }
+    .ud-flow-step-desc { font-size: 0.65rem; color: var(--text-dim); margin-top: 6px; line-height: 1.4; }
+    .ud-flow-arrow {
+      color: var(--accent); font-size: 1rem; padding: 0 6px; flex-shrink: 0;
+      display: flex; align-items: center; opacity: 0.5;
+    }
+
+    .ud-recent-item {
+      display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      margin-bottom: 8px;
+    }
+    .ud-recent-type { font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+    .ud-recent-title { font-size: 0.82rem; color: var(--text-bright); font-weight: 500; flex: 1; }
+    .ud-recent-date { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim); }
+    .ud-recent-impact { font-size: 0.68rem; color: var(--text-dim); }
+
+    .ud-stat-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;
+    }
+    .ud-stat-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px; text-align: center;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+    .ud-stat-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    .ud-stat-value { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; color: var(--text-bright); margin-bottom: 4px; }
+    .ud-stat-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.4px; }
+    .ud-breakdown-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+      font-size: 0.78rem;
+    }
+    .ud-breakdown-item:last-child { border-bottom: none; }
+    .ud-breakdown-reason { color: var(--text); }
+    .ud-breakdown-pct { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
+
+    .footer-link { text-align: center; padding: 40px 0 20px; }
+
+    @media (max-width: 768px) {
+      .nav { padding: 14px 20px; }
+      .nav-links { gap: 12px; font-size: 0.78rem; flex-wrap: wrap; }
+      .container { padding: 100px 16px 40px; }
+      .page-title { font-size: 1.5rem; }
+      .ud-flow { flex-direction: column; align-items: center; }
+      .ud-flow-arrow { transform: rotate(90deg); padding: 4px 0; }
+      .ud-table { font-size: 0.7rem; }
+      .ud-table th, .ud-table td { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="noise-overlay"></div>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerberus<span>AC</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/#pricing">Plans</a>
+      <a href="/docs/">Docs</a>
+      <a href="/api/">API</a>
+      <a href="/sdk/">SDK</a>
+      <a href="/changelog/">Changelog</a>
+      <a href="/blog/">Blog</a>
+      <a href="/status/">Status</a>
+      <a href="/updates/" class="active">Updates</a>
+      <a href="/analytics/">Analytics</a>
+      <a href="/team/">Team</a>
+    </div>
+    <div class="nav-links">
+      <a href="/login/" class="nav-login">Partner Login</a>
+      <a href="/access/" class="nav-cta">Partner Account</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="page-title">Update Delivery</h1>
+    <p class="page-desc">How Cerberus delivers protection updates to your game — without requiring downtime or client patches.</p>
+
+    <div class="ud-section">
+      <div class="ud-section-title">How Updates Reach Your Game</div>
+      <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:20px;">
+        Cerberus uses a layered update pipeline so your game stays protected without requiring downtime or client patches.
+        Most updates are transparent — your players never notice them. Here's how each type flows from our team to your live environment.
+      </p>
+
+      <div class="ud-flow">
+        <div class="ud-flow-step">
+          <div class="ud-flow-step-num">01</div>
+          <div class="ud-flow-step-name">Threat Research</div>
+          <div class="ud-flow-step-desc">New cheat sample analyzed</div>
+        </div>
+        <div class="ud-flow-arrow">&rarr;</div>
+        <div class="ud-flow-step">
+          <div class="ud-flow-step-num">02</div>
+          <div class="ud-flow-step-name">Signature / Model</div>
+          <div class="ud-flow-step-desc">Pattern or weights generated</div>
+        </div>
+        <div class="ud-flow-arrow">&rarr;</div>
+        <div class="ud-flow-step">
+          <div class="ud-flow-step-num">03</div>
+          <div class="ud-flow-step-name">Internal QA</div>
+          <div class="ud-flow-step-desc">FP tested on replay corpus</div>
+        </div>
+        <div class="ud-flow-arrow">&rarr;</div>
+        <div class="ud-flow-step">
+          <div class="ud-flow-step-num">04</div>
+          <div class="ud-flow-step-name">Staged Rollout</div>
+          <div class="ud-flow-step-desc">Canary &rarr; 10% &rarr; 100%</div>
+        </div>
+        <div class="ud-flow-arrow">&rarr;</div>
+        <div class="ud-flow-step">
+          <div class="ud-flow-step-num">05</div>
+          <div class="ud-flow-step-name">Live</div>
+          <div class="ud-flow-step-desc">Active across all regions</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ud-section">
+      <div class="ud-section-title">Update Types</div>
+      <div class="ud-pipeline">
+        <div class="ud-pipe-card pipe-sig">
+          <div class="ud-pipe-icon">&#x1F4C4;</div>
+          <div class="ud-pipe-name">Signature Updates</div>
+          <div class="ud-pipe-freq">Continuous &middot; multiple times per day</div>
+          <div class="ud-pipe-desc">New cheat signatures pushed to all regions via CDN. The client-side engine pulls fresh signatures on session start and periodically during play. No restart required.</div>
+          <div class="ud-pipe-action auto">NO ACTION REQUIRED</div>
+        </div>
+        <div class="ud-pipe-card pipe-model">
+          <div class="ud-pipe-icon">&#x1F9E0;</div>
+          <div class="ud-pipe-name">AI Model Updates</div>
+          <div class="ud-pipe-freq">Bi-weekly &middot; hot-swapped</div>
+          <div class="ud-pipe-desc">Retrained behavioral AI weights are deployed via hot-swap — the engine loads the new model between scan cycles. Brief inference latency spike (~5ms) during transition, no downtime.</div>
+          <div class="ud-pipe-action auto">NO ACTION REQUIRED</div>
+        </div>
+        <div class="ud-pipe-card pipe-driver">
+          <div class="ud-pipe-icon">&#x1F6E1;&#xFE0F;</div>
+          <div class="ud-pipe-name">Driver Updates</div>
+          <div class="ud-pipe-freq">Monthly &middot; with SDK release</div>
+          <div class="ud-pipe-desc">Kernel driver updates ship with the SDK. Partners pull the new SDK version and include the updated driver in their next game patch. EV code-signed, WHQL certification pending.</div>
+          <div class="ud-pipe-action pull">SDK PULL REQUIRED</div>
+        </div>
+        <div class="ud-pipe-card pipe-hotfix">
+          <div class="ud-pipe-icon">&#x26A1;</div>
+          <div class="ud-pipe-name">Emergency Hotfixes</div>
+          <div class="ud-pipe-freq">As needed &middot; fast-tracked</div>
+          <div class="ud-pipe-desc">Critical fixes (FP spikes, security patches) bypass the normal cycle and deploy within hours. Partners are notified via webhook and status page. May require an SDK pull for driver-level fixes.</div>
+          <div class="ud-pipe-action manual">WEBHOOK NOTIFICATION</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ud-section">
+      <div class="ud-section-title">What This Means for Partners</div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:4px 20px;overflow-x:auto;">
+        <table class="ud-table">
+          <thead>
+            <tr><th>Scenario</th><th>Update Type</th><th>Partner Action</th><th>Player Impact</th><th>Downtime</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:var(--text-bright);font-weight:500;">New cheat detected in the wild</td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(48,200,96,0.1);color:var(--green);padding:3px 8px;border-radius:4px;">Signature</span></td>
+              <td style="color:var(--green);">None</td>
+              <td>None — signatures sync silently</td>
+              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text-bright);font-weight:500;">Improved aim analysis model</td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(160,100,255,0.1);color:var(--purple);padding:3px 8px;border-radius:4px;">AI Model</span></td>
+              <td style="color:var(--green);">None</td>
+              <td>~5ms latency spike during swap</td>
+              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text-bright);font-weight:500;">New hardware fingerprinting capability</td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(64,136,232,0.1);color:var(--blue);padding:3px 8px;border-radius:4px;">Driver + SDK</span></td>
+              <td style="color:var(--blue);">Pull new SDK, ship in next patch</td>
+              <td>Included in your regular game update</td>
+              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text-bright);font-weight:500;">False positive spike on a game overlay</td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(232,64,64,0.1);color:var(--red);padding:3px 8px;border-radius:4px;">Hotfix (Sig)</span></td>
+              <td style="color:var(--green);">None — whitelist pushed automatically</td>
+              <td>Affected sessions released from hold</td>
+              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text-bright);font-weight:500;">Critical kernel vulnerability patched</td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(232,64,64,0.1);color:var(--red);padding:3px 8px;border-radius:4px;">Hotfix (Driver)</span></td>
+              <td style="color:var(--accent);">Emergency SDK pull recommended</td>
+              <td>Players update on next game launch</td>
+              <td><span style="color:var(--accent);font-weight:600;background:rgba(232,160,32,0.08);padding:3px 10px;border-radius:4px;">Minimal</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text-bright);font-weight:500;">Scheduled maintenance window</td>
+              <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(64,136,232,0.1);color:var(--blue);padding:3px 8px;border-radius:4px;">Infrastructure</span></td>
+              <td style="color:var(--green);">None — detection falls back to cached sigs</td>
+              <td>Dashboard may lag briefly</td>
+              <td><span style="color:var(--accent);font-weight:600;background:rgba(232,160,32,0.08);padding:3px 10px;border-radius:4px;">2-4 min</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="ud-section">
+      <div class="ud-section-title">Recent Deployments</div>
+      <div id="recentDeployments"></div>
+    </div>
+
+    <div class="ud-section">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;">
+        <div class="ud-section-title" style="margin-bottom:8px;">SDK Compatibility</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;">
+          <div>
+            <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Current SDK</div>
+            <div style="font-family:var(--font-mono);font-size:0.9rem;color:var(--accent);font-weight:600;" id="udSdkCurrent">--</div>
+          </div>
+          <div>
+            <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Minimum Supported</div>
+            <div style="font-family:var(--font-mono);font-size:0.9rem;color:var(--text);font-weight:600;">v0.4.0.0b</div>
+          </div>
+          <div>
+            <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Deprecation Notice</div>
+            <div style="font-size:0.78rem;color:var(--text-dim);">v0.3.x EOL — no longer receives signature updates</div>
+          </div>
+          <div>
+            <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Supported Engines</div>
+            <div style="font-size:0.78rem;color:var(--text);">UE5.3+, UE5.4, Unity 6, CryEngine 5.7, Godot 4, Custom (C++ SDK)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ud-section">
+      <div style="background:rgba(64,136,232,0.05);border:1px solid rgba(64,136,232,0.15);border-radius:12px;padding:20px 24px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <div style="font-size:1.2rem;">&#x1F4E1;</div>
+          <div>
+            <div style="font-family:var(--font-heading);font-size:0.88rem;font-weight:700;color:var(--text-bright);margin-bottom:6px;">Webhook Notifications</div>
+            <p style="font-size:0.78rem;color:var(--text-dim);line-height:1.6;margin:0;">
+              Partners receive webhook notifications for all update types. Configure your endpoint in the
+              <a href="/api/" style="color:var(--accent);">API dashboard</a> to receive real-time deployment events.
+              Each payload includes the update type, affected components, changelog summary, and whether any partner action is required.
+              Webhooks fire at each rollout stage (canary, 10%, 100%) so you can track deployment progress.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ud-section">
+      <div class="ud-section-title">Delivery Metrics</div>
+      <div class="ud-stat-grid" id="webhookMetrics"></div>
+    </div>
+
+    <div class="ud-section">
+      <div class="ud-section-title">Driver Load Success</div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;" id="driverLoadSection"></div>
+    </div>
+
+    <div class="footer-link">
+      <a href="/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Home</a>
+    </div>
+
+  </div>
+
+  <script src="/js/cerberus-engine.js"></script>
+  <script>
+    var E = window.CerberusEngine;
+    var today = Math.floor(Date.now() / 86400000);
+    function seeded(s) { s = s | 0; s = Math.imul(s ^ (s >>> 16), 0x45d9f3b); s = Math.imul(s ^ (s >>> 13), 0x45d9f3b); return ((s ^ (s >>> 16)) >>> 0) / 4294967296; }
+
+    // ===== RECENT DEPLOYMENTS =====
+    (function() {
+      var el = document.getElementById('recentDeployments');
+      if (!el) return;
+
+      var typeStyles = {
+        signature: { label: 'SIGNATURE', color: 'var(--green)', bg: 'rgba(48,200,96,0.1)' },
+        model:     { label: 'AI MODEL',  color: '#8860e8',      bg: 'rgba(136,96,232,0.1)' },
+        driver:    { label: 'DRIVER',    color: 'var(--accent)', bg: 'rgba(232,160,32,0.1)' },
+        hotfix:    { label: 'HOTFIX',    color: 'var(--red)',    bg: 'rgba(224,64,80,0.1)' },
+        infra:     { label: 'INFRA',     color: 'var(--blue)',   bg: 'rgba(64,136,232,0.1)' },
+      };
+
+      var sigDescPool = [
+        'new DMA loader patterns',
+        'ESP overlay variant signatures',
+        'kernel injection fingerprints',
+        'HWID spoof detection signatures',
+        'trigger timing spectral patterns',
+        'user-mode hook bypass signatures',
+      ];
+      var modelDescPool = [
+        'improved aimbot micro-movement detection',
+        'expanded training dataset for humanization bypass',
+        'triggerbot spectral analysis refinement',
+        'cross-session drift recalibration',
+      ];
+
+      var allDeploys = [];
+      var now_dep = new Date();
+      for (var dayOff = 0; dayOff <= 3; dayOff++) {
+        var queryDay = new Date(now_dep.getTime() - dayOff * 86400000);
+        var deps = [];
+        try { deps = E ? E.dailyDeployments(queryDay) : []; } catch(e) {}
+        deps.forEach(function(d) {
+          allDeploys.push({ dep: d, dayOffset: dayOff });
+        });
+      }
+      allDeploys.sort(function(a, b) {
+        if (a.dayOffset !== b.dayOffset) return a.dayOffset - b.dayOffset;
+        return b.dep.hour - a.dep.hour;
+      });
+
+      var html = '';
+      var shown = 0;
+      allDeploys.forEach(function(item) {
+        if (shown >= 8) return;
+        var d = item.dep;
+        var dayOff = item.dayOffset;
+        var style = typeStyles[d.type] || typeStyles.infra;
+        var timeStr = dayOff === 0 ? String(d.hour).padStart(2, '0') + ':00 today' : dayOff + 'd ago';
+        var title, impact, rolloutLabel;
+
+        if (d.type === 'signature') {
+          var descIdx = Math.floor(seeded(today * 7001 + shown * 37) * sigDescPool.length);
+          title = 'Signature batch: ' + d.count + ' ' + sigDescPool[descIdx];
+          rolloutLabel = d.stage === 'complete' ? '100% rolled out' : 'in progress';
+          impact = d.region === 'all' ? 'All regions' : d.region;
+        } else if (d.type === 'model') {
+          var mDescIdx = Math.floor(seeded(today * 7003 + shown * 41) * modelDescPool.length);
+          title = 'AI model ' + d.version + ' \u2014 ' + modelDescPool[mDescIdx];
+          rolloutLabel = d.stage === 'rolling' ? 'canary \u2192 10%' : '100% rolled out';
+          impact = 'All regions';
+        } else if (d.type === 'driver') {
+          title = 'Kernel driver ' + d.version + ' \u2014 EV signed, staged rollout';
+          rolloutLabel = 'staged \u2014 SDK pull required';
+          impact = 'All regions';
+        } else {
+          title = 'Infrastructure maintenance \u2014 ' + d.version;
+          rolloutLabel = d.stage || 'complete';
+          impact = d.region === 'all' ? 'All regions' : d.region;
+        }
+
+        html += '<div class="ud-recent-item"><span class="ud-recent-type" style="background:' + style.bg + ';color:' + style.color + ';">' + style.label + '</span><span class="ud-recent-title">' + title + '</span><span class="ud-recent-impact">' + impact + ' \u00B7 ' + rolloutLabel + '</span><span class="ud-recent-date">' + timeStr + '</span></div>';
+        shown++;
+      });
+
+      if (shown === 0) {
+        html = '<div style="font-size:0.8rem;color:var(--text-dim);padding:12px 0;">No deployments recorded in the last 3 days.</div>';
+      }
+      el.innerHTML = html;
+
+      // SDK version
+      var sdkEl = document.getElementById('udSdkCurrent');
+      if (sdkEl) sdkEl.textContent = (E && E.CONFIG) ? E.CONFIG.engineVersion : 'v0.4.2.0b';
+    })();
+
+    // ===== WEBHOOK DELIVERY METRICS =====
+    (function() {
+      var el = document.getElementById('webhookMetrics');
+      if (!el) return;
+
+      var s1 = seeded(today * 5011);
+      var s2 = seeded(today * 5023);
+      var s3 = seeded(today * 5037);
+
+      var successRate = (98.8 + s1 * 0.8).toFixed(1);
+      var avgLatency = Math.round(280 + s2 * 170);
+      var failedCount = Math.round(1 + s3 * 4);
+
+      var cards = [
+        { value: successRate + '%', label: 'Webhook Success Rate', color: 'var(--green)' },
+        { value: avgLatency + 'ms', label: 'Avg Delivery Latency', color: 'var(--blue)' },
+        { value: failedCount, label: 'Failed Deliveries (7d)', color: failedCount > 3 ? 'var(--accent)' : 'var(--text-bright)' }
+      ];
+
+      var html = '';
+      cards.forEach(function(c) {
+        html += '<div class="ud-stat-card"><div class="ud-stat-value" style="color:' + c.color + ';">' + c.value + '</div><div class="ud-stat-label">' + c.label + '</div></div>';
+      });
+      el.innerHTML = html;
+    })();
+
+    // ===== DRIVER LOAD SUCCESS =====
+    (function() {
+      var el = document.getElementById('driverLoadSection');
+      if (!el || !E || !E.driverLoadMetrics) return;
+
+      var m = E.driverLoadMetrics();
+      var rateColor = m.successRate >= 98 ? 'var(--green)' : m.successRate >= 95 ? 'var(--accent)' : 'var(--red)';
+
+      var html = '<div style="display:flex;align-items:flex-start;gap:32px;flex-wrap:wrap;">';
+      html += '<div style="text-align:center;min-width:140px;">';
+      html += '<div style="font-family:var(--font-mono);font-size:2.2rem;font-weight:800;color:' + rateColor + ';line-height:1;">' + m.successRate.toFixed(1) + '%</div>';
+      html += '<div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-top:6px;">Load Success Rate</div>';
+      html += '<div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);margin-top:8px;">' + m.totalAttempts.toLocaleString() + ' attempts &middot; ' + m.failures + ' failures</div>';
+      html += '</div>';
+
+      html += '<div style="flex:1;min-width:200px;">';
+      html += '<div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Failure Breakdown</div>';
+
+      if (m.failReasons && m.failReasons.length) {
+        m.failReasons.forEach(function(r) {
+          var barW = Math.max(r.pct * 2, 4);
+          html += '<div class="ud-breakdown-item">';
+          html += '<span class="ud-breakdown-reason">' + r.reason + '</span>';
+          html += '<span style="display:flex;align-items:center;gap:8px;"><span style="width:' + barW + 'px;height:4px;background:var(--red);border-radius:2px;display:inline-block;"></span><span class="ud-breakdown-pct">' + r.pct.toFixed(1) + '%</span></span>';
+          html += '</div>';
+        });
+      } else {
+        html += '<div style="font-size:0.78rem;color:var(--text-dim);">No failure data available.</div>';
+      }
+      html += '</div></div>';
+      el.innerHTML = html;
+    })();
+  </script>
+
+</body>
+</html>
