@@ -792,6 +792,223 @@
     return roll < 0.05 ? 'degraded' : 'operational';
   }
 
+  // ─── CHEAT PROVIDER THREAT INTEL ───
+  var providerDescriptions = {
+    PhantomOverlay: 'ESP/overlay framework targeting DX11/12 games',
+    GhostWare: 'Kernel-level aimbot with humanization engine',
+    VoidEngine: 'DMA-based read/write framework for PCIe devices',
+    NexusCheat: 'Multi-game loader with encrypted payload delivery',
+    PrismHack: 'User-mode hook bypass with anti-screenshot',
+    CobaltEFI: 'UEFI-persistent rootkit with driver mapping',
+    HydraDMA: 'Commodity DMA hardware exploit kit',
+    SpecterRing: 'Ring-0 driver mapper with certificate spoofing'
+  };
+
+  function providerThreatIntel(now) {
+    now = now || new Date();
+    var ds = daySeed(now);
+    var ws = weekSeed(now);
+    var arc = armsRaceEvent(now);
+    var providers = providerEcosystem(now);
+
+    return providers.map(function(p, i) {
+      var desc = providerDescriptions[p.name] || 'Unknown cheat framework';
+      // Revenue estimate (seeded, tier-based)
+      var revBase = p.tier === 1 ? 15000 : p.tier === 2 ? 8000 : 3000;
+      var revEst = Math.round(revBase * (0.6 + seeded(ws * 4401 + i * 67) * 0.8));
+      // Subscriber estimate
+      var subBase = p.tier === 1 ? 800 : p.tier === 2 ? 350 : 120;
+      var subs = Math.round(subBase * (0.5 + seeded(ds * 4501 + i * 43) * 1.0));
+      // Last update (how recently did they push a new version)
+      var updateHours = Math.round(2 + seeded(ds * 4601 + i * 31) * 168);
+      // Threat score (0-100)
+      var threatBase = p.activity === 'aggressive' ? 75 : p.activity === 'active' ? 50 : 20;
+      if (p.detection === 'undetected') threatBase += 20;
+      else if (p.detection === 'monitoring') threatBase += 10;
+      var threat = Math.min(100, Math.max(0, Math.round(threatBase + (seeded(ds * 4701 + i * 29) - 0.5) * 20)));
+
+      return {
+        name: p.name,
+        description: desc,
+        tier: p.tier,
+        activity: p.activity,
+        detection: p.detection,
+        lastSeen: p.lastSeen,
+        estimatedSubs: subs,
+        estimatedRevenue: revEst,
+        lastUpdate: updateHours < 24 ? updateHours + 'h ago' : Math.round(updateHours / 24) + 'd ago',
+        threatScore: threat
+      };
+    });
+  }
+
+  // ─── FP INCIDENT NARRATIVE ───
+  var fpOverlays = [
+    'NVIDIA GeForce Experience overlay v3.28',
+    'Discord overlay (game detection module)',
+    'Steam overlay (screenshot capture hook)',
+    'MSI Afterburner RTSS v7.3.4',
+    'AMD Adrenalin metrics overlay',
+    'Overwolf platform overlay',
+    'Medal.tv clip capture service',
+    'Xbox Game Bar (Win11 build 26200)'
+  ];
+  var fpCauses = [
+    'hook pattern matched unsigned code injection signature',
+    'memory region permission flags triggered kernel scan',
+    'DLL load timing matched known injection cadence',
+    'overlay render hook flagged by behavioral heuristic'
+  ];
+
+  function fpIncidentNarrative(now) {
+    now = now || new Date();
+    var streak = fpStreak(now);
+    // Find the last FP day (day before streak started)
+    var fpDay = new Date(now.getTime() - streak * 86400000);
+    var fpDs = daySeed(fpDay);
+    var overlayIdx = Math.floor(seeded(fpDs * 9101) * fpOverlays.length);
+    var causeIdx = Math.floor(seeded(fpDs * 9103) * fpCauses.length);
+    var affected = 1 + Math.floor(seeded(fpDs * 9105) * 6);
+    var responseMin = 8 + Math.floor(seeded(fpDs * 9107) * 25);
+
+    return {
+      streakDays: streak,
+      lastIncident: {
+        daysAgo: streak,
+        overlay: fpOverlays[overlayIdx],
+        cause: fpCauses[causeIdx],
+        sessionsAffected: affected,
+        responseMinutes: responseMin,
+        resolution: 'Whitelist pushed via emergency hotfix pipeline'
+      }
+    };
+  }
+
+  // ─── BAN WAVE SCHEDULE ───
+  function banWaveSchedule(now) {
+    now = now || new Date();
+    var ds = daySeed(now);
+    var ws = weekSeed(now);
+    // 1-2 waves per week, on seeded days
+    var waveDay1 = Math.floor(seeded(ws * 5501) * 7);
+    var waveDay2 = (waveDay1 + 2 + Math.floor(seeded(ws * 5503) * 3)) % 7;
+    var currentDay = now.getUTCDay();
+    var isWaveDay = currentDay === waveDay1 || currentDay === waveDay2;
+    // Wave hour: always during low-traffic (2-6 UTC)
+    var waveHour = 2 + Math.floor(seeded(ds * 5601) * 4);
+    var waveSize = isWaveDay ? banWaveSize(now) : 0;
+    // Next wave
+    var daysUntilNext = 0;
+    for (var d = 1; d <= 7; d++) {
+      var futureDay = (currentDay + d) % 7;
+      if (futureDay === waveDay1 || futureDay === waveDay2) { daysUntilNext = d; break; }
+    }
+    if (isWaveDay) daysUntilNext = 0;
+
+    return {
+      isWaveDay: isWaveDay,
+      waveHour: waveHour,
+      waveSize: waveSize,
+      daysUntilNext: daysUntilNext,
+      waveDays: [waveDay1, waveDay2]
+    };
+  }
+
+  // ─── DRIVER LOAD METRICS ───
+  function driverLoadMetrics(now) {
+    now = now || new Date();
+    var ds = daySeed(now);
+    var sessions = sessionsProtected(now);
+    var successRate = 99.4 + seeded(ds * 6601) * 0.5; // 99.4-99.9%
+    var failures = Math.round(sessions * (1 - successRate / 100));
+    var failReasons = [
+      { reason: 'Secure Boot policy conflict', pct: 38 + Math.round(seeded(ds * 6603) * 10) },
+      { reason: 'Incompatible kernel patch (KB' + (5030000 + Math.floor(seeded(ds * 6605) * 999)) + ')', pct: 0 },
+      { reason: 'Third-party AV kernel hook conflict', pct: 0 },
+      { reason: 'Virtualization platform interference', pct: 0 }
+    ];
+    // Distribute remaining percentage
+    failReasons[1].pct = 25 + Math.round(seeded(ds * 6607) * 8);
+    failReasons[2].pct = 20 + Math.round(seeded(ds * 6609) * 8);
+    failReasons[3].pct = 100 - failReasons[0].pct - failReasons[1].pct - failReasons[2].pct;
+
+    return {
+      successRate: Math.round(successRate * 100) / 100,
+      totalAttempts: sessions,
+      failures: failures,
+      failReasons: failReasons
+    };
+  }
+
+  // ─── AMBIENT TOAST EVENTS ───
+  function ambientEvents(now) {
+    now = now || new Date();
+    var ds = daySeed(now);
+    var hour = now.getUTCHours();
+    var arc = armsRaceEvent(now);
+    var events = [];
+
+    // Signature push events (2-4 per day at seeded hours)
+    var sigPushCount = 2 + Math.floor(seeded(ds * 7701) * 3);
+    for (var s = 0; s < sigPushCount; s++) {
+      var pushHour = Math.floor(seeded(ds * 7703 + s * 41) * 24);
+      var pushSigs = 3 + Math.floor(seeded(ds * 7705 + s * 37) * 12);
+      events.push({
+        type: 'signature',
+        hour: pushHour,
+        message: pushSigs + ' new signatures deployed to all regions',
+        icon: '\uD83D\uDCC4'
+      });
+    }
+
+    // Model update (seeded, ~every 14 days)
+    if (seeded(ds * 7801) < 0.07) {
+      events.push({
+        type: 'model',
+        hour: 6 + Math.floor(seeded(ds * 7803) * 4),
+        message: 'Behavioral model weights hot-swapped — v3.' + Math.floor(seeded(ds * 7805) * 6 + 2) + '.' + Math.floor(seeded(ds * 7807) * 40),
+        icon: '\uD83E\uDDE0'
+      });
+    }
+
+    // Region sync events
+    var syncRegion = ['US-East', 'EU-West', 'AP-Southeast'][Math.floor(seeded(ds * 7901) * 3)];
+    events.push({
+      type: 'sync',
+      hour: (hour + 23) % 24, // always "just happened"
+      message: syncRegion + ' signature cache synced — ' + Math.round(seeded(ds * 7903) * 20 + 80) + 'ms',
+      icon: '\uD83D\uDD04'
+    });
+
+    // Arms race alert
+    if (arc.isSpike) {
+      events.push({
+        type: 'threat',
+        hour: hour,
+        message: 'Arms race active — ' + arc.provider + ' ' + arc.phaseName.toLowerCase(),
+        icon: '\u26A0\uFE0F'
+      });
+    }
+
+    // Ban wave
+    var wave = banWaveSchedule(now);
+    if (wave.isWaveDay && hour >= wave.waveHour) {
+      events.push({
+        type: 'ban',
+        hour: wave.waveHour,
+        message: 'Ban wave executed — ' + wave.waveSize + ' accounts across ' + CONFIG.regions.length + ' regions',
+        icon: '\uD83D\uDEAB'
+      });
+    }
+
+    // Sort by proximity to current hour
+    events.sort(function(a, b) {
+      return Math.abs(a.hour - hour) - Math.abs(b.hour - hour);
+    });
+
+    return events;
+  }
+
   // ─── 1J: UNIFIED DAILY EVENT SUMMARY ───
   function dailyEventSummary(now) {
     now = now || new Date();
@@ -911,6 +1128,11 @@
     dailyIncidents: dailyIncidents,
     dailyDeployments: dailyDeployments,
     dailyEventSummary: dailyEventSummary,
+    providerThreatIntel: providerThreatIntel,
+    fpIncidentNarrative: fpIncidentNarrative,
+    banWaveSchedule: banWaveSchedule,
+    driverLoadMetrics: driverLoadMetrics,
+    ambientEvents: ambientEvents,
     snapshot: snapshot
   };
 
