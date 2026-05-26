@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260525-1338",
+      "title": "Elevated DMA false positives",
+      "startedAt": "2026-05-25T15:15:47Z",
+      "resolvedAt": "2026-05-25T23:08:21Z",
+      "duration": "7h 52m",
+      "impactPct": 3.4,
+      "rootCause": "Model inference out-of-memory on GPU-constrained nodes",
+      "timeline": [
+        {
+          "time": "2026-05-25T15:15:47Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-25T23:08:21Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement feature flag for rapid rollback capability",
+        "Add synthetic monitoring probe for early detection"
+      ],
+      "lessonsLearned": [
+        "Cross-region testing should include latency simulation"
+      ]
+    },
+    {
       "incidentId": "INC-20260521-5328",
       "title": "Scan latency increase detected",
       "startedAt": "2026-05-21T21:43:56Z",
