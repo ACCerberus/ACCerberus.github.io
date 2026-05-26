@@ -301,5 +301,29 @@
         "text": "false positive rate improved by 0.002%"
       }
     ]
+  },
+  {
+    "date": "2026-05-26",
+    "timestamp": "2026-05-26T09:01:09Z",
+    "version": "v0.4.2.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ApexHack kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+3 signatures — 5046 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "AI inference batch throughput doubled"
+      }
+    ]
   }
 ]
