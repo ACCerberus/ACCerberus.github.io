@@ -325,5 +325,29 @@
         "text": "AI inference batch throughput doubled"
       }
     ]
+  },
+  {
+    "date": "2026-05-27",
+    "timestamp": "2026-05-27T08:54:51Z",
+    "version": "v0.4.2.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidHook triggerbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5061 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "AI inference batch throughput doubled"
+      }
+    ]
   }
 ]
