@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-27",
+  "lastUpdated": "2026-05-28",
   "entries": [
     {
       "id": "lab-001",
@@ -72,6 +72,15 @@
       "startDate": "2026-05-22",
       "lastUpdate": "2026-05-23",
       "findings": "Proof-of-concept intercept layer working via DXGI hooks. Can enumerate active compute dispatches and flag unknown shader programs. Performance overhead is a concern — naive approach adds 3-5ms per frame. Investigating selective sampling to reduce overhead to sub-1ms."
+    },
+    {
+      "id": "lab-009",
+      "title": "Rust Rewrite of Scan Engine Core",
+      "desc": "Evaluating memory-safe reimplementation of performance-critical scan path in Rust.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-05-28",
+      "lastUpdate": "2026-05-28",
+      "findings": "Initial research phase. Literature review in progress."
     }
   ],
   "templatePool": [
@@ -104,11 +113,6 @@
       "title": "Compiler-Level Obfuscation Pipeline",
       "desc": "Custom LLVM passes for automated binary diversification to resist reverse engineering.",
       "topic": "security"
-    },
-    {
-      "title": "Rust Rewrite of Scan Engine Core",
-      "desc": "Evaluating memory-safe reimplementation of performance-critical scan path in Rust.",
-      "topic": "engineering"
     }
   ]
 }
