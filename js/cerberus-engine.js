@@ -109,9 +109,9 @@
 
   // ─── WORLD CONFIG ───
   var CONFIG = {
-    games: 3,
-    avgConcurrentPerGame: 160,
-    peakCCU: 480,
+    games: 18,
+    avgConcurrentPerGame: 80,
+    peakCCU: 1440,
     cheatPrevalence: 0.035,
     falsePositiveRate: 0.0014,
     blendedDetectionRate: 0.78,
