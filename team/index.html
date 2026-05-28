@@ -18,7 +18,7 @@
       --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
       --border: rgba(255,255,255,0.06);
       --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8; --teal: #20b2aa;
-      --dept-kernel: #4088e8; --dept-ai: #8860e8; --dept-sdk: #30c860; --dept-qa: #20b2aa;
+      --dept-kernel: #4088e8; --dept-ai: #8860e8; --dept-sdk: #30c860; --dept-qa: #20b2aa; --dept-infra: #e87830;
       --font: 'Inter', -apple-system, sans-serif;
       --font-heading: 'Sora', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
@@ -122,19 +122,102 @@
     .lead-grid > .lead-card:nth-child(4) { grid-column: 1 / 2; margin-left: auto; margin-right: 0; }
     .lead-grid-last-row { display: flex; justify-content: center; gap: 24px; margin-top: -56px; margin-bottom: 80px; }
     .lead-card {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 32px; transition: all 0.3s; position: relative; overflow: hidden;
+      background: linear-gradient(135deg, rgba(10,10,15,0.95), rgba(15,15,22,0.9));
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 16px;
+      padding: 32px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+      position: relative; overflow: hidden; cursor: pointer;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }
-    .lead-card:hover { transform: translateY(-4px); }
-    .lead-card[data-dept="kernel"]:hover { border-color: rgba(64,136,232,0.25); box-shadow: 0 8px 30px rgba(64,136,232,0.06); }
-    .lead-card[data-dept="ai"]:hover { border-color: rgba(136,96,232,0.25); box-shadow: 0 8px 30px rgba(136,96,232,0.06); }
-    .lead-card[data-dept="sdk"]:hover { border-color: rgba(48,200,96,0.25); box-shadow: 0 8px 30px rgba(48,200,96,0.06); }
+    .lead-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 40%,
+        rgba(232,160,32,0.03) 45%,
+        rgba(136,96,232,0.04) 50%,
+        rgba(64,136,232,0.03) 55%,
+        transparent 60%
+      );
+      background-size: 200% 200%;
+      animation: holoShimmer 6s ease-in-out infinite;
+      pointer-events: none; z-index: 0; border-radius: 16px;
+    }
+    @keyframes holoShimmer {
+      0% { background-position: 200% 50%; }
+      50% { background-position: -200% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    .lead-card:hover { transform: translateY(-6px) scale(1.015); }
+    .lead-card:hover::before {
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(232,160,32,0.06) 38%,
+        rgba(48,200,96,0.06) 42%,
+        rgba(136,96,232,0.08) 48%,
+        rgba(64,136,232,0.06) 55%,
+        rgba(232,80,80,0.04) 60%,
+        transparent 70%
+      );
+      background-size: 200% 200%;
+      animation: holoShimmerHover 3s ease-in-out infinite;
+    }
+    @keyframes holoShimmerHover {
+      0% { background-position: 200% 50%; }
+      50% { background-position: -200% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    .lead-card[data-dept="kernel"]:hover {
+      border-color: rgba(64,136,232,0.3);
+      box-shadow: 0 8px 40px rgba(64,136,232,0.08), 0 0 60px rgba(64,136,232,0.03), inset 0 1px 0 rgba(64,136,232,0.1);
+    }
+    .lead-card[data-dept="ai"]:hover {
+      border-color: rgba(136,96,232,0.3);
+      box-shadow: 0 8px 40px rgba(136,96,232,0.08), 0 0 60px rgba(136,96,232,0.03), inset 0 1px 0 rgba(136,96,232,0.1);
+    }
+    .lead-card[data-dept="sdk"]:hover {
+      border-color: rgba(48,200,96,0.3);
+      box-shadow: 0 8px 40px rgba(48,200,96,0.08), 0 0 60px rgba(48,200,96,0.03), inset 0 1px 0 rgba(48,200,96,0.1);
+    }
     .lead-card::after {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--accent), transparent); opacity: 0;
-      transition: opacity 0.3s;
+      background: linear-gradient(90deg, transparent, var(--accent), rgba(136,96,232,0.6), rgba(64,136,232,0.4), transparent);
+      opacity: 0; transition: opacity 0.4s; z-index: 1;
     }
     .lead-card:hover::after { opacity: 1; }
+    /* Holographic foil edge glow */
+    .lead-card .holo-edge {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(232,160,32,0.2), rgba(136,96,232,0.2), rgba(48,200,96,0.2), transparent);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .lead-card:hover .holo-edge { opacity: 1; }
+    /* Real name styling */
+    .lead-real-name {
+      font-size: 0.68rem; color: var(--text-dim); font-weight: 400; margin-top: 1px;
+      font-family: var(--font); letter-spacing: 0.3px;
+    }
+    /* Expanded bio */
+    .lead-expanded {
+      max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, margin 0.3s;
+      opacity: 0; margin-top: 0;
+    }
+    .lead-card.expanded .lead-expanded {
+      max-height: 400px; opacity: 1; margin-top: 14px;
+    }
+    .lead-expanded-content {
+      font-size: 0.75rem; color: var(--text-dim); line-height: 1.8;
+      padding: 14px 16px; border-radius: 10px;
+      background: rgba(255,255,255,0.015); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+    }
+    .lead-expand-hint {
+      font-family: var(--font-mono); font-size: 0.55rem; color: var(--text-dim);
+      opacity: 0.4; text-align: center; margin-top: 8px; transition: opacity 0.3s;
+      letter-spacing: 0.5px;
+    }
+    .lead-card:hover .lead-expand-hint { opacity: 0.7; }
+    .lead-card.expanded .lead-expand-hint { display: none; }
     .lead-card-top { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
     .lead-avatar {
       width: 52px; height: 52px; border-radius: 14px;
@@ -159,6 +242,7 @@
     .lead-dept-badge-kernel { background: rgba(64,136,232,0.12); color: var(--dept-kernel); }
     .lead-dept-badge-ai { background: rgba(136,96,232,0.12); color: var(--dept-ai); }
     .lead-dept-badge-sdk { background: rgba(48,200,96,0.12); color: var(--dept-sdk); }
+    .lead-dept-badge-infra { background: rgba(232,120,48,0.12); color: var(--dept-infra); }
     .lead-role { font-size: 0.75rem; color: var(--accent); font-weight: 600; margin-top: 2px; }
     .lead-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.68rem; color: var(--text-dim); }
     .lead-meta-item { display: flex; align-items: center; gap: 4px; }
@@ -212,6 +296,7 @@
     .dept-card[data-dept="ai"] { border-top: 2px solid rgba(136,96,232,0.2); }
     .dept-card[data-dept="sdk"] { border-top: 2px solid rgba(48,200,96,0.2); }
     .dept-card[data-dept="qa"] { border-top: 2px solid rgba(32,178,170,0.2); }
+    .dept-card[data-dept="infra"] { border-top: 2px solid rgba(232,120,48,0.2); }
     .dept-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
     .dept-icon {
       width: 40px; height: 40px; border-radius: 10px; display: flex;
@@ -221,6 +306,7 @@
     .dept-icon-ai { background: rgba(136,96,232,0.1); }
     .dept-icon-sdk { background: rgba(48,200,96,0.1); }
     .dept-icon-qa { background: rgba(32,178,170,0.1); }
+    .dept-icon-infra { background: rgba(232,120,48,0.1); }
     .dept-name { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); }
     .dept-count { font-size: 0.72rem; color: var(--text-dim); }
     .dept-desc { font-size: 0.82rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 10px; }
@@ -344,25 +430,25 @@
   <div class="page-header">
     <div class="page-header-label">Our Team</div>
     <h1>The people behind the gate</h1>
-    <p>19 engineers across 4 departments, united by a single mission: make cheating in competitive games technically impossible.</p>
+    <p>31 engineers across 5 departments, united by a single mission: make cheating in competitive games technically impossible.</p>
   </div>
 
   <!-- STATS -->
   <div class="stats-bar reveal">
     <div class="stat-item">
-      <div class="stat-value">19</div>
+      <div class="stat-value">31</div>
       <div class="stat-label">Engineers</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value">4</div>
+      <div class="stat-value">5</div>
       <div class="stat-label">Departments</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value">8</div>
+      <div class="stat-value">12</div>
       <div class="stat-label">Countries</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value">74</div>
+      <div class="stat-value">128</div>
       <div class="stat-label">Combined Years</div>
     </div>
   </div>
@@ -383,7 +469,7 @@
     <div class="tz-card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
         <div class="section-label" style="margin-bottom:0;">Across Time Zones</div>
-        <div style="font-size:0.65rem;color:var(--text-dim);font-family:var(--font-mono);" id="onlineCount">19 engineers</div>
+        <div style="font-size:0.65rem;color:var(--text-dim);font-family:var(--font-mono);" id="onlineCount">31 engineers</div>
       </div>
       <div class="tz-strip" id="tzStrip"></div>
     </div>
@@ -445,34 +531,40 @@
       kernel: { color: 'var(--dept-kernel)', bg: 'rgba(64,136,232,0.12)', avatarBg: 'rgba(64,136,232,0.15)' },
       ai:     { color: 'var(--dept-ai)',     bg: 'rgba(136,96,232,0.12)', avatarBg: 'rgba(136,96,232,0.15)' },
       sdk:    { color: 'var(--dept-sdk)',     bg: 'rgba(48,200,96,0.12)',  avatarBg: 'rgba(48,200,96,0.15)' },
-      qa:     { color: 'var(--dept-qa)',      bg: 'rgba(32,178,170,0.12)', avatarBg: 'rgba(32,178,170,0.15)' }
+      qa:     { color: 'var(--dept-qa)',      bg: 'rgba(32,178,170,0.12)', avatarBg: 'rgba(32,178,170,0.15)' },
+      infra:  { color: 'var(--dept-infra)',  bg: 'rgba(232,120,48,0.12)', avatarBg: 'rgba(232,120,48,0.15)' }
     };
 
     // ===== TEAM DATA =====
     var team = [
-      { id: 'nvoronov', initials: 'NV', name: 'nvoronov', role: 'Lead Developer & System Architect', dept: 'kernel',
+      { id: 'nvoronov', initials: 'NV', name: 'nvoronov', realName: 'Nikolai Voronov', role: 'Lead Developer & System Architect', dept: 'kernel',
         prior: 'Ex-CrowdStrike, ex-Kaspersky', loc: 'Moscow', tz: 3, joined: 'Oct 2024',
         bio: 'Designed the four-layer detection architecture and oversees all cross-team integration. 12 years in systems programming with prior work on kernel-mode EDR products and rootkit analysis frameworks.',
+        expandedBio: 'Started in cybersecurity at 19 as a junior malware analyst at Kaspersky Lab in Moscow, spending 4 years dissecting nation-state rootkits and bootkit families. Moved to CrowdStrike\'s Falcon team in 2018 where he architected kernel-mode sensor components for the EDR platform, handling millions of endpoint telemetry events per second. Left in 2023 to pursue independent research on hypervisor-based game integrity, publishing two papers on VT-x assisted memory isolation for anti-tamper. Founded the Cerberus project in late 2024 after recognizing fundamental gaps in existing anti-cheat approaches. Holds a M.Sc. in Computer Science from MSU with a thesis on ring-0 rootkit detection heuristics.',
         focus: 'Driver signing pipeline for WHQL certification',
         tags: ['Architecture', 'Systems Design', 'C/C++', 'Rust'] },
-      { id: 'dkrasov', initials: 'DK', name: 'dkrasov', role: 'Head of Kernel Engineering', dept: 'kernel',
+      { id: 'dkrasov', initials: 'DK', name: 'dkrasov', realName: 'Dmitri Krasov', role: 'Head of Kernel Engineering', dept: 'kernel',
         prior: 'Ex-ESET (driver team)', loc: 'Prague', tz: 2, joined: 'Oct 2024',
         bio: 'Ring-0 specialist with 8 years of WDM/WDF driver development. Built the integrity monitoring subsystem and manages the code-signing pipeline. Previously worked on HIPS drivers at a major AV vendor.',
+        expandedBio: 'Grew up in Brno, Czech Republic, and began writing Windows drivers at 16 after getting fascinated by kernel debugging on early Windows 7 builds. Studied systems engineering at Czech Technical University before joining ESET\'s core driver team in 2016. Spent 7 years building HIPS (Host-based Intrusion Prevention) kernel modules, becoming the youngest senior engineer on their Windows kernel team. Specialized in minifilter filesystem drivers, callback-based process monitoring, and ELAM (Early Launch Anti-Malware) integration. Recruited by Nikolai after presenting at Recon Brussels 2024 on novel PTE manipulation techniques used by game cheats to bypass kernel-mode AC drivers. Known internally for his meticulous code review standards — his drivers maintain a 0.002% BSOD rate across 400K+ test hours.',
         focus: 'PTE manipulation detection for VT-d bypass attempts',
         tags: ['Ring-0', 'WDM/WDF', 'C++', 'Hypervisors'] },
-      { id: 's.nakamura', initials: 'SN', name: 's.nakamura', role: 'Head of AI & Behavioral Analysis', dept: 'ai',
+      { id: 's.nakamura', initials: 'SN', name: 's.nakamura', realName: 'Shiori Nakamura', role: 'Head of AI & Behavioral Analysis', dept: 'ai',
         prior: 'PhD Tokyo Tech, ex-LINE Corp', loc: 'Tokyo', tz: 9, joined: 'Nov 2024',
         bio: 'ML researcher focused on real-time anomaly detection in adversarial environments. Designed the behavioral inference pipeline with sub-2ms latency using quantized TCN models on ONNX Runtime. Background in competitive FPS telemetry analysis.',
+        expandedBio: 'Completed her PhD at Tokyo Institute of Technology in 2020 with a dissertation on temporal convolutional networks for real-time sequence anomaly detection. Joined LINE Corporation\'s AI Platform division where she built fraud detection models processing 2M+ transactions daily, achieving a 94% detection rate with a 0.08% false positive rate. Her key insight — that cheating behavior in games follows similar adversarial drift patterns as financial fraud — led her to the anti-cheat space. Joined Cerberus in November 2024 and designed the behavioral inference pipeline from scratch, pioneering the use of micro-movement entropy analysis and trigger-timing spectral decomposition to detect humanization-layer bypasses. Published 6 papers in IEEE and ACM conferences on adversarial ML. Competitive gamer in her spare time (Global Elite in CS2, Radiant in Valorant).',
         focus: 'Retraining v3.2 model on 1,200 new Cronus Zen macro samples',
         tags: ['PyTorch', 'ONNX Runtime', 'Anomaly Detection', 'Python'] },
-      { id: 'ArsenalRX', initials: 'AX', name: 'ArsenalRX', role: 'Head of Threat Research & Hardware Security', dept: 'kernel',
+      { id: 'ArsenalRX', initials: 'AX', name: 'ArsenalRX', realName: 'Evan Mercer', role: 'Head of Threat Research & Hardware Security', dept: 'kernel',
         prior: 'Self-taught, independent security research', loc: 'USA', tz: -4, joined: 'Oct 2024',
         bio: 'Oversees red team ops and hardware security research. Started by reverse-engineering game binaries as a teenager, pivoted to building defenses. Leads DMA attack research, firmware RE, and coordinates threat intel across partner studios.',
+        expandedBio: 'Self-taught security researcher from Virginia who started reverse-engineering game binaries at 14, initially on the offensive side of cheating communities before pivoting to defense at 17 after realizing the scale of harm. Built a reputation in underground forums as "ArsenalRX" — originally a cheat developer handle that became his white-hat identity. By 19, he was contracted by two AAA studios to audit their anti-cheat implementations, finding critical bypasses in both. Specializes in DMA hardware attacks (PCIe screamer devices, KMBox variants), firmware reverse engineering, and IOMMU bypass research. Has catalogued over 200 unique DMA attack signatures. Co-founded Cerberus with Nikolai after they connected through a mutual contact at a hardware security conference. Runs the internal red team that stress-tests every detection layer before release. No formal degree — his GitHub contributions and published vulnerability disclosures serve as his resume.',
         focus: 'Reverse engineering new KMBox firmware variant',
         tags: ['C/C++', 'Python', 'Ring-0', 'DMA Research', 'Firmware RE', 'PCIe', 'Threat Intel'] },
-      { id: 'lweber', initials: 'LW', name: 'lweber', role: 'Head of SDK & Integration', dept: 'sdk',
+      { id: 'lweber', initials: 'LW', name: 'lweber', realName: 'Lukas Weber', role: 'Head of SDK & Integration', dept: 'sdk',
         prior: 'Ex-Epic Games (UE integrations)', loc: 'Berlin', tz: 2, joined: 'Jan 2025',
         bio: 'Owns the developer experience end to end. Built the C/C++ SDK, C# bindings, Unreal plugin, and Unity package. Previously worked on engine integration tooling at a major game engine company.',
+        expandedBio: 'German software engineer with a background in game engine tooling. Studied computer science at TU Berlin, then joined Epic Games\' Berlin office in 2019 where he worked on Unreal Engine marketplace plugin certification and third-party SDK integration frameworks. Spent 5 years becoming intimately familiar with UE\'s build system, Slate UI, and module architecture. Left Epic in late 2024 to join Cerberus, drawn by the challenge of building a developer-friendly anti-cheat SDK that doesn\'t impose heavy integration burdens. Designed the "under 2 hours" integration philosophy — the SDK auto-detects engine type, injects hooks via a single header include, and provides a real-time dashboard widget for studio QA teams. Also built the C# bindings for Unity, the Godot GDExtension, and the REST API client libraries. Strong advocate for documentation-first development — wrote 90% of the current SDK docs himself.',
         focus: 'Unreal 5.5 plugin compatibility pass',
         tags: ['SDK Design', 'Unreal', 'Unity', 'CMake', 'C#'] },
     ];
@@ -493,6 +585,27 @@
       { id: 'bjensen', initials: 'BJ', name: 'bjensen', title: 'Test Automation', dept: 'qa', loc: 'Copenhagen', tz: 2, joined: 'Feb 2025' },
       { id: 'azhao', initials: 'AZ', name: 'azhao', title: 'Perf Analyst', dept: 'qa', loc: 'Shenzhen', tz: 8, joined: 'Mar 2025' },
       { id: 'pschmidt', initials: 'PS', name: 'pschmidt', title: 'HW Compat.', dept: 'qa', loc: 'Munich', tz: 2, joined: 'Apr 2025' },
+      // 2026 hires — Kernel & Hardware
+      { id: 'ncarmona', initials: 'NC', name: 'ncarmona', title: 'PCIe Security', dept: 'kernel', loc: 'Barcelona', tz: 2, joined: 'Jan 2026' },
+      { id: 'yfujita', initials: 'YF', name: 'yfujita', title: 'Driver QA', dept: 'kernel', loc: 'Osaka', tz: 9, joined: 'Feb 2026' },
+      { id: 'dvolkov', initials: 'DV', name: 'dvolkov', title: 'Hypervisor Security', dept: 'kernel', loc: 'Kyiv', tz: 3, joined: 'Mar 2026' },
+      // 2026 hires — AI & Detection
+      { id: 'kpatel', initials: 'KP', name: 'kpatel', title: 'ML Ops', dept: 'ai', loc: 'Bangalore', tz: 5, joined: 'Jan 2026' },
+      { id: 'akowalski', initials: 'AK', name: 'akowalski', title: 'Threat Classifier', dept: 'ai', loc: 'Krakow', tz: 2, joined: 'Feb 2026' },
+      { id: 'lchen', initials: 'LC', name: 'lchen', title: 'Behavioral Modeling', dept: 'ai', loc: 'Beijing', tz: 8, joined: 'Apr 2026' },
+      // 2026 hires — SDK & Platform
+      { id: 'msilva', initials: 'MS', name: 'msilva', title: 'Godot Plugin', dept: 'sdk', loc: 'Sao Paulo', tz: -3, joined: 'Jan 2026' },
+      { id: 'rnguyen', initials: 'RN', name: 'rnguyen', title: 'Dashboard Dev', dept: 'sdk', loc: 'Ho Chi Minh City', tz: 7, joined: 'Mar 2026' },
+      { id: 'jliu', initials: 'JL', name: 'jliu', title: 'DevRel & Docs', dept: 'sdk', loc: 'Vancouver', tz: -7, joined: 'Apr 2026' },
+      // 2026 hires — QA & Stability
+      { id: 'omartin', initials: 'OM', name: 'omartin', title: 'Regression Testing', dept: 'qa', loc: 'Lyon', tz: 2, joined: 'Feb 2026' },
+      { id: 'tyamada', initials: 'TY', name: 'tyamada', title: 'Perf Benchmarking', dept: 'qa', loc: 'Tokyo', tz: 9, joined: 'Mar 2026' },
+      { id: 'kbrown', initials: 'KB', name: 'kbrown', title: 'HW Lab Manager', dept: 'qa', loc: 'Denver', tz: -6, joined: 'Apr 2026' },
+      // Infrastructure & DevOps
+      { id: 'gharris', initials: 'GH', name: 'gharris', title: 'Lead', dept: 'infra', loc: 'Portland, USA', tz: -7, joined: 'Nov 2025' },
+      { id: 'ilee', initials: 'IL', name: 'ilee', title: 'CI/CD Eng.', dept: 'infra', loc: 'Seoul', tz: 9, joined: 'Jan 2026' },
+      { id: 'fbianchi', initials: 'FB', name: 'fbianchi', title: 'SRE', dept: 'infra', loc: 'Rome', tz: 2, joined: 'Feb 2026' },
+      { id: 'swilson', initials: 'SW', name: 'swilson', title: 'Telemetry Eng.', dept: 'infra', loc: 'Toronto', tz: -4, joined: 'Mar 2026' },
     ];
 
     // ===== STATUS (deterministic per person per day) =====
@@ -542,16 +655,17 @@
     team.forEach(function(t, i) {
       var status = getStatus(t.tz, i);
       var deptC = DEPT_COLORS[t.dept] || DEPT_COLORS.kernel;
-      var deptLabel = t.dept === 'kernel' ? 'KERNEL' : t.dept === 'ai' ? 'AI' : t.dept === 'sdk' ? 'SDK' : 'QA';
+      var deptLabel = t.dept === 'kernel' ? 'KERNEL' : t.dept === 'ai' ? 'AI' : t.dept === 'sdk' ? 'SDK' : t.dept === 'infra' ? 'INFRA' : 'QA';
       var commits = weeklyCommits(i);
       var seen = lastSeenText(t.tz, i);
 
-      leadHTML += '<div class="lead-card reveal" data-dept="' + t.dept + '">' +
+      leadHTML += '<div class="lead-card reveal" data-dept="' + t.dept + '" onclick="this.classList.toggle(\'expanded\')">' +
         '<div class="lead-card-top">' +
         '<div class="lead-avatar" style="background:' + deptC.avatarBg + ';color:' + deptC.color + ';">' + t.initials +
         '<div class="lead-status lead-status-' + status + '"></div></div>' +
         '<div class="lead-info"><div class="lead-name">' + t.name +
         ' <span class="lead-dept-badge lead-dept-badge-' + t.dept + '">' + deptLabel + '</span></div>' +
+        (t.realName ? '<div class="lead-real-name">' + t.realName + '</div>' : '') +
         '<div class="lead-role">' + t.role + '</div></div></div>' +
         '<div class="lead-meta">' +
         '<div class="lead-meta-item"><span style="opacity:0.5;">&#x1F4CD;</span> ' + t.loc + '</div>' +
@@ -559,6 +673,7 @@
         '</div>' +
         '<div class="lead-prior">' + t.prior + '</div>' +
         '<div class="lead-bio">' + t.bio + '</div>' +
+        (t.expandedBio ? '<div class="lead-expanded"><div class="lead-expanded-content">' + t.expandedBio + '</div></div>' : '') +
         '<div class="lead-focus"><strong>Current focus:</strong> ' + t.focus +
         '<div class="lead-focus-active"></div></div>' +
         '<div class="lead-tags">' + t.tags.map(function(tag) { return '<span class="lead-tag">' + tag + '</span>'; }).join('') + '</div>' +
@@ -566,7 +681,10 @@
         heatmapHTML(daySeed + i * 137) +
         '<div style="text-align:right;"><div class="lead-commits-count">' + commits + ' commits this week</div>' +
         '<div class="lead-last-seen">' + seen + '</div></div>' +
-        '</div></div>';
+        '</div>' +
+        '<div class="lead-expand-hint">CLICK TO EXPAND</div>' +
+        '<div class="holo-edge"></div>' +
+        '</div>';
     });
     document.getElementById('leadGrid').innerHTML = leadHTML;
 
@@ -604,6 +722,50 @@
       });
     })();
 
+    // ===== DEGRADATION RESPONSE TEAM =====
+    (function() {
+      if (!E) return;
+      var snap = E.snapshot();
+      var threatLevel = snap ? snap.threatLevel : 'LOW';
+      if (threatLevel === 'LOW') return;
+
+      var degradedDepts = [];
+      if (threatLevel === 'ELEVATED' || threatLevel === 'HIGH') {
+        degradedDepts.push({ dept: 'kernel', issue: 'Elevated kernel bypass attempts detected', members: ['dkrasov', 'ArsenalRX', 'vpetrov'] });
+        degradedDepts.push({ dept: 'ai', issue: 'Behavioral model retraining triggered', members: ['s.nakamura', 'rhuang', 'kpatel'] });
+      }
+      if (threatLevel === 'HIGH') {
+        degradedDepts.push({ dept: 'infra', issue: 'Scaling telemetry pipeline for surge', members: ['gharris', 'fbianchi'] });
+      }
+      if (threatLevel === 'MODERATE') {
+        degradedDepts.push({ dept: 'ai', issue: 'Investigating detection confidence drift', members: ['s.nakamura', 'mcheng'] });
+      }
+
+      if (degradedDepts.length === 0) return;
+
+      var alertHtml = '<div style="background:rgba(232,160,32,0.06);border:1px solid rgba(232,160,32,0.2);border-radius:12px;padding:20px 24px;margin-bottom:40px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">' +
+        '<div style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:focusPulse 2.5s ease-in-out infinite;"></div>' +
+        '<span style="font-family:var(--font-heading);font-size:0.85rem;font-weight:700;color:var(--accent);">ACTIVE RESPONSE \u2014 Threat Level: ' + threatLevel + '</span></div>';
+
+      degradedDepts.forEach(function(d) {
+        var deptC = DEPT_COLORS[d.dept] || DEPT_COLORS.kernel;
+        alertHtml += '<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">' +
+          '<div style="font-size:0.72rem;color:var(--text-dim);min-width:110px;font-weight:600;text-transform:uppercase;">' + d.dept + '</div>' +
+          '<div style="flex:1;"><div style="font-size:0.78rem;color:var(--text);">' + d.issue + '</div>' +
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">';
+        d.members.forEach(function(mid) {
+          var m = findMember(mid);
+          alertHtml += '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;background:' + deptC.bg + ';font-size:0.65rem;color:' + deptC.color + ';font-weight:600;">' + m.initials + ' ' + m.name + '</span>';
+        });
+        alertHtml += '</div></div></div>';
+      });
+      alertHtml += '</div>';
+
+      var leadGrid = document.getElementById('leadGrid');
+      if (leadGrid) leadGrid.insertAdjacentHTML('beforebegin', alertHtml);
+    })();
+
     // ===== DEPARTMENT STATS (seeded) =====
     var deptStatsData = {
       kernel: function() {
@@ -624,6 +786,11 @@
       qa: function() {
         return seededInt(daySeed * 431, 250, 420) + ' test runs \u00b7 ' +
                seededInt(daySeed * 433, 38, 48) + ' HW configs \u00b7 0 regressions';
+      },
+      infra: function() {
+        return seededInt(daySeed * 441, 15, 30) + ' deployments \u00b7 99.' +
+               seededInt(daySeed * 443, 6, 9) + '% uptime \u00b7 ' +
+               seededInt(daySeed * 445, 2, 5) + ' incidents resolved';
       }
     };
 
@@ -631,23 +798,27 @@
       kernel: ['WHQL certification pipeline', 'Intel Arrow Lake driver compat', 'VT-d bypass detection', 'DMA board firmware DB update'],
       ai: ['Cronus Zen macro detection v2', 'TCN model v3.2 retrain', 'Humanization bypass patterns', 'Input entropy feature extraction'],
       sdk: ['Unreal 5.5 plugin update', 'Unity 6 async init', 'Webhook v2 protocol', 'Dashboard analytics redesign'],
-      qa: ['48h soak test automation', 'AMD Zen 5 compat testing', 'FP regression baseline update', 'CI pipeline migration']
+      qa: ['48h soak test automation', 'AMD Zen 5 compat testing', 'FP regression baseline update', 'CI pipeline migration'],
+      infra: ['Telemetry pipeline v2 migration', 'Grafana dashboard overhaul', 'Build cache optimization', 'Regional CDN rollout']
     };
 
     // ===== RENDER DEPARTMENTS =====
     var depts = [
-      { key: 'kernel', name: 'Kernel & Hardware', icon: '&#x1F6E1;', iconClass: 'dept-icon-kernel', count: 6,
+      { key: 'kernel', name: 'Kernel & Hardware', icon: '&#x1F6E1;', iconClass: 'dept-icon-kernel', count: 9,
         desc: 'Develops the ring-0 driver, hardware fingerprinting pipeline, memory integrity verification, and PCIe/DMA detection. Owns everything that touches kernel mode or physical hardware.',
-        members: ['dkrasov', 'ArsenalRX', 'atorres', 'vpetrov', 'mradzinski', 'tkuznetsov'] },
-      { key: 'ai', name: 'AI & Detection', icon: '&#x1F9E0;', iconClass: 'dept-icon-ai', count: 5,
+        members: ['dkrasov', 'ArsenalRX', 'atorres', 'vpetrov', 'mradzinski', 'tkuznetsov', 'ncarmona', 'yfujita', 'dvolkov'] },
+      { key: 'ai', name: 'AI & Detection', icon: '&#x1F9E0;', iconClass: 'dept-icon-ai', count: 8,
         desc: 'Builds behavioral detection models, network sentinel analysis, and the verdict engine. Handles real-time inference, anomaly classification, and continuous retraining against new cheat variants.',
-        members: ['s.nakamura', 'rhuang', 'elindqvist', 'mcheng', 'jcastillo'] },
-      { key: 'sdk', name: 'SDK & Platform', icon: '&#x1F4E6;', iconClass: 'dept-icon-sdk', count: 4,
+        members: ['s.nakamura', 'rhuang', 'elindqvist', 'mcheng', 'jcastillo', 'kpatel', 'akowalski', 'lchen'] },
+      { key: 'sdk', name: 'SDK & Platform', icon: '&#x1F4E6;', iconClass: 'dept-icon-sdk', count: 7,
         desc: 'Builds the public SDK, engine plugins, REST API, dashboard, and integration tooling. Owns the developer experience from first API call to production deployment.',
-        members: ['lweber', 'cpark', 'dandrade', 'sthomas'] },
-      { key: 'qa', name: 'QA & Stability', icon: '&#x1F9EA;', iconClass: 'dept-icon-qa', count: 4,
+        members: ['lweber', 'cpark', 'dandrade', 'sthomas', 'msilva', 'rnguyen', 'jliu'] },
+      { key: 'qa', name: 'QA & Stability', icon: '&#x1F9EA;', iconClass: 'dept-icon-qa', count: 7,
         desc: 'Runs regression testing across 40+ hardware configurations, validates driver stability, monitors false-positive rates, and ensures Cerberus never degrades game performance.',
-        members: ['tmoretti', 'bjensen', 'azhao', 'pschmidt'] },
+        members: ['tmoretti', 'bjensen', 'azhao', 'pschmidt', 'omartin', 'tyamada', 'kbrown'] },
+      { key: 'infra', name: 'Infrastructure & DevOps', icon: '&#x2699;', iconClass: 'dept-icon-infra', count: 4,
+        desc: 'Manages build infrastructure, CI/CD pipelines, telemetry ingestion, monitoring, alerting, and deployment automation. Ensures zero-downtime deployments and sub-second observability.',
+        members: ['gharris', 'ilee', 'fbianchi', 'swilson'] },
     ];
 
     function findMember(id) {
@@ -687,14 +858,18 @@
     // ===== TIMEZONE STRIP =====
     (function() {
       var zones = [
-        { city: 'Los Angeles', tz: -7, members: ['jcastillo'] },
+        { city: 'Los Angeles', tz: -7, members: ['jcastillo', 'gharris', 'jliu'] },
+        { city: 'Denver', tz: -6, members: ['kbrown'] },
         { city: 'Austin', tz: -5, members: ['sthomas'] },
-        { city: 'US East', tz: -4, members: ['ArsenalRX'] },
+        { city: 'US East', tz: -4, members: ['ArsenalRX', 'swilson'] },
+        { city: 'Sao Paulo', tz: -3, members: ['msilva'] },
         { city: 'Lisbon', tz: 1, members: ['dandrade'] },
-        { city: 'Berlin / Prague', tz: 2, members: ['dkrasov', 'lweber', 'atorres', 'mradzinski', 'elindqvist', 'tmoretti', 'bjensen', 'pschmidt'] },
-        { city: 'Moscow', tz: 3, members: ['nvoronov', 'vpetrov', 'tkuznetsov'] },
-        { city: 'Shanghai / Taipei', tz: 8, members: ['rhuang', 'mcheng', 'azhao'] },
-        { city: 'Tokyo / Seoul', tz: 9, members: ['s.nakamura', 'cpark'] },
+        { city: 'Berlin / Prague', tz: 2, members: ['dkrasov', 'lweber', 'atorres', 'mradzinski', 'elindqvist', 'tmoretti', 'bjensen', 'pschmidt', 'ncarmona', 'akowalski', 'omartin', 'fbianchi'] },
+        { city: 'Moscow', tz: 3, members: ['nvoronov', 'vpetrov', 'tkuznetsov', 'dvolkov'] },
+        { city: 'India', tz: 5, members: ['kpatel'] },
+        { city: 'Ho Chi Minh', tz: 7, members: ['rnguyen'] },
+        { city: 'Shanghai / Taipei', tz: 8, members: ['rhuang', 'mcheng', 'azhao', 'lchen'] },
+        { city: 'Tokyo / Seoul', tz: 9, members: ['s.nakamura', 'cpark', 'yfujita', 'tyamada', 'ilee'] },
       ];
 
       function renderTZ() {
@@ -746,12 +921,14 @@
         ai: ['behavioral-engine/src/tcn_model.py', 'behavioral-engine/src/inference.cpp', 'behavioral-engine/models/v3.1.4.onnx', 'behavioral-engine/src/feature_extract.py', 'behavioral-engine/src/aim_analyzer.py', 'behavioral-engine/data/macro_samples/', 'detection-pipeline/src/verdict.py', 'behavioral-engine/src/input_stream.cpp', 'network-sentinel/src/packet_verify.py'],
         sdk: ['sdk/include/cerberus.h', 'sdk/src/cerberus_api.cpp', 'sdk/bindings/csharp/Cerberus.cs', 'plugins/unreal/CerberusPlugin.uplugin', 'plugins/unity/CerberusSDK.cs', 'api-server/src/routes/detection.ts', 'api-server/src/routes/webhook.ts', 'dashboard/src/components/ThreatMap.tsx', 'sdk/cmake/CerberusConfig.cmake'],
         qa: ['tests/regression/hw_compat.py', 'tests/perf/frame_impact.cpp', 'tests/fp_tracker/false_positive_log.json', 'tests/driver_stability/soak_48h.py', 'tests/configs/amd_zen5.yaml', 'ci/pipeline.yml', 'tests/regression/overlay_whitelist.py', 'tests/perf/memory_footprint.cpp'],
+        infra: ['infra/terraform/main.tf', 'infra/ci/pipeline.yml', 'infra/monitoring/grafana/dashboards.json', 'infra/telemetry/ingest.go', 'infra/deploy/rollout.sh', 'infra/cdn/config.yaml', 'infra/scripts/rotate-certs.sh'],
       };
       var commitMsgs = {
         kernel: ['fix PTE validation race on multi-core', 'add IOMMU group detection for Zen 5', 'update BYOVD blocklist (6 new drivers)', 'refactor minifilter callback ordering', 'fix crash on Intel Arc Option ROM parse', 'add TLP timing check for FPGA boards', 'harden IOCTL validation against replay', 'update EV code-signing cert path', 'add driver stack attestation for new chipset'],
         ai: ['retrain v3.1.4 on 800 new samples', 'reduce inference batch size 64->32', 'add micro-movement entropy feature', 'fix ONNX model hot-swap memory leak', 'tune trigger-timing spectral threshold', 'add cross-session drift detector', 'update Cronus Zen macro classifier', 'improve humanization bypass detection', 'add per-player baseline convergence check'],
         sdk: ['fix UE5.5 plugin compile error', 'add webhook retry with exponential backoff', 'update C# bindings for new ban API', 'fix dashboard chart timezone offset', 'add rate limiter to detection endpoint', 'update CMake find module for Linux', 'add Unity 6 async initialization', 'fix API 503 during reindex window', 'improve error messages in SDK init'],
         qa: ['add AMD Ryzen 9950X to compat matrix', 'fix flaky overlay detection test', 'update FP regression baseline', 'add 48h soak test for driver memory', 'update CI pipeline for new build server', 'add Intel Arc A770 test config', 'fix perf test frame timing precision', 'add Discord Canary overlay to whitelist', 'update memory footprint budget to 22MB'],
+        infra: ['migrate telemetry pipeline to v2', 'optimize build cache hit rate', 'add regional CDN edge nodes', 'fix Grafana alert routing', 'update cert rotation schedule', 'add canary deployment for driver updates', 'improve log aggregation latency'],
       };
       var extraActions = [
         function(p, s) { return { icon: '\u{1F680}', text: '<strong>' + p.name + '</strong> deployed hotfix to staging' }; },

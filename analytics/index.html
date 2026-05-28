@@ -1024,25 +1024,31 @@
     var allServerPool = [
       { name: 'TST-US-EAST-01', code: 'CRB-0117', genre: 'Tactical FPS', engine: 'UE5.4', region: 'US-East' },
       { name: 'TST-US-EAST-02', code: 'CRB-0118', genre: 'Battle Royale', engine: 'UE5.3', region: 'US-East' },
-      { name: 'TST-US-WEST-01', code: 'CRB-0124', genre: 'Arena Shooter', engine: 'UE5.4', region: 'US-East' },
+      { name: 'TST-US-EAST-03', code: 'CRB-0119', genre: 'Extraction Shooter', engine: 'UE5.4', region: 'US-East' },
+      { name: 'TST-US-WEST-01', code: 'CRB-0124', genre: 'Arena Shooter', engine: 'UE5.4', region: 'US-West' },
+      { name: 'TST-US-WEST-02', code: 'CRB-0125', genre: 'Battle Royale', engine: 'Unity 6', region: 'US-West' },
+      { name: 'TST-US-CENT-01', code: 'CRB-0131', genre: 'Survival', engine: 'Unity 6', region: 'US-Central' },
+      { name: 'TST-US-CENT-02', code: 'CRB-0132', genre: 'Open World', engine: 'UE5.4', region: 'US-Central' },
       { name: 'TST-EU-WEST-01', code: 'CRB-0243', genre: 'Battle Royale', engine: 'UE5.3', region: 'EU-West' },
       { name: 'TST-EU-WEST-02', code: 'CRB-0244', genre: 'Tactical FPS', engine: 'Unity 6', region: 'EU-West' },
-      { name: 'TST-EU-NORTH-01', code: 'CRB-0251', genre: 'Extraction Shooter', engine: 'UE5.4', region: 'EU-West' },
+      { name: 'TST-EU-CENT-01', code: 'CRB-0260', genre: 'Open World', engine: 'CryEngine 5.7', region: 'EU-Central' },
+      { name: 'TST-EU-NORTH-01', code: 'CRB-0251', genre: 'Extraction Shooter', engine: 'UE5.4', region: 'EU-North' },
       { name: 'TST-ASIA-SE-01', code: 'CRB-0389', genre: 'FPS', engine: 'UE5.4', region: 'AP-Southeast' },
-      { name: 'TST-ASIA-EAST-01', code: 'CRB-0392', genre: 'MMO', engine: 'Custom', region: 'AP-Southeast' },
-      { name: 'TST-OCE-01', code: 'CRB-0401', genre: 'Survival', engine: 'UE5.3', region: 'AP-Southeast' },
+      { name: 'TST-ASIA-JP-01', code: 'CRB-0395', genre: 'Arena Shooter', engine: 'Godot 4', region: 'AP-Southeast' },
+      { name: 'TST-ASIA-KR-01', code: 'CRB-0396', genre: 'MOBA', engine: 'Custom', region: 'AP-Southeast' },
+      { name: 'TST-AU-EAST-01', code: 'CRB-0401', genre: 'Survival', engine: 'UE5.3', region: 'AU-East' },
+      { name: 'TST-AU-EAST-02', code: 'CRB-0402', genre: 'FPS', engine: 'UE5.4', region: 'AU-East' },
       { name: 'STG-US-EAST-01', code: 'CRB-0510', genre: 'Open World', engine: 'UE5.4', region: 'US-East' },
       { name: 'STG-EU-WEST-01', code: 'CRB-0521', genre: 'Racing', engine: 'Custom', region: 'EU-West' },
       { name: 'STG-ASIA-SE-01', code: 'CRB-0534', genre: 'FPS', engine: 'UE5.4', region: 'AP-Southeast' },
+      { name: 'STG-AU-01', code: 'CRB-0540', genre: 'Battle Royale', engine: 'UE5.3', region: 'AU-East' },
       { name: 'DEV-INTERNAL-01', code: 'CRB-0001', genre: 'Sandbox', engine: 'UE5.4', region: 'US-East' },
-      { name: 'TST-US-CENT-01', code: 'CRB-0131', genre: 'Survival', engine: 'Unity 6', region: 'US-East' },
-      { name: 'TST-EU-CENT-01', code: 'CRB-0260', genre: 'Open World', engine: 'CryEngine 5.7', region: 'EU-West' },
-      { name: 'TST-ASIA-JP-01', code: 'CRB-0395', genre: 'Arena Shooter', engine: 'Godot 4', region: 'AP-Southeast' },
+      { name: 'DEV-INTERNAL-02', code: 'CRB-0002', genre: 'Test Harness', engine: 'Custom', region: 'US-West' },
     ];
     var buildVersions = ['v0.4.2.0b-b2847', 'v0.4.2.0b-b2849', 'v0.4.3.0rc-b2851', 'v0.4.3.0rc-b2853', 'v0.4.2.1b-b2850'];
 
     // Seed initial active instances (5-8 on load)
-    var initialCount = 5 + Math.floor(seeded(daySeed * 701) * 4);
+    var initialCount = 8 + Math.floor(seeded(daySeed * 701) * 6);
     var games = [];
     var usedPoolIdx = [];
     for (var gi = 0; gi < initialCount; gi++) {
@@ -1086,7 +1092,9 @@
         var lastEvtStr = secsAgo < 60 ? secsAgo + 's ago' : Math.floor(secsAgo / 60) + 'm ago';
         var uptimeSec = Math.floor((now - (g.launchedAt || now)) / 1000);
         var uptimeStr = uptimeSec < 60 ? uptimeSec + 's' : uptimeSec < 3600 ? Math.floor(uptimeSec/60) + 'm' : Math.floor(uptimeSec/3600) + 'h ' + Math.floor((uptimeSec%3600)/60) + 'm';
-        html += '<tr><td><div style="font-weight:600;color:var(--text-bright);">' + g.name + '</div><div style="font-size:0.6rem;color:var(--text-dim);margin-top:1px;">' + g.code + ' \u00b7 ' + g.genre + ' \u00b7 ' + g.engine + ' \u00b7 <span style="color:var(--accent);">' + g.version + '</span> \u00b7 ' + g.region + ' \u00b7 uptime: ' + uptimeStr + ' \u00b7 last detection: <span style="color:var(--green);">' + lastEvtStr + '</span></div></td>' +
+        html += '<tr><td><div style="font-weight:600;color:var(--text-bright);font-size:0.82rem;">' + g.name + '</div>' +
+          '<div style="font-size:0.62rem;color:var(--text-dim);margin-top:2px;">' + g.code + ' \u00b7 ' + g.genre + ' \u00b7 ' + g.engine + '</div>' +
+          '<div style="font-size:0.62rem;color:var(--text-dim);margin-top:1px;"><span style="color:var(--accent);">' + g.version + '</span> \u00b7 ' + g.region + ' \u00b7 up: ' + uptimeStr + ' \u00b7 last det: <span style="color:var(--green);">' + lastEvtStr + '</span></div></td>' +
           '<td><span class="game-status ' + statusClass + '"><span class="game-status-dot"></span>' + statusLabel + '</span></td>' +
           '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + g.threats.toLocaleString() + '</td>' +
           '<td style="font-family:var(--font-mono);font-size:0.75rem;">' + (g.status === 'restarting' || g.status === 'launching' || g.status === 'shutting_down' ? '---' : g.ccu.toLocaleString()) + '</td></tr>';
@@ -1146,7 +1154,7 @@
     function scheduleNewServer() {
       var delay = 30000 + Math.floor(Math.random() * 60000);
       setTimeout(function() {
-        if (games.length < 12) {
+        if (games.length < 18) {
           // Find an unused server from the pool
           var available = allServerPool.filter(function(s) {
             return !games.some(function(g) { return g.code === s.code; });
@@ -1182,10 +1190,10 @@
     try { todMult = E ? E.diurnalMultiplier() * E.weeklyMultiplier() : todMultipliers[hourNow] * (isWeekend ? 1.35 : 1.0); } catch(e) { todMult = todMultipliers[hourNow] * (isWeekend ? 1.35 : 1.0); }
 
     // ===== STAT CARDS (with localStorage persistence + cumulative history) =====
-    // Base numbers derived from CerberusEngine (beta scale: ~480 peak CCU, 3 titles)
+    // Base numbers derived from CerberusEngine (beta scale: ~1440 peak CCU, 18 titles)
     var dailyBaseThreats, dailyBaseCCU;
-    try { dailyBaseThreats = E ? E.dailyDetections() : Math.floor(12 + seeded(daySeed * 121) * 26); } catch(e) { dailyBaseThreats = Math.floor(12 + seeded(daySeed * 121) * 26); }
-    try { dailyBaseCCU = E ? E.activeSessions() : Math.floor(200 + seeded(daySeed * 123) * 280); } catch(e) { dailyBaseCCU = Math.floor(200 + seeded(daySeed * 123) * 280); }
+    try { dailyBaseThreats = E ? E.dailyDetections() : Math.floor(45 + seeded(daySeed * 121) * 80); } catch(e) { dailyBaseThreats = Math.floor(45 + seeded(daySeed * 121) * 80); }
+    try { dailyBaseCCU = E ? E.activeSessions() : Math.floor(600 + seeded(daySeed * 123) * 840); } catch(e) { dailyBaseCCU = Math.floor(600 + seeded(daySeed * 123) * 840); }
 
     // Persist counters across page refreshes — use a single key that survives across days
     var statsKey = 'cerberusAnalytics_v4'; // bumped to reset inflated counters
@@ -1272,8 +1280,8 @@
       var targetCCU = E ? E.activeSessions() : Math.floor(dailyBaseCCU * (E ? E.diurnalMultiplier() * E.weeklyMultiplier() : todMultipliers[new Date().getHours()] * (isWeekend ? 1.35 : 1.0)));
       var drift = Math.floor((targetCCU - totalCCU) * 0.05);
       totalCCU += drift + Math.floor(Math.random() * 10) - 4;
-      if (totalCCU < 40) totalCCU = 40 + Math.floor(Math.random() * 20);
-      if (totalCCU > 540) totalCCU = 540 - Math.floor(Math.random() * 20);
+      if (totalCCU < 120) totalCCU = 120 + Math.floor(Math.random() * 20);
+      if (totalCCU > 1600) totalCCU = 1600 - Math.floor(Math.random() * 20);
       sessionEl.textContent = totalCCU.toLocaleString();
       saveStats();
       if (window._freshnessReset) _freshnessReset();
@@ -1403,6 +1411,9 @@
       { name: 'Radar Hack (Network)', base: 3, color: '#60b0e0' },
       { name: 'Macro / Input Automation', base: 2, color: 'var(--green)' },
       { name: 'Hypervisor-Based', base: 1, color: '#a080c0' },
+      { name: 'USB HID Exploit', base: 1.5, color: '#d0a060' },
+      { name: 'Memory Patch (Byte)', base: 1.2, color: '#80a0c0' },
+      { name: 'Callback Manipulation', base: 0.8, color: '#c0a080' },
     ];
 
     // Daily variation: each type shifts +-2% and then normalize to 100
@@ -1427,9 +1438,13 @@
 
     // ===== REGIONS (date-seeded daily shifts) =====
     var regionsBase = [
-      { name: 'US-East', base: 40 },
-      { name: 'EU-West', base: 35 },
-      { name: 'AP-Southeast', base: 25 },
+      { name: 'US-East', base: 22 },
+      { name: 'US-West', base: 16 },
+      { name: 'US-Central', base: 10 },
+      { name: 'EU-West', base: 20 },
+      { name: 'EU-Central', base: 8 },
+      { name: 'AP-Southeast', base: 14 },
+      { name: 'AU-East', base: 10 },
     ];
     var regRawTotal = 0;
     var regions = [];
@@ -1443,9 +1458,38 @@
     // Find max for bar scaling
     var maxRegPct = Math.max.apply(null, regions.map(function(r) { return r.pct; }));
 
-    var regHTML = '';
+    // Build region list items
+    var regHTML = '<div style="position:relative;width:100%;padding-bottom:50%;margin-bottom:16px;overflow:hidden;">' +
+      '<svg viewBox="0 0 1000 500" style="position:absolute;inset:0;width:100%;height:100%;" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect width="1000" height="500" fill="transparent"/>' +
+      '<path d="M180,120 L220,80 L280,80 L310,100 L290,130 L300,160 L280,200 L260,220 L250,280 L220,320 L200,340 L180,310 L170,260 L150,230 L140,200 L150,170 L160,150 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>' +
+      '<path d="M250,340 L270,310 L310,300 L340,320 L350,360 L330,400 L290,420 L260,400 L240,370 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>' +
+      '<path d="M420,80 L520,60 L580,80 L600,120 L580,160 L540,180 L500,180 L460,170 L440,140 L420,110 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>' +
+      '<path d="M540,180 L600,120 L700,100 L780,120 L820,160 L780,200 L740,220 L680,200 L620,210 L580,200 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>' +
+      '<path d="M460,200 L520,190 L560,220 L540,280 L500,300 L460,280 L440,240 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>' +
+      '<path d="M780,300 L840,280 L880,300 L900,340 L880,380 L840,380 L800,360 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>';
+
+    // Place dots on map for each region
+    var regionPositions = {
+      'US-East': { x: 240, y: 160 }, 'US-West': { x: 160, y: 155 }, 'US-Central': { x: 200, y: 170 },
+      'EU-West': { x: 460, y: 120 }, 'EU-Central': { x: 510, y: 125 },
+      'AP-Southeast': { x: 740, y: 230 }, 'AU-East': { x: 850, y: 340 }
+    };
     regions.forEach(function(r) {
-      regHTML += '<div class="region-item"><span class="region-name">' + r.name + '</span>' +
+      var pos = regionPositions[r.name];
+      if (!pos) return;
+      var ccu = Math.round(totalCCU * r.pct / 100);
+      regHTML += '<circle cx="' + pos.x + '" cy="' + pos.y + '" r="6" fill="var(--accent)" opacity="0.9"><animate attributeName="r" values="6;12;6" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.9;0.3;0.9" dur="3s" repeatCount="indefinite"/></circle>';
+      regHTML += '<circle cx="' + pos.x + '" cy="' + pos.y + '" r="4" fill="var(--accent)"/>';
+      regHTML += '<text x="' + pos.x + '" y="' + (pos.y - 14) + '" fill="var(--text-dim)" font-size="9" font-family="var(--font-mono)" text-anchor="middle">' + r.name + '</text>';
+      regHTML += '<text x="' + pos.x + '" y="' + (pos.y + 20) + '" fill="var(--accent)" font-size="8" font-family="var(--font-mono)" text-anchor="middle" font-weight="600">' + r.pct + '% \u00b7 ' + ccu + ' CCU</text>';
+    });
+    regHTML += '</svg></div>';
+
+    // Add region bars below the map
+    regions.forEach(function(r) {
+      var ccu = Math.round(totalCCU * r.pct / 100);
+      regHTML += '<div class="region-item"><span class="region-name">' + r.name + ' <span style="font-size:0.65rem;color:var(--text-dim);">(' + ccu + ' CCU)</span></span>' +
         '<div class="region-bar-wrap"><div class="region-bar" style="width:' + (r.pct / maxRegPct * 100) + '%;"></div></div>' +
         '<span class="region-pct">' + r.pct + '%</span></div>';
     });
@@ -1455,7 +1499,7 @@
     var feedEl = document.getElementById('liveFeed');
     // Map server instances to their correct regions (pull from live games array)
     var serverRegionMap = games.map(function(g) { return { name: g.name, region: g.region || 'US-East' }; });
-    var feedRegions = ['US-East', 'EU-West', 'AP-Southeast'];
+    var feedRegions = ['US-East', 'US-West', 'US-Central', 'EU-West', 'EU-Central', 'AP-Southeast', 'AU-East'];
 
     var cheatProviders = [
       { provider: 'AimStar', cheats: ['Aimbot v3.2', 'ESP Overlay', 'Triggerbot'], method: 'Internal' },
@@ -1478,6 +1522,12 @@
       { provider: 'HydraDMA', cheats: ['FPGA Memory Read', 'DMA Radar', 'External ESP'], method: 'Custom FPGA' },
       { provider: 'GhostInput', cheats: ['Firmware Aimbot', 'HID Macro Inject', 'Recoil Script'], method: 'Firmware HID' },
       { provider: 'SpecterVM', cheats: ['Hypervisor ESP', 'VM-Isolated Aimbot', 'Ring -1 Read'], method: 'Hypervisor' },
+      { provider: 'RageCheats', cheats: ['Kernel Aimbot', 'No-Clip', 'God Mode Patch'], method: 'Kernel Patch' },
+      { provider: 'PasteWare', cheats: ['Copied Aimbot', 'Public ESP', 'Speed Hack'], method: 'Open Source' },
+      { provider: 'VoidEngine', cheats: ['Ring-0 Bypass', 'PTE Remap ESP', 'Callback Nuke'], method: 'BYOVD' },
+      { provider: 'DarkAether', cheats: ['DMA Aimbot', 'FPGA Radar', 'Hardware ESP'], method: 'Custom FPGA' },
+      { provider: 'KMBox Pro', cheats: ['Firmware Aim', 'Mouse Macro', 'Recoil Script'], method: 'USB HID' },
+      { provider: 'ZenithHack', cheats: ['Legit Aimbot', 'Soft ESP', 'Bhop Script'], method: 'Injector' },
     ];
 
     // ===== ARMS RACE NARRATIVE (System 4) — engine lifecycle-aware =====
@@ -1705,6 +1755,12 @@
         'Onetap': { method: 'Loader / Injector', notes: { detected: 'Binary integrity check + loader pattern recognition. All public configs covered.', partial: 'Updated loader partially evades detection.', monitoring: 'Tracking loader update reports.', undetected: 'New loader with polymorphic stub. Behavioral AI flags 78% of users.' }},
         'Private Build': { method: 'Various', notes: { detected: 'All sampled builds covered by behavioral + signature layers.', partial: 'Some custom variants evade signature matching.', monitoring: 'Behavioral AI layer catches ~94% of unknown/custom cheats without signatures.', undetected: 'Novel technique in circulation. Behavioral AI providing interim coverage.' }},
         'Interium': { method: 'Internal', notes: { detected: 'Rage features trigger instant behavioral detection. All configs covered.', partial: 'Updated build partially evades signature matching.', monitoring: 'Reassessing after reported evasion.', undetected: 'New obfuscation layer. Behavioral AI provides partial coverage.' }},
+        'RageCheats': { method: 'Kernel Patch', notes: { detected: 'Kernel patch patterns fully fingerprinted. All public builds covered.', partial: 'New kernel patch technique partially evades detection.', monitoring: 'Monitoring new kernel patch reports.', undetected: 'Novel kernel patching technique. Analysis in progress.' }},
+        'VoidEngine': { method: 'BYOVD', notes: { detected: 'Vulnerable driver blocklist covers all known variants.', partial: 'New vulnerable driver variant under analysis. Behavioral layer active.', monitoring: 'Tracking new BYOVD exploitation patterns.', undetected: 'Uses previously unknown driver. Coordinating with vendor.' }},
+        'DarkAether': { method: 'Custom FPGA', notes: { detected: 'Custom FPGA board TLP timing profiles matched.', partial: 'New firmware variant partially evades timing checks.', monitoring: 'Custom FPGA board submitted for TLP timing profile. Hardware team analyzing.', undetected: 'Novel FPGA firmware. Hardware team investigating.' }},
+        'KMBox Pro': { method: 'USB HID', notes: { detected: 'Firmware signature matched. USB descriptor analysis covers all known versions.', partial: 'New firmware update partially evades USB descriptor matching.', monitoring: 'New firmware samples submitted for analysis.', undetected: 'Updated firmware evades current detection. Input timing analysis providing interim coverage.' }},
+        'ZenithHack': { method: 'Injector', notes: { detected: 'Binary pattern + IAT hook detection. All public configs matched.', partial: 'Updated injector partially evades pattern matching.', monitoring: 'Tracking injector update reports.', undetected: 'New obfuscation layer. Behavioral AI provides partial coverage.' }},
+        'PasteWare': { method: 'Open Source', notes: { detected: 'All known forks covered. Signature DB includes 40+ variants.', partial: 'New fork with modified signatures detected.', monitoring: 'Monitoring GitHub for new forks.', undetected: 'Heavily modified fork. Behavioral AI flags 89% of users.' }},
       };
       // Default note generator for providers without specific notes
       var defaultNotes = {
@@ -1718,7 +1774,9 @@
       var methodLookup = {
         'AimStar': 'Internal Injection', 'NeverLose': 'Manual Map', 'Iniuria': 'DMA PCIe',
         'Phantom Overlay': 'External Overlay', 'EngineOwning': 'BYOVD', 'Onetap': 'Loader / Injector',
-        'Private Build': 'Various', 'Interium': 'Internal'
+        'Private Build': 'Various', 'Interium': 'Internal',
+        'RageCheats': 'Kernel Patch', 'VoidEngine': 'BYOVD', 'DarkAether': 'Custom FPGA',
+        'KMBox Pro': 'USB HID', 'ZenithHack': 'Injector', 'PasteWare': 'Open Source'
       };
 
       var engineProviders = null;
@@ -1747,6 +1805,12 @@
           { name: 'Onetap', method: 'Loader / Injector', status: 'detected', note: 'Binary integrity check + loader pattern recognition.' },
           { name: 'Private Build', method: 'Various', status: 'monitoring', note: 'Behavioral AI layer catches ~94% of unknown/custom cheats.' },
           { name: 'Interium', method: 'Internal', status: 'detected', note: 'Rage features trigger instant behavioral detection.' },
+          { name: 'RageCheats', method: 'Kernel Patch', status: 'detected', note: 'Kernel patch patterns fully fingerprinted. All public builds covered.' },
+          { name: 'VoidEngine', method: 'BYOVD', status: 'partial', note: 'New vulnerable driver variant under analysis. Behavioral layer active.' },
+          { name: 'DarkAether', method: 'Custom FPGA', status: 'monitoring', note: 'Custom FPGA board submitted for TLP timing profile. Hardware team analyzing.' },
+          { name: 'KMBox Pro', method: 'USB HID', status: 'detected', note: 'Firmware signature matched. USB descriptor analysis covers all known versions.' },
+          { name: 'ZenithHack', method: 'Injector', status: 'detected', note: 'Binary pattern + IAT hook detection. All public configs matched.' },
+          { name: 'PasteWare', method: 'Open Source', status: 'detected', note: 'All known forks covered. Signature DB includes 40+ variants.' },
         ];
         // Apply daily flip
         var flipIdx = Math.floor(seeded(daySeed * 331) * providerData.length);
@@ -2169,19 +2233,17 @@
       var etaEl = document.getElementById('reviewETA');
       if (!countEl) return;
 
-      // Start with seeded morning batch, decrease over time
-      var morningBatch = Math.floor(seeded(daySeed * 401) * 40) + 15;
-      var hour = new Date().getHours();
-      var elapsed = Math.max(0, hour - 6) * 60; // minutes since 6am
-      var processed = Math.floor(elapsed * (2.5 + seeded(daySeed * 403)));
-      var queue = Math.max(0, morningBatch - processed + Math.floor(seeded(daySeed * 407 + hour) * 8));
+      var queue = Math.floor(3 + seeded(daySeed * 401) * 12);
+      var maxQueue = 35;
 
       function updateQueue() {
         countEl.textContent = queue;
-        barEl.style.width = Math.min(100, (queue / morningBatch) * 100) + '%';
-        rateEl.textContent = '~' + (2 + Math.floor(Math.random() * 3)) + '/min';
+        barEl.style.width = Math.min(100, (queue / maxQueue) * 100) + '%';
+        var rate = 2 + Math.floor(Math.random() * 3);
+        rateEl.textContent = '~' + rate + '/min';
         if (queue > 0) {
-          etaEl.textContent = Math.ceil(queue / 3) + 'min';
+          etaEl.textContent = Math.ceil(queue / rate) + 'min';
+          barEl.style.background = queue > 20 ? 'linear-gradient(90deg,var(--red),#f04050)' : queue > 10 ? 'linear-gradient(90deg,var(--accent),#f0b840)' : 'linear-gradient(90deg,var(--green),#40d870)';
         } else {
           etaEl.textContent = 'Clear';
           barEl.style.background = 'var(--green)';
@@ -2189,13 +2251,18 @@
       }
       updateQueue();
 
-      // Queue slowly drains
       setInterval(function() {
-        if (queue > 0) {
-          queue -= Math.random() < 0.7 ? 1 : 0;
-          updateQueue();
+        var roll = Math.random();
+        if (roll < 0.35) {
+          queue = Math.max(0, queue - Math.floor(Math.random() * 3 + 1));
+        } else if (roll < 0.65) {
+          queue += Math.floor(Math.random() * 4 + 1);
         }
-      }, 20000);
+        if (queue > maxQueue) queue = maxQueue;
+        if (Math.random() < 0.02) queue += Math.floor(Math.random() * 8 + 5);
+        if (queue > maxQueue) queue = maxQueue;
+        updateQueue();
+      }, 8000 + Math.floor(Math.random() * 7000));
     })();
 
     // ===== SIGNATURE DB SYNC WAVE (TODO #18) =====
