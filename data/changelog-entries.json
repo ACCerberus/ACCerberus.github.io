@@ -373,5 +373,29 @@
         "text": "kernel callback response time reduced by 15ms"
       }
     ]
+  },
+  {
+    "date": "2026-05-29",
+    "timestamp": "2026-05-29T08:59:40Z",
+    "version": "v0.4.3.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 5104 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
   }
 ]
