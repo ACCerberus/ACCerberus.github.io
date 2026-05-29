@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260528-3940",
+      "title": "Ban API rate limiter false triggers",
+      "startedAt": "2026-05-28T17:35:42Z",
+      "resolvedAt": "2026-05-29T03:58:31Z",
+      "duration": "10h 22m",
+      "impactPct": 1.7,
+      "rootCause": "Kernel module incompatibility with latest Windows Insider build",
+      "timeline": [
+        {
+          "time": "2026-05-28T17:35:42Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-29T03:58:31Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement additional monitoring for affected subsystem",
+        "Update runbook with new escalation procedures"
+      ],
+      "lessonsLearned": [
+        "Observability gaps in this subsystem masked early warning signs"
+      ]
+    },
+    {
       "incidentId": "INC-20260527-0845",
       "title": "API response time degradation",
       "startedAt": "2026-05-27T20:25:45Z",
