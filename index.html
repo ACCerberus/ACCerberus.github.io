@@ -848,35 +848,33 @@
       <p class="section-desc">Cerberus operates across four privilege layers — client and server — with zero persistent background processes. Each layer feeds into a unified verdict engine.</p>
     </div>
     <div class="arch-container reveal">
-      <div class="arch-diagram"><span class="arch-inner"><span class="dm">                      ┌──────────────────────────────┐</span>
-<span class="dm">                      │</span>      <span class="gr">GAME RUNTIME</span>             <span class="dm">│</span>
-<span class="dm">                      │</span>   <span class="dm">Cerberus SDK Attached</span>      <span class="dm">│</span>
-<span class="dm">                      └──────────┬───────────────────┘</span>
+      <div class="arch-diagram"><span class="arch-inner"><span class="dm">                       ┌────────────────────────────┐</span>
+<span class="dm">                       │</span>        <span class="gr">GAME RUNTIME</span>        <span class="dm">│</span>
+<span class="dm">                       │</span>    <span class="dm">Cerberus SDK Attached</span>    <span class="dm">│</span>
+<span class="dm">                       └─────────────┬──────────────┘</span>
+<span class="dm">                                     │</span>
+<span class="dm">       ┌─────────────┬───────────────┴───────────────┬─────────────┐</span>
+<span class="dm">       ▼             ▼                               ▼             ▼</span>
+<span class="dm">┌──────────────┐ ┌──────────────┐ ┌────────────────┐ ┌────────────────┐</span>
+<span class="dm">│</span><span class="hl"> KERNEL INTEG.</span> <span class="dm">│ │</span><span class="pr"> BEHAVIORAL AI</span> <span class="dm">│ │</span><span class="rd">  HW SCANNER    </span><span class="dm">│ │</span><span class="bl">NETWORK SENTINEL</span><span class="dm">│</span>
+<span class="dm">│ Ring-0 Driver │ │ ML Inference  │ │ Device Audit   │ │ Server-Side    │</span>
+<span class="dm">└──────┬───────┘ └──────┬───────┘ └───────┬────────┘ └───────┬────────┘</span>
+<span class="dm">       │                │                 │                  │</span>
+<span class="dm">       └────────────────┴────────┬────────┴──────────────────┘</span>
 <span class="dm">                                 │</span>
-<span class="dm">      ┌──────────────────┬───────┼───────┬──────────────────┐</span>
-<span class="dm">      │                  │               │                  │</span>
-<span class="dm">      ▼                  ▼       ▼       ▼                  ▼</span>
-<span class="dm">┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐</span>
-<span class="dm">│</span><span class="hl">KERNEL INTEG.</span> <span class="dm">│  │</span><span class="pr">BEHAVIORAL AI</span><span class="dm">│  │</span><span class="rd">HW SCANNER</span>   <span class="dm">│  │</span><span class="bl">NETWORK SENTINEL</span> <span class="dm">│</span>
-<span class="dm">│</span><span class="dm">Ring-0 Driver</span> <span class="dm">│  │</span><span class="dm">ML Inference</span> <span class="dm">│  │</span><span class="dm">Device Audit</span> <span class="dm">│  │</span><span class="dm">Server-Side</span>      <span class="dm">│</span>
-<span class="dm">└──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └────────┬────────┘</span>
-<span class="dm">       │                │                │                  │</span>
-<span class="dm">       └────────────────┼────────────────┼──────────────────┘</span>
-<span class="dm">                        ▼                ▼</span>
-<span class="dm">                   ┌────────────────────────┐</span>
-<span class="dm">                   │</span>   <span class="hl">VERDICT ENGINE</span>        <span class="dm">│</span>
-<span class="dm">                   │</span>  <span class="dm">Cross-layer correlation</span><span class="dm">│</span>
-<span class="dm">                   │</span>  <span class="dm">Confidence scoring</span>    <span class="dm">│</span>
-<span class="dm">                   └───────────┬────────────┘</span>
-<span class="dm">                               │</span>
-<span class="dm">                  ┌────────────┼────────────┐</span>
-<span class="dm">                  ▼            ▼            ▼</span>
-<span class="dm">             </span><span class="gr">[ CLEAN ]</span>   <span class="hl">[ FLAG ]</span>   <span class="rd">[ BAN ]</span>
-<span class="dm">                               │</span>
-<span class="dm">                   ┌───────────┴───────────┐</span>
-<span class="dm">                   │</span>  <span class="gr">Session ends</span> <span class="dm">→</span> <span class="gr">Clean exit</span> <span class="dm">│</span>
-<span class="dm">                   │</span>  <span class="dm">Driver unloads, zero trace</span><span class="dm">│</span>
-<span class="dm">                   └───────────────────────┘</span></span></div>
+<span class="dm">                                 ▼</span>
+<span class="dm">                  ┌──────────────────────────────┐</span>
+<span class="dm">                  │</span>       <span class="hl">VERDICT ENGINE</span>         <span class="dm">│</span>
+<span class="dm">                  │</span>   <span class="dm">Cross-layer correlation</span>    <span class="dm">│</span>
+<span class="dm">                  │</span>   <span class="dm">Confidence scoring</span>         <span class="dm">│</span>
+<span class="dm">                  └──────┬─────────┬────────┬─────┘</span>
+<span class="dm">                         ▼         ▼        ▼</span>
+<span class="dm">                   </span><span class="gr">[ CLEAN ]</span><span class="dm">  </span><span class="hl">[ FLAG ]</span><span class="dm">  </span><span class="rd">[ BAN ]</span>
+<span class="dm">                                   │</span>
+<span class="dm">                  ┌────────────────┴───────────────┐</span>
+<span class="dm">                  │</span>   <span class="gr">Session ends</span> <span class="dm">→</span> <span class="gr">Clean exit</span>    <span class="dm">│</span>
+<span class="dm">                  │</span>   <span class="dm">Driver unloads, zero trace</span>  <span class="dm">│</span>
+<span class="dm">                  └────────────────────────────────┘</span></span></div>
       <div class="arch-layers">
         <div class="arch-layer">
           <div class="arch-layer-name">Ring 0 — Kernel Mode</div>
