@@ -1,12 +1,12 @@
 {
-  "lastUpdated": "2026-05-29T08:59:40Z",
+  "lastUpdated": "2026-05-30T08:11:48Z",
   "items": {
     "short": [
       {
         "id": "r-s1",
         "name": "Adversarial Replay Sandbox",
         "desc": "Isolated replay environment that re-executes suspicious sessions server-side to confirm cheating without client intervention — eliminates false positives on edge cases",
-        "progress": 81,
+        "progress": 82,
         "color": "var(--green)",
         "added": "2026-03-01"
       },
@@ -14,7 +14,7 @@
         "id": "r-s2",
         "name": "Input Entropy Fingerprinting",
         "desc": "Measures Shannon entropy of raw input streams to detect synthetic inputs — human input has natural entropy patterns that no cheat can replicate",
-        "progress": 67,
+        "progress": 68,
         "color": "var(--blue)",
         "added": "2026-02-15"
       },
@@ -22,7 +22,7 @@
         "id": "r-s4",
         "name": "Cross-Session Behavioral Graph",
         "desc": "Graph neural network that builds player identity from behavioral patterns across sessions — detects ban evaders even with new hardware and accounts",
-        "progress": 50,
+        "progress": 51,
         "color": "var(--purple)",
         "added": "2026-04-10"
       }
@@ -32,7 +32,7 @@
         "id": "r-s3",
         "name": "Zero-Footprint Mode",
         "desc": "Kernel module unloads completely between scan cycles — leaves zero memory residue, making Cerberus undetectable by cheat developers during reverse engineering",
-        "progress": 19.8,
+        "progress": 20.1,
         "color": "var(--accent)",
         "added": "2026-01-20"
       },
@@ -40,7 +40,7 @@
         "id": "r-m1",
         "name": "Proof-of-Play Protocol",
         "desc": "Cryptographic attestation that a game session was played legitimately — players can prove clean sessions to tournament organizers without revealing system state",
-        "progress": 24.7,
+        "progress": 25,
         "color": "var(--blue)",
         "added": "2026-01-01"
       },
@@ -48,7 +48,7 @@
         "id": "r-m2",
         "name": "Peripheral Bus Sniffer",
         "desc": "Monitors USB/HID bus traffic patterns to detect hardware cheat devices (Cronus, XIM, strikepack) by analyzing input timing jitter and polling anomalies",
-        "progress": 17.7,
+        "progress": 18,
         "color": "var(--accent)",
         "added": "2026-02-01"
       },
@@ -56,7 +56,7 @@
         "id": "r-m3",
         "name": "Silent Honeypot Injection",
         "desc": "Injects fake memory regions that appear to contain game state — any cheat reading them triggers instant detection without false positives, since no legitimate process accesses them",
-        "progress": 33.4,
+        "progress": 33.6,
         "color": "var(--red)",
         "added": "2026-03-15"
       },
@@ -64,7 +64,7 @@
         "id": "r-m4",
         "name": "Neural Style Transfer Detection",
         "desc": "Detects AI-powered aimbots that mimic human aim patterns by analyzing micro-corrections and acceleration curves that neural networks cannot perfectly replicate",
-        "progress": 20.7,
+        "progress": 21,
         "color": "var(--purple)",
         "added": "2026-04-01"
       },
@@ -72,7 +72,7 @@
         "id": "r-m5",
         "name": "Cheat Provider Lifecycle Tracker",
         "desc": "Automated dark web monitoring that tracks cheat providers from release to takedown — predicts new bypass attempts before they ship based on provider development patterns",
-        "progress": 28.7,
+        "progress": 29,
         "color": "var(--green)",
         "added": "2026-03-01"
       },
@@ -80,7 +80,7 @@
         "id": "r-m6",
         "name": "UEFI Pre-Boot Attestation",
         "desc": "Validates boot chain integrity via UEFI Secure Boot measurements and TPM PCR values — detects pre-OS cheat loaders, SPI flash persistence, and bootkit tampering before the game launches",
-        "progress": 13.8,
+        "progress": 14.1,
         "color": "var(--accent)",
         "added": "2026-05-10"
       },
@@ -88,7 +88,7 @@
         "id": "r-m7",
         "name": "GPU Compute Abuse Detection",
         "desc": "Monitors CUDA/OpenCL/DirectCompute dispatch queues for unauthorized compute shaders — detects cheats offloading aim calculations or ESP rendering to GPU compute pipelines",
-        "progress": 9.8,
+        "progress": 10.1,
         "color": "var(--purple)",
         "added": "2026-05-15"
       }

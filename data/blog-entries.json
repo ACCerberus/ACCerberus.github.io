@@ -78,5 +78,13 @@
     "title": "Security Notice: False Positive Correction",
     "author": "akovacs",
     "generated": true
+  },
+  {
+    "date": "2026-05-30",
+    "timestamp": "2026-05-30T08:11:48Z",
+    "type": "casestudy",
+    "title": "Free-to-Play Title Cheat Reduction Study",
+    "author": "eriksson",
+    "generated": true
   }
 ]
