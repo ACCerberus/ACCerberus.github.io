@@ -397,5 +397,29 @@
         "text": "session initialization time cut by 45ms"
       }
     ]
+  },
+  {
+    "date": "2026-05-30",
+    "timestamp": "2026-05-30T08:11:48Z",
+    "version": "v0.4.3.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PhantomOverlay triggerbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 5123 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
   }
 ]
