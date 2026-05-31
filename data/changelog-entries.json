@@ -421,5 +421,29 @@
         "text": "regional detection variance reduced by 4.2%"
       }
     ]
+  },
+  {
+    "date": "2026-05-31",
+    "timestamp": "2026-05-31T08:30:53Z",
+    "version": "v0.4.3.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PhantomOverlay radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 5147 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
   }
 ]
