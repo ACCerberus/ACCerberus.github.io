@@ -469,5 +469,29 @@
         "text": "player appeal rate reduced by 18%"
       }
     ]
+  },
+  {
+    "date": "2026-06-02",
+    "timestamp": "2026-06-02T09:55:12Z",
+    "version": "v0.4.3.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidHook memory manipulation variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 5181 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
   }
 ]

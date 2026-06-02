@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.3.1b",
-  "buildNumber": 2851,
-  "lastPatchBump": "2026-05-31T08:30:53Z",
+  "currentVersion": "v0.4.3.2b",
+  "buildNumber": 2852,
+  "lastPatchBump": "2026-06-02T09:55:12Z",
   "lastMinorBump": "2026-05-28T09:38:00Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.3.2b",
+      "date": "2026-06-02T09:55:12Z",
+      "summary": "PCIe enumeration edge case fixes"
+    },
     {
       "version": "v0.4.3.1b",
       "date": "2026-05-31T08:30:53Z",
