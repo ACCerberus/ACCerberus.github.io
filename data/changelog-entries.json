@@ -517,5 +517,29 @@
         "text": "signature matching throughput up 22%"
       }
     ]
+  },
+  {
+    "date": "2026-06-04",
+    "timestamp": "2026-06-04T09:37:19Z",
+    "version": "v0.4.3.2b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DeepRoot silent aim variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+7 signatures — 5213 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Logitech G Hub macro engine"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
   }
 ]

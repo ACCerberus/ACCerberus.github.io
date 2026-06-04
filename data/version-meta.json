@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.3.2b",
-  "buildNumber": 2852,
-  "lastPatchBump": "2026-06-02T09:55:12Z",
+  "currentVersion": "v0.4.3.3b",
+  "buildNumber": 2853,
+  "lastPatchBump": "2026-06-04T09:37:19Z",
   "lastMinorBump": "2026-05-28T09:38:00Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.3.3b",
+      "date": "2026-06-04T09:37:19Z",
+      "summary": "False positive corrections and signature updates"
+    },
     {
       "version": "v0.4.3.2b",
       "date": "2026-06-02T09:55:12Z",
