@@ -541,5 +541,29 @@
         "text": "false positive rate improved by 0.002%"
       }
     ]
+  },
+  {
+    "date": "2026-06-05",
+    "timestamp": "2026-06-05T08:59:02Z",
+    "version": "v0.4.3.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DeepRoot DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 5227 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Logitech G Hub macro engine"
+      },
+      {
+        "type": "improved",
+        "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
   }
 ]

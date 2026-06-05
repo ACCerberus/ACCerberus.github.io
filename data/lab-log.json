@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-04",
+  "lastUpdated": "2026-06-05",
   "entries": [
     {
       "id": "lab-001",
@@ -81,6 +81,15 @@
       "startDate": "2026-05-28",
       "lastUpdate": "2026-05-28",
       "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-010",
+      "title": "Compiler-Level Obfuscation Pipeline",
+      "desc": "Custom LLVM passes for automated binary diversification to resist reverse engineering.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-06-05",
+      "lastUpdate": "2026-06-05",
+      "findings": "Initial research phase. Literature review in progress."
     }
   ],
   "templatePool": [
@@ -108,11 +117,6 @@
       "title": "Network Traffic Fingerprinting",
       "desc": "Detecting cheat tool communication by analyzing packet timing and payload entropy patterns.",
       "topic": "networking"
-    },
-    {
-      "title": "Compiler-Level Obfuscation Pipeline",
-      "desc": "Custom LLVM passes for automated binary diversification to resist reverse engineering.",
-      "topic": "security"
     }
   ]
 }
