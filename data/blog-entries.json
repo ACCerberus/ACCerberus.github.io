@@ -94,5 +94,13 @@
     "title": "Tactical Shooter: 99.2% Detection Rate",
     "author": "jpark",
     "generated": true
+  },
+  {
+    "date": "2026-06-06",
+    "timestamp": "2026-06-06T08:18:48Z",
+    "type": "advisory",
+    "title": "Advisory: SDK Authentication Hardening",
+    "author": "nvoronov",
+    "generated": true
   }
 ]
