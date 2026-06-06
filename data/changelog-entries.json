@@ -565,5 +565,29 @@
         "text": "regional detection variance reduced by 4.2%"
       }
     ]
+  },
+  {
+    "date": "2026-06-06",
+    "timestamp": "2026-06-06T08:18:48Z",
+    "version": "v0.4.3.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 5256 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "false negative rate decreased by 0.8%"
+      }
+    ]
   }
 ]
