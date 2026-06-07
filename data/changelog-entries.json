@@ -589,5 +589,29 @@
         "text": "false negative rate decreased by 0.8%"
       }
     ]
+  },
+  {
+    "date": "2026-06-07",
+    "timestamp": "2026-06-07T08:40:43Z",
+    "version": "v0.4.3.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized CipherLoad wallhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 5285 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Logitech G Hub macro engine"
+      },
+      {
+        "type": "improved",
+        "text": "false negative rate decreased by 0.8%"
+      }
+    ]
   }
 ]
