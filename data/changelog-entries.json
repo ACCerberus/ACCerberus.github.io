@@ -613,5 +613,29 @@
         "text": "false negative rate decreased by 0.8%"
       }
     ]
+  },
+  {
+    "date": "2026-06-08",
+    "timestamp": "2026-06-08T10:09:37Z",
+    "version": "v0.4.3.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 5306 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "player appeal rate reduced by 18%"
+      }
+    ]
   }
 ]
