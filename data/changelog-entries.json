@@ -637,5 +637,29 @@
         "text": "player appeal rate reduced by 18%"
       }
     ]
+  },
+  {
+    "date": "2026-06-09",
+    "timestamp": "2026-06-09T08:53:53Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PhantomOverlay kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 5326 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Steam overlay compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "false negative rate decreased by 0.8%"
+      }
+    ]
   }
 ]
