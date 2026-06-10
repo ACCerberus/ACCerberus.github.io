@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-09",
+  "lastUpdated": "2026-06-10",
   "entries": [
     {
       "id": "lab-001",
@@ -90,6 +90,15 @@
       "startDate": "2026-06-05",
       "lastUpdate": "2026-06-05",
       "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-011",
+      "title": "Differential Privacy in Telemetry",
+      "desc": "Applying epsilon-delta privacy to aggregated detection metrics before reporting.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-06-10",
+      "lastUpdate": "2026-06-10",
+      "findings": "Initial research phase. Literature review in progress."
     }
   ],
   "templatePool": [
@@ -97,11 +106,6 @@
       "title": "FPGA-Accelerated Pattern Matching",
       "desc": "Using reconfigurable hardware for real-time cheat signature matching at line rate.",
       "topic": "hardware"
-    },
-    {
-      "title": "Differential Privacy in Telemetry",
-      "desc": "Applying epsilon-delta privacy to aggregated detection metrics before reporting.",
-      "topic": "privacy"
     },
     {
       "title": "eBPF-Based Kernel Monitoring",

@@ -102,5 +102,13 @@
     "title": "Advisory: SDK Authentication Hardening",
     "author": "nvoronov",
     "generated": true
+  },
+  {
+    "date": "2026-06-10",
+    "timestamp": "2026-06-10T09:34:34Z",
+    "type": "advisory",
+    "title": "Advisory: SDK Authentication Hardening",
+    "author": "nvoronov",
+    "generated": true
   }
 ]
