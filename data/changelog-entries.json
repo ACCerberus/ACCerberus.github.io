@@ -661,5 +661,29 @@
         "text": "false negative rate decreased by 0.8%"
       }
     ]
+  },
+  {
+    "date": "2026-06-10",
+    "timestamp": "2026-06-10T09:34:34Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DeepRoot radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5342 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
   }
 ]
