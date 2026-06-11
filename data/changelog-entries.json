@@ -685,5 +685,29 @@
         "text": "webhook delivery success rate up to 99.98%"
       }
     ]
+  },
+  {
+    "date": "2026-06-11",
+    "timestamp": "2026-06-11T09:57:22Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 5358 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
   }
 ]
