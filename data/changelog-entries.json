@@ -709,5 +709,29 @@
         "text": "memory footprint decreased by 12%"
       }
     ]
+  },
+  {
+    "date": "2026-06-12",
+    "timestamp": "2026-06-12T09:49:22Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 5375 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
   }
 ]
