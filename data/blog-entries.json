@@ -110,5 +110,13 @@
     "title": "Advisory: SDK Authentication Hardening",
     "author": "nvoronov",
     "generated": true
+  },
+  {
+    "date": "2026-06-13",
+    "timestamp": "2026-06-13T08:41:22Z",
+    "type": "advisory",
+    "title": "Advisory: Behavioral Model Retraining Notice",
+    "author": "jpark",
+    "generated": true
   }
 ]
