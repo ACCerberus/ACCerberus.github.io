@@ -733,5 +733,29 @@
         "text": "kernel callback response time reduced by 15ms"
       }
     ]
+  },
+  {
+    "date": "2026-06-13",
+    "timestamp": "2026-06-13T08:41:22Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge ESP variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+6 signatures — 5394 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
   }
 ]
