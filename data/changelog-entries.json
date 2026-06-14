@@ -757,5 +757,29 @@
         "text": "detection confidence increased by 1.3%"
       }
     ]
+  },
+  {
+    "date": "2026-06-14",
+    "timestamp": "2026-06-14T08:57:30Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized NullDriver triggerbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 5425 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
   }
 ]
