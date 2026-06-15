@@ -781,5 +781,29 @@
         "text": "session initialization time cut by 45ms"
       }
     ]
+  },
+  {
+    "date": "2026-06-15",
+    "timestamp": "2026-06-15T11:37:29Z",
+    "version": "v0.4.3.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge driver spoof variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 5451 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on EVGA Precision X1 overlay"
+      },
+      {
+        "type": "improved",
+        "text": "scan latency reduced by 8%"
+      }
+    ]
   }
 ]

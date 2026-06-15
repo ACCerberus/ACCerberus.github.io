@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-14",
+  "lastUpdated": "2026-06-15",
   "entries": [
     {
       "id": "lab-001",
@@ -99,6 +99,15 @@
       "startDate": "2026-06-10",
       "lastUpdate": "2026-06-10",
       "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-012",
+      "title": "Adversarial ML Robustness Testing",
+      "desc": "Evaluating detection model resilience against adversarial input perturbations designed to evade classification.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-06-15",
+      "lastUpdate": "2026-06-15",
+      "findings": "Initial research phase. Literature review in progress."
     }
   ],
   "templatePool": [
@@ -111,11 +120,6 @@
       "title": "eBPF-Based Kernel Monitoring",
       "desc": "Using eBPF programs for low-overhead kernel-space behavioral monitoring on Linux.",
       "topic": "kernel"
-    },
-    {
-      "title": "Adversarial ML Robustness Testing",
-      "desc": "Evaluating detection model resilience against adversarial input perturbations designed to evade classification.",
-      "topic": "ml"
     },
     {
       "title": "Network Traffic Fingerprinting",
