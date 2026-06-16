@@ -805,5 +805,29 @@
         "text": "scan latency reduced by 8%"
       }
     ]
+  },
+  {
+    "date": "2026-06-16",
+    "timestamp": "2026-06-16T10:47:16Z",
+    "version": "v0.4.3.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 5466 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
   }
 ]

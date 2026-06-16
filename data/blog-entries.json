@@ -118,5 +118,13 @@
     "title": "Advisory: Behavioral Model Retraining Notice",
     "author": "jpark",
     "generated": true
+  },
+  {
+    "date": "2026-06-16",
+    "timestamp": "2026-06-16T10:47:16Z",
+    "type": "engineering",
+    "title": "Neural Network Architecture for Behavioral Analysis",
+    "author": "nvoronov",
+    "generated": true
   }
 ]
