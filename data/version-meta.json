@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.3.7b",
-  "buildNumber": 2857,
-  "lastPatchBump": "2026-06-16T10:47:16Z",
-  "lastMinorBump": "2026-05-28T09:38:00Z",
+  "currentVersion": "v0.4.4.0b",
+  "buildNumber": 2858,
+  "lastPatchBump": "2026-06-17T10:20:07Z",
+  "lastMinorBump": "2026-06-17T10:20:07Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.4.0b",
+      "date": "2026-06-17T10:20:07Z",
+      "summary": "Multi-region optimization and new detection vectors"
+    },
     {
       "version": "v0.4.3.7b",
       "date": "2026-06-16T10:47:16Z",
@@ -48,11 +53,6 @@
     {
       "version": "v0.4.2.2b",
       "date": "2026-05-27T08:54:51Z",
-      "summary": "PCIe enumeration edge case fixes"
-    },
-    {
-      "version": "v0.4.2.1b",
-      "date": "2026-05-25T09:41:59Z",
       "summary": "PCIe enumeration edge case fixes"
     }
   ]
