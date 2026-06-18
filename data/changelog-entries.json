@@ -853,5 +853,29 @@
         "text": "memory footprint decreased by 12%"
       }
     ]
+  },
+  {
+    "date": "2026-06-18",
+    "timestamp": "2026-06-18T10:00:04Z",
+    "version": "v0.4.4.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault wallhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 5504 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
   }
 ]
