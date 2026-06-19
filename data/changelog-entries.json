@@ -877,5 +877,29 @@
         "text": "kernel callback response time reduced by 15ms"
       }
     ]
+  },
+  {
+    "date": "2026-06-19",
+    "timestamp": "2026-06-19T10:06:24Z",
+    "version": "v0.4.4.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized CipherLoad input injection variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 5519 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on EVGA Precision X1 overlay"
+      },
+      {
+        "type": "improved",
+        "text": "signature lookup p99 latency down 12ms"
+      }
+    ]
   }
 ]
