@@ -901,5 +901,29 @@
         "text": "signature lookup p99 latency down 12ms"
       }
     ]
+  },
+  {
+    "date": "2026-06-20",
+    "timestamp": "2026-06-20T08:36:19Z",
+    "version": "v0.4.4.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 5534 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
   }
 ]
