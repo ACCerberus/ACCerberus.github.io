@@ -925,5 +925,29 @@
         "text": "kernel callback response time reduced by 15ms"
       }
     ]
+  },
+  {
+    "date": "2026-06-21",
+    "timestamp": "2026-06-21T09:30:40Z",
+    "version": "v0.4.4.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 5555 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Wallpaper Engine hook"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
   }
 ]
