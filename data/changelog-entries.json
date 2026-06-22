@@ -949,5 +949,29 @@
         "text": "session initialization time cut by 45ms"
       }
     ]
+  },
+  {
+    "date": "2026-06-22",
+    "timestamp": "2026-06-22T11:25:55Z",
+    "version": "v0.4.4.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 5576 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on ShareX capture module"
+      },
+      {
+        "type": "improved",
+        "text": "signature matching throughput up 22%"
+      }
+    ]
   }
 ]
