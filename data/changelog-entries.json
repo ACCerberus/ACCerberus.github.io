@@ -973,5 +973,29 @@
         "text": "signature matching throughput up 22%"
       }
     ]
+  },
+  {
+    "date": "2026-06-23",
+    "timestamp": "2026-06-23T08:51:54Z",
+    "version": "v0.4.4.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized StealthCore silent aim variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 5588 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "signature matching throughput up 22%"
+      }
+    ]
   }
 ]
