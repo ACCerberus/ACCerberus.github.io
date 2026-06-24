@@ -997,5 +997,29 @@
         "text": "signature matching throughput up 22%"
       }
     ]
+  },
+  {
+    "date": "2026-06-24",
+    "timestamp": "2026-06-24T08:47:32Z",
+    "version": "v0.4.4.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5610 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Corsair iCUE driver"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
   }
 ]
