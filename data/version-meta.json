@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.4.1b",
-  "buildNumber": 2859,
-  "lastPatchBump": "2026-06-19T10:06:24Z",
+  "currentVersion": "v0.4.4.2b",
+  "buildNumber": 2860,
+  "lastPatchBump": "2026-06-25T08:42:40Z",
   "lastMinorBump": "2026-06-17T10:20:07Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.4.2b",
+      "date": "2026-06-25T08:42:40Z",
+      "summary": "Webhook delivery reliability improvements"
+    },
     {
       "version": "v0.4.4.1b",
       "date": "2026-06-19T10:06:24Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.3.1b",
       "date": "2026-05-31T08:30:53Z",
       "summary": "SDK initialization performance improvements"
-    },
-    {
-      "version": "v0.4.3.0b",
-      "date": "2026-05-28T09:38:00Z",
-      "summary": "Advanced DMA detection and response"
     }
   ]
 }
