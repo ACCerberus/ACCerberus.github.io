@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-24",
+  "lastUpdated": "2026-06-25",
   "entries": [
     {
       "id": "lab-001",
@@ -117,14 +117,18 @@
       "startDate": "2026-06-20",
       "lastUpdate": "2026-06-20",
       "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-014",
+      "title": "FPGA-Accelerated Pattern Matching",
+      "desc": "Using reconfigurable hardware for real-time cheat signature matching at line rate.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-06-25",
+      "lastUpdate": "2026-06-25",
+      "findings": "Initial research phase. Literature review in progress."
     }
   ],
   "templatePool": [
-    {
-      "title": "FPGA-Accelerated Pattern Matching",
-      "desc": "Using reconfigurable hardware for real-time cheat signature matching at line rate.",
-      "topic": "hardware"
-    },
     {
       "title": "Network Traffic Fingerprinting",
       "desc": "Detecting cheat tool communication by analyzing packet timing and payload entropy patterns.",
