@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.4.2b",
-  "buildNumber": 2860,
-  "lastPatchBump": "2026-06-25T08:42:40Z",
+  "currentVersion": "v0.4.4.3b",
+  "buildNumber": 2861,
+  "lastPatchBump": "2026-06-26T08:44:08Z",
   "lastMinorBump": "2026-06-17T10:20:07Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.4.3b",
+      "date": "2026-06-26T08:44:08Z",
+      "summary": "Detection threshold calibration"
+    },
     {
       "version": "v0.4.4.2b",
       "date": "2026-06-25T08:42:40Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.3.2b",
       "date": "2026-06-02T09:55:12Z",
       "summary": "PCIe enumeration edge case fixes"
-    },
-    {
-      "version": "v0.4.3.1b",
-      "date": "2026-05-31T08:30:53Z",
-      "summary": "SDK initialization performance improvements"
     }
   ]
 }

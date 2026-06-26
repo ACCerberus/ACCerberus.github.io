@@ -134,5 +134,13 @@
     "title": "Battle Royale Protection at Scale",
     "author": "nvoronov",
     "generated": true
+  },
+  {
+    "date": "2026-06-26",
+    "timestamp": "2026-06-26T08:44:08Z",
+    "type": "advisory",
+    "title": "Security Advisory: Detection Engine Update",
+    "author": "jpark",
+    "generated": true
   }
 ]
