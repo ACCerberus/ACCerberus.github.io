@@ -1045,5 +1045,29 @@
         "text": "kernel callback response time reduced by 15ms"
       }
     ]
+  },
+  {
+    "date": "2026-06-26",
+    "timestamp": "2026-06-26T08:44:08Z",
+    "version": "v0.4.4.2b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized RingZero memory manipulation variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 5662 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
   }
 ]
