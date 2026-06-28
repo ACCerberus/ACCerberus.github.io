@@ -1093,5 +1093,29 @@
         "text": "session initialization time cut by 45ms"
       }
     ]
+  },
+  {
+    "date": "2026-06-28",
+    "timestamp": "2026-06-28T08:36:13Z",
+    "version": "v0.4.4.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5702 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
   }
 ]
