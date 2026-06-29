@@ -1117,5 +1117,29 @@
         "text": "kernel callback response time reduced by 15ms"
       }
     ]
+  },
+  {
+    "date": "2026-06-29",
+    "timestamp": "2026-06-29T10:14:17Z",
+    "version": "v0.4.4.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized RingZero anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 5732 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
   }
 ]
