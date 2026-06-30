@@ -1141,5 +1141,29 @@
         "text": "webhook delivery success rate up to 99.98%"
       }
     ]
+  },
+  {
+    "date": "2026-06-30",
+    "timestamp": "2026-06-30T08:49:46Z",
+    "version": "v0.4.4.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher ESP variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5744 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "ban accuracy improved by 2.1%"
+      }
+    ]
   }
 ]
