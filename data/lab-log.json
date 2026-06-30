@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-29",
+  "lastUpdated": "2026-06-30",
   "entries": [
     {
       "id": "lab-001",
@@ -126,13 +126,16 @@
       "startDate": "2026-06-25",
       "lastUpdate": "2026-06-25",
       "findings": "Initial research phase. Literature review in progress."
-    }
-  ],
-  "templatePool": [
+    },
     {
+      "id": "lab-015",
       "title": "Network Traffic Fingerprinting",
       "desc": "Detecting cheat tool communication by analyzing packet timing and payload entropy patterns.",
-      "topic": "networking"
+      "status": "HYPOTHESIS",
+      "startDate": "2026-06-30",
+      "lastUpdate": "2026-06-30",
+      "findings": "Initial research phase. Literature review in progress."
     }
-  ]
+  ],
+  "templatePool": []
 }

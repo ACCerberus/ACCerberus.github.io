@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260629-9194",
+      "title": "Webhook delivery delays",
+      "startedAt": "2026-06-29T18:10:19Z",
+      "resolvedAt": "2026-06-30T03:57:01Z",
+      "duration": "9h 46m",
+      "impactPct": 1.7,
+      "rootCause": "Kernel module incompatibility with latest Windows Insider build",
+      "timeline": [
+        {
+          "time": "2026-06-29T18:10:19Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-06-30T03:57:01Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Document incident pattern for on-call training",
+        "Implement additional monitoring for affected subsystem"
+      ],
+      "lessonsLearned": [
+        "Detection of this failure mode should be automated"
+      ]
+    },
+    {
       "incidentId": "INC-20260528-3940",
       "title": "Ban API rate limiter false triggers",
       "startedAt": "2026-05-28T17:35:42Z",

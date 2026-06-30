@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.4.3b",
-  "buildNumber": 2861,
-  "lastPatchBump": "2026-06-26T08:44:08Z",
+  "currentVersion": "v0.4.4.4b",
+  "buildNumber": 2862,
+  "lastPatchBump": "2026-06-30T08:49:46Z",
   "lastMinorBump": "2026-06-17T10:20:07Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.4.4b",
+      "date": "2026-06-30T08:49:46Z",
+      "summary": "Webhook delivery reliability improvements"
+    },
     {
       "version": "v0.4.4.3b",
       "date": "2026-06-26T08:44:08Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.3.3b",
       "date": "2026-06-04T09:37:19Z",
       "summary": "False positive corrections and signature updates"
-    },
-    {
-      "version": "v0.4.3.2b",
-      "date": "2026-06-02T09:55:12Z",
-      "summary": "PCIe enumeration edge case fixes"
     }
   ]
 }
