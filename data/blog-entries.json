@@ -142,5 +142,13 @@
     "title": "Security Advisory: Detection Engine Update",
     "author": "jpark",
     "generated": true
+  },
+  {
+    "date": "2026-07-01",
+    "timestamp": "2026-07-01T09:23:23Z",
+    "type": "threat",
+    "title": "Underground Marketplace Monitoring Report",
+    "author": "akovacs",
+    "generated": true
   }
 ]
