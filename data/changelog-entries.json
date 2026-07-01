@@ -1165,5 +1165,29 @@
         "text": "ban accuracy improved by 2.1%"
       }
     ]
+  },
+  {
+    "date": "2026-07-01",
+    "timestamp": "2026-07-01T09:23:23Z",
+    "version": "v0.4.4.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 5766 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Steam overlay compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "signature lookup p99 latency down 12ms"
+      }
+    ]
   }
 ]
