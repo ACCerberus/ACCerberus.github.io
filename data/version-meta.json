@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.4.4b",
-  "buildNumber": 2862,
-  "lastPatchBump": "2026-06-30T08:49:46Z",
+  "currentVersion": "v0.4.4.5b",
+  "buildNumber": 2863,
+  "lastPatchBump": "2026-07-02T08:36:26Z",
   "lastMinorBump": "2026-06-17T10:20:07Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.4.5b",
+      "date": "2026-07-02T08:36:26Z",
+      "summary": "Webhook delivery reliability improvements"
+    },
     {
       "version": "v0.4.4.4b",
       "date": "2026-06-30T08:49:46Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.3.4b",
       "date": "2026-06-06T08:18:49Z",
       "summary": "Stability improvements and scan optimizations"
-    },
-    {
-      "version": "v0.4.3.3b",
-      "date": "2026-06-04T09:37:19Z",
-      "summary": "False positive corrections and signature updates"
     }
   ]
 }

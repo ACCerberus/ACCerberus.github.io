@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260701-0819",
+      "title": "Webhook delivery delays",
+      "startedAt": "2026-07-01T20:00:34Z",
+      "resolvedAt": "2026-07-02T07:35:18Z",
+      "duration": "11h 34m",
+      "impactPct": 2.8,
+      "rootCause": "TLS certificate pinning hash mismatch after CA rotation",
+      "timeline": [
+        {
+          "time": "2026-07-01T20:00:34Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-02T07:35:18Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Increase load test coverage for affected code path",
+        "Implement gradual rollout for configuration changes"
+      ],
+      "lessonsLearned": [
+        "Detection of this failure mode should be automated"
+      ]
+    },
+    {
       "incidentId": "INC-20260629-9194",
       "title": "Webhook delivery delays",
       "startedAt": "2026-06-29T18:10:19Z",
