@@ -1189,5 +1189,29 @@
         "text": "signature lookup p99 latency down 12ms"
       }
     ]
+  },
+  {
+    "date": "2026-07-02",
+    "timestamp": "2026-07-02T08:36:26Z",
+    "version": "v0.4.4.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+3 signatures — 5794 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Citrix virtual display driver"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
   }
 ]
