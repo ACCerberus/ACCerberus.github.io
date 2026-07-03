@@ -1213,5 +1213,29 @@
         "text": "false positive rate improved by 0.002%"
       }
     ]
+  },
+  {
+    "date": "2026-07-03",
+    "timestamp": "2026-07-03T08:41:17Z",
+    "version": "v0.4.4.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge memory manipulation variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 5816 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
   }
 ]
