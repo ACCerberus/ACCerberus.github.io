@@ -1237,5 +1237,29 @@
         "text": "session initialization time cut by 45ms"
       }
     ]
+  },
+  {
+    "date": "2026-07-04",
+    "timestamp": "2026-07-04T08:15:42Z",
+    "version": "v0.4.4.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized GhostWare anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+7 signatures — 5846 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Wallpaper Engine hook"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
   }
 ]
