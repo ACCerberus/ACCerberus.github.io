@@ -150,5 +150,13 @@
     "title": "Underground Marketplace Monitoring Report",
     "author": "akovacs",
     "generated": true
+  },
+  {
+    "date": "2026-07-05",
+    "timestamp": "2026-07-05T08:34:16Z",
+    "type": "milestone",
+    "title": "Detection Engine Performance Milestone",
+    "author": "jpark",
+    "generated": true
   }
 ]

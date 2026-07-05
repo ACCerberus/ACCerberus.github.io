@@ -1261,5 +1261,29 @@
         "text": "kernel callback response time reduced by 15ms"
       }
     ]
+  },
+  {
+    "date": "2026-07-05",
+    "timestamp": "2026-07-05T08:34:15Z",
+    "version": "v0.4.4.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized StealthCore aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 5864 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "player appeal rate reduced by 18%"
+      }
+    ]
   }
 ]
