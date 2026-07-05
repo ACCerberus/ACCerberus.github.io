@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260704-6662",
+      "title": "Ban API rate limiter false triggers",
+      "startedAt": "2026-07-04T17:09:05Z",
+      "resolvedAt": "2026-07-05T03:44:32Z",
+      "duration": "10h 35m",
+      "impactPct": 0.8,
+      "rootCause": "Load balancer health check misconfiguration",
+      "timeline": [
+        {
+          "time": "2026-07-04T17:09:05Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-05T03:44:32Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Deploy canary configuration validation",
+        "Increase load test coverage for affected code path"
+      ],
+      "lessonsLearned": [
+        "Capacity planning needs to account for burst traffic patterns"
+      ]
+    },
+    {
       "incidentId": "INC-20260701-0819",
       "title": "Webhook delivery delays",
       "startedAt": "2026-07-01T20:00:34Z",
