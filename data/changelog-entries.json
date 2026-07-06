@@ -1285,5 +1285,29 @@
         "text": "player appeal rate reduced by 18%"
       }
     ]
+  },
+  {
+    "date": "2026-07-06",
+    "timestamp": "2026-07-06T09:47:09Z",
+    "version": "v0.4.4.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized RingZero kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 5893 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on ASUS Aura SDK"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
   }
 ]
