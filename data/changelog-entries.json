@@ -1309,5 +1309,29 @@
         "text": "webhook delivery success rate up to 99.98%"
       }
     ]
+  },
+  {
+    "date": "2026-07-07",
+    "timestamp": "2026-07-07T08:58:53Z",
+    "version": "v0.4.4.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+6 signatures — 5912 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
   }
 ]

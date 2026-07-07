@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260705-9181",
+      "title": "Behavioral model confidence degradation",
+      "startedAt": "2026-07-05T23:03:36Z",
+      "resolvedAt": "2026-07-06T13:49:19Z",
+      "duration": "14h 45m",
+      "impactPct": 1.2,
+      "rootCause": "Misconfigured rate limiter on edge node",
+      "timeline": [
+        {
+          "time": "2026-07-05T23:03:36Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-06T13:49:19Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Add automated rollback trigger for similar conditions",
+        "Add pre-deployment configuration validation step"
+      ],
+      "lessonsLearned": [
+        "Capacity planning needs to account for burst traffic patterns"
+      ]
+    },
+    {
       "incidentId": "INC-20260704-6662",
       "title": "Ban API rate limiter false triggers",
       "startedAt": "2026-07-04T17:09:05Z",
@@ -232,19 +260,6 @@
       "actionItems": [
         "Add hardware-matrix benchmarking gate to model deployment pipeline",
         "Subscribe to ONNX Runtime release notes for breaking changes"
-      ]
-    },
-    {
-      "incidentId": "INC-001",
-      "title": "Driver load failure on Windows 11 24H2 preview",
-      "startedAt": "2026-03-29T20:00:00Z",
-      "resolvedAt": "2026-03-30T09:15:00Z",
-      "duration": "13h 15m",
-      "impactPct": 2.1,
-      "rootCause": "Microsoft changed kernel callback registration behavior in 24H2 preview build 26200. Updated driver to use version-aware callback registration.",
-      "actionItems": [
-        "Subscribe to Windows Insider kernel change notifications",
-        "Add Win11 preview builds to CI test matrix"
       ]
     }
   ]
