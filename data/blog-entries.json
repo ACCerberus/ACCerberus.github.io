@@ -158,5 +158,13 @@
     "title": "Detection Engine Performance Milestone",
     "author": "jpark",
     "generated": true
+  },
+  {
+    "date": "2026-07-08",
+    "timestamp": "2026-07-08T08:01:50Z",
+    "type": "engineering",
+    "title": "Engineering Deep Dive: Scan Pipeline Optimization",
+    "author": "jpark",
+    "generated": true
   }
 ]
