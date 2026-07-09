@@ -1357,5 +1357,29 @@
         "text": "regional detection variance reduced by 4.2%"
       }
     ]
+  },
+  {
+    "date": "2026-07-09",
+    "timestamp": "2026-07-09T08:57:38Z",
+    "version": "v0.4.4.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidHook anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 5952 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "scan latency reduced by 8%"
+      }
+    ]
   }
 ]
