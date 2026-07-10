@@ -1381,5 +1381,29 @@
         "text": "scan latency reduced by 8%"
       }
     ]
+  },
+  {
+    "date": "2026-07-10",
+    "timestamp": "2026-07-10T08:53:48Z",
+    "version": "v0.4.4.7b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule input injection variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5973 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
   }
 ]
