@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.4.7b",
-  "buildNumber": 2865,
-  "lastPatchBump": "2026-07-09T08:57:38Z",
+  "currentVersion": "v0.4.4.8b",
+  "buildNumber": 2866,
+  "lastPatchBump": "2026-07-12T07:51:43Z",
   "lastMinorBump": "2026-06-17T10:20:07Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.4.8b",
+      "date": "2026-07-12T07:51:43Z",
+      "summary": "Behavioral model threshold recalibration"
+    },
     {
       "version": "v0.4.4.7b",
       "date": "2026-07-09T08:57:38Z",
@@ -48,11 +53,6 @@
     {
       "version": "v0.4.3.7b",
       "date": "2026-06-16T10:47:16Z",
-      "summary": "DMA fingerprint database expansion"
-    },
-    {
-      "version": "v0.4.3.6b",
-      "date": "2026-06-14T08:57:30Z",
       "summary": "DMA fingerprint database expansion"
     }
   ]
