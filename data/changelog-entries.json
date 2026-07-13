@@ -1453,5 +1453,29 @@
         "text": "webhook delivery success rate up to 99.98%"
       }
     ]
+  },
+  {
+    "date": "2026-07-13",
+    "timestamp": "2026-07-13T08:38:20Z",
+    "version": "v0.4.4.8b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized SilentByte speedhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+7 signatures — 6056 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
   }
 ]

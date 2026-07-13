@@ -166,5 +166,13 @@
     "title": "Engineering Deep Dive: Scan Pipeline Optimization",
     "author": "jpark",
     "generated": true
+  },
+  {
+    "date": "2026-07-13",
+    "timestamp": "2026-07-13T08:38:21Z",
+    "type": "threat",
+    "title": "Hardware Spoofing Evolution Report",
+    "author": "eriksson",
+    "generated": true
   }
 ]
