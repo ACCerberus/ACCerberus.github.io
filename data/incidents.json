@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260712-8655",
+      "title": "Webhook delivery delays",
+      "startedAt": "2026-07-12T09:53:10Z",
+      "resolvedAt": "2026-07-12T17:01:17Z",
+      "duration": "7h 8m",
+      "impactPct": 1.2,
+      "rootCause": "Signature database index corruption after concurrent write",
+      "timeline": [
+        {
+          "time": "2026-07-12T09:53:10Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-12T17:01:17Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement gradual rollout for configuration changes",
+        "Add automated regression test for this failure mode"
+      ],
+      "lessonsLearned": [
+        "Rollback procedures should be tested quarterly"
+      ]
+    },
+    {
       "incidentId": "INC-20260705-9181",
       "title": "Behavioral model confidence degradation",
       "startedAt": "2026-07-05T23:03:36Z",
@@ -247,19 +275,6 @@
       "actionItems": [
         "Implement additional monitoring for affected subsystem",
         "Update runbook with new escalation procedures"
-      ]
-    },
-    {
-      "incidentId": "INC-002",
-      "title": "Behavioral model latency regression",
-      "startedAt": "2026-04-22T15:10:00Z",
-      "resolvedAt": "2026-04-22T17:45:00Z",
-      "duration": "2h 35m",
-      "impactPct": 1.2,
-      "rootCause": "New model architecture used unsupported ONNX operator on older CPUs, falling back to CPU-only path instead of using AVX2.",
-      "actionItems": [
-        "Add hardware-matrix benchmarking gate to model deployment pipeline",
-        "Subscribe to ONNX Runtime release notes for breaking changes"
       ]
     }
   ]
