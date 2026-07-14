@@ -1477,5 +1477,29 @@
         "text": "memory footprint decreased by 12%"
       }
     ]
+  },
+  {
+    "date": "2026-07-14",
+    "timestamp": "2026-07-14T07:30:36Z",
+    "version": "v0.4.4.9b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized StealthCore driver spoof variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 6086 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "ban accuracy improved by 2.1%"
+      }
+    ]
   }
 ]
