@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.4.9b",
-  "buildNumber": 2867,
-  "lastPatchBump": "2026-07-13T08:38:21Z",
+  "currentVersion": "v0.4.4.10b",
+  "buildNumber": 2868,
+  "lastPatchBump": "2026-07-15T07:44:17Z",
   "lastMinorBump": "2026-06-17T10:20:07Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.4.10b",
+      "date": "2026-07-15T07:44:17Z",
+      "summary": "False positive corrections and signature updates"
+    },
     {
       "version": "v0.4.4.9b",
       "date": "2026-07-13T08:38:21Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.4.1b",
       "date": "2026-06-19T10:06:24Z",
       "summary": "Ban API error handling improvements"
-    },
-    {
-      "version": "v0.4.4.0b",
-      "date": "2026-06-17T10:20:07Z",
-      "summary": "Multi-region optimization and new detection vectors"
     }
   ]
 }
