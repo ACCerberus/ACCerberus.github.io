@@ -1501,5 +1501,29 @@
         "text": "ban accuracy improved by 2.1%"
       }
     ]
+  },
+  {
+    "date": "2026-07-15",
+    "timestamp": "2026-07-15T07:44:17Z",
+    "version": "v0.4.4.9b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher silent aim variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 6115 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on RGB Fusion 2.0 service"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
   }
 ]
