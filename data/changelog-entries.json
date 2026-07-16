@@ -1525,5 +1525,29 @@
         "text": "false positive rate improved by 0.002%"
       }
     ]
+  },
+  {
+    "date": "2026-07-16",
+    "timestamp": "2026-07-16T07:49:16Z",
+    "version": "v0.4.4.10b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized HexShield speedhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+6 signatures — 6145 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on MSI Afterburner overlay"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
   }
 ]
