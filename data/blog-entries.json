@@ -174,5 +174,13 @@
     "title": "Hardware Spoofing Evolution Report",
     "author": "eriksson",
     "generated": true
+  },
+  {
+    "date": "2026-07-17",
+    "timestamp": "2026-07-17T07:46:51Z",
+    "type": "advisory",
+    "title": "Security Notice: False Positive Correction",
+    "author": "mzhang",
+    "generated": true
   }
 ]
