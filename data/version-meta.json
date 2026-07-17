@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.4.10b",
-  "buildNumber": 2868,
-  "lastPatchBump": "2026-07-15T07:44:17Z",
+  "currentVersion": "v0.4.4.11b",
+  "buildNumber": 2869,
+  "lastPatchBump": "2026-07-17T07:46:51Z",
   "lastMinorBump": "2026-06-17T10:20:07Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.4.11b",
+      "date": "2026-07-17T07:46:51Z",
+      "summary": "SDK initialization performance improvements"
+    },
     {
       "version": "v0.4.4.10b",
       "date": "2026-07-15T07:44:17Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.4.2b",
       "date": "2026-06-25T08:42:40Z",
       "summary": "Webhook delivery reliability improvements"
-    },
-    {
-      "version": "v0.4.4.1b",
-      "date": "2026-06-19T10:06:24Z",
-      "summary": "Ban API error handling improvements"
     }
   ]
 }
