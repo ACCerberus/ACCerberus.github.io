@@ -1573,5 +1573,29 @@
         "text": "signature lookup p99 latency down 12ms"
       }
     ]
+  },
+  {
+    "date": "2026-07-18",
+    "timestamp": "2026-07-18T07:21:12Z",
+    "version": "v0.4.4.11b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ApexHack wallhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 6202 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
   }
 ]

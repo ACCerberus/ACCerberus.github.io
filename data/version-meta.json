@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.4.11b",
-  "buildNumber": 2869,
-  "lastPatchBump": "2026-07-17T07:46:51Z",
-  "lastMinorBump": "2026-06-17T10:20:07Z",
+  "currentVersion": "v0.4.5.0b",
+  "buildNumber": 2870,
+  "lastPatchBump": "2026-07-18T07:21:12Z",
+  "lastMinorBump": "2026-07-18T07:21:12Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.5.0b",
+      "date": "2026-07-18T07:21:12Z",
+      "summary": "Multi-region optimization and new detection vectors"
+    },
     {
       "version": "v0.4.4.11b",
       "date": "2026-07-17T07:46:51Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.4.3b",
       "date": "2026-06-26T08:44:08Z",
       "summary": "Detection threshold calibration"
-    },
-    {
-      "version": "v0.4.4.2b",
-      "date": "2026-06-25T08:42:40Z",
-      "summary": "Webhook delivery reliability improvements"
     }
   ]
 }
