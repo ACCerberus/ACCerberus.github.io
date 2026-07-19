@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.5.0b",
-  "buildNumber": 2870,
-  "lastPatchBump": "2026-07-18T07:21:12Z",
+  "currentVersion": "v0.4.5.1b",
+  "buildNumber": 2871,
+  "lastPatchBump": "2026-07-19T07:52:28Z",
   "lastMinorBump": "2026-07-18T07:21:12Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.5.1b",
+      "date": "2026-07-19T07:52:28Z",
+      "summary": "Session lifecycle race condition fix"
+    },
     {
       "version": "v0.4.5.0b",
       "date": "2026-07-18T07:21:12Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.4.4b",
       "date": "2026-06-30T08:49:46Z",
       "summary": "Webhook delivery reliability improvements"
-    },
-    {
-      "version": "v0.4.4.3b",
-      "date": "2026-06-26T08:44:08Z",
-      "summary": "Detection threshold calibration"
     }
   ]
 }
