@@ -1645,5 +1645,29 @@
         "text": "signature lookup p99 latency down 12ms"
       }
     ]
+  },
+  {
+    "date": "2026-07-21",
+    "timestamp": "2026-07-21T08:01:05Z",
+    "version": "v0.4.5.2b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher triggerbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 6286 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
   }
 ]
