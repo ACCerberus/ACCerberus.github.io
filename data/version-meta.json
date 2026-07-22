@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.5.2b",
-  "buildNumber": 2872,
-  "lastPatchBump": "2026-07-20T08:30:09Z",
+  "currentVersion": "v0.4.5.3b",
+  "buildNumber": 2873,
+  "lastPatchBump": "2026-07-22T08:01:27Z",
   "lastMinorBump": "2026-07-18T07:21:12Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.5.3b",
+      "date": "2026-07-22T08:01:27Z",
+      "summary": "Ban API error handling improvements"
+    },
     {
       "version": "v0.4.5.2b",
       "date": "2026-07-20T08:30:09Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.4.6b",
       "date": "2026-07-03T08:41:17Z",
       "summary": "Performance tuning and memory optimizations"
-    },
-    {
-      "version": "v0.4.4.5b",
-      "date": "2026-07-02T08:36:26Z",
-      "summary": "Webhook delivery reliability improvements"
     }
   ]
 }
