@@ -1669,5 +1669,29 @@
         "text": "memory footprint decreased by 12%"
       }
     ]
+  },
+  {
+    "date": "2026-07-22",
+    "timestamp": "2026-07-22T08:01:27Z",
+    "version": "v0.4.5.2b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 6309 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "false negative rate decreased by 0.8%"
+      }
+    ]
   }
 ]
