@@ -1717,5 +1717,29 @@
         "text": "AI inference batch throughput doubled"
       }
     ]
+  },
+  {
+    "date": "2026-07-24",
+    "timestamp": "2026-07-24T08:01:03Z",
+    "version": "v0.4.5.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidHook ESP variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 6339 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on RGB Fusion 2.0 service"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
   }
 ]
