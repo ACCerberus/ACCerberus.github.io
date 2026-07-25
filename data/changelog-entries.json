@@ -1741,5 +1741,29 @@
         "text": "kernel callback response time reduced by 15ms"
       }
     ]
+  },
+  {
+    "date": "2026-07-25",
+    "timestamp": "2026-07-25T07:45:14Z",
+    "version": "v0.4.5.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DeepRoot wallhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 6362 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
   }
 ]
