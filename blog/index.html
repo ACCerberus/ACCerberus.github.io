@@ -106,6 +106,8 @@
     .cat-engineering { background: rgba(64,136,232,0.1); color: var(--blue);  border: 1px solid rgba(64,136,232,0.2);  }
     .cat-milestone { background: rgba(232,160,32,0.1);  color: var(--accent); border: 1px solid rgba(232,160,32,0.2); }
     .cat-casestudy { background: rgba(136,96,232,0.1);  color: var(--purple); border: 1px solid rgba(136,96,232,0.2); }
+    .cat-qa        { background: rgba(48,200,96,0.1);   color: var(--green);  border: 1px solid rgba(48,200,96,0.2);  }
+    .cat-infra     { background: rgba(120,120,140,0.1);  color: #8888a0;       border: 1px solid rgba(120,120,140,0.2); }
 
     .sev-badge {
       font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
@@ -250,6 +252,8 @@
       <button class="filter-btn" data-filter="engineering">Engineering</button>
       <button class="filter-btn" data-filter="milestone">Milestones</button>
       <button class="filter-btn" data-filter="casestudy">Case Studies</button>
+      <button class="filter-btn" data-filter="qa">QA & Stability</button>
+      <button class="filter-btn" data-filter="infra">Infrastructure</button>
     </div>
 
     <div class="posts-grid" id="postsGrid"></div>
@@ -313,14 +317,18 @@
       { name: 's.nakamura',  initials: 'SN', color: '#8860e8', bg: 'rgba(136,96,232,0.15)', role: 'AI & Behavioral' },
       { name: 'Evan',         initials: 'AX', color: '#e8a020', bg: 'rgba(232,160,32,0.15)', role: 'Threat Research' },
       { name: 'lweber',      initials: 'LW', color: '#e04050', bg: 'rgba(224,64,80,0.15)',  role: 'SDK & Integration' },
+      { name: 'tmoretti',    initials: 'TM', color: '#30c860', bg: 'rgba(48,200,96,0.15)',  role: 'QA & Stability' },
+      { name: 'gharris',     initials: 'GH', color: '#8888a0', bg: 'rgba(120,120,140,0.15)', role: 'Infrastructure' },
     ];
     // Map post types to relevant team members
     var AUTHOR_MAP = {
-      threat:    [2, 3],    // s.nakamura, ArsenalRX
+      threat:    [2, 3],    // s.nakamura, Evan
       advisory:  [1, 0],    // dkrasov, nvoronov
       eng:       [0, 2],    // nvoronov, s.nakamura
-      milestone: [3, 4],    // ArsenalRX, lweber
+      milestone: [3, 4],    // Evan, lweber
       partner:   [4, 0],    // lweber, nvoronov
+      qa:        [5, 0],    // tmoretti, nvoronov
+      infra:     [6, 0],    // gharris, nvoronov
     };
 
     var CHEAT_TYPES = ['aimbot','ESP / wallhack','DMA reader','kernel driver','recoil script','triggerbot','HWID spoofer','radar hack','speed exploit','backtrack module','stream-proof overlay','silent aim'];
@@ -577,28 +585,115 @@
       };
     }
 
-    var POST_GENERATORS = [genThreat, genAdvisory, genEngineering, genMilestone, genCaseStudy];
-    // Weighted: threat(3), advisory(2), engineering(2), milestone(1), casestudy(2)
-    var POST_TYPE_WEIGHTS = [0, 0, 0, 1, 1, 2, 2, 3, 4, 4];
+    function genQA(daySeed, postDate) {
+      var s = daySeed + 1000;
+      var pool = AUTHOR_MAP.qa;
+      var author = AUTHORS[pool[seedInt(s+1, 0, pool.length-1)]];
+      var QA_TOPICS = [
+        { title: 'Hardware Compatibility Report: {hw}',          hw: ['AMD Zen 5','Intel Arrow Lake','RTX 50-series','AMD RX 9070','Snapdragon X Elite laptops','DDR5-8000 modules'], metric: 'pass rate', unit: '%' },
+        { title: 'False Positive Investigation: {trigger}',      hw: ['Discord overlay update','OBS Studio hook','Razer Synapse driver','Corsair iCUE conflict','MSI Afterburner overlay','Steam Input API'], metric: 'affected sessions', unit: '' },
+        { title: 'Regression Suite Results: Build {build}',      hw: ['2847','2848','2849','2850','2851','2852'], metric: 'tests passed', unit: '' },
+        { title: 'Driver Stability Report: {period}',            hw: ['Week 20','Week 21','Week 22','Week 23','Week 24','Week 25'], metric: 'BSOD rate', unit: '%' },
+        { title: 'Performance Benchmark: {scenario}',            hw: ['4K Ultra preset','1080p Competitive','VR titles','Laptop thermals','Multi-monitor','Streaming + gaming'], metric: 'frame impact', unit: 'fps' },
+        { title: 'Soak Test Summary: {duration} Continuous Run', hw: ['48-hour','72-hour','96-hour','120-hour','168-hour','48-hour'], metric: 'stability score', unit: '%' },
+      ];
+      var topic = QA_TOPICS[seedInt(s+2, 0, QA_TOPICS.length-1)];
+      var hwPick = topic.hw[seedInt(s+3, 0, topic.hw.length-1)];
+      var title = topic.title.replace(/\{[^}]+\}/, hwPick);
+      var configs = seedInt(s+4, 20, 45);
+      var passRate = (seeded(s+5) * 3 + 96.5).toFixed(1);
+      var issues = seedInt(s+6, 0, 4);
+      var testCount = seedInt(s+7, 180, 420);
+      var soakHrs = seedInt(s+8, 48, 168);
+
+      var p1 = 'QA completed a full validation pass across ' + configs + ' hardware configurations this cycle. Overall pass rate: ' + passRate + '% (' + testCount + ' test cases). ' + issues + ' new issues were flagged for follow-up, none blocking release.';
+      var p2 = 'Testing covered driver load/unload stability, scan latency under sustained load, memory leak detection over ' + soakHrs + '-hour soak runs, and cross-process compatibility with ' + seedInt(s+9, 8, 20) + ' popular overlays and recording tools. Frame impact remained under ' + (seeded(s+10) * 0.4 + 0.3).toFixed(1) + '% across all tested titles.';
+      var p3 = issues > 0 ? 'Flagged issues: ' + seedPick(s+11, ['intermittent scan timeout on legacy i5 systems under heavy disk I/O','minor memory growth detected after 72h+ continuous runtime — investigating potential handle leak','overlay compatibility regression with latest OBS beta build','rare driver unload delay on systems with 3+ monitors']) + '. Fix ETA: next patch cycle.' : 'No issues flagged — all tests within acceptable thresholds. Build cleared for partner rollout.';
+
+      return {
+        type: 'qa', catClass: 'cat-qa', catLabel: 'QA & STABILITY',
+        title: title, author: author, date: fmtDate(postDate), readTime: seedInt(s+12, 3, 5),
+        excerpt: p1,
+        tags: ['qa', 'testing', 'stability', 'compatibility'],
+        sevBadge: null,
+        statsBoxes: [
+          { value: configs,           label: 'HW Configs Tested' },
+          { value: passRate + '%',    label: 'Pass Rate' },
+          { value: testCount,         label: 'Test Cases' },
+          { value: issues,            label: 'Issues Found' },
+        ],
+        categoryBreakdown: null,
+        body: [p1, p2, p3],
+        timeline: null,
+        advisoryMeta: null,
+      };
+    }
+
+    function genInfra(daySeed, postDate) {
+      var s = daySeed + 1200;
+      var pool = AUTHOR_MAP.infra;
+      var author = AUTHORS[pool[seedInt(s+1, 0, pool.length-1)]];
+      var INFRA_TOPICS = [
+        { title: 'Deploy Pipeline: {metric} Improvement', metric: ['build time','deploy frequency','rollback speed','canary promotion','artifact caching','test parallelization'] },
+        { title: 'Telemetry Pipeline: {metric} Update',   metric: ['ingestion throughput','query latency','storage optimization','alerting accuracy','dashboard refresh','data retention'] },
+        { title: 'Regional Health: {region} Report',       metric: ['US-East','EU-West','AP-Southeast','US-East + EU-West','all regions','EU-West + AP-Southeast'] },
+        { title: 'Monitoring & Alerting: {metric}',        metric: ['false alarm reduction','alert routing','on-call rotation','SLO tracking','incident response','page fatigue'] },
+        { title: 'CI/CD Update: {metric}',                 metric: ['pipeline reliability','flaky test elimination','merge queue','dependency scanning','container builds','cache hit ratio'] },
+      ];
+      var topic = INFRA_TOPICS[seedInt(s+2, 0, INFRA_TOPICS.length-1)];
+      var metricPick = topic.metric[seedInt(s+3, 0, topic.metric.length-1)];
+      var title = topic.title.replace(/\{[^}]+\}/, metricPick);
+      var uptime = (seeded(s+4) * 1.2 + 97.0).toFixed(2);
+      var deploys = seedInt(s+5, 3, 12);
+      var incidents = seedInt(s+6, 0, 2);
+      var p50 = seedInt(s+7, 80, 180);
+      var p99 = seedInt(s+8, 200, 600);
+
+      var p1 = 'Infrastructure report for this cycle: ' + deploys + ' production deploys shipped with zero rollbacks. Overall service uptime: ' + uptime + '%. Median API response time (p50): ' + p50 + 'ms, p99: ' + p99 + 'ms.';
+      var p2 = incidents > 0 ? incidents + ' minor incident(s) triggered automated alerting this period. Root causes: ' + seedPick(s+9, ['transient DNS resolution spike in EU-West','brief disk I/O saturation on telemetry ingest nodes','certificate renewal delay on staging environment','GC pause spike on signature database primary']) + '. All resolved within SLO targets.' : 'Zero incidents this cycle. All services operated within SLO targets across all three regions.';
+      var p3 = 'Pipeline improvements: build times reduced by ' + seedInt(s+10, 5, 25) + '% through ' + seedPick(s+11, ['improved layer caching in container builds','parallelized test execution across 4 runners','dependency pre-fetch optimization','incremental compilation for driver modules']) + '. Signature database sync latency between regions held at ' + seedInt(s+12, 2, 8) + ' seconds average.';
+
+      return {
+        type: 'infra', catClass: 'cat-infra', catLabel: 'INFRASTRUCTURE',
+        title: title, author: author, date: fmtDate(postDate), readTime: seedInt(s+13, 2, 4),
+        excerpt: p1,
+        tags: ['infrastructure', 'devops', 'reliability', 'deploys'],
+        sevBadge: null,
+        statsBoxes: [
+          { value: uptime + '%',  label: 'Uptime' },
+          { value: deploys,       label: 'Deploys' },
+          { value: p50 + 'ms',   label: 'p50 Latency' },
+          { value: incidents,     label: 'Incidents' },
+        ],
+        categoryBreakdown: null,
+        body: [p1, p2, p3],
+        timeline: null,
+        advisoryMeta: null,
+      };
+    }
+
+    var POST_GENERATORS = [genThreat, genAdvisory, genEngineering, genMilestone, genCaseStudy, genQA, genInfra];
+    // Weighted: threat(2), advisory(1), engineering(2), milestone(1), casestudy(1), qa(2), infra(1)
+    var POST_TYPE_WEIGHTS = [0, 0, 1, 2, 2, 3, 4, 5, 5, 6];
 
     // =====================================================================
-    // GENERATE POSTS (one per ~5-7 days, seeded, most recent 10)
+    // GENERATE POSTS (1-2 per dept per week ≈ 7-10 per week)
     // =====================================================================
     var posts = [];
     var scanDay = today;
     var postCount = 0;
 
-    while (postCount < 25 && scanDay > today - 800) {
-      var intervalSeed = scanDay * 31 + 7;
-      var interval = 5 + Math.floor(seeded(intervalSeed) * 3); // 5-7 days
-      if (seeded(scanDay * 13 + 3) < (1 / interval)) {
-        // Post on this day
-        var typeSeed  = scanDay * 97 + 11;
+    while (postCount < 60 && scanDay > today - 800) {
+      var dayRoll = seeded(scanDay * 13 + 3);
+      var postsToday = dayRoll < 0.25 ? 0 : dayRoll < 0.65 ? 1 : 2; // ~0-2 posts per day, avg ~1.1
+      for (var pi = 0; pi < postsToday; pi++) {
+        var typeSeed  = scanDay * 97 + 11 + pi * 53;
         var typeIdx   = POST_TYPE_WEIGHTS[Math.floor(seeded(typeSeed) * POST_TYPE_WEIGHTS.length)];
         var generator = POST_GENERATORS[typeIdx];
-        var postSeed  = scanDay * 1000 + typeIdx * 100;
+        var postSeed  = scanDay * 1000 + typeIdx * 100 + pi * 7;
         posts.push(generator(postSeed, scanDay));
         postCount++;
+        if (postCount >= 60) break;
       }
       scanDay--;
     }
@@ -868,6 +963,8 @@
           'Engineering': 'engineering', 'engineering': 'engineering', 'Engineering Update': 'engineering',
           'Milestone': 'milestone', 'milestone': 'milestone',
           'Case Study': 'casestudy', 'casestudy': 'casestudy',
+          'QA & Stability': 'qa', 'qa': 'qa', 'QA': 'qa',
+          'Infrastructure': 'infra', 'infra': 'infra', 'DevOps': 'infra',
         };
         var catMeta = {
           threat:      { catClass: 'cat-threat',   catLabel: 'THREAT REPORT' },
@@ -875,6 +972,8 @@
           engineering: { catClass: 'cat-engineering', catLabel: 'ENGINEERING' },
           milestone:   { catClass: 'cat-milestone',catLabel: 'MILESTONE' },
           casestudy:   { catClass: 'cat-casestudy', catLabel: 'CASE STUDY' },
+          qa:          { catClass: 'cat-qa',       catLabel: 'QA & STABILITY' },
+          infra:       { catClass: 'cat-infra',    catLabel: 'INFRASTRUCTURE' },
         };
 
         function resolveAuthor(name) {
@@ -886,7 +985,7 @@
           return { name: name, initials: name.substring(0, 2).toUpperCase(), color: '#4088e8', bg: 'rgba(64,136,232,0.15)', role: '' };
         }
 
-        var typeMap = { 'threat': 0, 'advisory': 1, 'engineering': 2, 'milestone': 3, 'casestudy': 4 };
+        var typeMap = { 'threat': 0, 'advisory': 1, 'engineering': 2, 'milestone': 3, 'casestudy': 4, 'qa': 5, 'infra': 6 };
 
         entries.slice().reverse().forEach(function(entry) {
           // Skip hidden entries
