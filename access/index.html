@@ -722,16 +722,40 @@ White-label SDK</span>
           };
           localStorage.setItem('cerberus_reg_' + email, JSON.stringify(regData));
 
-          // NOTE: pending applications used to be pushed straight to the GitHub API from
-          // this page using a hardcoded token — that leaked a repo-write credential to every
-          // visitor and has been removed. Real cross-device submission intake (so applications
-          // reach an admin review queue without shipping a secret to the browser) is a
-          // follow-up task — see the admin panel work in cerberus-rpc.
-          showSuccess();
+          // Submitted to the cerberus-intake Worker, which holds the GitHub token
+          // server-side and appends the application to data/x9f3k7.json. Replaces the
+          // old design where a GitHub token was hardcoded directly in this page's JS.
+          var WORKER_URL = 'https://cerberus-intake.YOUR_SUBDOMAIN.workers.dev';
 
-          function showSuccess() {
-            var appId = 'CRB-2026-' + String(Math.floor(1000 + Math.random() * 9000));
-            appIdEl.textContent = appId;
+          fetch(WORKER_URL + '/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: email,
+              passwordHash: passwordHash,
+              name: displayName,
+              studio: studioName,
+              game: gameTitleVal,
+              engine: engineVal,
+              genre: genreVal,
+              tier: tierVal
+            })
+          }).then(function(r) { return r.json(); }).then(function(res) {
+            if (res && res.ok) {
+              showSuccess(res.appId);
+            } else {
+              btn.textContent = 'Submit Application';
+              btn.disabled = false;
+              alert((res && res.error) || 'Could not submit your application. Please try again.');
+            }
+          }).catch(function() {
+            btn.textContent = 'Submit Application';
+            btn.disabled = false;
+            alert('Could not reach the application service. Please try again later.');
+          });
+
+          function showSuccess(appId) {
+            appIdEl.textContent = appId || 'pending';
             formCard.style.display = 'none';
             successCard.style.display = 'block';
             var secs = 5;
