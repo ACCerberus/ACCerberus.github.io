@@ -1,6 +1,174 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260721-0141",
+      "title": "Memory scan false positive on accessibility software",
+      "startedAt": "2026-07-21T13:58:59Z",
+      "resolvedAt": "2026-07-21T21:13:02Z",
+      "duration": "7h 14m",
+      "impactPct": 0.5,
+      "rootCause": "Cache invalidation storm after signature push",
+      "timeline": [
+        {
+          "time": "2026-07-21T13:58:59Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-21T21:13:02Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Deploy canary configuration validation",
+        "Increase load test coverage for affected code path"
+      ],
+      "lessonsLearned": [
+        "Observability gaps in this subsystem masked early warning signs"
+      ]
+    },
+    {
+      "incidentId": "INC-20260712-8655",
+      "title": "Webhook delivery delays",
+      "startedAt": "2026-07-12T09:53:10Z",
+      "resolvedAt": "2026-07-12T17:01:17Z",
+      "duration": "7h 8m",
+      "impactPct": 1.2,
+      "rootCause": "Signature database index corruption after concurrent write",
+      "timeline": [
+        {
+          "time": "2026-07-12T09:53:10Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-12T17:01:17Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement gradual rollout for configuration changes",
+        "Add automated regression test for this failure mode"
+      ],
+      "lessonsLearned": [
+        "Rollback procedures should be tested quarterly"
+      ]
+    },
+    {
+      "incidentId": "INC-20260705-9181",
+      "title": "Behavioral model confidence degradation",
+      "startedAt": "2026-07-05T23:03:36Z",
+      "resolvedAt": "2026-07-06T13:49:19Z",
+      "duration": "14h 45m",
+      "impactPct": 1.2,
+      "rootCause": "Misconfigured rate limiter on edge node",
+      "timeline": [
+        {
+          "time": "2026-07-05T23:03:36Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-06T13:49:19Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Add automated rollback trigger for similar conditions",
+        "Add pre-deployment configuration validation step"
+      ],
+      "lessonsLearned": [
+        "Capacity planning needs to account for burst traffic patterns"
+      ]
+    },
+    {
+      "incidentId": "INC-20260704-6662",
+      "title": "Ban API rate limiter false triggers",
+      "startedAt": "2026-07-04T17:09:05Z",
+      "resolvedAt": "2026-07-05T03:44:32Z",
+      "duration": "10h 35m",
+      "impactPct": 0.8,
+      "rootCause": "Load balancer health check misconfiguration",
+      "timeline": [
+        {
+          "time": "2026-07-04T17:09:05Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-05T03:44:32Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Deploy canary configuration validation",
+        "Increase load test coverage for affected code path"
+      ],
+      "lessonsLearned": [
+        "Capacity planning needs to account for burst traffic patterns"
+      ]
+    },
+    {
+      "incidentId": "INC-20260701-0819",
+      "title": "Webhook delivery delays",
+      "startedAt": "2026-07-01T20:00:34Z",
+      "resolvedAt": "2026-07-02T07:35:18Z",
+      "duration": "11h 34m",
+      "impactPct": 2.8,
+      "rootCause": "TLS certificate pinning hash mismatch after CA rotation",
+      "timeline": [
+        {
+          "time": "2026-07-01T20:00:34Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-02T07:35:18Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Increase load test coverage for affected code path",
+        "Implement gradual rollout for configuration changes"
+      ],
+      "lessonsLearned": [
+        "Detection of this failure mode should be automated"
+      ]
+    },
+    {
+      "incidentId": "INC-20260629-9194",
+      "title": "Webhook delivery delays",
+      "startedAt": "2026-06-29T18:10:19Z",
+      "resolvedAt": "2026-06-30T03:57:01Z",
+      "duration": "9h 46m",
+      "impactPct": 1.7,
+      "rootCause": "Kernel module incompatibility with latest Windows Insider build",
+      "timeline": [
+        {
+          "time": "2026-06-29T18:10:19Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-06-30T03:57:01Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Document incident pattern for on-call training",
+        "Implement additional monitoring for affected subsystem"
+      ],
+      "lessonsLearned": [
+        "Detection of this failure mode should be automated"
+      ]
+    },
+    {
       "incidentId": "INC-20260528-3940",
       "title": "Ban API rate limiter false triggers",
       "startedAt": "2026-05-28T17:35:42Z",
@@ -110,57 +278,6 @@
       ],
       "lessonsLearned": [
         "Configuration changes need staged rollout validation"
-      ]
-    },
-    {
-      "incidentId": "INC-003",
-      "title": "Discord overlay false positive spike",
-      "startedAt": "2026-05-14T08:22:00Z",
-      "resolvedAt": "2026-05-14T11:40:00Z",
-      "duration": "3h 18m",
-      "impactPct": 3.4,
-      "rootCause": "Discord modified its overlay hook from SetWindowsHookEx to a direct IAT patch. Our kernel layer's DLL injection heuristic matched the new pattern.",
-      "timeline": [
-        {
-          "time": "2026-05-14T08:22:00Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-05-14T11:40:00Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
-      ],
-      "actionItems": [
-        "Implement additional monitoring for affected subsystem",
-        "Update runbook with new escalation procedures"
-      ]
-    },
-    {
-      "incidentId": "INC-002",
-      "title": "Behavioral model latency regression",
-      "startedAt": "2026-04-22T15:10:00Z",
-      "resolvedAt": "2026-04-22T17:45:00Z",
-      "duration": "2h 35m",
-      "impactPct": 1.2,
-      "rootCause": "New model architecture used unsupported ONNX operator on older CPUs, falling back to CPU-only path instead of using AVX2.",
-      "actionItems": [
-        "Add hardware-matrix benchmarking gate to model deployment pipeline",
-        "Subscribe to ONNX Runtime release notes for breaking changes"
-      ]
-    },
-    {
-      "incidentId": "INC-001",
-      "title": "Driver load failure on Windows 11 24H2 preview",
-      "startedAt": "2026-03-29T20:00:00Z",
-      "resolvedAt": "2026-03-30T09:15:00Z",
-      "duration": "13h 15m",
-      "impactPct": 2.1,
-      "rootCause": "Microsoft changed kernel callback registration behavior in 24H2 preview build 26200. Updated driver to use version-aware callback registration.",
-      "actionItems": [
-        "Subscribe to Windows Insider kernel change notifications",
-        "Add Win11 preview builds to CI test matrix"
       ]
     }
   ]

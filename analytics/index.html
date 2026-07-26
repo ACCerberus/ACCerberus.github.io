@@ -1045,7 +1045,7 @@
       { name: 'DEV-INTERNAL-01', code: 'CRB-0001', genre: 'Sandbox', engine: 'UE5.4', region: 'US-East' },
       { name: 'DEV-INTERNAL-02', code: 'CRB-0002', genre: 'Test Harness', engine: 'Custom', region: 'US-West' },
     ];
-    var buildVersions = ['v0.5.0.0b-b2852', 'v0.5.0.0b-b2854', 'v0.4.3.0b-b2851', 'v0.4.3.0b-b2853', 'v0.4.2.2b-b2850'];
+    var buildVersions = ['v0.5.0.0b-b2875', 'v0.5.0.0b-b2877', 'v0.4.5.4b-b2874', 'v0.4.5.4b-b2876', 'v0.4.5.3b-b2871'];
 
     // Seed initial active instances (5-8 on load)
     var initialCount = 8 + Math.floor(seeded(daySeed * 701) * 6);
@@ -2032,20 +2032,20 @@
       var versions = [
         {
           ver: 'v0.5.0.0b', date: 'Jul 26, 2026', tag: 'CURRENT', tagClass: 'vh-tag-active',
-          stats: { totalBans: 3572, totalDetections: 5104, falsePositives: 3, avgLatency: '2.1ms', sigCount: 5157, pentests: 412 },
+          stats: { totalBans: 5697, totalDetections: 8146, falsePositives: 8, avgLatency: '2.6ms', sigCount: 6413, pentests: 486 },
           findings: [
-            'Server-side replay confirmation resolves 96% of borderline (67-95% confidence) detections without human review',
-            'Adversarial Replay Sandbox cut manual review queue depth by 61%',
-            'Cross-session behavioral graph (early access) links repeat offenders across new accounts with 88% precision',
+            'Cross-Session Behavioral Graph reaches general availability, linking repeat offenders across new accounts with 88% precision',
+            'Automated replay triage cut manual review queue depth by 61%',
+            'Replay sandbox verdicts agree with human reviewers 97% of the time',
             'Average detection-to-ban time held at 1.7 seconds despite added verification pass',
           ],
           learnings: [
             'Session recordings over 500MB need chunked streaming — naive buffering stalled the replay queue under load',
-            'Replay sandbox verdicts agree with human reviewers 97% of the time, disagreements skew toward sandbox being more conservative',
+            'Replay sandbox disagreements with human reviewers skew toward the sandbox being more conservative',
             'Behavioral graph false-links appear when players share hardware (family accounts) — needs household-aware weighting',
           ],
           improvements: [
-            'Added Adversarial Replay Sandbox — server-side re-execution before auto-ban',
+            'Cross-Session Behavioral Graph graduated from early access to general availability',
             'Manual review escalation now defers to replay sandbox verdicts first',
             'False positive rate held at 0.14% despite higher detection volume',
           ]
