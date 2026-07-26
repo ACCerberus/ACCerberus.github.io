@@ -103,7 +103,7 @@ jobs:
             BANS=$(jq '.totalBans' data/state.json)
 
             # Weighted type selection
-            TYPES=("threat" "threat" "threat" "advisory" "advisory" "engineering" "engineering" "milestone" "casestudy" "casestudy")
+            TYPES=("threat" "threat" "advisory" "engineering" "engineering" "milestone" "casestudy" "qa" "qa" "infra")
             TYPE_IDX=$((RANDOM % ${#TYPES[@]}))
             POST_TYPE="${TYPES[$TYPE_IDX]}"
 
@@ -123,6 +123,12 @@ jobs:
                 ;;
               "casestudy")
                 TITLES=("Partner Spotlight: Competitive FPS Integration" "Case Study: MMO Anti-Cheat Deployment" "Battle Royale Protection at Scale" "Esports Tournament Protection Results" "How Studio X Eliminated DMA Cheating" "Tactical Shooter: 99.2% Detection Rate" "MMO Launch Day Anti-Cheat Results" "Cross-Platform Protection Case Study" "Esports League Partnership Results" "Free-to-Play Title Cheat Reduction Study")
+                ;;
+              "qa")
+                TITLES=("Hardware Compatibility Report: AMD Zen 5" "False Positive Investigation: Discord Overlay" "Regression Suite Results: Latest Build" "Driver Stability Report: Weekly Summary" "Performance Benchmark: 4K Ultra Preset" "Soak Test Summary: 72-Hour Run" "QA Pass Rate Report: All Configurations" "Compatibility Update: New GPU Drivers" "FP Regression Baseline Update" "Hardware Lab Testing: DDR5 Modules")
+                ;;
+              "infra")
+                TITLES=("Deploy Pipeline Performance Update" "Telemetry Ingestion Throughput Report" "Regional Health Check: All Regions" "CI/CD Pipeline Reliability Update" "Monitoring & Alerting Improvements" "Infrastructure Cost Optimization Report" "Build Cache Hit Ratio Improvements" "Signature Sync Latency Reduction" "Container Build Optimization" "On-Call Rotation Summary")
                 ;;
             esac
 
