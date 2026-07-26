@@ -64,7 +64,7 @@
           threatLevel: 'LOW',
           signatureDb: snap ? snap.signatureCount : 4910,
           totalBans: snap ? snap.totalBans : 3247,
-          engineVersion: snap ? snap.engineVersion : 'v0.4.2.0b',
+          engineVersion: snap ? snap.engineVersion : 'v0.5.0.0b',
           activeSessions: snap ? snap.activeSessions : 482,
           dailyDetections: snap ? snap.dailyDetections : 18,
           falsePositiveRate: snap ? snap.falsePositiveRate : 0.14,

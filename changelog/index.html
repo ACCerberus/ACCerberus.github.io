@@ -293,9 +293,21 @@
     // Phase 2: Usermode Engine (v0.1.x) — Oct 2024 - Jan 2025
     // Phase 3: Kernel Mode (v0.2.x) — Feb-May 2025
     // Phase 4: Behavioral AI (v0.3.x) — Jun-Oct 2025
-    // Phase 5: Hardware Detection (v0.4.x) — Nov 2025 - Present
+    // Phase 5: Hardware Detection (v0.4.x) — Nov 2025 - Jul 2026
+    // Phase 6: Server-Side Verification (v0.5.x) — Jul 2026 - Present
 
     var majorReleases = [
+      // === PHASE 6: Server-Side Verification ===
+      { phase: 'Phase 6 — Server-Side Verification (v0.5.x)', ver: 'v0.5.0.0b', date: 'Jul 26, 2026', dateSeed: dateToDaySeed(2026,7,26), tags: ['BETA','MAJOR'], changes: [
+        {t:'ADDED',c:'Adversarial Replay Sandbox — server-side session re-execution confirms cheating without client intervention'},
+        {t:'ADDED',c:'Automated replay triage queue routes low-confidence verdicts (67-95%) to sandboxed re-simulation before manual review'},
+        {t:'ADDED',c:'Cross-Session Behavioral Graph (early access) — links repeat offenders across new accounts and hardware'},
+        {t:'IMPROVED',c:'Manual review escalation pipeline now defers to replay sandbox verdicts before flagging for human review'},
+        {t:'IMPROVED',c:'Behavioral AI model retrained on 1,400 new cheat samples'},
+        {t:'FIXED',c:'Replay queue backlog when session recordings exceeded 500MB — now chunked and streamed'},
+        {t:'FIXED',c:'Rare deadlock in verdict engine when replay sandbox and manual review resolved simultaneously'},
+      ], sig: '+23 new signatures. Covers: AimStar replay-evasion variants, NeverLose loader recompiles targeting sandbox detection. Total: 5,157.' },
+
       // === PHASE 5: Hardware Detection ===
       { phase: 'Phase 5 — Hardware Fingerprinting (v0.4.x)', ver: 'v0.4.2.0b', date: 'May 12, 2026', dateSeed: dateToDaySeed(2026,5,12), tags: ['BETA','DETECTION UPDATE'], changes: [
         {t:'ADDED',c:'PCIe TLP timing analyzer for DMA latency anomaly detection'},
@@ -578,9 +590,9 @@
       return updates.reverse(); // newest first
     }
 
-    // Generate daily updates between last major release (May 12 2026) and today
-    var lastMajorSeed = dateToDaySeed(2026, 5, 12);
-    var dailyUpdates = generateDailyUpdates(lastMajorSeed + 1, today, 'v0.4.2.0b', 4891);
+    // Generate daily updates between last major release (Jul 26 2026) and today
+    var lastMajorSeed = dateToDaySeed(2026, 7, 26);
+    var dailyUpdates = generateDailyUpdates(lastMajorSeed + 1, today, 'v0.5.0.0b', 5157);
 
     // ===== RENDER =====
     var timeline = document.getElementById('changelogTimeline');
