@@ -154,6 +154,64 @@ jobs:
             echo "Skipping blog generation (${DAYS_SINCE} days since last, or random skip)"
           fi
 
+      - name: Maybe generate SDK/API/docs update note
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          TODAY=$(date -u +"%Y-%m-%d")
+          VERSION=$(jq -r '.engineVersion' data/state.json)
+
+          # 20% chance per run
+          if [ $((RANDOM % 5)) -eq 0 ]; then
+            CATS=("sdk" "api" "docs")
+            CAT_IDX=$((RANDOM % ${#CATS[@]}))
+            CAT="${CATS[$CAT_IDX]}"
+
+            case "$CAT" in
+              "sdk")
+                LABEL="SDK"
+                NOTES_ADDED=("Added async session-init overload for Unity 6" "Added retry-with-backoff config option to webhook client" "Added Unreal Engine 5.5 plugin compatibility shim" "Added optional debug symbol package for crash triage")
+                NOTES_IMPROVED=("Reduced SDK static library size by 6%" "Improved error messages on malformed API key" "Improved cold-start initialization time by 18ms")
+                NOTES_FIXED=("Fixed memory leak in session teardown on early exit" "Fixed C# binding marshaling issue on ARM64" "Fixed crash when ban callback fired during scene unload")
+                ;;
+              "api")
+                LABEL="API"
+                NOTES_ADDED=("Added cursor-based pagination to /v2/bans" "Added player_id filter to /v2/sessions" "Added bulk webhook resend endpoint")
+                NOTES_IMPROVED=("Reduced p99 latency on /v2/detections by 15%" "Improved rate-limit error payload with retry-after hints" "Improved webhook delivery success rate to 99.97%")
+                NOTES_FIXED=("Fixed 500 on malformed match_id in /v2/sessions/end" "Fixed stale cache on /v2/status during failover" "Fixed webhook signature mismatch on payloads over 64KB")
+                ;;
+              "docs")
+                LABEL="Docs"
+                NOTES_ADDED=("Added troubleshooting section for VBS/Secure Boot conflicts" "Added Unity 6 quick-start guide" "Added webhook signature verification examples in Python and Go")
+                NOTES_IMPROVED=("Clarified scanInterval tuning guidance for menu-heavy titles" "Reorganized API reference by resource type" "Expanded FAQ with common integration pitfalls")
+                NOTES_FIXED=("Fixed outdated code sample in CerberusConfig reference" "Fixed broken anchor links in integration guide" "Corrected default value for aiSampleRate in parameter table")
+                ;;
+            esac
+
+            TYPES=("added" "improved" "fixed")
+            TYPE_IDX=$((RANDOM % ${#TYPES[@]}))
+            NOTE_TYPE="${TYPES[$TYPE_IDX]}"
+            case "$NOTE_TYPE" in
+              "added") POOL=("${NOTES_ADDED[@]}") ;;
+              "improved") POOL=("${NOTES_IMPROVED[@]}") ;;
+              "fixed") POOL=("${NOTES_FIXED[@]}") ;;
+            esac
+            NOTE_IDX=$((RANDOM % ${#POOL[@]}))
+            NOTE_TEXT="${LABEL}: ${POOL[$NOTE_IDX]}"
+
+            ENTRY=$(jq -n \
+              --arg date "$TODAY" \
+              --arg ts "$NOW" \
+              --arg ver "$VERSION" \
+              --arg type "$NOTE_TYPE" \
+              --arg text "$NOTE_TEXT" \
+              '{date: $date, timestamp: $ts, version: $ver, type: "daily", changes: [{type: $type, text: $text}]}')
+
+            jq --argjson entry "$ENTRY" '. + [$entry]' data/changelog-entries.json > data/cl_tmp2.json && mv data/cl_tmp2.json data/changelog-entries.json
+            echo "Generated $LABEL update note: $NOTE_TEXT"
+          else
+            echo "Skipping SDK/API/docs note this run"
+          fi
+
       - name: Maybe bump version
         run: |
           NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -178,7 +236,7 @@ jobs:
 
           # PATCH every 12-72h (50% chance when eligible)
           if [ "$PATCH_AGE_H" -ge 24 ] && [ $((RANDOM % 2)) -eq 0 ]; then
-            # Parse version: v0.4.2.0b -> increment last digit
+            # Parse version: v0.5.0.0b -> increment last digit
             # Extract numeric parts
             BASE=$(echo "$CUR_VERSION" | sed 's/^v//' | sed 's/b$//')
             IFS='.' read -ra PARTS <<< "$BASE"

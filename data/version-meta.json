@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.3.0b",
-  "buildNumber": 2850,
-  "lastPatchBump": "2026-05-28T09:38:00Z",
-  "lastMinorBump": "2026-05-28T09:38:00Z",
-  "lastFeatureBump": "2026-03-15T12:00:00Z",
+  "currentVersion": "v0.5.0.0b",
+  "buildNumber": 2852,
+  "lastPatchBump": "2026-07-26T12:00:00Z",
+  "lastMinorBump": "2026-07-26T12:00:00Z",
+  "lastFeatureBump": "2026-07-26T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.5.0.0b",
+      "date": "2026-07-26T12:00:00Z",
+      "summary": "Adversarial Replay Sandbox and server-side verification pipeline"
+    },
     {
       "version": "v0.4.3.0b",
       "date": "2026-05-28T09:38:00Z",

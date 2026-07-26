@@ -1,5 +1,44 @@
 [
   {
+    "version": "v0.5.0.0b",
+    "date": "2026-07-26T12:00:00Z",
+    "author": "nvoronov",
+    "entries": [
+      {
+        "type": "added",
+        "text": "Adversarial Replay Sandbox — server-side session re-execution confirms cheating without client-side intervention, eliminating false positives on borderline detections"
+      },
+      {
+        "type": "added",
+        "text": "Automated replay triage queue routes low-confidence verdicts (67-95%) to sandboxed re-simulation before manual review"
+      },
+      {
+        "type": "added",
+        "text": "Cross-Session Behavioral Graph (early access) — links repeat offenders across new accounts and hardware via behavioral fingerprint continuity"
+      },
+      {
+        "type": "improved",
+        "text": "Manual review escalation pipeline now defers to replay sandbox verdicts before flagging for human review"
+      },
+      {
+        "type": "improved",
+        "text": "False positive rate held at 0.14% despite higher detection volume from the added verification pass"
+      },
+      {
+        "type": "improved",
+        "text": "Behavioral AI model retrained on 1,400 new cheat samples"
+      },
+      {
+        "type": "fixed",
+        "text": "Replay queue backlog when session recordings exceeded 500MB — now chunked and streamed"
+      },
+      {
+        "type": "fixed",
+        "text": "Rare deadlock in verdict engine when replay sandbox and manual review resolved simultaneously"
+      }
+    ]
+  },
+  {
     "version": "v0.4.2.0b",
     "date": "2026-05-12T10:00:00Z",
     "author": "nvoronov",

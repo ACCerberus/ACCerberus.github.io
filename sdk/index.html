@@ -369,10 +369,10 @@
       <div class="release-hero-top">
         <div class="release-version-block">
           <div class="release-version-label">Current Release</div>
-          <div class="release-version-num">v0.4.2.0<span style="font-size:1.4rem;color:var(--accent);font-weight:600;">b</span></div>
+          <div class="release-version-num">v0.5.0.0<span style="font-size:1.4rem;color:var(--accent);font-weight:600;">b</span></div>
           <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
             <span class="release-tag">BETA</span>
-            <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-dim);">Released May 12, 2026</span>
+            <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-dim);">Released Jul 26, 2026</span>
           </div>
         </div>
         <div class="release-actions">
@@ -386,11 +386,11 @@
       <div class="release-stats">
         <div class="release-stat">
           <div class="release-stat-label">File Size</div>
-          <div class="release-stat-value">4.8 MB</div>
+          <div class="release-stat-value">4.9 MB</div>
         </div>
         <div class="release-stat">
           <div class="release-stat-label">Archive</div>
-          <div class="release-stat-value">cerberus-sdk-v0.4.2.0b-win64.zip</div>
+          <div class="release-stat-value">cerberus-sdk-v0.5.0.0b-win64.zip</div>
         </div>
         <div class="release-stat">
           <div class="release-stat-label">Platform</div>
@@ -399,7 +399,7 @@
         <div class="release-stat" style="flex-basis:100%;">
           <div class="release-stat-label">SHA-256 Checksum</div>
           <div class="release-stat-value checksum" id="checksumVal">
-            a3f7e2d19c84b60f5512973ec1aa847d2b9f038c74e5d61b8a920c43e7f1d256
+            b6d4e91f6a2701b40f2c1de038f5c9a3e7b4021d986f75c3a9014e5c81f96a3
             <button class="checksum-copy" onclick="copyChecksum()" id="checksumCopyBtn" title="Copy checksum">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               Copy
@@ -412,7 +412,7 @@
     <!-- SDK COMPONENTS -->
     <div class="section-header">
       <div class="section-title">SDK Components</div>
-      <div class="section-subtitle">Everything included in the cerberus-sdk-v0.4.2.0b-win64.zip archive</div>
+      <div class="section-subtitle">Everything included in the cerberus-sdk-v0.5.0.0b-win64.zip archive</div>
     </div>
     <div class="components-grid" style="margin-bottom:40px;">
 
@@ -448,7 +448,7 @@
         <div class="component-desc">Step-by-step PDF covering build setup, API key provisioning, session lifecycle, and error handling.</div>
         <div class="component-meta">
           <span class="component-badge badge-pdf">PDF</span>
-          <span class="component-size">CerberusSDK-IntegrationGuide-v0.4.2.0b.pdf &middot; 1.2 MB</span>
+          <span class="component-size">CerberusSDK-IntegrationGuide-v0.5.0.0b.pdf &middot; 1.2 MB</span>
         </div>
       </div>
 
@@ -750,8 +750,8 @@
       var n = incrementDlCount();
       renderDlCount(n);
       var a = document.createElement('a');
-      a.href = '/downloads/cerberus-sdk-v0.4.2.0b.zip';
-      a.download = 'cerberus-sdk-v0.4.2.0b.zip';
+      a.href = '/downloads/cerberus-sdk-v0.5.0.0b.zip';
+      a.download = 'cerberus-sdk-v0.5.0.0b.zip';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -784,12 +784,20 @@
     // ===== VERSION HISTORY DATA =====
     var versions = [
       {
+        ver: 'v0.5.0.0b',
+        date: 'Jul 26, 2026',
+        size: '4.9 MB',
+        changes: 'Adversarial Replay Sandbox, automated replay triage queue, cross-session behavioral graph (early access), further false positive suppression.',
+        seed: 42601,
+        current: true
+      },
+      {
         ver: 'v0.4.2.0b',
         date: 'May 12, 2026',
         size: '4.8 MB',
         changes: 'PCIe TLP timing analyzer, manual review escalation pipeline, secondary verification pass, 34% false positive reduction.',
         seed: 42201,
-        current: true
+        current: false
       },
       {
         ver: 'v0.4.1.0b',
@@ -924,8 +932,8 @@
       var g = incrementDlCount();
       renderDlCount(g);
       var a = document.createElement('a');
-      a.href = '/downloads/cerberus-sdk-v0.4.2.0b.zip';
-      a.download = 'cerberus-sdk-v0.4.2.0b.zip';
+      a.href = '/downloads/cerberus-sdk-v0.5.0.0b.zip';
+      a.download = 'cerberus-sdk-v0.5.0.0b.zip';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

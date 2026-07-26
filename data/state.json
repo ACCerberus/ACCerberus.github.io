@@ -1,9 +1,9 @@
 {
   "lastUpdate": "2026-07-26T15:04:04.588Z",
-  "signatureDb": 5134,
+  "signatureDb": 5157,
   "totalBans": 3569,
-  "engineVersion": "v0.4.3.0b",
-  "buildNumber": 2851,
+  "engineVersion": "v0.5.0.0b",
+  "buildNumber": 2852,
   "uptimePercent": 97.8,
   "lastIncident": "2026-05-14T08:22:00Z",
   "activeSessions": 435,

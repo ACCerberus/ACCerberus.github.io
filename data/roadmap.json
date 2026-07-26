@@ -3,26 +3,34 @@
   "items": {
     "short": [
       {
-        "id": "r-s1",
-        "name": "Adversarial Replay Sandbox",
-        "desc": "Isolated replay environment that re-executes suspicious sessions server-side to confirm cheating without client intervention — eliminates false positives on edge cases",
-        "progress": 82.4,
+        "id": "r-s6",
+        "name": "Replay Sandbox Multi-Region Rollout",
+        "desc": "Expands the Adversarial Replay Sandbox beyond its US-East pilot to EU-West and AP-Southeast — brings server-side verification to all regions",
+        "progress": 8.0,
         "color": "var(--green)",
-        "added": "2026-03-01"
+        "added": "2026-07-26"
+      },
+      {
+        "id": "r-s5",
+        "name": "Retinal Scan Correlation",
+        "desc": "Eye tracking data analysis to detect ESP/wallhack users by correlating gaze patterns with enemy positions behind walls",
+        "progress": 2.0,
+        "color": "var(--blue)",
+        "added": "2026-07-26"
       },
       {
         "id": "r-s2",
         "name": "Input Entropy Fingerprinting",
         "desc": "Measures Shannon entropy of raw input streams to detect synthetic inputs — human input has natural entropy patterns that no cheat can replicate",
-        "progress": 68.4,
+        "progress": 76.2,
         "color": "var(--blue)",
         "added": "2026-02-15"
       },
       {
         "id": "r-s4",
         "name": "Cross-Session Behavioral Graph",
-        "desc": "Graph neural network that builds player identity from behavioral patterns across sessions — detects ban evaders even with new hardware and accounts",
-        "progress": 51.5,
+        "desc": "Graph neural network that builds player identity from behavioral patterns across sessions — detects ban evaders even with new hardware and accounts. Early access shipped in v0.5.0.0b.",
+        "progress": 74.0,
         "color": "var(--purple)",
         "added": "2026-04-10"
       }
@@ -91,6 +99,14 @@
         "progress": 10.6,
         "color": "var(--purple)",
         "added": "2026-05-15"
+      },
+      {
+        "id": "r-m8",
+        "name": "Competitive Integrity Score",
+        "desc": "Public per-player trust score based on behavioral history that tournament organizers and matchmaking can use",
+        "progress": 4.0,
+        "color": "var(--accent)",
+        "added": "2026-07-26"
       }
     ],
     "long": [
@@ -133,9 +149,23 @@
         "progress": 0,
         "color": "var(--red)",
         "added": "2026-05-20"
+      },
+      {
+        "id": "r-l6",
+        "name": "Inference-on-Edge via NPU",
+        "desc": "Offload behavioral AI inference to dedicated NPU hardware for zero-impact scanning during gameplay — builds on internal NPU offloading research",
+        "progress": 2.0,
+        "color": "var(--blue)",
+        "added": "2026-07-26"
       }
     ],
     "completed": [
+      {
+        "id": "r-c4",
+        "name": "Adversarial Replay Sandbox",
+        "desc": "Isolated replay environment that re-executes suspicious sessions server-side to confirm cheating without client intervention — eliminates false positives on edge cases",
+        "completedDate": "2026-07-26"
+      },
       {
         "id": "r-c1",
         "name": "DMA Board Detection",
@@ -157,11 +187,6 @@
     ]
   },
   "templatePool": [
-    {
-      "name": "Retinal Scan Correlation",
-      "desc": "Eye tracking data analysis to detect ESP/wallhack users by correlating gaze patterns with enemy positions behind walls",
-      "color": "var(--blue)"
-    },
     {
       "name": "Physics Simulation Validator",
       "desc": "Server-side physics replay that detects impossible movement trajectories and collision bypasses",
@@ -188,11 +213,6 @@
       "color": "var(--blue)"
     },
     {
-      "name": "Autonomous Red Team Agent",
-      "desc": "AI agent that continuously attempts to bypass Cerberus detection — finds vulnerabilities before cheat developers do",
-      "color": "var(--red)"
-    },
-    {
       "name": "Social Graph Cheater Detection",
       "desc": "Maps player social connections to identify boosting rings and organized cheating groups through behavioral clustering",
       "color": "var(--green)"
@@ -203,19 +223,9 @@
       "color": "var(--purple)"
     },
     {
-      "name": "Competitive Integrity Score",
-      "desc": "Public per-player trust score based on behavioral history that tournament organizers and matchmaking can use",
-      "color": "var(--accent)"
-    },
-    {
       "name": "Polymorphic Driver Loader",
       "desc": "Each client loads a uniquely obfuscated kernel driver variant — prevents universal bypass development",
       "color": "var(--red)"
-    },
-    {
-      "name": "Inference-on-Edge via NPU",
-      "desc": "Offload behavioral AI inference to dedicated NPU hardware for zero-impact scanning during gameplay",
-      "color": "var(--blue)"
     },
     {
       "name": "Multi-Language SDK",
