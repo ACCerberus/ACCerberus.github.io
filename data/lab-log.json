@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-30",
+  "lastUpdated": "2026-07-26",
   "entries": [
     {
       "id": "lab-001",
@@ -81,38 +81,61 @@
       "startDate": "2026-05-28",
       "lastUpdate": "2026-05-28",
       "findings": "Initial research phase. Literature review in progress."
-    }
-  ],
-  "templatePool": [
-    {
-      "title": "FPGA-Accelerated Pattern Matching",
-      "desc": "Using reconfigurable hardware for real-time cheat signature matching at line rate.",
-      "topic": "hardware"
     },
     {
-      "title": "Differential Privacy in Telemetry",
-      "desc": "Applying epsilon-delta privacy to aggregated detection metrics before reporting.",
-      "topic": "privacy"
-    },
-    {
-      "title": "eBPF-Based Kernel Monitoring",
-      "desc": "Using eBPF programs for low-overhead kernel-space behavioral monitoring on Linux.",
-      "topic": "kernel"
-    },
-    {
-      "title": "Adversarial ML Robustness Testing",
-      "desc": "Evaluating detection model resilience against adversarial input perturbations designed to evade classification.",
-      "topic": "ml"
-    },
-    {
-      "title": "Network Traffic Fingerprinting",
-      "desc": "Detecting cheat tool communication by analyzing packet timing and payload entropy patterns.",
-      "topic": "networking"
-    },
-    {
+      "id": "lab-010",
       "title": "Compiler-Level Obfuscation Pipeline",
       "desc": "Custom LLVM passes for automated binary diversification to resist reverse engineering.",
-      "topic": "security"
+      "status": "HYPOTHESIS",
+      "startDate": "2026-06-05",
+      "lastUpdate": "2026-06-05",
+      "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-011",
+      "title": "Differential Privacy in Telemetry",
+      "desc": "Applying epsilon-delta privacy to aggregated detection metrics before reporting.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-06-10",
+      "lastUpdate": "2026-06-10",
+      "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-012",
+      "title": "Adversarial ML Robustness Testing",
+      "desc": "Evaluating detection model resilience against adversarial input perturbations designed to evade classification.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-06-15",
+      "lastUpdate": "2026-06-15",
+      "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-013",
+      "title": "eBPF-Based Kernel Monitoring",
+      "desc": "Using eBPF programs for low-overhead kernel-space behavioral monitoring on Linux.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-06-20",
+      "lastUpdate": "2026-06-20",
+      "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-014",
+      "title": "FPGA-Accelerated Pattern Matching",
+      "desc": "Using reconfigurable hardware for real-time cheat signature matching at line rate.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-06-25",
+      "lastUpdate": "2026-06-25",
+      "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-015",
+      "title": "Network Traffic Fingerprinting",
+      "desc": "Detecting cheat tool communication by analyzing packet timing and payload entropy patterns.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-06-30",
+      "lastUpdate": "2026-06-30",
+      "findings": "Initial research phase. Literature review in progress."
     }
-  ]
+  ],
+  "templatePool": []
 }

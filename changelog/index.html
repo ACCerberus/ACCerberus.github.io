@@ -299,14 +299,14 @@
     var majorReleases = [
       // === PHASE 6: Server-Side Verification ===
       { phase: 'Phase 6 — Server-Side Verification (v0.5.x)', ver: 'v0.5.0.0b', date: 'Jul 26, 2026', dateSeed: dateToDaySeed(2026,7,26), tags: ['BETA','MAJOR'], changes: [
-        {t:'ADDED',c:'Adversarial Replay Sandbox — server-side session re-execution confirms cheating without client intervention'},
-        {t:'ADDED',c:'Automated replay triage queue routes low-confidence verdicts (67-95%) to sandboxed re-simulation before manual review'},
-        {t:'ADDED',c:'Cross-Session Behavioral Graph (early access) — links repeat offenders across new accounts and hardware'},
-        {t:'IMPROVED',c:'Manual review escalation pipeline now defers to replay sandbox verdicts before flagging for human review'},
+        {t:'ADDED',c:'Cross-Session Behavioral Graph reaches general availability — graph neural network links repeat offenders across new accounts and hardware, graduating from early access'},
+        {t:'ADDED',c:'Automated replay triage queue routes low-confidence verdicts (67-95%) through the Adversarial Replay Sandbox before manual review'},
+        {t:'ADDED',c:'Replay sandbox verdicts now feed directly into the ban appeal review queue'},
+        {t:'IMPROVED',c:'Manual review escalation pipeline now defers to Adversarial Replay Sandbox verdicts before flagging for human review'},
         {t:'IMPROVED',c:'Behavioral AI model retrained on 1,400 new cheat samples'},
         {t:'FIXED',c:'Replay queue backlog when session recordings exceeded 500MB — now chunked and streamed'},
         {t:'FIXED',c:'Rare deadlock in verdict engine when replay sandbox and manual review resolved simultaneously'},
-      ], sig: '+23 new signatures. Covers: AimStar replay-evasion variants, NeverLose loader recompiles targeting sandbox detection. Total: 5,157.' },
+      ], sig: '+23 new signatures. Covers: AimStar replay-evasion variants, NeverLose loader recompiles targeting sandbox detection. Total: 6,413.' },
 
       // === PHASE 5: Hardware Detection ===
       { phase: 'Phase 5 — Hardware Fingerprinting (v0.4.x)', ver: 'v0.4.2.0b', date: 'May 12, 2026', dateSeed: dateToDaySeed(2026,5,12), tags: ['BETA','DETECTION UPDATE'], changes: [
@@ -592,7 +592,7 @@
 
     // Generate daily updates between last major release (Jul 26 2026) and today
     var lastMajorSeed = dateToDaySeed(2026, 7, 26);
-    var dailyUpdates = generateDailyUpdates(lastMajorSeed + 1, today, 'v0.5.0.0b', 5157);
+    var dailyUpdates = generateDailyUpdates(lastMajorSeed + 1, today, 'v0.5.0.0b', 6413);
 
     // ===== RENDER =====
     var timeline = document.getElementById('changelogTimeline');
@@ -625,11 +625,12 @@
       // Server-generated daily entries (from content engine)
       if (serverEntries && serverEntries.length > 0) {
         serverEntries.slice().reverse().forEach(function(entry, idx) {
+          var rawChanges = entry.changes || entry.entries || [];
           var rel = {
             ver: entry.version,
             date: entry.date,
-            tags: ['SIG UPDATE'],
-            changes: entry.changes.map(function(c) { return { t: c.type.toUpperCase(), c: c.text }; }),
+            tags: entry.author ? ['BETA', 'MAJOR'] : ['SIG UPDATE'],
+            changes: rawChanges.map(function(c) { return { t: c.type.toUpperCase(), c: c.text }; }),
             isDaily: true,
             isLatest: idx === 0
           };

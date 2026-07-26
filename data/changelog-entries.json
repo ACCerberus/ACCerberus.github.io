@@ -1,44 +1,5 @@
 [
   {
-    "version": "v0.5.0.0b",
-    "date": "2026-07-26T12:00:00Z",
-    "author": "nvoronov",
-    "entries": [
-      {
-        "type": "added",
-        "text": "Adversarial Replay Sandbox — server-side session re-execution confirms cheating without client-side intervention, eliminating false positives on borderline detections"
-      },
-      {
-        "type": "added",
-        "text": "Automated replay triage queue routes low-confidence verdicts (67-95%) to sandboxed re-simulation before manual review"
-      },
-      {
-        "type": "added",
-        "text": "Cross-Session Behavioral Graph (early access) — links repeat offenders across new accounts and hardware via behavioral fingerprint continuity"
-      },
-      {
-        "type": "improved",
-        "text": "Manual review escalation pipeline now defers to replay sandbox verdicts before flagging for human review"
-      },
-      {
-        "type": "improved",
-        "text": "False positive rate held at 0.14% despite higher detection volume from the added verification pass"
-      },
-      {
-        "type": "improved",
-        "text": "Behavioral AI model retrained on 1,400 new cheat samples"
-      },
-      {
-        "type": "fixed",
-        "text": "Replay queue backlog when session recordings exceeded 500MB — now chunked and streamed"
-      },
-      {
-        "type": "fixed",
-        "text": "Rare deadlock in verdict engine when replay sandbox and manual review resolved simultaneously"
-      }
-    ]
-  },
-  {
     "version": "v0.4.2.0b",
     "date": "2026-05-12T10:00:00Z",
     "author": "nvoronov",
@@ -458,6 +419,1413 @@
       {
         "type": "improved",
         "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
+  },
+  {
+    "date": "2026-05-31",
+    "timestamp": "2026-05-31T08:30:53Z",
+    "version": "v0.4.3.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PhantomOverlay radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 5147 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-01",
+    "timestamp": "2026-06-01T11:01:29Z",
+    "version": "v0.4.3.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ApexHack wallhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5166 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "player appeal rate reduced by 18%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-02",
+    "timestamp": "2026-06-02T09:55:12Z",
+    "version": "v0.4.3.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidHook memory manipulation variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 5181 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-03",
+    "timestamp": "2026-06-03T10:26:54Z",
+    "version": "v0.4.3.2b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher ESP variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 5197 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "signature matching throughput up 22%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-04",
+    "timestamp": "2026-06-04T09:37:19Z",
+    "version": "v0.4.3.2b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DeepRoot silent aim variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+7 signatures — 5213 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Logitech G Hub macro engine"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-05",
+    "timestamp": "2026-06-05T08:59:02Z",
+    "version": "v0.4.3.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DeepRoot DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 5227 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Logitech G Hub macro engine"
+      },
+      {
+        "type": "improved",
+        "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-06",
+    "timestamp": "2026-06-06T08:18:48Z",
+    "version": "v0.4.3.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 5256 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "false negative rate decreased by 0.8%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-07",
+    "timestamp": "2026-06-07T08:40:43Z",
+    "version": "v0.4.3.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized CipherLoad wallhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 5285 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Logitech G Hub macro engine"
+      },
+      {
+        "type": "improved",
+        "text": "false negative rate decreased by 0.8%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-08",
+    "timestamp": "2026-06-08T10:09:37Z",
+    "version": "v0.4.3.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 5306 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "player appeal rate reduced by 18%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-09",
+    "timestamp": "2026-06-09T08:53:53Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PhantomOverlay kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 5326 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Steam overlay compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "false negative rate decreased by 0.8%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-10",
+    "timestamp": "2026-06-10T09:34:34Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DeepRoot radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5342 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-11",
+    "timestamp": "2026-06-11T09:57:22Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 5358 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-12",
+    "timestamp": "2026-06-12T09:49:22Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 5375 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-13",
+    "timestamp": "2026-06-13T08:41:22Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge ESP variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+6 signatures — 5394 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-14",
+    "timestamp": "2026-06-14T08:57:30Z",
+    "version": "v0.4.3.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized NullDriver triggerbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 5425 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-15",
+    "timestamp": "2026-06-15T11:37:29Z",
+    "version": "v0.4.3.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge driver spoof variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 5451 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on EVGA Precision X1 overlay"
+      },
+      {
+        "type": "improved",
+        "text": "scan latency reduced by 8%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-16",
+    "timestamp": "2026-06-16T10:47:16Z",
+    "version": "v0.4.3.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 5466 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-17",
+    "timestamp": "2026-06-17T10:20:06Z",
+    "version": "v0.4.3.7b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized HexShield ESP variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 5485 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on ShareX capture module"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-18",
+    "timestamp": "2026-06-18T10:00:04Z",
+    "version": "v0.4.4.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault wallhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 5504 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-19",
+    "timestamp": "2026-06-19T10:06:24Z",
+    "version": "v0.4.4.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized CipherLoad input injection variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 5519 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on EVGA Precision X1 overlay"
+      },
+      {
+        "type": "improved",
+        "text": "signature lookup p99 latency down 12ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-20",
+    "timestamp": "2026-06-20T08:36:19Z",
+    "version": "v0.4.4.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 5534 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-21",
+    "timestamp": "2026-06-21T09:30:40Z",
+    "version": "v0.4.4.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 5555 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Wallpaper Engine hook"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-22",
+    "timestamp": "2026-06-22T11:25:55Z",
+    "version": "v0.4.4.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 5576 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on ShareX capture module"
+      },
+      {
+        "type": "improved",
+        "text": "signature matching throughput up 22%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-23",
+    "timestamp": "2026-06-23T08:51:54Z",
+    "version": "v0.4.4.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized StealthCore silent aim variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 5588 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "signature matching throughput up 22%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-24",
+    "timestamp": "2026-06-24T08:47:32Z",
+    "version": "v0.4.4.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5610 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Corsair iCUE driver"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-25",
+    "timestamp": "2026-06-25T08:42:40Z",
+    "version": "v0.4.4.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized GhostWare radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 5639 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-26",
+    "timestamp": "2026-06-26T08:44:08Z",
+    "version": "v0.4.4.2b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized RingZero memory manipulation variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 5662 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-27",
+    "timestamp": "2026-06-27T08:20:47Z",
+    "version": "v0.4.4.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized GhostWare speedhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 5686 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-28",
+    "timestamp": "2026-06-28T08:36:13Z",
+    "version": "v0.4.4.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5702 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-29",
+    "timestamp": "2026-06-29T10:14:17Z",
+    "version": "v0.4.4.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized RingZero anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 5732 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-30",
+    "timestamp": "2026-06-30T08:49:46Z",
+    "version": "v0.4.4.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher ESP variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5744 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "ban accuracy improved by 2.1%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-01",
+    "timestamp": "2026-07-01T09:23:23Z",
+    "version": "v0.4.4.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 5766 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Steam overlay compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "signature lookup p99 latency down 12ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-02",
+    "timestamp": "2026-07-02T08:36:26Z",
+    "version": "v0.4.4.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+3 signatures — 5794 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Citrix virtual display driver"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-03",
+    "timestamp": "2026-07-03T08:41:17Z",
+    "version": "v0.4.4.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge memory manipulation variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 5816 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-04",
+    "timestamp": "2026-07-04T08:15:42Z",
+    "version": "v0.4.4.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized GhostWare anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+7 signatures — 5846 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Wallpaper Engine hook"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-05",
+    "timestamp": "2026-07-05T08:34:15Z",
+    "version": "v0.4.4.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized StealthCore aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 5864 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "player appeal rate reduced by 18%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-06",
+    "timestamp": "2026-07-06T09:47:09Z",
+    "version": "v0.4.4.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized RingZero kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 5893 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on ASUS Aura SDK"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-07",
+    "timestamp": "2026-07-07T08:58:53Z",
+    "version": "v0.4.4.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+6 signatures — 5912 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-08",
+    "timestamp": "2026-07-08T08:01:50Z",
+    "version": "v0.4.4.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized CipherLoad aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 5933 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-09",
+    "timestamp": "2026-07-09T08:57:38Z",
+    "version": "v0.4.4.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidHook anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 5952 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "scan latency reduced by 8%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-10",
+    "timestamp": "2026-07-10T08:53:48Z",
+    "version": "v0.4.4.7b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule input injection variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 5973 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-11",
+    "timestamp": "2026-07-11T07:27:23Z",
+    "version": "v0.4.4.7b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized GhostWare triggerbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 5993 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Nahimic audio service"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-12",
+    "timestamp": "2026-07-12T07:51:43Z",
+    "version": "v0.4.4.7b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 6021 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-13",
+    "timestamp": "2026-07-13T08:38:20Z",
+    "version": "v0.4.4.8b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized SilentByte speedhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+7 signatures — 6056 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-14",
+    "timestamp": "2026-07-14T07:30:36Z",
+    "version": "v0.4.4.9b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized StealthCore driver spoof variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 6086 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "ban accuracy improved by 2.1%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-15",
+    "timestamp": "2026-07-15T07:44:17Z",
+    "version": "v0.4.4.9b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher silent aim variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 6115 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on RGB Fusion 2.0 service"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-16",
+    "timestamp": "2026-07-16T07:49:16Z",
+    "version": "v0.4.4.10b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized HexShield speedhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+6 signatures — 6145 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on MSI Afterburner overlay"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-17",
+    "timestamp": "2026-07-17T07:46:51Z",
+    "version": "v0.4.4.10b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized HexShield driver spoof variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 6169 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on ShareX capture module"
+      },
+      {
+        "type": "improved",
+        "text": "signature lookup p99 latency down 12ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-18",
+    "timestamp": "2026-07-18T07:21:12Z",
+    "version": "v0.4.4.11b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ApexHack wallhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 6202 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-19",
+    "timestamp": "2026-07-19T07:52:28Z",
+    "version": "v0.4.5.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized GhostWare DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 6229 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on ShareX capture module"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-20",
+    "timestamp": "2026-07-20T08:30:09Z",
+    "version": "v0.4.5.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PhantomOverlay DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 6261 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "signature lookup p99 latency down 12ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-21",
+    "timestamp": "2026-07-21T08:01:05Z",
+    "version": "v0.4.5.2b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher triggerbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 6286 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-22",
+    "timestamp": "2026-07-22T08:01:27Z",
+    "version": "v0.4.5.2b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ShadowPatcher aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 6309 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "false negative rate decreased by 0.8%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-23",
+    "timestamp": "2026-07-23T08:04:29Z",
+    "version": "v0.4.5.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 6324 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Logitech G Hub macro engine"
+      },
+      {
+        "type": "improved",
+        "text": "AI inference batch throughput doubled"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-24",
+    "timestamp": "2026-07-24T08:01:03Z",
+    "version": "v0.4.5.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidHook ESP variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 6339 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on RGB Fusion 2.0 service"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-25",
+    "timestamp": "2026-07-25T07:45:14Z",
+    "version": "v0.4.5.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DeepRoot wallhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 6362 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
+  },
+  {
+    "date": "2026-07-26",
+    "timestamp": "2026-07-26T08:00:01Z",
+    "version": "v0.4.5.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PhantomOverlay anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 6383 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
+  },
+  {
+    "version": "v0.5.0.0b",
+    "date": "2026-07-26T16:00:00Z",
+    "author": "nvoronov",
+    "entries": [
+      {
+        "type": "added",
+        "text": "Cross-Session Behavioral Graph reaches general availability — graph neural network links repeat offenders across new accounts and hardware, graduating from early access"
+      },
+      {
+        "type": "added",
+        "text": "Automated replay triage queue routes low-confidence verdicts (67-95%) through the Adversarial Replay Sandbox before manual review"
+      },
+      {
+        "type": "added",
+        "text": "Replay sandbox verdicts now feed directly into the ban appeal review queue"
+      },
+      {
+        "type": "improved",
+        "text": "Manual review escalation pipeline now defers to Adversarial Replay Sandbox verdicts before flagging for human review"
+      },
+      {
+        "type": "improved",
+        "text": "False positive rate held at 0.14% despite higher detection volume"
+      },
+      {
+        "type": "improved",
+        "text": "Behavioral AI model retrained on 1,400 new cheat samples"
+      },
+      {
+        "type": "fixed",
+        "text": "Replay queue backlog when session recordings exceeded 500MB — now chunked and streamed"
+      },
+      {
+        "type": "fixed",
+        "text": "Rare deadlock in verdict engine when replay sandbox and manual review resolved simultaneously"
       }
     ]
   }
