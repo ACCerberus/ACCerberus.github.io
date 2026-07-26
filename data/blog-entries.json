@@ -190,5 +190,13 @@
     "title": "Behavioral Pattern Evolution Report",
     "author": "akovacs",
     "generated": true
+  },
+  {
+    "date": "2026-07-26",
+    "timestamp": "2026-07-26T08:00:01Z",
+    "type": "engineering",
+    "title": "Our Approach to Kernel-Level Security",
+    "author": "nvoronov",
+    "generated": true
   }
 ]

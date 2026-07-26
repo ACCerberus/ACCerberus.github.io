@@ -1765,5 +1765,29 @@
         "text": "regional detection variance reduced by 4.2%"
       }
     ]
+  },
+  {
+    "date": "2026-07-26",
+    "timestamp": "2026-07-26T08:00:01Z",
+    "version": "v0.4.5.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PhantomOverlay anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 6383 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
   }
 ]

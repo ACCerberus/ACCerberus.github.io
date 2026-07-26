@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.4.5.3b",
-  "buildNumber": 2873,
-  "lastPatchBump": "2026-07-22T08:01:27Z",
+  "currentVersion": "v0.4.5.4b",
+  "buildNumber": 2874,
+  "lastPatchBump": "2026-07-26T08:00:01Z",
   "lastMinorBump": "2026-07-18T07:21:12Z",
   "lastFeatureBump": "2026-03-15T12:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.4.5.4b",
+      "date": "2026-07-26T08:00:01Z",
+      "summary": "Regional latency optimization"
+    },
     {
       "version": "v0.4.5.3b",
       "date": "2026-07-22T08:01:27Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.4.7b",
       "date": "2026-07-09T08:57:38Z",
       "summary": "DMA fingerprint database expansion"
-    },
-    {
-      "version": "v0.4.4.6b",
-      "date": "2026-07-03T08:41:17Z",
-      "summary": "Performance tuning and memory optimizations"
     }
   ]
 }
