@@ -1,59 +1,59 @@
 {
-  "currentVersion": "v0.5.0.0b",
-  "buildNumber": 2875,
-  "lastPatchBump": "2026-07-26T16:00:00Z",
-  "lastMinorBump": "2026-07-26T16:00:00Z",
-  "lastFeatureBump": "2026-07-26T16:00:00Z",
+  "currentVersion": "v2.6.1",
+  "buildNumber": 3120,
+  "lastPatchBump": "2026-07-27T04:00:00Z",
+  "lastMinorBump": "2026-07-24T00:00:00Z",
+  "lastFeatureBump": "2026-04-22T00:00:00Z",
   "patchHistory": [
     {
-      "version": "v0.5.0.0b",
-      "date": "2026-07-26T16:00:00Z",
-      "summary": "Cross-Session Behavioral Graph general availability and replay sandbox refinements"
+      "version": "v2.6.1",
+      "date": "2026-07-27T04:00:00Z",
+      "summary": "Fixed duplicate-charge edge case on checkout retry after gateway timeout"
     },
     {
-      "version": "v0.4.5.4b",
-      "date": "2026-07-26T08:00:01Z",
-      "summary": "Regional latency optimization"
+      "version": "v2.6.0",
+      "date": "2026-07-24T00:00:00Z",
+      "summary": "Apple Pay and Google Pay added at checkout"
     },
     {
-      "version": "v0.4.5.3b",
-      "date": "2026-07-22T08:01:27Z",
-      "summary": "Ban API error handling improvements"
+      "version": "v2.5.6",
+      "date": "2026-07-10T00:00:00Z",
+      "summary": "Cart drawer overlapping nav bar on iPhone SE and other narrow viewports"
     },
     {
-      "version": "v0.4.5.2b",
-      "date": "2026-07-20T08:30:09Z",
-      "summary": "Performance tuning and memory optimizations"
+      "version": "v2.5.5",
+      "date": "2026-06-28T00:00:00Z",
+      "summary": "New genre filters: Roguelike, Deckbuilder, Metroidvania, Survival-Crafting"
     },
     {
-      "version": "v0.4.5.1b",
-      "date": "2026-07-19T07:52:28Z",
-      "summary": "Session lifecycle race condition fix"
+      "version": "v2.5.4",
+      "date": "2026-06-15T00:00:00Z",
+      "summary": "AP-Southeast region launch — localized pricing and regional payment rails"
     },
     {
-      "version": "v0.4.5.0b",
-      "date": "2026-07-18T07:21:12Z",
-      "summary": "Multi-region optimization and new detection vectors"
+      "version": "v2.5.3",
+      "date": "2026-06-02T00:00:00Z",
+      "summary": "Device fingerprinting on checkout to catch repeat chargeback sources"
     },
     {
-      "version": "v0.4.4.11b",
-      "date": "2026-07-17T07:46:51Z",
-      "summary": "SDK initialization performance improvements"
+      "version": "v2.5.2",
+      "date": "2026-05-20T00:00:00Z",
+      "summary": "Guest checkout — no account required for single-key purchases"
     },
     {
-      "version": "v0.4.4.10b",
-      "date": "2026-07-15T07:44:17Z",
-      "summary": "False positive corrections and signature updates"
+      "version": "v2.5.1",
+      "date": "2026-05-08T00:00:00Z",
+      "summary": "Verified Seller badge requirements tightened — ID verification now required"
     },
     {
-      "version": "v0.4.4.9b",
-      "date": "2026-07-13T08:38:21Z",
-      "summary": "Session lifecycle race condition fix"
+      "version": "v2.5.0",
+      "date": "2026-04-22T00:00:00Z",
+      "summary": "EU-West region expansion — regional pricing and VAT-inclusive checkout"
     },
     {
-      "version": "v0.4.4.8b",
-      "date": "2026-07-12T07:51:43Z",
-      "summary": "Behavioral model threshold recalibration"
+      "version": "v2.4.3",
+      "date": "2026-04-05T00:00:00Z",
+      "summary": "Checkout crash on Safari iOS when applying a promo code"
     }
   ]
 }
