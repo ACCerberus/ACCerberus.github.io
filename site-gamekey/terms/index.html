@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service - Cerberus Market</title>
+  <meta name="description" content="Cerberus Market terms of service. Buyer purchase agreement, seller listing terms, refunds, disputes, and liability." />
+  <meta name="theme-color" content="#e8a020" />
+  <meta property="og:title" content="Terms of Service - Cerberus Market" />
+  <meta property="og:description" content="Cerberus Market terms of service. Buyer purchase agreement, seller listing terms, refunds, disputes, and liability." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cerberusac.dev/terms/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F511;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .grid-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,160,32,0.06), transparent 70%);
+    }
+    .noise-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c07818);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507;
+    }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-tag { font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; color: var(--accent); border: 1px solid rgba(232,160,32,0.3); padding: 2px 8px; border-radius: 6px; margin-left: 8px; text-transform: uppercase; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
+    .nav-cart { position: relative; display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; color: var(--text-bright); text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; }
+    .nav-cart:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); }
+    .nav-cart-badge { background: var(--accent); color: #050507; font-size: 0.65rem; font-weight: 700; padding: 1px 6px; border-radius: 10px; min-width: 16px; text-align: center; margin-left: 2px; }
+    .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
+
+    .page-header {
+      text-align: center; padding: 140px 24px 60px; position: relative; z-index: 1;
+    }
+    .page-header-label {
+      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+      color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .page-header h1 {
+      font-family: var(--font-heading); font-size: 2.4rem; font-weight: 800;
+      color: var(--text-bright); letter-spacing: -1.5px; margin-bottom: 12px;
+    }
+    .page-header p {
+      font-size: 0.95rem; color: var(--text-dim); max-width: 520px; margin: 0 auto;
+    }
+    .divider { width: 60px; height: 2px; background: var(--accent); margin: 20px auto 0; opacity: 0.3; }
+
+    .legal-content {
+      max-width: 720px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 1;
+    }
+    .legal-content h2 {
+      font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;
+      color: var(--text-bright); margin: 40px 0 16px; padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .legal-content h2:first-of-type { border-top: none; padding-top: 0; }
+    .legal-content h3 {
+      font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600;
+      color: var(--text-bright); margin: 24px 0 10px;
+    }
+    .legal-content p {
+      font-size: 0.87rem; color: var(--text); margin-bottom: 14px; line-height: 1.75;
+    }
+    .legal-content ul, .legal-content ol {
+      margin-bottom: 14px; padding-left: 20px;
+    }
+    .legal-content li {
+      font-size: 0.85rem; color: var(--text); margin-bottom: 6px; line-height: 1.7;
+    }
+    .legal-content strong { color: var(--text-bright); }
+    .legal-content a { color: var(--accent); text-decoration: none; }
+    .legal-content a:hover { text-decoration: underline; }
+    .legal-content code {
+      font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,255,255,0.04);
+      padding: 2px 6px; border-radius: 4px; color: var(--accent);
+    }
+
+    .callout {
+      padding: 16px 20px; border-radius: 10px; margin: 16px 0 24px;
+      font-size: 0.82rem; line-height: 1.6;
+    }
+    .callout-warn { background: rgba(232,160,32,0.08); border-left: 3px solid var(--accent); color: var(--text); }
+    .callout-danger { background: rgba(224,64,80,0.08); border-left: 3px solid var(--red); color: var(--text); }
+
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px 24px; margin-bottom: 32px;
+    }
+    .toc-title {
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+    }
+    .toc ol { padding-left: 18px; }
+    .toc li { font-size: 0.8rem; margin-bottom: 6px; }
+    .toc a { color: var(--text); text-decoration: none; }
+    .toc a:hover { color: var(--accent); }
+
+    .updated-badge {
+      display: inline-block; font-family: var(--font-mono); font-size: 0.7rem;
+      color: var(--text-dim); background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      padding: 4px 12px; border-radius: 6px; margin-bottom: 32px;
+    }
+
+    .footer {
+      text-align: center; padding: 40px 24px; border-top: 1px solid var(--border); position: relative; z-index: 1;
+    }
+    .footer-brand {
+      font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem;
+      color: var(--text-bright); margin-bottom: 8px;
+    }
+    .footer-brand span { color: var(--accent); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .page-header { padding: 120px 20px 40px; }
+      .page-header h1 { font-size: 1.8rem; }
+      .legal-content { padding: 0 20px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+  <div class="noise-overlay"></div>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+      <div class="nav-tag">MARKET</div>
+    </a>
+    <div class="nav-links">
+      <a href="/catalog/">Catalog</a>
+      <a href="/deals/">Deals</a>
+      <a href="/trends/">Trends</a>
+      <a href="/sellers/">Sellers</a>
+      <a href="/status/">Status</a>
+    </div>
+    <div class="nav-cta-wrap">
+      <a href="/cart/" class="nav-cart" id="navCartLink">Cart <span id="navCartCount" class="nav-cart-badge" style="display:none">0</span></a>
+      <a href="/sell/" class="nav-cta">Sell on Cerberus Market</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="page-header-label">Legal</div>
+    <h1>Terms of Service</h1>
+    <p>The rules for buying and selling on Cerberus Market. Kept short because nobody reads 40-page ToS documents.</p>
+    <div class="divider"></div>
+  </div>
+
+  <div class="legal-content">
+    <div class="updated-badge">Last updated: July 2026</div>
+
+    <div class="toc">
+      <div class="toc-title">On this page</div>
+      <ol>
+        <li><a href="#agreement">Agreement</a></li>
+        <li><a href="#buyer-terms">Buyer terms</a></li>
+        <li><a href="#refunds">Refunds and replacement policy</a></li>
+        <li><a href="#seller-terms">Seller terms</a></li>
+        <li><a href="#prohibited">Prohibited items and conduct</a></li>
+        <li><a href="#disputes">Dispute resolution</a></li>
+        <li><a href="#warranty">Warranty disclaimer</a></li>
+        <li><a href="#liability">Limitation of liability</a></li>
+        <li><a href="#ip">Intellectual property</a></li>
+        <li><a href="#termination">Termination</a></li>
+        <li><a href="#law">Governing law</a></li>
+        <li><a href="#changes">Changes to these terms</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ol>
+    </div>
+
+    <h2 id="agreement">Agreement</h2>
+    <p>These terms govern your use of Cerberus Market, including the storefront, checkout, seller tools, and account dashboard (collectively, "Cerberus Market" or "the Service"). By creating an account, purchasing a key, or listing an item for sale, you agree to these terms. If you're using Cerberus Market on behalf of a business, you confirm you have authority to bind that organization.</p>
+    <p>Cerberus Market is a <strong>keys-only marketplace</strong>. We do not support the sale of accounts, subscriptions transferred outside their issuing platform, or physical goods.</p>
+
+    <h2 id="buyer-terms">Buyer terms</h2>
+    <p>When you purchase a key through Cerberus Market:</p>
+    <ul>
+      <li>You're entering into a purchase agreement directly with the seller; Cerberus Market facilitates the transaction, escrow, and delivery.</li>
+      <li>Keys are delivered digitally, typically within minutes of a completed order and no later than 24 hours for orders requiring manual seller fulfillment.</li>
+      <li>You're responsible for redeeming your key on the correct platform and region before starting play -- some titles are region-locked, and listings clearly state applicable region restrictions.</li>
+      <li>Purchasing a key does not transfer any rights beyond activation of that single key on the publisher's platform.</li>
+    </ul>
+
+    <h2 id="refunds">Refunds and replacement policy</h2>
+    <div class="callout callout-warn">If a key doesn't work, we fix it. Report an invalid or already-used key within 48 hours of purchase and we'll issue a free replacement or a full refund -- your choice.</div>
+    <ul>
+      <li><strong>Invalid keys</strong> -- if a key fails to activate, submit a support ticket with the error you received. We verify the claim with the seller and issue a replacement key or refund, typically within 24-48 hours.</li>
+      <li><strong>Already-used keys</strong> -- if a key was already redeemed by someone else, this is treated the same as an invalid key and is eligible for immediate replacement or refund.</li>
+      <li><strong>Buyer's remorse</strong> -- once a key has been revealed to you, it cannot be returned for a refund, since keys cannot be "un-redeemed." We recommend reviewing region and platform requirements before purchase.</li>
+      <li><strong>Delivery delays</strong> -- if a manually-fulfilled order isn't delivered within 24 hours, you may cancel for a full refund.</li>
+    </ul>
+    <p>Refunds are returned to your original payment method or as Cerberus Market wallet balance, at your choice, where available.</p>
+
+    <h2 id="seller-terms">Seller terms</h2>
+    <p>To list keys for sale on Cerberus Market:</p>
+    <ul>
+      <li><strong>Listing requirements</strong> -- listings must accurately state the game title, edition, platform, region, and delivery method. Misleading listings may be removed and repeat violations can result in suspension.</li>
+      <li><strong>Verification tiers</strong> -- new sellers start at the Standard tier. Verified and Elite tiers require identity verification and unlock higher listing limits, lower fees, and priority catalog placement.</li>
+      <li><strong>Payout schedule</strong> -- proceeds from completed sales (net of the marketplace fee) are paid out weekly to your registered payout method, after the buyer's replacement window has closed.</li>
+      <li><strong>Fees</strong> -- Cerberus Market charges a percentage-based fee per completed sale, disclosed in your seller dashboard before you list.</li>
+      <li><strong>Performance standards</strong> -- sellers with excessive invalid-key rates or slow delivery times may be moved to a lower tier or suspended pending review.</li>
+    </ul>
+
+    <h2 id="prohibited">Prohibited items and conduct</h2>
+    <div class="callout callout-danger"><strong>Cerberus Market is a keys-only platform.</strong> Account sales, account trading, and stolen or fraudulently obtained keys are strictly prohibited and will result in listing removal, forfeiture of proceeds, and account termination.</div>
+    <p>The following are never permitted on Cerberus Market:</p>
+    <ul>
+      <li>Selling or trading game accounts, or transferring account credentials as part of a "key" listing</li>
+      <li>Listing keys obtained through stolen payment methods, chargebacked purchases, or other fraudulent means</li>
+      <li>Listing keys acquired in violation of a publisher's terms of service (e.g., region-locked keys misrepresented as global)</li>
+      <li>Selling counterfeit, duplicated, or non-functional codes</li>
+      <li>Creating multiple accounts to evade a suspension or verification requirement</li>
+      <li>Using the platform to launder funds or disguise the origin of goods</li>
+    </ul>
+    <p>We reserve the right to remove listings, reverse transactions, and permanently ban accounts involved in prohibited activity, and to report suspected fraud to payment processors or law enforcement where required.</p>
+
+    <h2 id="disputes">Dispute resolution</h2>
+    <p>Most order issues are resolved automatically through our refund and replacement policy above. For disputes that aren't resolved that way:</p>
+    <ol>
+      <li>Open a dispute through your order page, describing the issue and any evidence (error screenshots, activation logs).</li>
+      <li>The counterparty (buyer or seller) has 3 business days to respond.</li>
+      <li>If unresolved, our support team reviews the evidence and makes a binding determination on the order -- typically within 5 business days.</li>
+      <li>Funds in dispute are held in escrow until resolution, so neither party is at risk of losing both the item and the payment.</li>
+    </ol>
+    <p>Repeated disputes against a single seller may trigger a broader account review independent of any individual case.</p>
+
+    <h2 id="warranty">Warranty disclaimer</h2>
+    <p>Cerberus Market is provided <strong>"as-is."</strong> We make no warranties, express or implied, including but not limited to:</p>
+    <ul>
+      <li>That the marketplace will be available without interruption</li>
+      <li>That every listing is accurate at all times (though we require sellers to keep listings current)</li>
+      <li>That a given title will function on your specific hardware or region -- always check listing details before purchase</li>
+      <li>Fitness for a particular purpose beyond facilitating key sales</li>
+    </ul>
+    <p>We work to keep the marketplace reliable and disputes rare, but we can't guarantee a perfect experience on every order.</p>
+
+    <h2 id="liability">Limitation of liability</h2>
+    <p>To the maximum extent permitted by law, Cerberus Market is not liable for:</p>
+    <ul>
+      <li>Indirect, incidental, or consequential damages arising from a transaction between a buyer and seller</li>
+      <li>Losses caused by a seller's failure to deliver, beyond the refund and replacement remedies described above</li>
+      <li>Service interruptions, outages, or delays outside our reasonable control</li>
+      <li>Third-party payment processor or payout provider errors</li>
+    </ul>
+    <p>Our total liability for any claim related to the Service is limited to the amount you paid for the specific order giving rise to the claim.</p>
+
+    <h2 id="ip">Intellectual property</h2>
+    <p><strong>Our IP:</strong> The Cerberus Market platform, branding, and software are our intellectual property. Your license to use them is limited to normal use of the marketplace as a buyer or seller.</p>
+    <p><strong>Publisher IP:</strong> Game titles, artwork, and trademarks displayed in listings belong to their respective publishers and are used for identification purposes only. Cerberus Market does not claim ownership of any listed game.</p>
+    <p><strong>Your content:</strong> Listing descriptions, storefront names, and reviews you submit remain yours, but you grant us a license to display them on the marketplace.</p>
+
+    <h2 id="termination">Termination</h2>
+    <p>Either party can end this relationship at any time:</p>
+    <ul>
+      <li><strong>You</strong> can close your account at any time. Pending orders and payouts are settled according to normal timelines before closure completes.</li>
+      <li><strong>We</strong> may suspend or terminate your account for violating these terms, engaging in prohibited conduct, or posing a risk to other users -- with notice where practical, and immediately in cases of suspected fraud.</li>
+    </ul>
+
+    <h2 id="law">Governing law</h2>
+    <p>These terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles. Disputes not resolved through our internal process will be resolved through binding arbitration under the rules of the American Arbitration Association, conducted in English. You agree to attempt informal resolution with us before initiating arbitration.</p>
+
+    <h2 id="changes">Changes to these terms</h2>
+    <p>We may update these terms as Cerberus Market evolves. Material changes will be posted on our <a href="/changelog/">changelog</a> and, where required, communicated directly to affected users at least 14 days before taking effect. Continued use of the Service after changes take effect constitutes acceptance of the updated terms.</p>
+
+    <h2 id="contact">Contact</h2>
+    <p>Questions about these terms? Reach out:</p>
+    <p><strong>General:</strong> <a href="mailto:hello@arsenalrx.dev">hello@arsenalrx.dev</a></p>
+    <p><strong>Support and disputes:</strong> <a href="mailto:support@arsenalrx.dev">support@arsenalrx.dev</a></p>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span> Market</div>
+    <p style="margin-bottom:16px;">Guarded delivery. Verified sellers. Instant keys.</p>
+    <p style="margin-bottom:8px;"><a href="/">Home</a> &bull; <a href="/catalog/">Catalog</a> &bull; <a href="/deals/">Deals</a> &bull; <a href="/trends/">Trends</a> &bull; <a href="/status/">Status</a> &bull; <a href="/changelog/">Changelog</a></p>
+    <p style="margin-bottom:8px;"><a href="/sellers/">Sellers</a> &bull; <a href="/sell/">Sell with Us</a></p>
+    <p style="margin-bottom:16px;"><a href="/privacy/">Privacy</a> &bull; <a href="/terms/">Terms</a></p>
+    <p>&copy; 2026 Cerberus Market. All game titles are property of their respective (fictional) publishers.</p>
+  </footer>
+
+  <script src="/js/cerberus-engine.js"></script>
+  <script src="/js/cerberus-shared.js"></script>
+
+</body>
+</html>

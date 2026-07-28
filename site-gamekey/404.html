@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 - Page Not Found | Cerberus Market</title>
+  <meta name="description" content="The page you're looking for doesn't exist." />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F5DD;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #050507;
+      --bg-card: #0a0a0f;
+      --accent: #e8a020;
+      --accent-dim: rgba(232,160,32,0.15);
+      --text: #c8ccd4;
+      --text-bright: #eef0f4;
+      --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .container {
+      text-align: center;
+      padding: 2rem;
+      max-width: 560px;
+    }
+
+    .shield {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .error-code {
+      font-family: var(--font-heading);
+      font-size: 6rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 60px rgba(232,160,32,0.2);
+    }
+
+    .title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 0.75rem;
+    }
+
+    .message {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .links {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .links a.primary {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .links a.primary:hover {
+      box-shadow: 0 0 20px rgba(232,160,32,0.3);
+    }
+
+    .links a.secondary {
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .links a.secondary:hover {
+      border-color: var(--accent);
+      color: var(--text-bright);
+    }
+
+    .footer-note {
+      margin-top: 4rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .footer-note a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="shield" aria-hidden="true">&#x1F5DD;</span>
+    <div class="error-code">404</div>
+    <h1 class="title">Page not found</h1>
+    <p class="message">The listing or page you requested doesn't exist or has been moved. Let's get you back to browsing keys.</p>
+    <nav class="links">
+      <a href="/" class="primary">Home</a>
+      <a href="/catalog/" class="secondary">Catalog</a>
+      <a href="/status/" class="secondary">Status</a>
+    </nav>
+    <p class="footer-note">Cerberus Market &mdash; <a href="/">cerberus.market</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,290 @@
+name: Cerberus Heartbeat
+
+on:
+  schedule:
+    # Runs every 2 hours — 12 commits/day, ~360/month
+    - cron: '0 */2 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate realistic update
+        run: |
+          # Seed based on current timestamp for variety
+          SEED=$(($(date +%s) % 10000))
+          HOUR=$(date -u +%H)
+          DAY=$(date -u +%u)  # 1=Monday, 7=Sunday
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          # Read current state — NEVER touch platformVersion or buildNumber
+          # Those are only changed manually during a real version bump
+          ACTIVE_LISTINGS=$(jq '.activeListings' data/state.json)
+          TOTAL_KEYS_SOLD=$(jq '.totalKeysSold' data/state.json)
+          DAILY_ORDERS=$(jq '.dailyOrdersPlaced' data/state.json)
+          DAILY_DELIVERED=$(jq '.dailyKeysDelivered' data/state.json)
+          BUYER_CLAIMS=$(jq '.buyerProtectionClaims' data/state.json)
+          FRAUD_CHECKS=$(jq '.fraudChecksPerformed' data/state.json)
+          RESTOCK_QUEUE=$(jq '.restockQueue' data/state.json)
+          PENDING_DISPUTES=$(jq '.pendingDisputes' data/state.json)
+          DISPUTE_FREE_STREAK=$(jq '.disputeFreeStreak' data/state.json)
+          VERSION=$(jq -r '.platformVersion' data/state.json)
+
+          # ── Core metrics (beta-scale marketplace) ──
+          NEW_ACTIVE_LISTINGS=$((ACTIVE_LISTINGS + RANDOM % 12 - 4))
+          if [ "$NEW_ACTIVE_LISTINGS" -lt 1200 ]; then NEW_ACTIVE_LISTINGS=1200; fi
+          NEW_TOTAL_KEYS_SOLD=$((TOTAL_KEYS_SOLD + RANDOM % 30 + 5))
+          NEW_DAILY_ORDERS=$((30 + RANDOM % 160))
+          NEW_DAILY_DELIVERED=$((NEW_DAILY_ORDERS - RANDOM % 6))
+          if [ "$NEW_DAILY_DELIVERED" -lt 0 ]; then NEW_DAILY_DELIVERED=0; fi
+          NEW_BUYER_CLAIMS=$((BUYER_CLAIMS + RANDOM % 4))
+          NEW_FRAUD_CHECKS=$((FRAUD_CHECKS + RANDOM % 25 + 5))
+          NEW_RESTOCK_QUEUE=$((RANDOM % 9))
+          NEW_RESTOCK_BATCH=$((60 + RANDOM % 60))
+
+          # Checkout / payment / delivery health
+          CHECKOUT_SUCCESS=$(echo "scale=2; 97.5 + $(echo "$RANDOM % 200" | bc) / 100" | bc)
+          PAYMENT_API_MS=$((100 + RANDOM % 120))
+          DELIVERY_QUEUE_DEPTH=$((RANDOM % 10))
+          PRICE_SYNC_MS=$((30 + RANDOM % 90))
+          AVG_DELIVERY_MIN=$(echo "scale=1; 5 + $(echo "$RANDOM % 90" | bc) / 10" | bc)
+
+          # Online buyers (beta-scale marketplace: peak/off-peak curve)
+          if [ "$HOUR" -ge 14 ] && [ "$HOUR" -le 22 ]; then
+            ONLINE_BUYERS=$((140 + RANDOM % 180))
+          elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 14 ]; then
+            ONLINE_BUYERS=$((60 + RANDOM % 100))
+          else
+            ONLINE_BUYERS=$((20 + RANDOM % 70))
+          fi
+
+          # Weekend boost
+          if [ "$DAY" -ge 6 ]; then
+            ONLINE_BUYERS=$((ONLINE_BUYERS * 115 / 100))
+          fi
+
+          # ── Demand level — time-aware, weekend-boosted ──
+          DEMAND_ROLL=$((RANDOM % 100))
+          if [ "$HOUR" -ge 14 ] && [ "$HOUR" -le 22 ]; then
+            if [ "$DEMAND_ROLL" -lt 15 ]; then NEW_DEMAND="LOW"
+            elif [ "$DEMAND_ROLL" -lt 65 ]; then NEW_DEMAND="MODERATE"
+            elif [ "$DEMAND_ROLL" -lt 92 ]; then NEW_DEMAND="HIGH"
+            else NEW_DEMAND="SURGING"
+            fi
+          elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 14 ]; then
+            if [ "$DEMAND_ROLL" -lt 45 ]; then NEW_DEMAND="LOW"
+            elif [ "$DEMAND_ROLL" -lt 90 ]; then NEW_DEMAND="MODERATE"
+            elif [ "$DEMAND_ROLL" -lt 98 ]; then NEW_DEMAND="HIGH"
+            else NEW_DEMAND="SURGING"
+            fi
+          else
+            if [ "$DEMAND_ROLL" -lt 70 ]; then NEW_DEMAND="LOW"
+            elif [ "$DEMAND_ROLL" -lt 96 ]; then NEW_DEMAND="MODERATE"
+            else NEW_DEMAND="HIGH"
+            fi
+          fi
+
+          # ── Dispute tracking ──
+          if [ $((RANDOM % 20)) -eq 0 ]; then
+            NEW_PENDING_DISPUTES=$((PENDING_DISPUTES + 1))
+            NEW_DISPUTE_FREE_STREAK=0
+          else
+            if [ "$PENDING_DISPUTES" -gt 0 ] && [ $((RANDOM % 3)) -eq 0 ]; then
+              NEW_PENDING_DISPUTES=$((PENDING_DISPUTES - 1))
+            else
+              NEW_PENDING_DISPUTES=$PENDING_DISPUTES
+            fi
+            NEW_DISPUTE_FREE_STREAK=$((DISPUTE_FREE_STREAK + 1))
+          fi
+          if [ "$NEW_PENDING_DISPUTES" -lt 0 ]; then NEW_PENDING_DISPUTES=0; fi
+          # Streak resets roughly every 30-45 days
+          if [ "$NEW_DISPUTE_FREE_STREAK" -gt $((30 + RANDOM % 15)) ]; then
+            NEW_DISPUTE_FREE_STREAK=$((RANDOM % 4))
+          fi
+
+          # ── Flash sale / restock wave tracking ──
+          # Occasional flash sale toggling, roughly weekly cadence
+          FLASH_ACTIVE=$(jq -r '.flashSale.isActive' data/state.json)
+          if [ "$FLASH_ACTIVE" = "true" ]; then
+            # 15% chance a running flash sale ends this tick
+            if [ $((RANDOM % 100)) -lt 15 ]; then
+              FLASH_JSON='{"isActive": false, "discountPct": 0, "featuredIndex": null, "genreIndex": null, "demandLevel": "'"$NEW_DEMAND"'", "phaseName": null, "tier": null, "dayOffset": -1}'
+            else
+              FLASH_JSON=$(jq -c --arg d "$NEW_DEMAND" '.flashSale.demandLevel = $d' data/state.json | jq -c '.flashSale')
+            fi
+          else
+            # ~4% chance of a new flash sale starting
+            if [ $((RANDOM % 100)) -lt 4 ]; then
+              DISCOUNT=$((10 + RANDOM % 40))
+              TIER_ROLL=$((RANDOM % 3))
+              if [ "$TIER_ROLL" -eq 0 ]; then TIER="bronze"; elif [ "$TIER_ROLL" -eq 1 ]; then TIER="silver"; else TIER="gold"; fi
+              FLASH_JSON='{"isActive": true, "discountPct": '"$DISCOUNT"', "featuredIndex": '"$((RANDOM % 12))"', "genreIndex": '"$((RANDOM % 12))"', "demandLevel": "'"$NEW_DEMAND"'", "phaseName": "live", "tier": "'"$TIER"'", "dayOffset": 0}'
+            else
+              FLASH_JSON=$(jq -c '.flashSale' data/state.json)
+            fi
+          fi
+
+          # ── Incident state machine ──
+          ACTIVE_INCIDENT=$(jq -r '.activeIncident' data/state.json)
+          INCIDENT_HISTORY=$(jq -c '.incidentHistory' data/state.json)
+
+          # Incident template pool
+          INCIDENT_TITLES=("Payment gateway timeout during checkout surge" "Delayed manual delivery batch for high-demand title" "Seller API sync failure caused stale listings" "Fraud-check false positive blocked legitimate orders" "Regional CDN latency spike (APAC)" "Key delivery queue backlog after restock" "Price sync delay across regions" "Checkout confirmation email delivery delays" "Elevated checkout decline rate" "Seller payout processing delay" "Listing search index lag" "Buyer protection claim review backlog" "Coupon/discount code validation errors" "Order status webhook delivery failures" "Inventory oversell on flash-sale item" "Session timeout during checkout on mobile" "Duplicate charge on retry after gateway timeout" "Key redemption verification errors" "Seller dashboard metrics reporting lag" "Cart abandonment tracking pipeline delay")
+          INCIDENT_CAUSES=("Card issuer decline spike overwhelmed retry queue" "Key-generation queue backlog after restock" "Seller inventory feed desync after bulk upload" "Overly aggressive velocity rule on checkout" "Edge node cache invalidation storm" "Database connection pool exhaustion" "Network congestion on inter-region backbone" "DNS resolution delay on failover endpoint" "Load balancer health check misconfiguration" "Upstream payment provider API throttling" "Certificate renewal race condition" "Garbage collection pause in order worker" "Search index corruption after concurrent write" "Discount engine threshold miscalibration" "Third-party CDN provider rate limiting during peak" "Data pipeline race condition between order and delivery workers" "TLS certificate pinning hash mismatch after CA rotation" "Redis cluster split-brain during network partition" "Disk I/O saturation on listings database primary" "Hot-reload race condition in pricing configuration")
+
+          if [ "$ACTIVE_INCIDENT" = "null" ]; then
+            # 3% chance of new incident per run (~1 every 3 days)
+            if [ $((RANDOM % 100)) -lt 3 ]; then
+              INC_IDX=$((RANDOM % ${#INCIDENT_TITLES[@]}))
+              CAUSE_IDX=$((RANDOM % ${#INCIDENT_CAUSES[@]}))
+              INC_ID="INC-$(date -u +%Y%m%d)-$(printf '%04d' $((RANDOM % 10000)))"
+              ACTIVE_INCIDENT=$(jq -n \
+                --arg id "$INC_ID" \
+                --arg title "${INCIDENT_TITLES[$INC_IDX]}" \
+                --arg status "INVESTIGATING" \
+                --arg started "$NOW" \
+                --arg updated "$NOW" \
+                --arg cause "${INCIDENT_CAUSES[$CAUSE_IDX]}" \
+                '{id: $id, title: $title, status: $status, startedAt: $started, updatedAt: $updated, rootCause: $cause, severity: "minor", impactPct: 2.5}')
+            fi
+          else
+            # Progress existing incident through stages
+            INC_STATUS=$(echo "$ACTIVE_INCIDENT" | jq -r '.status')
+            INC_STARTED=$(echo "$ACTIVE_INCIDENT" | jq -r '.startedAt')
+            NOW_TS=$(date +%s)
+            INC_START_TS=$(date -d "$INC_STARTED" +%s 2>/dev/null || echo "$NOW_TS")
+            INC_AGE_H=$(( (NOW_TS - INC_START_TS) / 3600 ))
+
+            case "$INC_STATUS" in
+              "INVESTIGATING")
+                # Move to IDENTIFIED after 2-4h
+                if [ "$INC_AGE_H" -ge 2 ]; then
+                  ACTIVE_INCIDENT=$(echo "$ACTIVE_INCIDENT" | jq --arg now "$NOW" '.status = "IDENTIFIED" | .updatedAt = $now')
+                fi
+                ;;
+              "IDENTIFIED")
+                # Move to MONITORING after 4-8h total
+                if [ "$INC_AGE_H" -ge 4 ]; then
+                  ACTIVE_INCIDENT=$(echo "$ACTIVE_INCIDENT" | jq --arg now "$NOW" '.status = "MONITORING" | .updatedAt = $now')
+                fi
+                ;;
+              "MONITORING")
+                # Move to RESOLVED after 6-10h total
+                if [ "$INC_AGE_H" -ge 6 ]; then
+                  # Resolve: move to history, clear active
+                  RESOLVED=$(echo "$ACTIVE_INCIDENT" | jq --arg now "$NOW" '.status = "RESOLVED" | .resolvedAt = $now | .updatedAt = $now')
+                  # Prepend to history, keep last 5
+                  INCIDENT_HISTORY=$(echo "$INCIDENT_HISTORY" | jq --argjson inc "$RESOLVED" '[$inc] + . | .[0:5]')
+                  ACTIVE_INCIDENT="null"
+                fi
+                ;;
+            esac
+          fi
+
+          # ── Write updated state.json ──
+          # Build the active incident value for jq
+          if [ "$ACTIVE_INCIDENT" = "null" ] || [ -z "$ACTIVE_INCIDENT" ]; then
+            INC_ARG="null"
+          else
+            INC_ARG="$ACTIVE_INCIDENT"
+          fi
+
+          jq --arg now "$NOW" \
+             --argjson listings "$NEW_ACTIVE_LISTINGS" \
+             --argjson buyers "$ONLINE_BUYERS" \
+             --argjson orders "$NEW_DAILY_ORDERS" \
+             --argjson delivered "$NEW_DAILY_DELIVERED" \
+             --argjson sold "$NEW_TOTAL_KEYS_SOLD" \
+             --argjson claims "$NEW_BUYER_CLAIMS" \
+             --argjson fraud "$NEW_FRAUD_CHECKS" \
+             --argjson restockbatch "$NEW_RESTOCK_BATCH" \
+             --argjson restockq "$NEW_RESTOCK_QUEUE" \
+             --argjson disputes "$NEW_PENDING_DISPUTES" \
+             --argjson disputestreak "$NEW_DISPUTE_FREE_STREAK" \
+             --arg demand "$NEW_DEMAND" \
+             --argjson avgdelivery "$AVG_DELIVERY_MIN" \
+             --argjson checkoutrate "$CHECKOUT_SUCCESS" \
+             --argjson paymentapi "$PAYMENT_API_MS" \
+             --argjson deliveryq "$DELIVERY_QUEUE_DEPTH" \
+             --argjson pricesync "$PRICE_SYNC_MS" \
+             --argjson flashsale "$FLASH_JSON" \
+             --argjson incident "$INC_ARG" \
+             --argjson history "$INCIDENT_HISTORY" \
+             '.lastUpdate = $now |
+              .activeListings = $listings | .onlineBuyers = $buyers |
+              .dailyOrdersPlaced = $orders | .dailyKeysDelivered = $delivered |
+              .totalKeysSold = $sold | .buyerProtectionClaims = $claims |
+              .fraudChecksPerformed = $fraud | .restockBatchSize = $restockbatch |
+              .restockQueue = $restockq | .pendingDisputes = $disputes |
+              .disputeFreeStreak = $disputestreak | .demandLevel = $demand |
+              .avgDeliveryTime = $avgdelivery | .checkoutSuccessRate = $checkoutrate |
+              .paymentApiResponse = $paymentapi | .deliveryQueueDepth = $deliveryq |
+              .priceSyncLatency = $pricesync | .flashSale = $flashsale |
+              .activeIncident = $incident | .incidentHistory = $history' \
+             data/state.json > data/state_tmp.json && mv data/state_tmp.json data/state.json
+
+          # ── Pick a realistic commit message (30 total) ──
+          LISTING_DELTA=$((NEW_ACTIVE_LISTINGS - ACTIVE_LISTINGS))
+          SELLER_COUNT=$((RANDOM % 3 + 1))
+          MESSAGES=(
+            # catalog (7)
+            "catalog: sync ${LISTING_DELTA} listing changes across regions"
+            "catalog: refresh active listing count — ${NEW_ACTIVE_LISTINGS} total"
+            "catalog: restock batch pushed for high-demand titles"
+            "catalog: normalize pricing after seller sync"
+            "catalog: onboard ${SELLER_COUNT} new seller inventory feeds"
+            "catalog: update key stock counts from partner sellers"
+            "catalog: backfill legacy listing metadata"
+            # orders (7)
+            "orders: update delivery queue metrics for scan cycle"
+            "orders: recalibrate fraud-check thresholds"
+            "orders: expand payment decline pattern coverage"
+            "orders: update checkout retry model weights"
+            "orders: refine buyer-protection claim heuristics"
+            "orders: update delivery time baseline parameters"
+            "orders: retrain fraud classifier on new labeled samples"
+            # platform (6)
+            "platform: tune search ranking heuristics"
+            "platform: optimize checkout path latency"
+            "platform: improve payment callback verification"
+            "platform: patch false decline on prepaid card BIN range"
+            "platform: adjust price-sync timing thresholds"
+            "platform: reduce order worker contention under high load"
+            # infra (5)
+            "infra: rotate webhook signing keys"
+            "infra: update region health check intervals"
+            "infra: sync catalog DB across all regions"
+            "infra: rotate API rate limit windows"
+            "infra: update TLS certificate pinning config"
+            # version/release (5)
+            "build: update state metrics for ${VERSION}"
+            "build: sync telemetry baselines for ${VERSION}"
+            "ci: run nightly regression suite — all tests passing"
+            "ci: validate catalog integrity — ${NEW_ACTIVE_LISTINGS} listings verified"
+            "ci: automated health check — all ${ONLINE_BUYERS} online buyers nominal"
+          )
+          MSG_IDX=$((RANDOM % ${#MESSAGES[@]}))
+          COMMIT_MSG="${MESSAGES[$MSG_IDX]}"
+
+          echo "COMMIT_MSG=$COMMIT_MSG" >> $GITHUB_ENV
+
+      - name: Commit and push
+        run: |
+          git config user.name "cerberus-bot"
+          git config user.email "cerberus-bot@cerberus.market"
+          git add data/state.json
+
+          # Check if there are changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "$COMMIT_MSG"
+          git push

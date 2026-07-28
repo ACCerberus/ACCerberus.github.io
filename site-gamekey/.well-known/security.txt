@@ -1,0 +1,30 @@
+# Cerberus Market — Security Contact
+# https://cerberus.market
+#
+# If you've found a vulnerability in Cerberus Market or any of our systems,
+# we want to hear from you. We take all reports seriously and will
+# respond within 48 hours.
+#
+# Scope:
+#   - Checkout and payment flow
+#   - Seller verification and onboarding
+#   - Buyer account data and authentication
+#   - Key delivery pipeline
+#   - This website (cerberus.market)
+#
+# Out of scope:
+#   - Social engineering of Cerberus Market team members
+#   - Denial of service attacks
+#   - Automated scanning without prior approval
+#
+# We do not currently offer a paid bug bounty, but we recognize
+# researchers publicly (with permission) and provide early access
+# to new marketplace features.
+
+Contact: mailto:security@cerberus.market
+Encryption: https://cerberus.market/.well-known/pgp-key.txt
+Acknowledgments: https://cerberus.market/security-thanks
+Policy: https://cerberus.market/security-policy
+Preferred-Languages: en
+Canonical: https://cerberus.market/.well-known/security.txt
+Expires: 2027-07-27T00:00:00.000Z

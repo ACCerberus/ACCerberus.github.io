@@ -1,0 +1,103 @@
+{
+  "lastUpdated": "2026-07-24",
+  "entries": [
+    {
+      "id": "lab-001",
+      "title": "Dynamic Pricing Signal Model",
+      "desc": "ML model that suggests optimal list price to sellers based on recent sales velocity and competitor pricing.",
+      "status": "EXPERIMENT",
+      "startDate": "2026-05-01",
+      "lastUpdate": "2026-07-24",
+      "findings": "Model recommendations tracked 6-9% higher sell-through in backtesting vs static pricing. Cold-start problem for newly listed titles remains unsolved."
+    },
+    {
+      "id": "lab-002",
+      "title": "Fraud Velocity Graph Analysis",
+      "desc": "Graph-based clustering of orders, payment methods, and IP ranges to catch card-testing rings before chargebacks land.",
+      "status": "EVALUATION",
+      "startDate": "2026-03-10",
+      "lastUpdate": "2026-07-20",
+      "findings": "Catches roughly 78% of known card-testing patterns in backtest. False-positive rate on legitimate bulk gift-purchase bursts still too high (~4%) — tuning threshold."
+    },
+    {
+      "id": "lab-003",
+      "title": "Search Relevance Ranking Overhaul",
+      "desc": "Learning-to-rank model for catalog search, evaluated against the current keyword-plus-popularity heuristic.",
+      "status": "PROTOTYPE",
+      "startDate": "2026-04-15",
+      "lastUpdate": "2026-07-18",
+      "findings": "Offline ranking quality improved 11% over baseline. Needs a live A/B test before rollout; watching for interaction effects with sponsored listings."
+    },
+    {
+      "id": "lab-004",
+      "title": "Key Redemption Checksum Verification",
+      "desc": "Cryptographic checksum scheme sellers can attach to key listings so buyers can verify authenticity before redeeming on the publisher platform.",
+      "status": "EXPERIMENT",
+      "startDate": "2026-06-01",
+      "lastUpdate": "2026-07-22",
+      "findings": "Works cleanly for 4 of 6 major publisher platforms tested. Two platforms rotate key formats without notice, breaking checksum matching — investigating a fallback."
+    },
+    {
+      "id": "lab-005",
+      "title": "Seller Payout Automation via Instant Rails",
+      "desc": "Evaluating instant bank payout rails as an alternative to the current weekly batch payout for sellers.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-07-05",
+      "lastUpdate": "2026-07-05",
+      "findings": "Initial research phase. Comparing provider fee structures and settlement times."
+    },
+    {
+      "id": "lab-006",
+      "title": "Chat Support Triage Bot",
+      "desc": "Lightweight intent-classification bot to route buyer support tickets (missing key, refund, seller dispute) before human handoff.",
+      "status": "EXPERIMENT",
+      "startDate": "2026-05-20",
+      "lastUpdate": "2026-07-15",
+      "findings": "Correctly routes 81% of tickets across the three most common categories. Struggles with mixed-intent messages such as 'key didn't work and I want a refund'."
+    },
+    {
+      "id": "lab-007",
+      "title": "Currency Conversion Drift Monitoring",
+      "desc": "Tracking FX rate staleness on displayed regional prices to catch stale-quote complaints before they escalate.",
+      "status": "EVALUATION",
+      "startDate": "2026-06-10",
+      "lastUpdate": "2026-07-19",
+      "findings": "Median quote staleness under 40 minutes across regions. AP-Southeast lags most due to slower upstream FX feed refresh."
+    },
+    {
+      "id": "lab-008",
+      "title": "Duplicate Listing Detection",
+      "desc": "Fuzzy-matching seller listings against a title and edition catalog to catch accidental or deliberate duplicate listings.",
+      "status": "PROTOTYPE",
+      "startDate": "2026-05-25",
+      "lastUpdate": "2026-07-10",
+      "findings": "Catches straightforward duplicates reliably. Regional edition variants (same base game, different key region) still trip false positives."
+    },
+    {
+      "id": "lab-009",
+      "title": "Wishlist-to-Purchase Conversion Study",
+      "desc": "Analyzing which nudges (price-drop alert, bundle suggestion, urgency messaging) actually convert wishlisted items into purchases.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-07-15",
+      "lastUpdate": "2026-07-15",
+      "findings": "Initial research phase. Reviewing conversion-nudge studies from comparable marketplaces."
+    },
+    {
+      "id": "lab-010",
+      "title": "Bundle Recommendation Engine",
+      "desc": "Collaborative-filtering model suggesting complementary key bundles at checkout based on co-purchase patterns.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-07-20",
+      "lastUpdate": "2026-07-20",
+      "findings": "Initial research phase. Scoping training data requirements."
+    }
+  ],
+  "templatePool": [
+    { "title": "Regional Payout Currency Hedging", "desc": "Evaluating FX hedging for seller payouts to reduce month-to-month payout variance in non-USD regions." },
+    { "title": "Listing Photo/Cover Consistency Scoring", "desc": "Automated check that flags seller listings whose cover art or title text drifts from the canonical catalog entry." },
+    { "title": "Checkout Abandonment Recovery Emails", "desc": "Testing timed recovery emails for abandoned carts against a control group to measure incremental recovered orders." },
+    { "title": "Cross-Region Price Arbitrage Detection", "desc": "Detecting buyers systematically purchasing region-locked keys at the cheapest region to resell elsewhere." },
+    { "title": "Seller Response-Time SLA Modeling", "desc": "Modeling realistic response-time SLAs per seller tier based on historical ticket resolution data." },
+    { "title": "Adaptive Restock Batch Sizing", "desc": "Sizing automatic restock-suggestion batches to sellers based on recent sell-through velocity instead of fixed batch sizes." }
+  ]
+}

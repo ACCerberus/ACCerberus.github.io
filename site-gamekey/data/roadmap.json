@@ -1,0 +1,171 @@
+{
+  "lastUpdated": "2026-07-24T16:00:00Z",
+  "items": {
+    "short": [
+      {
+        "id": "r-s-wallet",
+        "name": "Wallet Balance Payments",
+        "desc": "Store credit and wallet balance system for instant one-click checkout without re-entering payment details.",
+        "progress": 62,
+        "color": "var(--green)",
+        "added": "2026-06-20"
+      },
+      {
+        "id": "r-s-selleranalytics",
+        "name": "Seller Analytics Dashboard",
+        "desc": "Sales trends, conversion funnel, and regional performance breakdown for sellers with exportable reports.",
+        "progress": 48,
+        "color": "var(--blue)",
+        "added": "2026-06-28"
+      },
+      {
+        "id": "r-s-bulkdiscount",
+        "name": "Bulk Key Purchase Discounts",
+        "desc": "Tiered discounts for buyers purchasing 3+, 5+, or 10+ keys in a single order.",
+        "progress": 74,
+        "color": "var(--accent)",
+        "added": "2026-06-05"
+      },
+      {
+        "id": "r-s-pricealerts",
+        "name": "Price-Drop Alerts",
+        "desc": "Email and push notifications when wishlisted titles drop below a buyer-set price threshold.",
+        "progress": 31,
+        "color": "var(--purple)",
+        "added": "2026-07-10"
+      }
+    ],
+    "mid": [
+      {
+        "id": "r-m-escrow",
+        "name": "Escrow for High-Value Bundles",
+        "desc": "Holds payout on large multi-key orders until buyer confirms successful redemption, reducing high-value dispute risk.",
+        "progress": 22.4,
+        "color": "var(--red)",
+        "added": "2026-04-01"
+      },
+      {
+        "id": "r-m-checksum",
+        "name": "Key Authenticity Checksum Verification",
+        "desc": "Publisher-aware checksum scheme so buyers can verify a key is genuine before redeeming it.",
+        "progress": 35.8,
+        "color": "var(--accent)",
+        "added": "2026-06-01"
+      },
+      {
+        "id": "r-m-gifting",
+        "name": "Gift Key Sending",
+        "desc": "Purchase a key and send it directly to another buyer's email or account instead of redeeming it yourself.",
+        "progress": 18.6,
+        "color": "var(--blue)",
+        "added": "2026-05-12"
+      },
+      {
+        "id": "r-m-reputation",
+        "name": "Seller Reputation ML Model",
+        "desc": "Predictive trust scoring for sellers based on listing history, dispute rate, and delivery speed.",
+        "progress": 41.2,
+        "color": "var(--purple)",
+        "added": "2026-03-20"
+      },
+      {
+        "id": "r-m-currency",
+        "name": "Regional Currency Auto-Display",
+        "desc": "Automatically show prices in the buyer's local currency using live FX rates, with manual override.",
+        "progress": 29.5,
+        "color": "var(--green)",
+        "added": "2026-05-01"
+      },
+      {
+        "id": "r-m-api",
+        "name": "Marketplace Public API (Read-Only)",
+        "desc": "Public read-only API for catalog and price data, aimed at price-tracking tools and community sites.",
+        "progress": 14.3,
+        "color": "var(--blue)",
+        "added": "2026-06-15"
+      },
+      {
+        "id": "r-m-livechat",
+        "name": "Live Chat Buyer Support",
+        "desc": "Real-time chat support for order issues, replacing the current ticket-only support flow.",
+        "progress": 26.7,
+        "color": "var(--accent)",
+        "added": "2026-05-25"
+      }
+    ],
+    "long": [
+      {
+        "id": "r-l-loyalty",
+        "name": "Loyalty Points Program",
+        "desc": "Earn points on every purchase, redeemable for discounts on future orders. Early scoping phase.",
+        "progress": 4,
+        "color": "var(--accent)",
+        "added": "2026-03-01"
+      },
+      {
+        "id": "r-l-extension",
+        "name": "Browser Price-Compare Extension",
+        "desc": "Browser extension that surfaces Cerberus Market pricing while browsing other storefronts. Feasibility research.",
+        "progress": 6,
+        "color": "var(--blue)",
+        "added": "2026-04-10"
+      },
+      {
+        "id": "r-l-subscription",
+        "name": "Subscription Key Bundles",
+        "desc": "Recurring monthly bundle of curated keys at a discount versus buying individually. Concept phase.",
+        "progress": 2,
+        "color": "var(--green)",
+        "added": "2026-05-05"
+      },
+      {
+        "id": "r-l-aggregation",
+        "name": "Cross-Marketplace Price Aggregation",
+        "desc": "Show comparable listing prices from other marketplaces alongside our own for transparency. Exploring data-sourcing options.",
+        "progress": 3,
+        "color": "var(--purple)",
+        "added": "2026-04-25"
+      },
+      {
+        "id": "r-l-mobileapp",
+        "name": "Native Mobile App (iOS/Android)",
+        "desc": "Dedicated native apps beyond the current responsive mobile web experience. Requirements gathering.",
+        "progress": 5,
+        "color": "var(--red)",
+        "added": "2026-06-01"
+      }
+    ],
+    "completed": [
+      {
+        "id": "r-c-sellertiers",
+        "name": "Seller Verification Tiers",
+        "desc": "Standard, Verified, and Elite seller tiers with progressively stronger vetting and catalog benefits.",
+        "completedDate": "2026-02-10"
+      },
+      {
+        "id": "r-c-fraudv2",
+        "name": "Fraud Detection v2",
+        "desc": "Device fingerprinting and listing anomaly detection to reduce chargebacks and catalog abuse.",
+        "completedDate": "2026-06-02"
+      },
+      {
+        "id": "r-c-apsoutheast",
+        "name": "AP-Southeast Region Launch",
+        "desc": "Localized pricing, regional payment rails, and edge routing for APAC buyers.",
+        "completedDate": "2026-06-15"
+      },
+      {
+        "id": "r-c-checkoutredesign",
+        "name": "Checkout Redesign",
+        "desc": "Single-page checkout flow with Apple Pay and Google Pay support.",
+        "completedDate": "2026-07-24"
+      }
+    ]
+  },
+  "templatePool": [
+    { "name": "Buyer Trust Score", "desc": "Public per-buyer reliability score based on dispute history, used to speed up seller approval of large orders.", "color": "var(--accent)" },
+    { "name": "Seller Payout Insurance", "desc": "Optional insurance pool covering sellers against buyer-side payment reversals after key delivery.", "color": "var(--blue)" },
+    { "name": "Automated Regional Pricing Rules", "desc": "Rules engine letting sellers set region-relative pricing multipliers instead of manual per-region prices.", "color": "var(--green)" },
+    { "name": "Key Bundle Builder", "desc": "Lets sellers assemble and price custom multi-key bundles directly from their existing listings.", "color": "var(--purple)" }
+  ]
+}
