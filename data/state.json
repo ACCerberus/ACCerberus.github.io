@@ -1,5 +1,5 @@
 {
-  "lastUpdate": "2026-07-27T14:12:00Z",
+  "lastUpdate": "2026-07-28T06:28:56Z",
   "platformVersion": "v2.6.1",
   "buildNumber": 3120,
   "uptimePercent": 97.9,
@@ -7,23 +7,23 @@
   "sellerCount": 14,
   "regionsOnline": 3,
   "activeListings": 1840,
-  "onlineBuyers": 96,
-  "dailyOrdersPlaced": 142,
-  "dailyKeysDelivered": 138,
-  "totalKeysSold": 44860,
+  "onlineBuyers": 44,
+  "dailyOrdersPlaced": 150,
+  "dailyKeysDelivered": 150,
+  "totalKeysSold": 44885,
   "buyerProtectionClaims": 46345,
-  "fraudChecksPerformed": 1356,
-  "restockBatchSize": 88,
-  "restockQueue": 6,
+  "fraudChecksPerformed": 1375,
+  "restockBatchSize": 116,
+  "restockQueue": 2,
   "weeklyFlashSales": 1,
   "pendingDisputes": 2,
-  "disputeFreeStreak": 21,
+  "disputeFreeStreak": 22,
   "demandLevel": "LOW",
-  "avgDeliveryTime": 9.4,
-  "checkoutSuccessRate": 98.71,
-  "paymentApiResponse": 148,
-  "deliveryQueueDepth": 4,
-  "priceSyncLatency": 62,
+  "avgDeliveryTime": 13.2,
+  "checkoutSuccessRate": 98.88,
+  "paymentApiResponse": 216,
+  "deliveryQueueDepth": 9,
+  "priceSyncLatency": 90,
   "listingsFreshness": {
     "fresh": 300,
     "active": 700,
@@ -31,18 +31,54 @@
     "total": 1840
   },
   "genreDemand": [
-    { "name": "FPS", "score": 84.2 },
-    { "name": "RPG", "score": 79.6 },
-    { "name": "Battle Royale", "score": 71.8 },
-    { "name": "Strategy", "score": 63.4 },
-    { "name": "Simulation", "score": 56.1 },
-    { "name": "Horror", "score": 55.7 },
-    { "name": "Racing", "score": 50.3 },
-    { "name": "Sports", "score": 61.9 },
-    { "name": "Survival", "score": 67.2 },
-    { "name": "Fighting", "score": 46.8 },
-    { "name": "Puzzle", "score": 41.5 },
-    { "name": "Adventure", "score": 58.9 }
+    {
+      "name": "FPS",
+      "score": 84.2
+    },
+    {
+      "name": "RPG",
+      "score": 79.6
+    },
+    {
+      "name": "Battle Royale",
+      "score": 71.8
+    },
+    {
+      "name": "Strategy",
+      "score": 63.4
+    },
+    {
+      "name": "Simulation",
+      "score": 56.1
+    },
+    {
+      "name": "Horror",
+      "score": 55.7
+    },
+    {
+      "name": "Racing",
+      "score": 50.3
+    },
+    {
+      "name": "Sports",
+      "score": 61.9
+    },
+    {
+      "name": "Survival",
+      "score": 67.2
+    },
+    {
+      "name": "Fighting",
+      "score": 46.8
+    },
+    {
+      "name": "Puzzle",
+      "score": 41.5
+    },
+    {
+      "name": "Adventure",
+      "score": 58.9
+    }
   ],
   "flashSale": {
     "isActive": false,
@@ -55,9 +91,23 @@
     "dayOffset": -1
   },
   "dailyDigest": {
-    "today": { "sales": 142, "listings": 1840, "delivered": 138, "disputes": 0 },
-    "yesterday": { "sales": 135, "listings": 1795, "delivered": 131, "disputes": 1 },
-    "trend": { "sales": 4, "listings": 2, "narrative": "stable baseline" }
+    "today": {
+      "sales": 142,
+      "listings": 1840,
+      "delivered": 138,
+      "disputes": 0
+    },
+    "yesterday": {
+      "sales": 135,
+      "listings": 1795,
+      "delivered": 131,
+      "disputes": 1
+    },
+    "trend": {
+      "sales": 4,
+      "listings": 2,
+      "narrative": "stable baseline"
+    }
   },
   "activeIncident": null,
   "incidentHistory": [
