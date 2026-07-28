@@ -250,5 +250,21 @@
         "text": "Guest checkout occasionally losing cart contents on payment redirect"
       }
     ]
+  },
+  {
+    "version": "v2.6.1",
+    "date": "2026-07-28",
+    "tag": "release",
+    "author": "r.okafor",
+    "changes": [
+      {
+        "type": "improved",
+        "text": "Reduced checkout page load time by trimming unused scripts"
+      },
+      {
+        "type": "fixed",
+        "text": "Fixed seller badge tooltip clipping on narrow screens"
+      }
+    ]
   }
 ]
