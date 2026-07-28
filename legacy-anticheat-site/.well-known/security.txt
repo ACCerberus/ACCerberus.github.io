@@ -1,0 +1,29 @@
+# Cerberus Anti-Cheat — Security Contact
+# https://cerberusac.dev
+#
+# If you've found a vulnerability in Cerberus or any of our systems,
+# we want to hear from you. We take all reports seriously and will
+# respond within 48 hours.
+#
+# Scope:
+#   - Cerberus kernel driver and usermode components
+#   - Detection engine and signature database
+#   - Partner API and SDK
+#   - This website (cerberusac.dev)
+#
+# Out of scope:
+#   - Social engineering of Cerberus team members
+#   - Denial of service attacks
+#   - Automated scanning without prior approval
+#
+# We do not currently offer a paid bug bounty, but we recognize
+# researchers publicly (with permission) and provide early access
+# to new detection features.
+
+Contact: mailto:security@arsenalrx.dev
+Encryption: https://cerberusac.dev/.well-known/pgp-key.txt
+Acknowledgments: https://cerberusac.dev/security-thanks
+Policy: https://cerberusac.dev/security-policy
+Preferred-Languages: en
+Canonical: https://cerberusac.dev/.well-known/security.txt
+Expires: 2027-05-23T00:00:00.000Z

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listing — Cerberus Market</title>
+  <meta name="description" content="Compare seller offers, prices, and delivery methods for this title on Cerberus Market." />
+  <meta property="og:title" content="Cerberus Market" />
+  <meta property="og:description" content="Compare seller offers, prices, and delivery methods for this title on Cerberus Market." />
+  <meta property="og:type" content="product" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔑</text></svg>" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #050507;
+      --bg-card: #0a0a0f;
+      --bg-card-hover: #0e0e15;
+      --accent: #e8a020;
+      --accent-dim: rgba(232,160,32,0.15);
+      --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4;
+      --text-bright: #eef0f4;
+      --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050;
+      --green: #30c860;
+      --blue: #4088e8;
+      --purple: #8860e8;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    /* ===== BACKGROUND EFFECTS ===== */
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .grid-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,160,32,0.06), transparent 70%);
+    }
+    .noise-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.8);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c07818);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507;
+    }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-tag { font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; color: var(--accent); border: 1px solid rgba(232,160,32,0.3); padding: 2px 8px; border-radius: 6px; margin-left: 8px; text-transform: uppercase; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; letter-spacing: 0.3px; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-cta-wrap { display: flex; gap: 14px; align-items: center; }
+    .nav-cart { position: relative; display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; color: var(--text-bright); text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; }
+    .nav-cart:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); }
+    .nav-cart-badge { background: var(--accent); color: #050507; font-size: 0.65rem; font-weight: 700; padding: 1px 6px; border-radius: 10px; min-width: 16px; text-align: center; margin-left: 2px; }
+    .nav-cta {
+      padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+      background: var(--accent); color: #050507; text-decoration: none;
+      transition: all 0.2s; letter-spacing: 0.3px;
+    }
+    .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
+
+    /* ===== SECTIONS ===== */
+    .section { padding: 100px 24px 0; position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+    .section-tight { padding: 60px 24px 0; }
+    .section-header { margin-bottom: 32px; }
+    .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .section-title { font-family: var(--font-heading); font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 700; color: var(--text-bright); letter-spacing: -0.5px; }
+    .divider { width: 60px; height: 2px; background: var(--accent); opacity: 0.3; }
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== BREADCRUMB ===== */
+    .breadcrumb { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 24px; }
+    .breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--accent); }
+
+    /* ===== LISTING HERO ===== */
+    .listing-hero { display: grid; grid-template-columns: 380px 1fr; gap: 44px; margin-bottom: 20px; }
+    .listing-cover-col .cover-tile { box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+    .listing-title { font-family: var(--font-heading); font-size: clamp(1.7rem, 3.4vw, 2.4rem); font-weight: 800; color: var(--text-bright); letter-spacing: -1px; margin-bottom: 10px; }
+    .listing-publisher { font-size: 0.88rem; color: var(--text-dim); margin-bottom: 16px; }
+    .listing-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+    .tag-pill { font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border); color: var(--text-dim); letter-spacing: 0.3px; }
+    .tag-pill.genre { color: var(--accent); border-color: rgba(232,160,32,0.25); background: rgba(232,160,32,0.06); }
+    .listing-rating { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; font-size: 0.85rem; color: var(--text-dim); }
+    .stars { color: var(--accent); letter-spacing: 2px; font-size: 1rem; }
+    .listing-desc { font-size: 0.92rem; color: var(--text); line-height: 1.8; max-width: 640px; }
+    .listing-price-hint { margin-top: 24px; display: inline-flex; align-items: center; gap: 10px; background: var(--bg-card); border: 1px solid var(--border); padding: 12px 18px; border-radius: 12px; }
+    .listing-price-hint-value { font-family: var(--font-heading); font-weight: 800; font-size: 1.3rem; color: var(--accent); }
+    .listing-price-hint-label { font-size: 0.75rem; color: var(--text-dim); }
+
+    /* ===== OFFERS ===== */
+    .offers-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+    .offer-row {
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 18px 22px;
+      position: relative; transition: border-color 0.2s;
+    }
+    .offer-row.best { border-color: rgba(232,160,32,0.4); background: linear-gradient(180deg, rgba(232,160,32,0.05), var(--bg-card)); }
+    .offer-recommended {
+      position: absolute; top: -10px; left: 20px; background: var(--accent); color: #050507;
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 10px;
+    }
+    .offer-seller { display: flex; align-items: center; gap: 12px; flex: 1.4; min-width: 220px; }
+    .offer-avatar {
+      width: 42px; height: 42px; border-radius: 10px; background: rgba(232,160,32,0.12);
+      display: flex; align-items: center; justify-content: center; font-family: var(--font-heading);
+      font-weight: 700; color: var(--accent); font-size: 0.85rem; flex-shrink: 0;
+    }
+    .offer-seller-name { font-weight: 600; color: var(--text-bright); font-size: 0.88rem; display: flex; align-items: center; gap: 6px; }
+    .offer-seller-meta { font-size: 0.72rem; color: var(--text-dim); margin-top: 2px; }
+    .verified-badge { font-size: 0.6rem; color: var(--blue); border: 1px solid rgba(64,136,232,0.3); background: rgba(64,136,232,0.08); padding: 1px 6px; border-radius: 4px; }
+    .offer-details { display: flex; flex-direction: column; gap: 3px; font-size: 0.74rem; color: var(--text-dim); flex: 1; min-width: 170px; }
+    .offer-details strong { color: var(--text); font-weight: 500; }
+    .stock-low { color: var(--red); }
+    .offer-price-block { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; min-width: 100px; }
+    .offer-price-strike { font-size: 0.75rem; color: var(--text-dim); text-decoration: line-through; }
+    .offer-price-now { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 800; color: var(--text-bright); }
+    .offer-discount { font-size: 0.62rem; font-weight: 700; color: var(--green); background: rgba(48,200,96,0.1); padding: 2px 7px; border-radius: 4px; }
+    .offer-btn {
+      padding: 11px 22px; border-radius: 8px; font-weight: 600; font-size: 0.82rem;
+      background: var(--accent); color: #050507; border: none; cursor: pointer; transition: all 0.2s;
+      font-family: var(--font); white-space: nowrap;
+    }
+    .offer-btn:hover { background: #d09018; box-shadow: 0 4px 16px rgba(232,160,32,0.3); }
+    .offer-btn:active { transform: scale(0.97); }
+    .offer-btn.added { background: var(--green); }
+
+    /* ===== REVIEWS ===== */
+    .reviews-summary { display: flex; gap: 40px; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px 30px; margin-bottom: 28px; flex-wrap: wrap; }
+    .reviews-avg { text-align: center; min-width: 120px; }
+    .reviews-avg-value { font-family: var(--font-heading); font-size: 2.6rem; font-weight: 800; color: var(--text-bright); line-height: 1; }
+    .reviews-avg .stars { display: block; margin: 8px 0 6px; }
+    .reviews-avg-count { font-size: 0.75rem; color: var(--text-dim); }
+    .reviews-bars { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 6px; }
+    .reviews-bar-row { display: flex; align-items: center; gap: 10px; font-size: 0.72rem; color: var(--text-dim); }
+    .reviews-bar-row span:first-child { width: 40px; flex-shrink: 0; }
+    .reviews-bar-row span:last-child { width: 36px; flex-shrink: 0; text-align: right; }
+    .reviews-bar-track { flex: 1; height: 6px; border-radius: 4px; background: rgba(255,255,255,0.05); overflow: hidden; }
+    .reviews-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; }
+
+    .review-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; }
+    .review-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .review-author { font-weight: 600; color: var(--text-bright); font-size: 0.85rem; }
+    .review-text { font-size: 0.85rem; color: var(--text); line-height: 1.6; }
+
+    /* ===== RELATED ===== */
+    .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .catalog-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; transition: all 0.25s ease; display: block; text-decoration: none; color: inherit;
+    }
+    .catalog-card:hover { transform: translateY(-4px); border-color: rgba(232,160,32,0.25); background: var(--bg-card-hover); }
+    .catalog-card-body { padding: 12px 14px 16px; }
+    .catalog-card-title { font-family: var(--font-heading); font-weight: 700; font-size: 0.86rem; color: var(--text-bright); margin-bottom: 6px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .catalog-card-price { font-family: var(--font-heading); font-size: 0.95rem; font-weight: 700; color: var(--accent); }
+
+    /* ===== NOT FOUND ===== */
+    .not-found { text-align: center; padding: 160px 24px 120px; position: relative; z-index: 1; }
+    .not-found-icon { font-size: 3rem; margin-bottom: 20px; opacity: 0.6; }
+    .not-found h1 { font-family: var(--font-heading); font-size: 1.8rem; color: var(--text-bright); margin-bottom: 12px; }
+    .not-found p { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 28px; }
+    .not-found a { display: inline-block; padding: 12px 28px; border-radius: 10px; background: var(--accent); color: #050507; text-decoration: none; font-weight: 600; font-size: 0.85rem; }
+
+    /* ===== FOOTER ===== */
+    .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); position: relative; z-index: 1; margin-top: 100px; }
+    .footer-brand { font-family: var(--font-heading); font-weight: 700; font-size: 1rem; color: var(--text-bright); margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* ===== LOADING ===== */
+    .loading-state { text-align: center; padding: 160px 24px; color: var(--text-dim); font-size: 0.9rem; }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .listing-hero { grid-template-columns: 1fr; }
+      .listing-cover-col { max-width: 320px; }
+      .related-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .nav { padding: 12px 20px; }
+      .section { padding: 90px 20px 0; }
+      .offer-row { flex-direction: column; align-items: stretch; }
+      .offer-price-block { align-items: flex-start; }
+      .offer-btn { width: 100%; }
+      .reviews-summary { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+  <div class="noise-overlay"></div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+      <div class="nav-tag">MARKET</div>
+    </a>
+    <div class="nav-links">
+      <a href="/catalog/">Catalog</a>
+      <a href="/deals/">Deals</a>
+      <a href="/trends/">Trends</a>
+      <a href="/sellers/">Sellers</a>
+      <a href="/status/">Status</a>
+    </div>
+    <div class="nav-cta-wrap">
+      <a href="/cart/" class="nav-cart" id="navCartLink">Cart <span id="navCartCount" class="nav-cart-badge" style="display:none">0</span></a>
+      <a href="/sell/" class="nav-cta">Sell on Cerberus Market</a>
+    </div>
+  </nav>
+
+  <div id="app">
+    <div class="loading-state">Loading listing&hellip;</div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span> Market</div>
+    <p style="margin-bottom:16px;">Guarded delivery. Verified sellers. Instant keys.</p>
+    <p style="margin-bottom:8px;"><a href="/">Home</a> &bull; <a href="/catalog/">Catalog</a> &bull; <a href="/deals/">Deals</a> &bull; <a href="/trends/">Trends</a> &bull; <a href="/status/">Status</a> &bull; <a href="/changelog/">Changelog</a></p>
+    <p style="margin-bottom:8px;"><a href="/sellers/">Sellers</a> &bull; <a href="/sell/">Sell with Us</a></p>
+    <p style="margin-bottom:16px;"><a href="/privacy/">Privacy</a> &bull; <a href="/terms/">Terms</a></p>
+    <p>&copy; 2026 Cerberus Market. All game titles are property of their respective (fictional) publishers.</p>
+  </footer>
+
+  <script src="/js/cerberus-engine.js"></script>
+  <script src="/js/cerberus-shared.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var app = document.getElementById('app');
+      var id = new URLSearchParams(location.search).get('id');
+
+      function fetchJSON(url) {
+        return fetch(url).then(function (r) { return r.json(); }).catch(function () { return []; });
+      }
+
+      function formatMoney(n) { return '$' + n.toFixed(2); }
+
+      function renderStars(rating) {
+        var r = Math.round(rating * 2) / 2;
+        var full = Math.floor(r);
+        var half = (r - full) === 0.5;
+        var empty = 5 - full - (half ? 1 : 0);
+        return '&#9733;'.repeat(full) + (half ? '&#189;' : '') + '&#9734;'.repeat(Math.max(0, empty));
+      }
+
+      function initials(name) {
+        return (name || '').split(/\s+/).map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
+      }
+
+      // ─── Deterministic seeded shuffle (per-game, stable across reloads) ───
+      function seededRand(seed) {
+        var x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+      }
+      function seededShuffle(arr, seed) {
+        var a = arr.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(seededRand(seed + i * 97.13) * (i + 1));
+          var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+        }
+        return a;
+      }
+
+      // ─── Toast (self-contained, doesn't depend on shared.js init timing) ───
+      function showToast(message, iconClass, icon) {
+        var container = document.getElementById('toastContainer');
+        if (!container) {
+          container = document.createElement('div');
+          container.className = 'toast-container';
+          container.id = 'toastContainer';
+          container.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9000;display:flex;flex-direction:column;gap:8px;pointer-events:none;';
+          document.body.appendChild(container);
+        }
+        var toast = document.createElement('div');
+        toast.style.cssText = 'pointer-events:auto;padding:12px 18px;background:rgba(10,10,15,0.97);border:1px solid rgba(255,255,255,0.08);border-radius:10px;font-size:0.8rem;color:#c8ccd4;max-width:340px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 4px 24px rgba(0,0,0,0.5);font-family:Inter,-apple-system,sans-serif;animation:toastIn 0.3s ease;';
+        toast.innerHTML = '<div style="flex-shrink:0;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;margin-top:1px;background:rgba(48,200,96,0.15);color:#30c860;">' + (icon || '&#10003;') + '</div><div>' + message + '</div>';
+        if (!document.getElementById('cerberusListingToastKeyframes')) {
+          var style = document.createElement('style');
+          style.id = 'cerberusListingToastKeyframes';
+          style.textContent = '@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}';
+          document.head.appendChild(style);
+        }
+        container.appendChild(toast);
+        setTimeout(function () {
+          toast.style.transition = 'opacity 0.3s, transform 0.3s';
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateX(40px)';
+        }, 3800);
+        setTimeout(function () { if (toast.parentNode) toast.remove(); }, 4100);
+      }
+
+      function addToCart(listingId) {
+        var cart = window.CERBERUS ? CERBERUS.getCart() : (function () {
+          try { return JSON.parse(localStorage.getItem('cerberus_cart')) || []; } catch (e) { return []; }
+        })();
+        var existing = cart.find(function (c) { return c.listingId === listingId; });
+        if (existing) existing.qty = (existing.qty || 1) + 1;
+        else cart.push({ listingId: listingId, qty: 1 });
+        localStorage.setItem('cerberus_cart', JSON.stringify(cart));
+        if (window.CERBERUS && CERBERUS.publishEvent) {
+          CERBERUS.publishEvent('cart-updated', { listingId: listingId, cart: cart });
+        }
+      }
+
+      function notFound() {
+        app.innerHTML =
+          '<div class="not-found">' +
+          '<div class="not-found-icon">&#128683;</div>' +
+          '<h1>Listing not found</h1>' +
+          '<p>We couldn&rsquo;t find a title matching that link. It may have been delisted, or the URL might be off.</p>' +
+          '<a href="/catalog/">Browse the full catalog</a>' +
+          '</div>';
+      }
+
+      function render(game, offers, sellers, reviews, catalog) {
+        document.title = game.title + ' — Cerberus Market';
+        var metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) metaDesc.setAttribute('content', game.title + ' on Cerberus Market — ' + game.description.slice(0, 140));
+        var ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle) ogTitle.setAttribute('content', game.title + ' — Cerberus Market');
+        var ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogDesc) ogDesc.setAttribute('content', game.description.slice(0, 160));
+
+        var sortedOffers = offers.slice().sort(function (a, b) { return a.price - b.price; });
+        var cheapest = sortedOffers[0];
+
+        var cover = window.CERBERUS ? CERBERUS.coverTileHTML(game, { size: 'lg' }) : '';
+
+        var html = '';
+
+        html += '<section class="section reveal visible">';
+        html += '<div class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/catalog/">Catalog</a> &rsaquo; <a href="/catalog/?genre=' + encodeURIComponent(game.genre) + '">' + game.genre + '</a> &rsaquo; ' + game.title + '</div>';
+        html += '<div class="listing-hero">';
+        html += '<div class="listing-cover-col">' + cover + '</div>';
+        html += '<div class="listing-info-col">';
+        html += '<h1 class="listing-title">' + game.title + '</h1>';
+        html += '<div class="listing-publisher">by ' + game.publisher + ' &bull; ' + game.releaseYear + '</div>';
+        html += '<div class="listing-tags">';
+        html += '<span class="tag-pill genre">' + game.genre + '</span>';
+        html += '<span class="tag-pill">' + game.platform + '</span>';
+        game.tags.forEach(function (t) { html += '<span class="tag-pill">' + t + '</span>'; });
+        html += '</div>';
+        html += '<div class="listing-rating"><span class="stars">' + renderStars(game.rating) + '</span> <strong style="color:var(--text-bright)">' + game.rating.toFixed(1) + '</strong> (' + game.ratingCount.toLocaleString() + ' ratings)</div>';
+        html += '<p class="listing-desc">' + game.description + '</p>';
+        if (cheapest) {
+          html += '<div class="listing-price-hint"><div class="listing-price-hint-value">' + formatMoney(cheapest.price) + '</div><div class="listing-price-hint-label">Best price &middot; ' + sortedOffers.length + ' seller' + (sortedOffers.length === 1 ? '' : 's') + '</div></div>';
+        }
+        html += '</div></div></section>';
+
+        // OFFERS
+        html += '<section class="section section-tight reveal visible">';
+        html += '<div class="section-header"><div class="section-label">Offers</div><h2 class="section-title">' + sortedOffers.length + ' seller' + (sortedOffers.length === 1 ? '' : 's') + ' listing this title</h2></div>';
+        html += '<div class="offers-list">';
+        if (sortedOffers.length === 0) {
+          html += '<div style="color:var(--text-dim);font-size:0.88rem;padding:20px 0;">No active listings for this title right now. Check back soon.</div>';
+        }
+        sortedOffers.forEach(function (offer, idx) {
+          var seller = sellers.find(function (s) { return s.id === offer.sellerId; }) || {
+            displayName: 'Unknown Seller', avatarInitials: '??', rating: 0, ratingCount: 0, badges: []
+          };
+          var isBest = idx === 0;
+          var lowStock = offer.stock <= 20;
+          html += '<div class="offer-row' + (isBest ? ' best' : '') + '">';
+          if (isBest) html += '<div class="offer-recommended">Best Price</div>';
+          html += '<div class="offer-seller">';
+          html += '<div class="offer-avatar">' + (seller.avatarInitials || initials(seller.displayName)) + '</div>';
+          html += '<div><div class="offer-seller-name">' + seller.displayName + (seller.badges && seller.badges.indexOf('Verified') !== -1 ? ' <span class="verified-badge">Verified</span>' : '') + '</div>';
+          html += '<div class="offer-seller-meta">' + (seller.rating || '—') + ' &#9733; (' + (seller.ratingCount || 0).toLocaleString() + ') &bull; ' + (seller.itemsSold || 0).toLocaleString() + ' sold</div></div>';
+          html += '</div>';
+          html += '<div class="offer-details">';
+          html += '<span><strong>' + offer.deliveryMethod + '</strong></span>';
+          html += '<span>' + offer.region + (offer.regionNote ? ' &mdash; ' + offer.regionNote : '') + '</span>';
+          html += '<span class="' + (lowStock ? 'stock-low' : '') + '">' + offer.stock + ' in stock' + (lowStock ? ' &mdash; low' : '') + '</span>';
+          html += '</div>';
+          html += '<div class="offer-price-block">';
+          if (offer.discountPct > 0) {
+            html += '<span class="offer-price-strike">' + formatMoney(game.basePrice) + '</span>';
+            html += '<span class="offer-discount">-' + offer.discountPct + '%</span>';
+          }
+          html += '<span class="offer-price-now">' + formatMoney(offer.price) + '</span>';
+          html += '</div>';
+          html += '<button class="offer-btn" data-listing-id="' + offer.id + '">Add to Cart</button>';
+          html += '</div>';
+        });
+        html += '</div></section>';
+
+        // REVIEWS
+        var shuffled = seededShuffle(reviews, (game.gradientSeed || 1) * 13.37);
+        var sampleSize = 6 + Math.floor(seededRand((game.gradientSeed || 1) * 3.7) * 5); // 6-10
+        var sample = shuffled.slice(0, Math.min(sampleSize, shuffled.length));
+        var counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        sample.forEach(function (r) { counts[r.rating] = (counts[r.rating] || 0) + 1; });
+        var total = sample.length || 1;
+        var avg = sample.reduce(function (s, r) { return s + r.rating; }, 0) / total;
+
+        html += '<section class="section section-tight reveal visible">';
+        html += '<div class="section-header"><div class="section-label">Reviews</div><h2 class="section-title">What buyers are saying</h2></div>';
+        html += '<div class="reviews-summary">';
+        html += '<div class="reviews-avg"><div class="reviews-avg-value">' + avg.toFixed(1) + '</div><div class="stars">' + renderStars(avg) + '</div><div class="reviews-avg-count">' + total + ' reviews shown</div></div>';
+        html += '<div class="reviews-bars">';
+        [5, 4, 3, 2, 1].forEach(function (n) {
+          var pct = Math.round(((counts[n] || 0) / total) * 100);
+          html += '<div class="reviews-bar-row"><span>' + n + ' star</span><div class="reviews-bar-track"><div class="reviews-bar-fill" style="width:' + pct + '%"></div></div><span>' + pct + '%</span></div>';
+        });
+        html += '</div></div>';
+        sample.forEach(function (r) {
+          html += '<div class="review-item"><div class="review-item-header"><span class="review-author">' + r.author + '</span><span class="stars">' + renderStars(r.rating) + '</span></div><p class="review-text">' + r.text + '</p></div>';
+        });
+        html += '</section>';
+
+        // RELATED
+        var sameGenre = catalog.filter(function (g) { return g.id !== game.id && g.genre === game.genre; });
+        var others = catalog.filter(function (g) { return g.id !== game.id && g.genre !== game.genre; })
+          .sort(function (a, b) { return b.rating - a.rating; });
+        var related = sameGenre.concat(others).slice(0, 4);
+
+        html += '<section class="section section-tight reveal visible">';
+        html += '<div class="section-header"><div class="section-label">Related</div><h2 class="section-title">More ' + game.genre + ' titles</h2></div>';
+        html += '<div class="related-grid">';
+        related.forEach(function (g) {
+          var gOffers = offersByGame(g.id);
+          var min = gOffers.length ? Math.min.apply(null, gOffers.map(function (o) { return o.price; })) : g.basePrice;
+          html += '<a class="catalog-card" href="/listing/?id=' + encodeURIComponent(g.id) + '">' +
+            (window.CERBERUS ? CERBERUS.coverTileHTML(g, { size: 'md' }) : '') +
+            '<div class="catalog-card-body"><div class="catalog-card-title">' + g.title + '</div><div class="catalog-card-price">' + formatMoney(min) + '</div></div></a>';
+        });
+        html += '</div></section>';
+
+        app.innerHTML = html;
+
+        // bind add-to-cart
+        app.querySelectorAll('.offer-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var listingId = btn.getAttribute('data-listing-id');
+            addToCart(listingId);
+            btn.textContent = 'Added ✓';
+            btn.classList.add('added');
+            showToast('<strong>Added to cart</strong> — ' + game.title, 'ok');
+            setTimeout(function () {
+              btn.textContent = 'Add to Cart';
+              btn.classList.remove('added');
+            }, 1800);
+          });
+        });
+      }
+
+      var allListings = [];
+      function offersByGame(catalogId) {
+        return allListings.filter(function (l) { return l.catalogId === catalogId; });
+      }
+
+      function init() {
+        if (!id) { notFound(); return; }
+        Promise.all([
+          fetchJSON('/data/catalog.json'),
+          fetchJSON('/data/listings.json'),
+          fetchJSON('/data/sellers.json'),
+          fetchJSON('/data/reviews.json')
+        ]).then(function (results) {
+          var catalog = results[0] || [];
+          var listings = results[1] || [];
+          var sellers = results[2] || [];
+          var reviews = results[3] || [];
+          allListings = listings;
+
+          var game = catalog.find(function (g) { return g.id === id; });
+          if (!game) { notFound(); return; }
+
+          var offers = offersByGame(id);
+          render(game, offers, sellers, reviews, catalog);
+        });
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>

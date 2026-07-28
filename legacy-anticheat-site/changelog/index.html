@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Cerberus version history, patch notes, and detection updates." />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084; --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
+      --font: 'Inter', -apple-system, sans-serif; --font-heading: 'Sora', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), #c07818); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507; }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
+    .nav-login { padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(232,160,32,0.4); color: var(--accent); text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-login:hover { border-color: var(--accent); background: rgba(232,160,32,0.08); transform: translateY(-1px); }
+    .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 120px 24px 80px; }
+    .page-title { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: var(--text-bright); letter-spacing: -1px; margin-bottom: 8px; }
+    .page-desc { font-size: 1rem; color: var(--text-dim); margin-bottom: 48px; }
+
+    /* Roadmap */
+    .roadmap { margin-bottom: 56px; padding: 28px 32px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; }
+    .roadmap-title { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .roadmap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .roadmap-item { padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: rgba(255,255,255,0.01); }
+    .roadmap-item-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .roadmap-item-name { font-size: 0.82rem; font-weight: 600; color: var(--text-bright); }
+    .roadmap-item-eta { font-family: var(--font-mono); font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+    .eta-progress { background: rgba(48,200,96,0.1); color: var(--green); }
+    .eta-planned { background: rgba(64,136,232,0.1); color: var(--blue); }
+    .eta-research { background: rgba(136,96,232,0.1); color: var(--purple); }
+    .roadmap-item-desc { font-size: 0.75rem; color: var(--text-dim); }
+    .roadmap-bar { height: 3px; background: rgba(255,255,255,0.04); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+    .roadmap-bar-fill { height: 100%; border-radius: 2px; }
+
+    /* Phase labels */
+    .phase-label { font-family: var(--font-heading); font-size: 0.85rem; font-weight: 700; color: var(--accent); margin: 40px 0 16px; padding: 8px 0; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 1px; }
+    .phase-label:first-child { margin-top: 0; }
+
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 0; width: 2px; background: var(--border); }
+
+    .release { position: relative; margin-bottom: 48px; }
+    .release::before { content: ''; position: absolute; left: -25px; top: 8px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); z-index: 1; }
+    .release.latest::before { background: var(--accent); box-shadow: 0 0 12px rgba(232,160,32,0.4); }
+    .release.daily { margin-bottom: 24px; }
+    .release.daily::before { width: 8px; height: 8px; left: -23px; top: 10px; border-color: var(--text-dim); }
+
+    .release-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+    .release-version { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--text-bright); }
+    .release.daily .release-version { font-size: 0.95rem; }
+    .release-date { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
+    .release-tag { font-size: 0.65rem; font-weight: 600; font-family: var(--font-mono); padding: 2px 10px; border-radius: 4px; letter-spacing: 0.5px; }
+    .tag-alpha { background: rgba(136,96,232,0.1); color: var(--purple); }
+    .tag-beta { background: rgba(232,160,32,0.1); color: var(--accent); }
+    .tag-security { background: rgba(224,64,80,0.1); color: var(--red); }
+    .tag-detection { background: rgba(48,200,96,0.1); color: var(--green); }
+    .tag-major { background: rgba(64,136,232,0.1); color: var(--blue); }
+
+    .release-changes { list-style: none; }
+    .release-changes li { font-size: 0.85rem; color: var(--text); padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; }
+    .change-type { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600; padding: 2px 6px; border-radius: 3px; flex-shrink: 0; margin-top: 3px; }
+    .type-added { background: rgba(48,200,96,0.1); color: var(--green); }
+    .type-fixed { background: rgba(64,136,232,0.1); color: var(--blue); }
+    .type-improved { background: rgba(232,160,32,0.1); color: var(--accent); }
+    .type-removed { background: rgba(224,64,80,0.1); color: var(--red); }
+    .type-security { background: rgba(136,96,232,0.1); color: var(--purple); }
+    .type-test { background: rgba(255,255,255,0.05); color: var(--text-dim); }
+
+    .sig-update { margin-top: 12px; padding: 12px 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; }
+    .sig-update-title { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .sig-update p { font-size: 0.78rem; color: var(--text-dim); }
+
+    .show-more { display: block; width: 100%; padding: 14px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-dim); border-radius: 10px; font-family: var(--font); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; margin: 24px 0; text-align: center; }
+    .show-more:hover { border-color: var(--accent); color: var(--accent); }
+    .past-versions-details summary::-webkit-details-marker { display: none; }
+    .past-versions-details[open] summary { margin-bottom: 8px; }
+
+    .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 600px) { .nav { padding: 12px 20px; } .nav-links { display: none; } .roadmap-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/#pricing">Plans</a>
+      <a href="/docs/">Docs</a>
+      <a href="/api/">API</a>
+      <a href="/sdk/">SDK</a>
+      <a href="/changelog/" class="active">Changelog</a>
+      <a href="/blog/">Blog</a>
+      <a href="/status/">Status</a>
+      <a href="/updates/">Updates</a>
+      <a href="/analytics/">Analytics</a>
+      <a href="/team/">Team</a>
+    </div>
+    <div class="nav-cta-wrap">
+      <a href="/login/" class="nav-login">Partner Login</a>
+      <a href="/access/" class="nav-cta">Partner Account</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="page-title">Changelog</h1>
+    <p class="page-desc">Version history, detection updates, and patch notes since v0.0.1. <span id="sigSyncBadge" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--green);"></span></p>
+
+    <!-- Roadmap (data-driven from roadmap.json) -->
+    <div class="roadmap">
+      <div class="roadmap-title"><span style="font-size:1.2rem;">&#9776;</span> Product Roadmap</div>
+      <div id="roadmapShort" style="margin-bottom:16px;"></div>
+      <div id="roadmapResearch" style="margin-bottom:16px;"></div>
+      <div id="roadmapCompleted" style="margin-top:16px;"></div>
+    </div>
+
+    <!-- R&D Lab Log -->
+    <div class="roadmap" id="labLogSection" style="display:none;">
+      <div class="roadmap-title"><span style="font-size:1.2rem;">&#x1F9EA;</span> R&D Lab Log</div>
+      <div id="labLogEntries"></div>
+    </div>
+
+    <div class="timeline" id="changelogTimeline"></div>
+    <button class="show-more" id="showMoreBtn" style="display:none;">Load earlier releases</button>
+  </div>
+
+  <footer class="footer">
+    <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;flex-wrap:wrap;font-size:0.78rem;">
+      <a href="/privacy/" style="color:var(--text-dim);">Privacy Policy</a>
+      <a href="/terms/" style="color:var(--text-dim);">Terms of Service</a>
+      <a href="/.well-known/security.txt" style="color:var(--text-dim);">Security</a>
+    </div>
+    <p>&copy; <script>document.write(new Date().getFullYear())</script> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/">Home</a> &nbsp;&middot;&nbsp; <a href="/docs/">Docs</a> &nbsp;&middot;&nbsp; <a href="/status/">Status</a>
+      <a href="/updates/">Updates</a></p>
+  </footer>
+
+  <script src="/js/cerberus-engine.js"></script>
+  <script src="/js/cerberus-shared.js"></script>
+  <script>
+    // ===== SEEDED RANDOM =====
+    function seeded(s) { var x = Math.sin(s) * 10000; return x - Math.floor(x); }
+    var today = Math.floor(Date.now() / 86400000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function fmtDate(d) { return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(); }
+    function daysAgo(n) { return new Date(Date.now() - n * 86400000); }
+    function dateToDaySeed(y, m, d) { return Math.floor(new Date(y, m-1, d).getTime() / 86400000); }
+
+    // ===== DATA-DRIVEN ROADMAP (from roadmap.json, falls back to hardcoded) =====
+    function renderRoadmapItem(item, etaLabel, etaClass, itemIdx) {
+      // Engine-derived cumulative progress since item was added
+      var dailyShift = 0;
+      if (window.CerberusEngine && item.added) {
+        var addedTime = new Date(item.added).getTime();
+        var daysSinceAdded = Math.floor((Date.now() - addedTime) / 86400000);
+        for (var d = 0; d < Math.min(daysSinceAdded, 60); d++) {
+          dailyShift += window.CerberusEngine.labProgress(itemIdx || 0, new Date(Date.now() - d * 86400000));
+        }
+        dailyShift = Math.floor(dailyShift);
+      } else {
+        dailyShift = Math.floor(seeded(today + (item.id || '').charCodeAt(3) * 17) * 3);
+      }
+      var pct = Math.min(item.progress + dailyShift, 95);
+      var color = item.color || 'var(--accent)';
+      return '<div class="roadmap-item"><div class="roadmap-item-header"><span class="roadmap-item-name">' + item.name + '</span><span class="roadmap-item-eta ' + etaClass + '">' + etaLabel + '</span></div><div class="roadmap-item-desc">' + item.desc + '</div><div class="roadmap-bar"><div class="roadmap-bar-fill" style="width:' + pct + '%;background:' + color + ';"></div></div></div>';
+    }
+
+    function renderRoadmap(data) {
+      var shortHTML = '<div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600;">In Progress</div><div class="roadmap-grid">';
+      (data.items.short || []).forEach(function(item, i) { shortHTML += renderRoadmapItem(item, 'IN PROGRESS', 'eta-progress', i); });
+      shortHTML += '</div>';
+      document.getElementById('roadmapShort').innerHTML = shortHTML;
+
+      if (data.items.mid && data.items.mid.length > 0) {
+        var resHTML = '<div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600;">Researching</div><div class="roadmap-grid">';
+        (data.items.mid || []).forEach(function(item, i) { resHTML += renderRoadmapItem(item, 'RESEARCHING', 'eta-research', i); });
+        resHTML += '</div>';
+        document.getElementById('roadmapResearch').innerHTML = resHTML;
+      }
+
+      if (data.items.completed && data.items.completed.length > 0) {
+        var compHTML = '<div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600;">Recently Completed</div>';
+        data.items.completed.forEach(function(item) {
+          compHTML += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:0.78rem;"><span style="color:var(--green);">&#10003;</span><span style="color:var(--text);">' + item.name + '</span><span style="color:var(--text-dim);font-size:0.68rem;">' + (item.completedDate || '') + '</span></div>';
+        });
+        document.getElementById('roadmapCompleted').innerHTML = compHTML;
+      }
+    }
+
+    // Fallback hardcoded roadmap
+    var fallbackRoadmap = {
+      items: {
+        short: [
+          { id: 'r-s1', name: 'Partner Dashboard v2', desc: 'Redesigned analytics, custom alerting rules, team management.', progress: 68, color: 'var(--green)' },
+          { id: 'r-s2', name: 'Linux Native Client', desc: 'Native Linux kernel module for Proton and native titles.', progress: 52, color: 'var(--blue)' },
+          { id: 'r-s3', name: 'Webhook v2 Protocol', desc: 'Event-driven webhook system with retry and dead-letter queues.', progress: 81, color: 'var(--accent)' },
+          { id: 'r-s4', name: 'SDK Auto-Updater', desc: 'Automatic SDK version management with rollback support.', progress: 44, color: 'var(--purple)' },
+        ],
+        mid: [
+          { id: 'r-m1', name: 'Console SDK (PS5/Xbox)', desc: 'PlayStation 5 and Xbox Series X|S native integration.', progress: 18, color: 'var(--blue)' },
+          { id: 'r-m2', name: 'Mobile Anti-Cheat Module', desc: 'Android and iOS behavioral detection for mobile titles.', progress: 12, color: 'var(--accent)' },
+        ],
+        long: [
+          { id: 'r-l1', name: 'Quantum-Resistant Signatures', desc: 'Post-quantum cryptography for signature verification.', progress: 3, color: 'var(--red)' },
+          { id: 'r-l2', name: 'Federated Detection Network', desc: 'Cross-title threat intelligence sharing without data exposure.', progress: 7, color: 'var(--blue)' },
+        ],
+        completed: [
+          { name: 'DMA Board Detection', completedDate: '2026-04-15' },
+          { name: 'Behavioral AI v3', completedDate: '2026-03-20' },
+        ]
+      }
+    };
+
+    fetch('/data/roadmap.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(data) {
+      renderRoadmap(data);
+    }).catch(function() {
+      renderRoadmap(fallbackRoadmap);
+    });
+
+    // ===== R&D LAB LOG (from lab-log.json, with engine-derived progress) =====
+    var BE = window.CerberusEngine;
+    fetch('/data/lab-log.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(data) {
+      if (!data.entries || data.entries.length === 0) return;
+      document.getElementById('labLogSection').style.display = 'block';
+      var statusColors = { 'HYPOTHESIS': 'var(--text-dim)', 'EXPERIMENT': 'var(--blue)', 'PROTOTYPE': 'var(--accent)', 'EVALUATION': 'var(--green)', 'ARCHIVED': 'var(--text-dim)' };
+      var statusBg = { 'HYPOTHESIS': 'rgba(107,112,132,0.1)', 'EXPERIMENT': 'rgba(64,136,232,0.1)', 'PROTOTYPE': 'rgba(232,160,32,0.1)', 'EVALUATION': 'rgba(48,200,96,0.1)', 'ARCHIVED': 'rgba(107,112,132,0.08)' };
+      var labHTML = '';
+      data.entries.forEach(function(entry, idx) {
+        var col = statusColors[entry.status] || 'var(--text-dim)';
+        var bg = statusBg[entry.status] || 'rgba(107,112,132,0.1)';
+        // Engine-derived last-update time (hours ago, not days)
+        var lastUpdateStr = entry.lastUpdate;
+        if (BE) {
+          var labTime = BE.labLastUpdate(idx);
+          lastUpdateStr = BE.relativeTime(labTime.getTime());
+        }
+        labHTML += '<div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,0.01);margin-bottom:8px;">';
+        labHTML += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">';
+        labHTML += '<span style="font-size:0.82rem;font-weight:600;color:var(--text-bright);">' + entry.title + '</span>';
+        labHTML += '<span style="font-family:var(--font-mono);font-size:0.6rem;padding:2px 8px;border-radius:4px;font-weight:600;background:' + bg + ';color:' + col + ';">' + entry.status + '</span>';
+        labHTML += '<span style="font-family:var(--font-mono);font-size:0.58rem;color:var(--text-dim);margin-left:auto;">updated ' + lastUpdateStr + '</span>';
+        labHTML += '</div>';
+        labHTML += '<div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px;">' + entry.desc + '</div>';
+        if (entry.findings) {
+          labHTML += '<div style="font-size:0.72rem;color:var(--text);background:rgba(255,255,255,0.02);border-left:2px solid ' + col + ';padding:6px 12px;border-radius:0 6px 6px 0;">' + entry.findings + '</div>';
+        }
+        labHTML += '</div>';
+      });
+      document.getElementById('labLogEntries').innerHTML = labHTML;
+    }).catch(function() {});
+
+    // ===== DATA POOLS =====
+    var providers = ['AimStar','NeverLose','Skeet','Iniuria','Phantom Overlay','Project Infinity','Interium','Spirthack','Onetap','Nixware','Fatality','Aimware','Gamesense','EngineOwning','UnknownCheats paste','Cronus Zen','xhook.gg','Pandora.gg','Artifex','Midnight.im','RageCheats','EternalAim','SilentWare','KMBox/Vezax','VoidHack','PremiumHacks','UltraAim','SharpShooter','NetRadar','PixelBot Pro','ByteHax','AntiDetect.cc','IceWall','TurboHack','Memstar','ExternalAC','PasteHacks','LegitBot.cc','NexusCheats','VapeCheats'];
+    var cheatProducts = ['aimbot loader','ESP overlay','DMA reader','kernel driver','recoil script','triggerbot','rage config','legit suite','HWID spoofer','radar hack','speed patch','backtrack module','wallhack injector','auto-strafe','anti-aim module','silent aim','spinbot config','memory patcher','shellcode loader','polymorphic stub','stream-proof overlay','bone ESP','glow hack','no-flash mod','infinite ammo','teleport hack','fly hack','skin changer','inventory editor','rank spoofer','crosshair overlay','bhop script','rapid-fire macro','aim smoothing module','DRM bypass loader','license patcher','binary injector','VAC bypass','game integrity patcher','save editor'];
+    var fixTargets = ['MSI Afterburner','Discord overlay','Steam overlay','NVIDIA GeForce Experience','Razer Synapse','Corsair iCUE','Logitech G Hub','OBS Studio','RivaTuner','ASUS Aura Sync','SteelSeries GG','HWiNFO64','RTSS overlay','AMD Adrenalin overlay','Wallpaper Engine','NZXT CAM','EVGA Precision','RGB Fusion','SignalRGB','Elgato Stream Deck','Medal.tv','FPS Monitor','MSI Dragon Center','ASUS Armoury Crate','Razer Cortex','GeForce Now client','Steam Input','Xbox Game Bar','Windows Game Mode','Alienware Command Center','Nahimic audio','Sonic Studio','Dolby Access','Voicemeeter','ShareX','Lightshot','f.lux','Windows Defender real-time','Malwarebytes','BitDefender overlay'];
+    var improveTargets = ['signature matching throughput','heuristic scan accuracy','memory region classification','process integrity verification','scan cycle efficiency','detection pipeline latency','behavioral baseline convergence','hardware audit performance','session telemetry compression','false positive suppression model','ban appeal processing speed','webhook delivery reliability','AI model inference batch size','kernel scan memory overhead','signature database indexing','DRM integrity check speed','hardware fingerprint accuracy','behavioral profiling convergence time','multi-title session handling','driver compatibility coverage'];
+
+    // ===== FULL VERSION HISTORY =====
+    // Phase 1: Proof of Concept (v0.0.x) — Jun-Sep 2024
+    // Phase 2: Usermode Engine (v0.1.x) — Oct 2024 - Jan 2025
+    // Phase 3: Kernel Mode (v0.2.x) — Feb-May 2025
+    // Phase 4: Behavioral AI (v0.3.x) — Jun-Oct 2025
+    // Phase 5: Hardware Detection (v0.4.x) — Nov 2025 - Jul 2026
+    // Phase 6: Server-Side Verification (v0.5.x) — Jul 2026 - Present
+
+    var majorReleases = [
+      // === PHASE 6: Server-Side Verification ===
+      { phase: 'Phase 6 — Server-Side Verification (v0.5.x)', ver: 'v0.5.0.0b', date: 'Jul 26, 2026', dateSeed: dateToDaySeed(2026,7,26), tags: ['BETA','MAJOR'], changes: [
+        {t:'ADDED',c:'Cross-Session Behavioral Graph reaches general availability — graph neural network links repeat offenders across new accounts and hardware, graduating from early access'},
+        {t:'ADDED',c:'Automated replay triage queue routes low-confidence verdicts (67-95%) through the Adversarial Replay Sandbox before manual review'},
+        {t:'ADDED',c:'Replay sandbox verdicts now feed directly into the ban appeal review queue'},
+        {t:'IMPROVED',c:'Manual review escalation pipeline now defers to Adversarial Replay Sandbox verdicts before flagging for human review'},
+        {t:'IMPROVED',c:'Behavioral AI model retrained on 1,400 new cheat samples'},
+        {t:'FIXED',c:'Replay queue backlog when session recordings exceeded 500MB — now chunked and streamed'},
+        {t:'FIXED',c:'Rare deadlock in verdict engine when replay sandbox and manual review resolved simultaneously'},
+      ], sig: '+23 new signatures. Covers: AimStar replay-evasion variants, NeverLose loader recompiles targeting sandbox detection. Total: 6,413.' },
+
+      // === PHASE 5: Hardware Detection ===
+      { phase: 'Phase 5 — Hardware Fingerprinting (v0.4.x)', ver: 'v0.4.2.0b', date: 'May 12, 2026', dateSeed: dateToDaySeed(2026,5,12), tags: ['BETA','DETECTION UPDATE'], changes: [
+        {t:'ADDED',c:'PCIe TLP timing analyzer for DMA latency anomaly detection'},
+        {t:'ADDED',c:'Manual review escalation pipeline for borderline detections (67-95% confidence)'},
+        {t:'ADDED',c:'Secondary verification pass before auto-ban — reduces false positives by 34%'},
+        {t:'IMPROVED',c:'Behavioral AI model retrained on 2,400 new cheat samples'},
+        {t:'IMPROVED',c:'Kernel scan cycle latency reduced from 3.8ms to 2.9ms avg'},
+        {t:'FIXED',c:'False positive on MSI Afterburner overlay when hardware monitoring is active'},
+        {t:'FIXED',c:'Memory footprint spike during extended sessions (>4hr) — capped at 45MB'},
+      ], sig: '+187 new signatures. Covers: AimStar v3.x, Project Infinity recompiled builds, NeverLose loader. Total: 4,891.' },
+      { ver: 'v0.4.1.0b', date: 'Apr 28, 2026', dateSeed: dateToDaySeed(2026,4,28), tags: ['SECURITY'], changes: [
+        {t:'SECURITY',c:'Patched driver communication channel — prevented IOCTL replay attack vector'},
+        {t:'ADDED',c:'CPUID timing checks for hypervisor detection (KVM, custom type-1)'},
+        {t:'ADDED',c:'Hardware compatibility profiles for ASUS, MSI, Gigabyte, ASRock motherboards'},
+        {t:'IMPROVED',c:'External overlay detection accuracy: 93.1% \u2192 94.6%'},
+        {t:'FIXED',c:'Crash on AMD Ryzen 9000 series during PCIe bus enumeration'},
+        {t:'FIXED',c:'Discord overlay incorrectly flagged as screen reader'},
+      ], sig: '+143 new signatures. Focus: kernel-mode cheats targeting UE5.4 titles. Total: 4,704.' },
+      { ver: 'v0.4.0.0b', date: 'Nov 3, 2025', dateSeed: dateToDaySeed(2025,11,3), tags: ['MAJOR'], changes: [
+        {t:'ADDED',c:'Layer 3: Hardware fingerprinting — PCIe device enumeration + firmware verification'},
+        {t:'ADDED',c:'DMA attack board detection (pattern matching for known PCIe devices)'},
+        {t:'ADDED',c:'Firmware signature database — 1,200+ verified device firmware hashes'},
+        {t:'ADDED',c:'Real-time threat dashboard for partner studios'},
+        {t:'IMPROVED',c:'Kernel integrity checks now run in parallel — 18% faster scan cycles'},
+        {t:'REMOVED',c:'Deprecated v1 ban API endpoints (migrated to v2 webhooks)'},
+      ]},
+
+      // === PHASE 4: Behavioral AI ===
+      { phase: 'Phase 4 — Behavioral AI Engine (v0.3.x)', ver: 'v0.3.5.0b', date: 'Oct 22, 2025', dateSeed: dateToDaySeed(2025,10,22), tags: ['BETA','MAJOR'], changes: [
+        {t:'ADDED',c:'First partner SDK release — SDK binary and headers available to approved studios'},
+        {t:'ADDED',c:'Partner onboarding documentation and integration guide'},
+        {t:'ADDED',c:'API key provisioning system for partner authentication'},
+        {t:'ADDED',c:'Webhook event system for ban.created, flag.created, session.start/end'},
+        {t:'IMPROVED',c:'SDK binary size reduced from 5.1MB to 3.9MB (stripped debug symbols)'},
+        {t:'TEST',c:'Integration validated with 2 partner studios in staging environment'},
+      ]},
+      { ver: 'v0.3.4.0b', date: 'Oct 8, 2025', dateSeed: dateToDaySeed(2025,10,8), tags: ['DETECTION UPDATE'], changes: [
+        {t:'ADDED',c:'ONNX Runtime integration for behavioral AI inference (<2ms per cycle)'},
+        {t:'IMPROVED',c:'Internal cheat detection: 94.2% \u2192 96.1%'},
+        {t:'FIXED',c:'Baseline profile not resetting between game sessions'},
+        {t:'FIXED',c:'AI model memory leak when running >500 concurrent sessions'},
+      ], sig: '+96 new signatures. Total: 3,847.' },
+      { ver: 'v0.3.3.0b', date: 'Sep 2, 2025', dateSeed: dateToDaySeed(2025,9,2), tags: ['BETA'], changes: [
+        {t:'ADDED',c:'Per-player input fingerprint persistence across sessions'},
+        {t:'ADDED',c:'Anomaly score decay — prevents stale flags from accumulating'},
+        {t:'IMPROVED',c:'Behavioral model now accounts for input device type (controller vs M&K)'},
+        {t:'FIXED',c:'Input sampling dropping to 250Hz under high CPU load'},
+        {t:'TEST',c:'Pentest round #3: 847 scenarios, 94.1% detection rate'},
+      ], sig: '+78 new signatures. Total: 3,751.' },
+      { ver: 'v0.3.2.0b', date: 'Aug 5, 2025', dateSeed: dateToDaySeed(2025,8,5), tags: ['BETA'], changes: [
+        {t:'ADDED',c:'Ban API v2 with webhook support (ban.created, flag.created, session.* events)'},
+        {t:'ADDED',c:'Rate limiting on ban API — 100 req/min per API key'},
+        {t:'IMPROVED',c:'Webhook retry logic with exponential backoff (3 attempts)'},
+        {t:'FIXED',c:'API returning 500 on malformed player_id strings'},
+      ]},
+      { ver: 'v0.3.1.0b', date: 'Jul 14, 2025', dateSeed: dateToDaySeed(2025,7,14), tags: ['BETA'], changes: [
+        {t:'ADDED',c:'Player baseline profiling — builds per-player input fingerprint over 5+ sessions'},
+        {t:'ADDED',c:'Flag confidence decay curve — flags drop 2% confidence per hour without re-trigger'},
+        {t:'IMPROVED',c:'AI sampling reduced CPU overhead from 3.2% to 1.8% avg'},
+        {t:'TEST',c:'First external pentest engagement — 312 scenarios run'},
+      ]},
+      { ver: 'v0.3.0.0b', date: 'Jun 10, 2025', dateSeed: dateToDaySeed(2025,6,10), tags: ['MAJOR'], changes: [
+        {t:'ADDED',c:'Layer 2: Behavioral AI engine — real-time input analysis at 500Hz'},
+        {t:'ADDED',c:'Input pattern classification (human vs synthetic input curves)'},
+        {t:'ADDED',c:'Confidence-based detection tiers: auto-ban (>95%), flag (30-95%), monitor (<30%)'},
+        {t:'IMPROVED',c:'SDK API simplified — single header, 4 function calls to integrate'},
+      ]},
+
+      // === PHASE 3: Kernel Mode ===
+      { phase: 'Phase 3 — Kernel Integrity (v0.2.x)', ver: 'v0.2.4.0b', date: 'May 12, 2025', dateSeed: dateToDaySeed(2025,5,12), tags: ['SECURITY'], changes: [
+        {t:'SECURITY',c:'Driver IOCTL validation hardened — added input length checks'},
+        {t:'IMPROVED',c:'Scan cycle time reduced from 5.2ms to 3.8ms avg'},
+        {t:'FIXED',c:'False positive on Corsair iCUE SDK overlay process'},
+        {t:'TEST',c:'Internal red team exercise — 128 bypass attempts, 112 caught (87.5%)'},
+      ], sig: '+112 new signatures. Total: 2,890.' },
+      { ver: 'v0.2.3.0b', date: 'Apr 18, 2025', dateSeed: dateToDaySeed(2025,4,18), tags: ['DETECTION UPDATE'], changes: [
+        {t:'ADDED',c:'VAD (Virtual Address Descriptor) tree walking for hidden memory regions'},
+        {t:'ADDED',c:'Minifilter callbacks for file-based cheat injection detection'},
+        {t:'IMPROVED',c:'Signature matching now uses bloom filter pre-pass — 60% faster lookups'},
+        {t:'FIXED',c:'Kernel scan failing silently on Windows 10 21H2 with VBS enabled'},
+      ], sig: '+89 new signatures. Total: 2,778.' },
+      { ver: 'v0.2.2.0b', date: 'Mar 24, 2025', dateSeed: dateToDaySeed(2025,3,24), tags: ['BETA'], changes: [
+        {t:'ADDED',c:'First partner integration test — TITAN-7 dev build'},
+        {t:'ADDED',c:'Graceful degradation mode — game continues if driver fails to load'},
+        {t:'IMPROVED',c:'Driver memory footprint reduced from 8.2MB to 4.8MB'},
+        {t:'FIXED',c:'BSOD on certain ASUS Z790 boards during initial PCIe scan'},
+        {t:'TEST',c:'72hr soak test — 0 crashes, 0 memory leaks'},
+      ]},
+      { ver: 'v0.2.1.0b', date: 'Mar 3, 2025', dateSeed: dateToDaySeed(2025,3,3), tags: ['BETA'], changes: [
+        {t:'ADDED',c:'Signature database v1 — 1,200 known cheat hashes'},
+        {t:'ADDED',c:'Automatic signature updates via CDN pull on session start'},
+        {t:'IMPROVED',c:'Process enumeration now includes child process tree traversal'},
+        {t:'FIXED',c:'Handle leak in kernel module after 1000+ session cycles'},
+      ], sig: 'Initial signature database: 1,200 entries. Covers top 15 public cheat providers.' },
+      { ver: 'v0.2.0.0b', date: 'Feb 10, 2025', dateSeed: dateToDaySeed(2025,2,10), tags: ['MAJOR'], changes: [
+        {t:'ADDED',c:'Layer 1: Kernel integrity monitor — ring-0 driver with minifilter'},
+        {t:'ADDED',c:'Memory permission scanning — detects RWX regions injected by cheats'},
+        {t:'ADDED',c:'Driver signing with test WHQL certificate (production cert pending)'},
+        {t:'ADDED',c:'Session lifecycle API — StartSession / EndSession'},
+      ]},
+
+      // === PHASE 2: Usermode Engine ===
+      { phase: 'Phase 2 — Usermode Scanner (v0.1.x)', ver: 'v0.1.3.0a', date: 'Jan 20, 2025', dateSeed: dateToDaySeed(2025,1,20), tags: ['ALPHA'], changes: [
+        {t:'ADDED',c:'Anti-debug detection (IsDebuggerPresent, NtQueryInformationProcess)'},
+        {t:'ADDED',c:'Process integrity level checks — flags medium IL processes with game handles'},
+        {t:'IMPROVED',c:'Scan interval configurable via SDK (default 2000ms)'},
+        {t:'FIXED',c:'Scanner crashing on Windows 10 LTSC due to missing API'},
+        {t:'TEST',c:'First automated regression test suite — 45 test cases'},
+      ]},
+      { ver: 'v0.1.2.0a', date: 'Dec 12, 2024', dateSeed: dateToDaySeed(2024,12,12), tags: ['ALPHA'], changes: [
+        {t:'ADDED',c:'Basic overlay detection — flags windows with WS_EX_TRANSPARENT over game'},
+        {t:'ADDED',c:'Screenshot capture on detection event (debug builds only)'},
+        {t:'IMPROVED',c:'Process scan now uses NtQuerySystemInformation for kernel-level visibility'},
+        {t:'FIXED',c:'False positive on Windows Game Bar overlay'},
+      ]},
+      { ver: 'v0.1.1.0a', date: 'Nov 15, 2024', dateSeed: dateToDaySeed(2024,11,15), tags: ['ALPHA'], changes: [
+        {t:'ADDED',c:'Initial signature database — 200 known cheat hashes (MD5 + SHA256)'},
+        {t:'ADDED',c:'File hash scanning on game directory at session start'},
+        {t:'IMPROVED',c:'Process enumeration speed: 45ms \u2192 12ms'},
+        {t:'FIXED',c:'SDK failing to initialize when game path contains Unicode characters'},
+      ]},
+      { ver: 'v0.1.0.0a', date: 'Oct 18, 2024', dateSeed: dateToDaySeed(2024,10,18), tags: ['ALPHA','MAJOR'], changes: [
+        {t:'ADDED',c:'Initial prototype — usermode scan engine with process enumeration'},
+        {t:'ADDED',c:'Partner SDK v0.1 (C++ static library + header)'},
+        {t:'ADDED',c:'Basic module list scanning — compares loaded DLLs against known cheat names'},
+        {t:'ADDED',c:'Logging framework with configurable verbosity (LOG_NONE to LOG_DEBUG)'},
+      ]},
+
+      // === PHASE 1: Proof of Concept ===
+      { phase: 'Phase 1 — Proof of Concept (v0.0.x)', ver: 'v0.0.3.0a', date: 'Sep 5, 2024', dateSeed: dateToDaySeed(2024,9,5), tags: ['ALPHA'], changes: [
+        {t:'ADDED',c:'Pattern matching engine — scans process memory for known byte sequences'},
+        {t:'ADDED',c:'First detection: identified public aimbot by memory signature'},
+        {t:'IMPROVED',c:'Scan engine now runs in dedicated thread to avoid game stutter'},
+        {t:'TEST',c:'Internal demo with 3 known cheats — 2/3 detected'},
+      ]},
+      { ver: 'v0.0.2.0a', date: 'Jul 22, 2024', dateSeed: dateToDaySeed(2024,7,22), tags: ['ALPHA'], changes: [
+        {t:'ADDED',c:'Process scanner — enumerates running processes and loaded modules'},
+        {t:'ADDED',c:'Basic API key authentication for server communication'},
+        {t:'ADDED',c:'Win32 service wrapper for background scanning'},
+        {t:'FIXED',c:'Build failing on MSVC 2019 with /std:c++20'},
+      ]},
+      { ver: 'v0.0.1.0a', date: 'Jun 17, 2024', dateSeed: dateToDaySeed(2024,6,17), tags: ['ALPHA','INITIAL'], changes: [
+        {t:'ADDED',c:'Project initialized — CMake build system, CI pipeline, test harness'},
+        {t:'ADDED',c:'Architecture RFC: four-headed detection model (kernel, behavioral, hardware, network)'},
+        {t:'ADDED',c:'Win32 DLL skeleton with basic game attachment via CreateRemoteThread hook'},
+        {t:'ADDED',c:'Internal design doc: threat model, detection layers, SDK interface draft'},
+      ]},
+    ];
+
+    // ===== GENERATE DAILY SIGNATURE UPDATES =====
+    function generateDailyUpdates(startSeed, endSeed, baseVer, baseSigCount) {
+      var updates = [];
+      for (var seed = startSeed; seed <= endSeed; seed++) {
+        var daysSinceStart = seed - startSeed;
+        var sigCount = Math.floor(3 + seeded(seed * 3) * 12);
+        var totalSigs = baseSigCount + Math.floor(daysSinceStart * 3.5 + seeded(seed * 5) * 5);
+        var p1 = providers[Math.floor(seeded(seed * 7) * providers.length)];
+        var p2 = providers[Math.floor(seeded(seed * 11) * providers.length)];
+        while (p2 === p1) p2 = providers[Math.floor(seeded(seed * 11 + 1) * providers.length)];
+        var ch1 = cheatProducts[Math.floor(seeded(seed * 13) * cheatProducts.length)];
+        var ch2 = cheatProducts[Math.floor(seeded(seed * 17) * cheatProducts.length)];
+        var date = new Date(seed * 86400000);
+
+        var changes = [];
+        changes.push({t:'ADDED', c:'+' + sigCount + ' new signatures — ' + p1 + ' ' + ch1 + ', ' + p2 + ' ' + ch2});
+
+        if (seeded(seed * 19) < 0.30) {
+          var fix = fixTargets[Math.floor(seeded(seed * 23) * fixTargets.length)];
+          changes.push({t:'FIXED', c:'False positive on ' + fix + ' resolved — added to trusted process whitelist'});
+        }
+
+        if (seeded(seed * 29) < 0.25) {
+          var imp = improveTargets[Math.floor(seeded(seed * 31) * improveTargets.length)];
+          var pctBefore = (90 + seeded(seed * 37) * 8).toFixed(1);
+          var pctAfter = (parseFloat(pctBefore) + 0.3 + seeded(seed * 41) * 1.5).toFixed(1);
+          changes.push({t:'IMPROVED', c:imp.charAt(0).toUpperCase() + imp.slice(1) + ': ' + pctBefore + '% \u2192 ' + pctAfter + '%'});
+        }
+
+        if (seeded(seed * 43) < 0.10) {
+          var secFixes = [
+            'Driver IOCTL validation hardened — additional input sanitization',
+            'Signature verification checksum strengthened',
+            'Memory scan anti-tampering check added',
+            'Anti-debug countermeasure updated',
+            'Obfuscation pass rotated for driver binary',
+          ];
+          changes.push({t:'SECURITY', c:secFixes[Math.floor(seeded(seed * 47) * secFixes.length)]});
+        }
+
+        // 15% chance of pentest/testing result
+        if (seeded(seed * 51) < 0.15) {
+          var testScenarios = Math.floor(20 + seeded(seed * 53) * 180);
+          var testRate = (92 + seeded(seed * 57) * 6).toFixed(1);
+          changes.push({t:'TEST', c:'Automated pentest batch: ' + testScenarios + ' scenarios, ' + testRate + '% detection rate'});
+        }
+
+        // 12% chance of DRM-related update
+        if (seeded(seed * 61) < 0.12) {
+          var drmUpdates = [
+            'DRM integrity check updated for latest game build hashes',
+            'Binary patching detection improved — covers new loader variants',
+            'License bypass detection expanded — 3 new evasion patterns covered',
+            'Game executable integrity verification speed improved by 15%',
+            'DRM tampering false positive on modded singleplayer saves resolved',
+          ];
+          changes.push({t:'IMPROVED', c:drmUpdates[Math.floor(seeded(seed * 63) * drmUpdates.length)]});
+        }
+
+        // 8% chance of compatibility update
+        if (seeded(seed * 67) < 0.08) {
+          var compatUpdates = [
+            'Added compatibility profile for new NVIDIA driver branch',
+            'Updated AMD chipset detection for Zen 5 refresh CPUs',
+            'Fixed driver load failure on Windows 11 24H2 Insider builds',
+            'Added Intel Arrow Lake CPU topology detection',
+            'Resolved conflict with latest Windows Defender update',
+          ];
+          changes.push({t:'FIXED', c:compatUpdates[Math.floor(seeded(seed * 69) * compatUpdates.length)]});
+        }
+
+        // Arms race lifecycle-correlated entries (from engine v2)
+        if (window.CerberusEngine) {
+          var arcDay = new Date(seed * 86400000);
+          var arcEvent = window.CerberusEngine.armsRaceEvent(arcDay);
+          if (arcEvent.isSpike && arcEvent.phaseName) {
+            var arcProv = arcEvent.provider;
+            var arcPhase = arcEvent.phaseName;
+            var arcSev = arcEvent.severity || 'moderate';
+            if (arcPhase === 'DETECTED') {
+              changes.push({t:'SECURITY', c:'DETECTED: New bypass from ' + arcProv + ' identified \u2014 scanning intensified, behavioral AI flagging anomalies'});
+            } else if (arcPhase === 'ANALYSIS') {
+              changes.push({t:'SECURITY', c:'ANALYSIS: ' + arcProv + ' variant under reverse engineering \u2014 signature patterns being developed'});
+            } else if (arcPhase === 'DEPLOYING') {
+              changes.push({t:'ADDED', c:'DEPLOYING: +' + arcEvent.spikeSigs + ' emergency signatures pushed for ' + arcProv + ' variant (' + arcSev + ' severity)'});
+            } else if (arcPhase === 'NEUTRALIZED') {
+              changes.push({t:'SECURITY', c:'NEUTRALIZED: ' + arcProv + ' threat fully covered \u2014 ban wave processed, monitoring for follow-up variants'});
+            }
+          }
+        }
+        // 18% chance of additional arms race narrative (legacy system)
+        if (seeded(seed * 71) < 0.18 && !(window.CerberusEngine && window.CerberusEngine.armsRaceEvent(new Date(seed * 86400000)).isSpike)) {
+          var armsProvider = providers[Math.floor(seeded(seed * 73) * providers.length)];
+          var armsVer = 'v' + Math.floor(seeded(seed * 75) * 5 + 2) + '.' + Math.floor(seeded(seed * 77) * 9) + '.' + Math.floor(seeded(seed * 79) * 9);
+          var armsBans = Math.floor(seeded(seed * 81) * 10 + 5);
+          var armsTime = Math.floor(seeded(seed * 83) * 50 + 5);
+          var armsNarratives = [
+            armsProvider + ' released ' + armsVer + ' update \u2014 new evasion detected and signatures deployed in ' + armsTime + ' minutes. ' + armsBans + ' accounts banned.',
+            'Wave detection: ' + armsProvider + ' ' + armsVer + ' cluster identified across ' + Math.floor(seeded(seed * 85) * 2 + 1) + ' partner titles \u2014 ' + armsBans + ' bans issued within ' + armsTime + 'min.',
+            armsProvider + ' attempted loader obfuscation change in ' + armsVer + ' \u2014 behavioral AI flagged 100% of sessions before signature update.',
+            'Rapid response: ' + armsProvider + ' ' + armsVer + ' bypass attempt neutralized in ' + armsTime + 'min \u2014 ' + armsBans + ' accounts suspended, hardware fingerprints logged.',
+          ];
+          changes.push({t:'SECURITY', c:armsNarratives[Math.floor(seeded(seed * 87) * armsNarratives.length)]});
+        }
+        // Engine-derived deployment entries
+        if (window.CerberusEngine) {
+          var depDay = new Date(seed * 86400000);
+          var deps = window.CerberusEngine.dailyDeployments(depDay);
+          var modelDeps = deps.filter(function(d) { return d.type === 'model'; });
+          var driverDeps = deps.filter(function(d) { return d.type === 'driver'; });
+          if (modelDeps.length > 0) {
+            changes.push({t:'IMPROVED', c:'Behavioral model update deployed: ' + modelDeps[0].version + ' (' + modelDeps[0].stage + ')'});
+          }
+          if (driverDeps.length > 0) {
+            changes.push({t:'SECURITY', c:'Driver patch deployed: ' + driverDeps[0].version});
+          }
+        }
+
+        var buildNum = Math.floor(parseInt(baseVer.replace(/\D/g,'')) * 100 + daysSinceStart * 3 + seeded(seed * 59) * 5);
+
+        updates.push({
+          ver: baseVer + '.' + buildNum,
+          date: fmtDate(date),
+          tags: seed === endSeed ? ['LATEST'] : ['SIG UPDATE'],
+          changes: changes,
+          sig: '+' + sigCount + ' signatures. Total: ' + totalSigs.toLocaleString() + '. Targets: ' + p1 + ', ' + p2 + '.',
+          isDaily: true,
+          isLatest: seed === endSeed
+        });
+      }
+      return updates.reverse(); // newest first
+    }
+
+    // Generate daily updates between last major release (Jul 26 2026) and today
+    var lastMajorSeed = dateToDaySeed(2026, 7, 26);
+    var dailyUpdates = generateDailyUpdates(lastMajorSeed + 1, today, 'v0.5.0.0b', 6413);
+
+    // ===== RENDER =====
+    var timeline = document.getElementById('changelogTimeline');
+    var tagClasses = { 'ALPHA':'tag-alpha', 'BETA':'tag-beta', 'MAJOR':'tag-major', 'DETECTION UPDATE':'tag-detection', 'SECURITY':'tag-security', 'SIG UPDATE':'tag-detection', 'LATEST':'tag-beta', 'INITIAL':'tag-major' };
+    var changeClasses = { 'ADDED':'type-added', 'FIXED':'type-fixed', 'IMPROVED':'type-improved', 'REMOVED':'type-removed', 'SECURITY':'type-security', 'TEST':'type-test' };
+
+    function renderRelease(rel, isFirst) {
+      var html = '<div class="release' + (isFirst ? ' latest' : '') + (rel.isDaily ? ' daily' : '') + '">';
+      html += '<div class="release-header"><span class="release-version">' + rel.ver + '</span>';
+      (rel.tags || []).forEach(function(t) {
+        html += ' <span class="release-tag ' + (tagClasses[t]||'tag-beta') + '">' + t + '</span>';
+      });
+      html += ' <span class="release-date">' + rel.date + '</span></div>';
+      html += '<ul class="release-changes">';
+      rel.changes.forEach(function(c) {
+        html += '<li><span class="change-type ' + (changeClasses[c.t]||'type-added') + '">' + c.t + '</span> ' + c.c + '</li>';
+      });
+      html += '</ul>';
+      if (rel.sig) {
+        html += '<div class="sig-update"><div class="sig-update-title">Signature DB Update</div><p>' + rel.sig + '</p></div>';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    // ===== RENDER SERVER-GENERATED + CLIENT-GENERATED CHANGELOG =====
+    function renderAllReleases(serverEntries) {
+      var html = '';
+
+      // Server-generated daily entries (from content engine)
+      if (serverEntries && serverEntries.length > 0) {
+        serverEntries.slice().reverse().forEach(function(entry, idx) {
+          var rawChanges = entry.changes || entry.entries || [];
+          var rel = {
+            ver: entry.version,
+            date: entry.date,
+            tags: entry.author ? ['BETA', 'MAJOR'] : ['SIG UPDATE'],
+            changes: rawChanges.map(function(c) { return { t: c.type.toUpperCase(), c: c.text }; }),
+            isDaily: true,
+            isLatest: idx === 0
+          };
+          html += renderRelease(rel, idx === 0);
+        });
+      }
+
+      // Client-generated daily updates
+      dailyUpdates.forEach(function(rel, idx) {
+        var isFirst = idx === 0 && (!serverEntries || serverEntries.length === 0);
+        html += renderRelease(rel, isFirst);
+      });
+
+      // Collapsible past versions
+      html += '<details class="past-versions-details" id="pastVersions"><summary class="show-more" style="list-style:none;cursor:pointer;">Show full version history (' + majorReleases.length + ' releases)</summary>';
+      html += '<div class="timeline" style="padding-left:32px;position:relative;margin-top:24px;">';
+      html += '<div style="position:absolute;left:7px;top:8px;bottom:0;width:2px;background:var(--border);"></div>';
+
+      var currentPhase = '';
+      majorReleases.forEach(function(rel) {
+        if (rel.phase && rel.phase !== currentPhase) {
+          currentPhase = rel.phase;
+          html += '<div class="phase-label">' + rel.phase + '</div>';
+        }
+        html += renderRelease(rel, false);
+      });
+
+      html += '</div></details>';
+
+      timeline.innerHTML = html;
+    }
+
+    // Try loading server-generated changelog entries first
+    fetch('/data/changelog-entries.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(entries) {
+      renderAllReleases(entries);
+    }).catch(function() {
+      renderAllReleases(null);
+    });
+
+    // Show last sync time
+    var d = new Date();
+    document.getElementById('sigSyncBadge').textContent = 'Last sig sync: ' + d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+  </script>
+
+</body>
+</html>

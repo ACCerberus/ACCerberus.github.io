@@ -19,12 +19,11 @@
 
   // ─── Multipliers ───
 
-  // Time-of-day multiplier (24 values representing hourly traffic patterns)
-  // This reuses the existing todMultipliers pattern from analytics
+  // Time-of-day multiplier (24 values representing hourly marketplace traffic)
   CS._todMultipliers = [
     0.3, 0.25, 0.2, 0.2, 0.25, 0.3,   // 00-05: Dead hours
     0.5, 0.7, 0.9, 1.0, 1.1, 1.2,     // 06-11: Morning ramp
-    1.3, 1.4, 1.5, 1.6, 1.6, 1.5,     // 12-17: Peak hours (Asia+EU)
+    1.3, 1.4, 1.5, 1.6, 1.6, 1.5,     // 12-17: Peak hours (APAC+EU)
     1.4, 1.3, 1.2, 1.0, 0.7, 0.5      // 18-23: NA peak then decline
   ];
 
@@ -33,7 +32,7 @@
     return CS._todMultipliers[hour % 24];
   };
 
-  // Day-of-week multiplier (weekend boost)
+  // Day-of-week multiplier (weekend shopping boost)
   CS.weeklyMultiplier = function(dayOfWeek) {
     dayOfWeek = (dayOfWeek === undefined) ? new Date().getUTCDay() : dayOfWeek;
     // 0=Sun, 6=Sat
@@ -41,20 +40,20 @@
     return mults[dayOfWeek];
   };
 
-  // Arms race cycle - exponential recovery with oscillation
-  // Models the pattern: bypass detected -> analysis -> sigs deploy -> neutralized
-  CS.armsRaceCycle = function(daysSinceLastWave) {
-    var d = Math.max(0, daysSinceLastWave);
+  // Flash-sale cycle - exponential recovery with oscillation
+  // Models the pattern: sale announced -> live -> ending soon -> cooldown -> next drop
+  CS.saleCycle = function(daysSinceLastSale) {
+    var d = Math.max(0, daysSinceLastSale);
     return 0.2 + 0.7 * (1 - Math.exp(-d / 8)) * (1 + 0.1 * Math.sin(d * 0.3));
   };
 
-  // Arms race stage name (0-3)
-  CS.armsRaceStage = function(daysSinceLastWave) {
-    var d = Math.max(0, daysSinceLastWave);
-    if (d <= 1) return { stage: 0, label: 'BYPASS DETECTED', color: '#e04050' };
-    if (d <= 3) return { stage: 1, label: 'ANALYSIS', color: '#e87830' };
-    if (d <= 6) return { stage: 2, label: 'SIGS DEPLOYING', color: '#e8a020' };
-    return { stage: 3, label: 'NEUTRALIZED', color: '#30c860' };
+  // Flash-sale stage name (0-3)
+  CS.saleStage = function(daysSinceLastSale) {
+    var d = Math.max(0, daysSinceLastSale);
+    if (d <= 1) return { stage: 0, label: 'SALE LIVE', color: '#30c860' };
+    if (d <= 2) return { stage: 1, label: 'ENDING SOON', color: '#e8a020' };
+    if (d <= 4) return { stage: 2, label: 'COOLDOWN', color: '#e87830' };
+    return { stage: 3, label: 'AWAITING NEXT DROP', color: '#7a8290' };
   };
 
   // Brownian random walk - smooth step toward a target with noise
@@ -86,51 +85,62 @@
     return Math.max(min, Math.min(max, val));
   };
 
-  // Generate NPU utilization (20-45%, scaled by load)
-  CS.npuUtilization = function(hour, seed) {
-    if (window.CerberusEngine) return CerberusEngine.npuUtilization();
-    var base = 25 + CS.diurnalMultiplier(hour) * 15;
+  // Price index - normalized average catalog price relative to list price
+  // (100 = full price, lower = deeper average discounting across the site)
+  CS.priceIndex = function(seed) {
+    if (window.CerberusEngine) {
+      var sale = CerberusEngine.flashSaleEvent();
+      var base = sale.isActive ? (100 - sale.discountPct * 0.6) : 92;
+      return CS.clamp(Math.round(base * 10) / 10, 55, 100);
+    }
+    var base = 90 - CS.diurnalMultiplier() * 3;
     var noise = (CS.seeded(seed || CS.daySeed() * 201) - 0.5) * 6;
-    return CS.clamp(Math.round((base + noise) * 10) / 10, 20, 45);
+    return CS.clamp(Math.round((base + noise) * 10) / 10, 55, 100);
   };
 
-  // Generate ML confidence (94-99%)
-  CS.mlConfidence = function(seed) {
+  // Category (genre) popularity score for a given category index (0-11)
+  CS.categoryPopularity = function(categoryIndex, seed) {
+    categoryIndex = categoryIndex || 0;
+    var base = 50 + CS.diurnalMultiplier() * 8;
+    var noise = (CS.seeded(seed || CS.daySeed() * 401 + categoryIndex * 17) - 0.5) * 22;
+    return CS.clamp(Math.round(base + noise), 20, 96);
+  };
+
+  // Deal confidence score (94-99) - rough "how good is this deal" indicator
+  CS.dealConfidence = function(seed) {
     var base = 96.5;
     var noise = (CS.seeded(seed || CS.daySeed() * 301) - 0.5) * 3;
     return CS.clamp(Math.round((base + noise) * 100) / 100, 94, 99);
   };
 
-  // Generate DMA anomalies count (0-8)
-  CS.dmaAnomalies = function(hour, seed) {
-    var base = CS.diurnalMultiplier(hour) * 4;
-    var noise = CS.seeded(seed || CS.daySeed() * 401) * 3;
-    return CS.clamp(Math.floor(base + noise), 0, 8);
+  // "Keys sold today" hourly time-series (24 values)
+  CS.hourlySalesSeries = function(now) {
+    now = now || new Date();
+    var ds = window.CerberusEngine ? CerberusEngine.daySeed(now) : CS.daySeed();
+    var series = [];
+    for (var h = 0; h < 24; h++) {
+      var tod = CS.diurnalMultiplier(h);
+      var val = Math.round(tod * 9 + CS.seeded(ds * 601 + h * 13) * 5);
+      series.push(CS.clamp(val, 0, 22));
+    }
+    return series;
   };
 
-  // Generate obfuscation integrity (99.8-100%)
-  CS.obfuscationIntegrity = function(seed) {
-    var base = 99.92;
-    var noise = (CS.seeded(seed || CS.daySeed() * 501) - 0.5) * 0.15;
-    return CS.clamp(Math.round((base + noise) * 100) / 100, 99.8, 100);
-  };
-
-  // Generate behavioral model version string (v3.x series, consistent with engine)
-  CS.behavioralModelVersion = function() {
-    if (window.CerberusEngine) return CerberusEngine.CONFIG.behavioralModel;
-    return 'bm-3.1.4';
-  };
-
-  // Generate PCIe firmware DB size (growing counter)
-  // Base at a reference date, grows ~2-5 per day
-  CS.pcieFirmwareDbSize = function() {
-    var ref = new Date('2026-01-01').getTime();
+  // Total catalog entries ever listed (growing counter, includes sold/expired)
+  CS.catalogSizeGrowth = function() {
+    var ref = new Date('2025-10-01').getTime();
     var now = Date.now();
     var daysSinceRef = (now - ref) / 86400000;
-    var base = 1200;
-    var growth = Math.floor(daysSinceRef * 3.5);
-    var noise = Math.floor(CS.seeded(CS.daySeed() * 701) * 5);
+    var base = 850;
+    var growth = Math.floor(daysSinceRef * 0.45);
+    var noise = Math.floor(CS.seeded(CS.daySeed() * 701) * 4);
     return base + growth + noise;
+  };
+
+  // Platform build version string, consistent with engine
+  CS.platformVersion = function() {
+    if (window.CerberusEngine) return CerberusEngine.CONFIG.platformVersion;
+    return 'v0.5.0.0b';
   };
 
   // Format a relative time string

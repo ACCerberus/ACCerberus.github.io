@@ -1,202 +1,137 @@
 [
   {
-    "id": "blog-027",
-    "title": "Injection Technique Evolution: From LoadLibrary to Instrumentation Callbacks",
-    "date": "2026-05-22T10:00:00Z",
-    "category": "Engineering",
-    "author": "dkrasov",
-    "summary": "A deep dive into how injection techniques have evolved from trivial CreateRemoteThread+LoadLibrary to instrumentation callback abuse, and how Cerberus Layer 1 detects each stage of the progression.",
-    "content": "Injection techniques have evolved dramatically over the past decade. The classic CreateRemoteThread + LoadLibrary approach is trivially detected by any modern anti-cheat — it leaves obvious artifacts in the PEB module list and triggers well-known API hooks.\n\nThe next evolution was manual mapping: allocating memory via NtAllocateVirtualMemory, copying PE sections manually, resolving imports, and never calling LoadLibrary at all. Advanced variants unlink the allocation from VAD trees and erase PE headers post-load to avoid memory scanners. Cerberus detects this via PTE scanning for executable non-image-backed memory regions — if a page is marked executable but doesn't correspond to a known module on disk, it gets flagged.\n\nThread hijacking came next — suspending an existing thread via NtCreateThreadEx with THREAD_CREATE_FLAGS_HIDE_FROM_DEBUGGER, modifying its context to point at injected code, and resuming. No new thread creation means fewer detection surface points. We catch this through thread context change monitoring and stack pivot detection.\n\nEarly bird APC injection queues an APC to a thread that hasn't started yet — the payload executes before any user-mode hooks are initialized, including anti-cheat hooks. Our kernel driver monitors APC queue insertions targeting suspended threads and flags pre-initialization execution.\n\nThe current frontier is instrumentation callback injection via NtSetInformationProcess(ProcessInstrumentationCallback). This sets a process-wide callback that fires on every kernel-to-user transition, giving the attacker persistent code execution without any thread manipulation. We monitor this by hooking the information class and validating callback registration against known legitimate callers.\n\nOther techniques we track: exception handler hijacking (VEH/SEH chain manipulation to redirect execution flow), and Heaven's Gate — abusing the WoW64 transition layer to execute 64-bit code from a 32-bit process, bypassing 32-bit hooks entirely.\n\nOur current instrumentation callback detection sits at 72% — we're actively expanding coverage for v0.4.3 by adding kernel-level NtSetInformationProcess filtering for the ProcessInstrumentationCallback class. Heaven's Gate detection is at 81% via segment selector monitoring."
+    "id": "deals-014",
+    "title": "Flash Sale: Null Signal Drops to $52.99 This Weekend",
+    "date": "2026-07-26T15:00:00Z",
+    "category": "Flash Sale",
+    "author": "M. Alders",
+    "gameId": "null-signal",
+    "summary": "Three verified sellers are running discounts on Null Signal's 32-player warfare mode this weekend, with Northbyte Trading's $52.99 listing leading the pack at 24% off.",
+    "content": "Null Signal is the featured title in this week's flash sale window, and the discount stack is deep. Northbyte Trading is currently listing the instant-delivery key at $52.99 — 24% off the $69.99 list price — while KeyForge Direct is close behind at $55.99 (20% off) and Vertex Keys Co. at $59.99 (14% off). All three listings are global-region, instant auto-delivery.\n\nThis is the deepest discount Null Signal has seen since its release earlier this year, and combined stock across the three top listings sits north of 1,200 keys, so sellout risk is low for now. Palecask Digital is also carrying a smaller-batch listing at $66.99 for buyers who prefer a mid-size storefront over the top sellers.\n\nIf you've been waiting on Halfmoon Digital's destructible-campaign shooter, this is the best entry point we've tracked to date. Expect pricing to drift back toward baseline once the sale window closes."
   },
   {
-    "id": "blog-026",
-    "title": "The DMA Hardware Arms Race: FPGA Boards, Firmware Injection, and Why Device Lists Fail",
-    "date": "2026-05-19T14:00:00Z",
-    "category": "Threat Report",
-    "author": "dkrasov",
-    "summary": "FPGA-based DMA boards, firmware input injection via KMBox, and neural network inference on external hardware represent the next wave of undetectable cheats. Here's what we're seeing and how we're responding.",
-    "content": "DMA cheating has moved far beyond off-the-shelf Screamer boards. The current generation uses custom FPGA implementations — Artix-7 based boards with bespoke bitstreams that emulate legitimate PCIe device IDs (Intel NICs, USB controllers, audio devices). Device enumeration is worthless against these because the TLP layer faithfully reproduces the configuration space of real hardware.\n\nThe most sophisticated setups use custom FPGA bitstreams with TLP masking — randomizing read patterns, inserting jitter into completion timing, and batching memory reads to mimic legitimate DMA from a network card. Our TLP timing analysis catches the baseline variants (200-800ns latency spikes from PCIe reads), but custom bitstreams with randomized timing are harder — current detection sits at 67%. Each new firmware revision requires building new timing profiles.\n\nThe input injection side is equally concerning. KMBox B+ Pro and Arduino Leonardo devices inject HID reports at the firmware level. The USB host controller sees legitimate HID traffic — correct report descriptors, proper polling intervals, valid checksums. From the OS perspective, it's a real keyboard and mouse. Our USB HID polling jitter analysis catches about 44% of known KMBox variants by detecting statistical anomalies in polling interval distributions.\n\nThe nightmare scenario — which we're already seeing in the wild — is the full external pipeline: FPGA reads game memory via DMA, sends it to a second PC over high-speed link, the second PC runs an ONNX inference model (typically YOLOv8 fine-tuned on game assets), generates aim corrections, and feeds them back through a KMBox. Zero software footprint on the game PC. No injected code. No modified memory. No suspicious processes.\n\nWe're also tracking SPI flash modification for firmware persistence — cheat payloads embedded in NVMe or USB controller firmware that survive OS reinstalls and even drive wipes. Detection requires firmware integrity verification at a level most anti-cheats aren't equipped for.\n\nOur detection approach combines multiple signals: TLP timing profiling, IOMMU attestation (checking for DMA remapping bypass), BAR region analysis (fake devices often have incorrect BAR sizing), and behavioral AI correlation (even if we can't see the cheat software, the player's behavior still shows ML-generated input patterns)."
+    "id": "deals-013",
+    "title": "Restock Alert: Redshift Arena Keys Back in Stock After Sellout",
+    "date": "2026-07-25T11:30:00Z",
+    "category": "Restock",
+    "author": "T. Vance",
+    "gameId": "redshift-arena",
+    "summary": "Vertex Keys Co. and Northbyte Trading pushed a combined 750 fresh Redshift Arena keys after last week's orbital-ring battle royale sellout.",
+    "content": "Redshift Arena ran dry across our top two sellers for most of last week following a surge tied to the title's seasonal cosmetic vault refresh. Vertex Keys Co. has since restocked 400 units at $23.99 (20% off), and Northbyte Trading followed with 350 more at $21.99 (27% off) — currently the better of the two prices.\n\nFairwind Keys still has a smaller batch at $25.99 for buyers who'd rather avoid the queue entirely, and QuickCrate Keys is running a region-locked EU/UK batch at $19.99 for anyone with an EU storefront account.\n\nGiven how quickly the last batch cleared, we wouldn't expect these listings to sit for long. Redshift Collective's shrinking-ring shooter has been one of our steadier movers in the Battle Royale category all month."
   },
   {
-    "id": "blog-025",
-    "title": "Anti-Tamper & Reverse Engineering Resilience: Protecting the Protector",
-    "date": "2026-05-16T09:00:00Z",
-    "category": "Engineering",
-    "author": "nvoronov",
-    "summary": "Anti-cheat runs on the attacker's machine. Here's how we make reverse engineering Cerberus expensive enough that our weekly update cadence invalidates their work.",
-    "content": "Every anti-cheat faces an asymmetric problem: we run on the attacker's machine. They have full control — kernel debuggers, hardware breakpoints, DMA-based memory access. No client-side protection is unbreakable. Our goal isn't perfection; it's raising the cost of reverse engineering so that cheat developers face weeks of work per update, which our weekly release cadence then invalidates.\n\nCode virtualization is our first layer of defense. Unlike off-the-shelf solutions like VMProtect or Themida (which cheat developers have extensive tooling to devirtualize), we use a custom bytecode VM with an instruction set that rotates per build. Each weekly release generates a new virtual ISA — different opcode mappings, different register semantics, different control flow encoding. Existing devirtualization tools break on every update.\n\nAnti-debugging is multi-layered. We detect hardware breakpoints via DR0-DR7 register polling (NtGetContextThread), timing checks via QueryPerformanceCounter and rdtsc to catch single-stepping, NtQueryInformationProcess with ProcessDebugPort and ProcessDebugObjectHandle to detect attached debuggers, and we scan for artifacts of common anti-anti-debug tools like ScyllaHide and TitanHide.\n\nAnti-dump measures prevent memory dumping of our driver and user-mode components. PE headers are erased post-load, IAT entries are replaced with encrypted thunks that resolve at call time, and code sections are encrypted at rest with on-demand decryption — only the currently executing page is in cleartext.\n\nDriver integrity uses runtime self-hashing: critical code sections compute rolling checksums that are validated against server-side attestation. If the hash doesn't match (indicating a patch or hook), the session is flagged. This makes inline hooking of our driver detectable within one scan cycle.\n\nControl flow obfuscation uses custom LLVM passes — control flow flattening converts function structure into state machines, and opaque predicates insert computationally expensive but predetermined branch conditions that confuse static analysis.\n\nNo client-side protection is unbreakable. Our goal is raising RE cost so cheat devs face weeks of work per update, which our weekly cadence invalidates. The economics matter more than the technical perfection."
+    "id": "deals-012",
+    "title": "KeyForge Direct Nears 180,000 Keys Sold",
+    "date": "2026-07-24T09:00:00Z",
+    "category": "Seller News",
+    "author": "R. Okafor",
+    "sellerId": "keyforge-direct",
+    "summary": "One of the marketplace's original vendors is closing in on 180,000 lifetime keys sold, backed by a 4.9-star rating across 41,800 reviews.",
+    "content": "KeyForge Direct has been a Cerberus Market seller since our earliest days back in January 2021, and its fully automated key vault just crossed 179,500 lifetime units sold. The storefront maintains a 4.9-star rating across 41,800 reviews and a sub-10-minute average response time — numbers that have held steady even as order volume has grown.\n\nKeyForge's catalog leans heavily into instant auto-delivery, and it's currently one of the top three sellers by volume for both Shattergate Protocol and Null Signal. The team credits its consistency to a fully automated fulfillment pipeline with minimal manual intervention.\n\nWe expect KeyForge to cross the 180,000 mark within the next few days at current order pace — we'll follow up when it does."
   },
   {
-    "id": "blog-024",
-    "title": "How We Detect Humanized Aimbots",
-    "date": "2026-05-14T14:00:00Z",
-    "category": "Engineering",
-    "author": "s.nakamura",
-    "summary": "Modern aimbots inject noise and jitter to mimic human input. Our TCN-based behavioral engine sees through the disguise by analyzing micro-movement entropy and trigger-timing spectral patterns.",
-    "content": "The arms race in aimbot development has shifted. Raw pixel-perfect snapping is trivial to detect — so cheat developers now inject Gaussian noise, random delays, and artificial jitter to make bot-assisted aim look human. Some even use smoothing curves modeled on real player data.\n\nOur behavioral AI layer uses temporal convolutional networks (TCNs) trained on millions of input samples to decompose aim trajectories into frequency components. Human aim has characteristic spectral signatures — correction impulses at 4-8Hz from the neuromuscular system, micro-tremor patterns, and acceleration curves that follow Fitts's Law.\n\nHumanized aimbots fail at the entropy level. Even the best noise injection produces statistically regular patterns when analyzed across a 30-second window. The entropy score of genuine human input is measurably different from synthetic noise overlaid on programmatic corrections.\n\nWe also analyze trigger timing — the interval between acquiring a target and firing. Humans exhibit variable reaction times following a log-normal distribution. Aimbots, even with randomized delays, produce timing distributions with detectable artifacts: truncated tails, periodic modes, or correlation with cursor velocity.\n\nOur current humanization bypass detection rate is 94.2% at the 95% confidence threshold, with a 0.14% false positive rate. Every model update improves this as we train on newly observed cheat variants."
+    "id": "deals-011",
+    "title": "Top 5 Deals This Week: July 21–27",
+    "date": "2026-07-23T08:00:00Z",
+    "category": "Roundup",
+    "author": "M. Alders",
+    "summary": "Our weekly pick of the five best discounts live on the marketplace right now, led by 27%-off listings on Hollow Choir and The Lantern Road.",
+    "content": "Here's what's worth grabbing this week, ranked by discount depth and seller reliability:\n\n1. Hollow Choir — Cinderlane Keys, $21.99 (27% off). Nightglass Studio's radio-observatory horror title at its best price this month.\n2. The Lantern Road — Cinderlane Keys, $10.99 (27% off). A six-hour point-and-click for the price of a coffee.\n3. Loom of Embers — Driftmart Games, $36.99 (26% off). Still one of the best-reviewed RPGs in the catalog.\n4. Warden of the Vault — Driftmart Games, $25.99 (26% off). Deep itemization for loot-focused players.\n5. Redshift Arena — Northbyte Trading, $21.99 (27% off). See our restock note above — stock is fresh.\n\nAll five listings are global-region with instant auto-delivery. As always, prices reflect what we saw at publish time and can move before the week is out."
   },
   {
-    "id": "blog-023",
-    "title": "BYOVD Attacks: Why We Block Vulnerable Driver Exploits",
-    "date": "2026-05-08T09:00:00Z",
-    "category": "Threat Report",
-    "author": "dkrasov",
-    "summary": "Bring Your Own Vulnerable Driver (BYOVD) attacks abuse legitimate signed drivers with known exploits to gain kernel access. Cerberus now maintains a blocklist of 340+ vulnerable drivers and blocks them at load time.",
-    "content": "BYOVD is one of the most dangerous attack vectors in modern cheating. The attacker doesn't need to write their own kernel driver — they simply load a legitimate, Microsoft-signed driver that contains a known vulnerability, then exploit it to gain ring-0 access.\n\nPopular targets include old versions of hardware monitoring tools, GPU overclocking utilities, and even anti-cheat drivers from other vendors. Because these drivers carry valid signatures, they pass standard code-signing checks.\n\nCerberus v0.4.1.8b introduced a BYOVD blocklist — currently tracking 340+ known vulnerable drivers by hash and certificate. When our kernel integrity layer detects a blocked driver attempting to load during a game session, the load is denied and the event is flagged.\n\nWe also monitor for the behavioral signatures of BYOVD exploitation: unexpected kernel memory mapping, privilege escalation patterns, and syscall table modifications that follow known exploit chains.\n\nThis database is updated weekly from our threat research pipeline and cross-referenced with Microsoft's own recommended driver block rules."
+    "id": "deals-010",
+    "title": "Price Drop Roundup: 8 Titles Now Under $20",
+    "date": "2026-07-22T10:00:00Z",
+    "category": "Price Drop",
+    "author": "T. Vance",
+    "summary": "From a nine-minute walking sim to a full survival crafting game, eight catalog titles are currently listed under $20 across verified sellers.",
+    "content": "Budget shoppers, this one's for you. Eight titles across the catalog are currently listed under $20 from at least one verified seller:\n\nKnotwork ($7.99, Ledgerlock Store), Thistledown ($5.59, Fairwind Keys), The Lantern Road ($10.99, Cinderlane Keys), Barrenwake ($14.99, Fairwind Keys), Harvest Hollow ($18.99, Cinderlane Keys), Skyferry (from $14.39, Cumulus Bay listings), Paperclip Kingdom (from $3.99, budget sellers), and a region-locked Redshift Arena batch at $19.99 from QuickCrate Keys.\n\nMost of these are small-team or two-person-studio titles, which tend to hold steadier pricing than AAA releases — so these prices aren't likely to swing much either direction in the near term. Good picks if you're filling out a backlog without touching a flash sale."
   },
   {
-    "id": "blog-022",
-    "title": "DMA Timing Analysis: Catching What Device Lists Miss",
-    "date": "2026-05-01T11:00:00Z",
-    "category": "Engineering",
-    "author": "dkrasov",
-    "summary": "Traditional DMA detection relies on device enumeration. Our timing-based approach detects DMA attacks by measuring memory access latency patterns, catching even unknown hardware.",
-    "content": "DMA-based cheats use a second machine connected via PCIe to read game memory externally. Because the cheat runs on entirely separate hardware, traditional client-side anti-cheat is blind to it.\n\nMost anti-cheat vendors that attempt DMA detection rely on device enumeration — maintaining a list of known DMA boards and checking if they're present on the PCIe bus. This fails against custom or modified hardware.\n\nOur approach is different. We measure memory access timing patterns. When an external device reads memory over PCIe, it introduces measurable latency spikes — typically 200-800ns above baseline — in a pattern that correlates with the cheat's polling frequency. By sampling memory access latencies at high resolution during gameplay, we can detect the timing signature of DMA reads regardless of what hardware is performing them.\n\nCombined with IOMMU configuration attestation (detecting if DMA remapping has been disabled or misconfigured), this gives us detection coverage against both known and zero-day DMA hardware."
+    "id": "deals-009",
+    "title": "Fernkey Store Earns Its Verified Badge",
+    "date": "2026-07-20T13:00:00Z",
+    "category": "Seller News",
+    "author": "R. Okafor",
+    "sellerId": "fernkey-store",
+    "summary": "The newest storefront on Cerberus Market completed identity verification this week, less than a month after its August launch.",
+    "content": "Fernkey Store, one of our most recently onboarded sellers, completed the identity verification process this week — earning the Verified badge just weeks after joining the marketplace. The small shop currently carries a narrow catalog led by a Knotwork listing at $8.49 (region-locked to North America).\n\nVerification requires proof of key sourcing, a manual review of the seller's first batch of orders, and a minimum clean-order streak before the badge is granted. Fernkey cleared all three steps faster than the current seller-onboarding average.\n\nWe expect Fernkey to expand its catalog over the coming weeks as its order history builds. Welcome to the verified tier."
   },
   {
-    "id": "blog-021",
-    "title": "Cheat-Ring Detection: How Network Sentinel Traces Coordinated Abuse",
-    "date": "2026-04-24T16:00:00Z",
-    "category": "Case Study",
-    "author": "ArsenalRX",
-    "summary": "A single ban led Network Sentinel to uncover a coordinated boosting ring operating across 47 accounts and 3 partner titles.",
-    "content": "Last month, a routine ban flagged by our behavioral AI layer led Network Sentinel to uncover a coordinated boosting ring operating across 47 accounts and 3 partner titles.\n\nThe initial detection was straightforward — one account showed aim correction speeds 4x faster than their historical average. Our AI flagged it at 97.8% confidence, and the account was banned.\n\nNetwork Sentinel then performed its post-ban correlation sweep. It matched the banned account's hardware fingerprint fragments against our global database and found 12 other accounts that had played from the same machine within the past 90 days. Behavioral drift analysis showed 8 of those accounts had similar sudden skill jumps within a 48-hour window — consistent with the same cheat being distributed to a group.\n\nTracing the network signatures further, Sentinel identified a cluster of 47 accounts across 3 game titles that shared overlapping hardware identities, similar behavioral anomalies, and coordinated play schedules. All 47 were banned in a single wave.\n\nThis is the kind of detection that's impossible with client-side analysis alone. You need the server-side view to see the connections between accounts, sessions, and titles."
+    "id": "deals-008",
+    "title": "Platform Update: Manual Delivery SLA Tightened to 15 Minutes",
+    "date": "2026-07-19T09:00:00Z",
+    "category": "Platform",
+    "author": "S. Iyer",
+    "summary": "Listings using manual delivery now carry a 15-minute average fulfillment target, down from the previous 30-minute window.",
+    "content": "Most of the catalog moves through instant auto-delivery, but a meaningful slice of listings — particularly from smaller or newer sellers — still use manual delivery. Starting this week, manual-delivery listings carry a tightened SLA target of 15 minutes average, visible directly on the listing as \"Manual Delivery (avg 15 min).\"\n\nSellers who consistently miss the window will see their manual-delivery listings deprioritized in search ranking until performance recovers. This doesn't affect instant auto-delivery listings, which remain the large majority of marketplace volume.\n\nThe change follows several weeks of tracking actual fulfillment times across manual-delivery sellers and finding that most were already beating the old 30-minute target comfortably — so we tightened the number to match reality."
   },
   {
-    "id": "blog-020",
-    "title": "False Positive Engineering: How We Maintain 0.14% FP Rate",
-    "date": "2026-04-17T08:00:00Z",
-    "category": "Engineering",
-    "author": "s.nakamura",
-    "summary": "A detection system is only as good as its false positive rate. Here's how our multi-layer confidence scoring, adaptive thresholds, and manual review pipeline keep innocent players safe.",
-    "content": "Every anti-cheat faces the same fundamental tradeoff: aggressive detection catches more cheaters but risks banning innocent players. A single false positive can destroy trust in your game's competitive integrity.\n\nCerberus approaches this with layered confidence scoring. No single layer can trigger an auto-ban alone. The verdict engine requires corroboration — a kernel anomaly must correlate with behavioral evidence, or a hardware flag must align with network-level data.\n\nOur auto-ban threshold is 95% confidence from the verdict engine. Detections below this enter the manual review queue, where a threat analyst reviews the full session data within 4 hours (Cerberus tier SLA).\n\nWe also use adaptive thresholds per game title. A fighting game has legitimately faster input patterns than an RTS. A competitive FPS player's aim correction speed may be 3x faster than a casual player's. Our models account for this by maintaining per-title and per-skill-bracket baselines.\n\nThe result: 0.14% false positive rate across all partner titles, with zero confirmed false bans in the last 60 days."
+    "id": "deals-007",
+    "title": "Restock Alert: Harvest Hollow Region-Locked Listings Expand to North America",
+    "date": "2026-07-17T12:00:00Z",
+    "category": "Restock",
+    "author": "T. Vance",
+    "gameId": "harvest-hollow",
+    "summary": "Previously EU/UK-only region-locked Harvest Hollow keys are now also available to North American buyers through a new seller batch.",
+    "content": "Harvest Hollow's cozy farm-sim catalog has, until now, only had region-locked listings available for EU/UK buyers through Solstice Key Exchange. That's changed this week with a new North America-region batch entering the marketplace.\n\nGlobal-region listings remain available from Northbyte Trading ($19.99, 20% off) and Cinderlane Keys ($18.99, 24% off) for buyers who don't need a region-locked option. The new NA-locked batch is priced competitively for anyone specifically shopping region-restricted inventory.\n\nTamarind Games' relationship-and-farming sim continues to be one of the steadiest sellers in the Simulation category, helped along by a 4.6-star rating across nearly 7,000 reviews."
   },
   {
-    "date": "2026-05-24",
-    "timestamp": "2026-05-24T08:11:30Z",
-    "type": "advisory",
-    "title": "Security Notice: False Positive Correction",
-    "author": "akovacs",
-    "generated": true
+    "id": "deals-006",
+    "title": "Flash Sale Recap: Shattergate Protocol's 25%-Off Weekend by the Numbers",
+    "date": "2026-07-15T16:00:00Z",
+    "category": "Flash Sale",
+    "author": "M. Alders",
+    "gameId": "shattergate-protocol",
+    "summary": "Last weekend's Shattergate Protocol flash sale drove a visible order spike without denting checkout reliability — here's the breakdown.",
+    "content": "Ashfall Interactive's destructible-cover tactical shooter was our featured flash-sale title last weekend, with KeyForge Direct's $44.99 listing (25% off) driving the bulk of order volume. Order volume for the title roughly doubled over the sale's peak day compared to its weekly baseline.\n\nDespite the surge, checkout success rate held within a few tenths of a percent of normal, and average key delivery time stayed under 15 seconds for instant-delivery listings. Delivery queue depth ticked up briefly during the Saturday evening peak window but cleared within the hour.\n\nShattergate Protocol remains one of the more consistent FPS performers in the catalog, and we'd expect it back in flash-sale rotation again within the next month or two based on historical cadence."
   },
   {
-    "date": "2026-05-30",
-    "timestamp": "2026-05-30T08:11:48Z",
-    "type": "casestudy",
-    "title": "Free-to-Play Title Cheat Reduction Study",
-    "author": "eriksson",
-    "generated": true
+    "id": "deals-005",
+    "title": "Seller Spotlight: Vertex Keys Co. — 4.9 Stars Across 38,400 Reviews",
+    "date": "2026-07-13T10:00:00Z",
+    "category": "Seller News",
+    "author": "R. Okafor",
+    "sellerId": "vertex-keys",
+    "summary": "One of the marketplace's longest-standing Top Sellers has moved 172,000 keys since 2021 without its rating dipping below 4.8.",
+    "content": "Vertex Keys Co. has been a Power Seller since joining the marketplace in March 2021, and its numbers back up the badge: 172,000 lifetime keys sold, a 4.9-star average across 38,400 reviews, and a response time consistently under 10 minutes.\n\nThe storefront runs a fully automated fulfillment pipeline across nearly every major PC storefront, and it's currently a top-three seller by volume for Shattergate Protocol, Redshift Arena, Velocity Drift: Underground, and Null Signal — a broader spread across genres than most high-volume sellers manage.\n\nWe periodically spotlight sellers whose reputation metrics have stayed remarkably stable through high order volume, and Vertex Keys is a good example of what \"boring and reliable\" looks like at scale."
   },
   {
-    "date": "2026-06-03",
-    "timestamp": "2026-06-03T10:26:54Z",
-    "type": "casestudy",
-    "title": "Tactical Shooter: 99.2% Detection Rate",
-    "author": "jpark",
-    "generated": true
+    "id": "deals-004",
+    "title": "Top 5 Deals This Week: July 7–13",
+    "date": "2026-07-12T08:00:00Z",
+    "category": "Roundup",
+    "author": "M. Alders",
+    "summary": "This week's best five, led by 25%-off listings on Crimson Fold and Fracture League.",
+    "content": "This week's picks, ranked by discount depth:\n\n1. Crimson Fold — Driftmart Games, $37.49 (25% off). Rollback netcode and sixteen origami fighters.\n2. Fracture League — Palecask Digital, $44.99 (25% off). Grapple-hook basketball with a full franchise mode.\n3. Ironclad Doctrine — Grovekey Trading, $29.99 (25% off). Slow-burn grand strategy for patient players.\n4. Barrenwake — Fairwind Keys, $14.99 (25% off). Punishing badland survival, now cheaper than ever.\n5. Velocity Drift: Underground — Driftmart Games, $33.99 (24% off). Couch co-op arcade racing.\n\nAll five are global-region, instant auto-delivery listings from verified sellers."
   },
   {
-    "date": "2026-06-06",
-    "timestamp": "2026-06-06T08:18:48Z",
-    "type": "advisory",
-    "title": "Advisory: SDK Authentication Hardening",
-    "author": "nvoronov",
-    "generated": true
+    "id": "deals-003",
+    "title": "Price Drop: Warden of the Vault Falls to Its Lowest Price Yet",
+    "date": "2026-07-09T14:00:00Z",
+    "category": "Price Drop",
+    "author": "T. Vance",
+    "gameId": "warden-of-the-vault",
+    "summary": "Driftmart Games' $25.99 listing undercuts every previous Warden of the Vault price we've tracked, a 26% discount off the $34.99 base.",
+    "content": "Ironline Studios' gear-risk dungeon crawler just hit its lowest tracked price on the marketplace. Driftmart Games is listing the instant-delivery key at $25.99, a 26% discount off the $34.99 base price and roughly $3 below the previous low.\n\nKeyForge Direct ($27.99, 20% off) and Grovekey Trading ($31.99, 9% off) remain available for buyers who prefer those storefronts, but Driftmart currently has the best number on the board.\n\nWarden of the Vault's procedurally-remixed dungeon floors and permadeath-adjacent gear-risk system have kept it a steady mover in the RPG category since its 2021 release, and reviewers consistently point to its itemization depth as the draw."
   },
   {
-    "date": "2026-06-10",
-    "timestamp": "2026-06-10T09:34:34Z",
-    "type": "advisory",
-    "title": "Advisory: SDK Authentication Hardening",
-    "author": "nvoronov",
-    "generated": true
+    "id": "deals-002",
+    "title": "Platform Update: Checkout Success Rate Crosses 98.7%",
+    "date": "2026-07-06T09:00:00Z",
+    "category": "Platform",
+    "author": "S. Iyer",
+    "summary": "A round of payment-gateway tuning pushed our rolling checkout success rate above 98.7% for the first time this quarter.",
+    "content": "Checkout success rate — the share of started checkouts that complete without a payment failure or timeout — crossed 98.7% this week for the first time since we started tracking the metric closely. The improvement follows several smaller changes: retry-queue tuning on the payment gateway, an updated fraud-check threshold that cut false declines, and load-balancing adjustments during peak evening hours across all three regions.\n\nAverage payment API response time also improved modestly alongside the change. Delivery-side metrics — average key delivery time and delivery queue depth — were unaffected, since this round of work targeted the checkout and payment path specifically.\n\nWe'll keep tuning as order volume grows; the target going forward is holding above 98.5% even during flash-sale surge windows, which remains the toughest test of the pipeline."
   },
   {
-    "date": "2026-06-13",
-    "timestamp": "2026-06-13T08:41:22Z",
-    "type": "advisory",
-    "title": "Advisory: Behavioral Model Retraining Notice",
-    "author": "jpark",
-    "generated": true
-  },
-  {
-    "date": "2026-06-16",
-    "timestamp": "2026-06-16T10:47:16Z",
-    "type": "engineering",
-    "title": "Neural Network Architecture for Behavioral Analysis",
-    "author": "nvoronov",
-    "generated": true
-  },
-  {
-    "date": "2026-06-21",
-    "timestamp": "2026-06-21T09:30:40Z",
-    "type": "casestudy",
-    "title": "Battle Royale Protection at Scale",
-    "author": "nvoronov",
-    "generated": true
-  },
-  {
-    "date": "2026-06-26",
-    "timestamp": "2026-06-26T08:44:08Z",
-    "type": "advisory",
-    "title": "Security Advisory: Detection Engine Update",
-    "author": "jpark",
-    "generated": true
-  },
-  {
-    "date": "2026-07-01",
-    "timestamp": "2026-07-01T09:23:23Z",
-    "type": "threat",
-    "title": "Underground Marketplace Monitoring Report",
-    "author": "akovacs",
-    "generated": true
-  },
-  {
-    "date": "2026-07-05",
-    "timestamp": "2026-07-05T08:34:16Z",
-    "type": "milestone",
-    "title": "Detection Engine Performance Milestone",
-    "author": "jpark",
-    "generated": true
-  },
-  {
-    "date": "2026-07-08",
-    "timestamp": "2026-07-08T08:01:50Z",
-    "type": "engineering",
-    "title": "Engineering Deep Dive: Scan Pipeline Optimization",
-    "author": "jpark",
-    "generated": true
-  },
-  {
-    "date": "2026-07-13",
-    "timestamp": "2026-07-13T08:38:21Z",
-    "type": "threat",
-    "title": "Hardware Spoofing Evolution Report",
-    "author": "eriksson",
-    "generated": true
-  },
-  {
-    "date": "2026-07-17",
-    "timestamp": "2026-07-17T07:46:51Z",
-    "type": "advisory",
-    "title": "Security Notice: False Positive Correction",
-    "author": "mzhang",
-    "generated": true
-  },
-  {
-    "date": "2026-07-21",
-    "timestamp": "2026-07-21T08:01:05Z",
-    "type": "threat",
-    "title": "Behavioral Pattern Evolution Report",
-    "author": "akovacs",
-    "generated": true
-  },
-  {
-    "date": "2026-07-26",
-    "timestamp": "2026-07-26T08:00:01Z",
-    "type": "engineering",
-    "title": "Our Approach to Kernel-Level Security",
-    "author": "nvoronov",
-    "generated": true
+    "id": "deals-001",
+    "title": "New Seller Onboarded: QuickCrate Keys Joins the Marketplace",
+    "date": "2026-07-03T11:00:00Z",
+    "category": "Seller News",
+    "author": "R. Okafor",
+    "sellerId": "quickcrate-keys",
+    "summary": "QuickCrate Keys launched this quarter with aggressive introductory pricing while it builds up an order history.",
+    "content": "QuickCrate Keys is the newest storefront to complete onboarding, joining the marketplace with a small catalog and notably sharp launch pricing — including a region-locked Redshift Arena listing at $19.99, the cheapest currently on the board for that title.\n\nNew sellers go through the same identity-verification pipeline as established storefronts, but start without the Verified badge until they clear an initial clean-order streak. QuickCrate is currently building that history and carries a 4.2-star rating across its first 850 reviews.\n\nWe'll follow up once QuickCrate clears verification. In the meantime, its pricing is worth a look if you don't mind buying from a seller still building its track record."
   }
 ]

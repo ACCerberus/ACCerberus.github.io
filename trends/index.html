@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Market Trends - Cerberus Market</title>
+  <meta name="description" content="Live pricing index, genre demand, catalog growth, and top-selling titles on Cerberus Market." />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F3F7;&#xFE0F;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --bg-card-hover: #0e0e15;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15); --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8; --orange: #e87830;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .noise-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.015;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c07818);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507;
+    }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-tag { font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; color: var(--accent); border: 1px solid rgba(232,160,32,0.3); padding: 2px 8px; border-radius: 6px; margin-left: 8px; text-transform: uppercase; }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
+    .nav-cart { position: relative; display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; color: var(--text-bright); text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; }
+    .nav-cart:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); }
+    .nav-cart-badge { background: var(--accent); color: #050507; font-size: 0.65rem; font-weight: 700; padding: 1px 6px; border-radius: 10px; min-width: 16px; text-align: center; margin-left: 2px; }
+    .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
+
+    /* HEADER */
+    .dash-header { padding: 100px 24px 28px; max-width: 1240px; margin: 0 auto; position: relative; z-index: 1; }
+    .dash-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 4px; }
+    .dash-header h1 { font-family: var(--font-heading); font-size: 1.7rem; font-weight: 800; color: var(--text-bright); letter-spacing: -0.6px; }
+    .dash-header h1 span { color: var(--accent); }
+    .dash-label { font-size: 0.8rem; color: var(--text-dim); margin-top: 4px; }
+    .dash-time { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); text-align: right; margin-top: 6px; }
+    .demand-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 8px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; }
+    .demand-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+    /* SECTION helpers */
+    .section { padding: 20px 24px; position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; }
+    .divider { width: 60px; height: 2px; background: var(--accent); margin: 8px 0 18px; opacity: 0.3; }
+
+    /* STAT ROW */
+    .stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; max-width: 1240px; margin: 0 auto 20px; padding: 0 24px; position: relative; z-index: 1; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .stat-card-label { font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .stat-card-value { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: var(--text-bright); }
+    .stat-card-sub { font-size: 0.68rem; color: var(--text-dim); margin-top: 4px; }
+
+    /* DASH CARD */
+    .dash-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; max-width: 1240px; margin: 0 auto 16px; padding: 0 24px; position: relative; z-index: 1; }
+    .dash-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; overflow: hidden; }
+    .dash-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+    .dash-card-title { font-family: var(--font-heading); font-size: 0.9rem; font-weight: 700; color: var(--text-bright); }
+    .dash-card-sub { font-size: 0.7rem; color: var(--text-dim); }
+
+    /* PRICE SPARKLINE */
+    .sparkline-wrap { position: relative; height: 140px; }
+    .sparkline-labels { display: flex; justify-content: space-between; margin-top: 6px; font-size: 0.62rem; color: var(--text-dim); font-family: var(--font-mono); }
+
+    /* SALE CYCLE */
+    .sale-stage-bar { display: flex; gap: 4px; margin: 14px 0 10px; }
+    .sale-stage-seg { flex: 1; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.06); }
+    .sale-stage-seg.done { background: var(--accent); opacity: 0.5; }
+    .sale-stage-seg.current { background: var(--accent); opacity: 1; }
+    .sale-stage-labels { display: flex; justify-content: space-between; font-size: 0.58rem; color: var(--text-dim); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.3px; }
+    .sale-feature-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .sale-feature-row .cover-tile { width: 56px; flex-shrink: 0; }
+    .sale-feature-meta { font-size: 0.78rem; color: var(--text-dim); }
+    .sale-feature-meta strong { color: var(--text-bright); }
+    .sale-discount-pill { margin-left: auto; font-family: var(--font-heading); font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+    .no-sale-note { font-size: 0.82rem; color: var(--text-dim); padding: 18px 0; text-align: center; }
+    .no-sale-note a { color: var(--accent); text-decoration: none; }
+
+    /* GENRE BARS */
+    .genre-row { display: flex; align-items: center; gap: 12px; padding: 7px 0; }
+    .genre-rank { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim); width: 18px; flex-shrink: 0; }
+    .genre-name { font-size: 0.8rem; color: var(--text); width: 110px; flex-shrink: 0; }
+    .genre-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; }
+    .genre-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), #f0c060); transition: width 0.6s ease; }
+    .genre-score { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); width: 34px; text-align: right; flex-shrink: 0; }
+
+    /* HOURLY BAR CHART */
+    .hourly-chart { display: flex; align-items: flex-end; gap: 3px; height: 110px; padding-top: 8px; }
+    .hourly-bar { flex: 1; border-radius: 2px 2px 0 0; background: linear-gradient(180deg, var(--accent), rgba(232,160,32,0.25)); min-width: 0; position: relative; transition: opacity 0.15s; }
+    .hourly-bar:hover { opacity: 0.7; }
+    .hourly-bar.now { background: linear-gradient(180deg, #fff, var(--accent)); }
+    .hourly-bar[data-tip]::after {
+      content: attr(data-tip); position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%);
+      padding: 2px 6px; border-radius: 3px; font-size: 0.58rem; font-family: var(--font-mono);
+      background: rgba(10,10,15,0.95); color: var(--text); white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity 0.15s; border: 1px solid var(--border); z-index: 10;
+    }
+    .hourly-bar:hover::after { opacity: 1; }
+    .hourly-x-labels { display: flex; justify-content: space-between; margin-top: 6px; font-size: 0.58rem; color: var(--text-dim); font-family: var(--font-mono); }
+
+    /* MOST SOLD GRID */
+    .sold-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .sold-item { position: relative; }
+    .sold-rank { position: absolute; top: -8px; left: -8px; z-index: 3; width: 26px; height: 26px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); color: var(--accent); font-family: var(--font-heading); font-weight: 800; font-size: 0.72rem; display: flex; align-items: center; justify-content: center; }
+    .sold-meta { margin-top: 8px; }
+    .sold-title { font-size: 0.78rem; font-weight: 600; color: var(--text-bright); line-height: 1.3; }
+    .sold-sub { font-size: 0.68rem; color: var(--text-dim); margin-top: 2px; font-family: var(--font-mono); }
+
+    /* CATALOG GROWTH COUNTER */
+    .growth-counter-card { display: flex; align-items: center; gap: 20px; }
+    .growth-counter-val { font-family: var(--font-heading); font-size: 2.4rem; font-weight: 800; color: var(--accent); letter-spacing: -1px; }
+    .growth-counter-label { font-size: 0.78rem; color: var(--text-dim); max-width: 260px; }
+
+    /* FOOTER */
+    .footer { position: relative; z-index: 1; padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); margin-top: 40px; }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+    .footer-brand { font-family: var(--font-heading); font-weight: 800; font-size: 1.4rem; color: var(--text-bright); margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+
+    @media (max-width: 1000px) {
+      .stat-row { grid-template-columns: repeat(3, 1fr); }
+      .dash-grid { grid-template-columns: 1fr; }
+      .sold-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .stat-row { grid-template-columns: repeat(2, 1fr); }
+      .sold-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+  <div class="noise-overlay"></div>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+      <div class="nav-tag">MARKET</div>
+    </a>
+    <div class="nav-links">
+      <a href="/catalog/">Catalog</a>
+      <a href="/deals/">Deals</a>
+      <a href="/trends/" class="active">Trends</a>
+      <a href="/sellers/">Sellers</a>
+      <a href="/status/">Status</a>
+    </div>
+    <div class="nav-cta-wrap">
+      <a href="/cart/" class="nav-cart" id="navCartLink">Cart <span id="navCartCount" class="nav-cart-badge" style="display:none">0</span></a>
+      <a href="/sell/" class="nav-cta">Sell on Cerberus Market</a>
+    </div>
+  </nav>
+
+  <div class="dash-header">
+    <div class="dash-header-top">
+      <div>
+        <h1>Market <span>Trends</span></h1>
+        <div class="dash-label">Live pricing, demand, and catalog signals across the marketplace</div>
+        <div class="divider"></div>
+      </div>
+      <div style="text-align:right;">
+        <div class="demand-badge" id="demandBadge"><div class="demand-dot" id="demandDot"></div><span id="demandText">--</span></div>
+        <div class="dash-time" id="dashTime"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT ROW -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card-label">Catalog Entries (All-Time)</div>
+      <div class="stat-card-value" id="sCatalogGrowth">--</div>
+      <div class="stat-card-sub">listings created since launch</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Total Keys Sold</div>
+      <div class="stat-card-value" id="sKeysSold">--</div>
+      <div class="stat-card-sub">since Oct 2025</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Active Listings</div>
+      <div class="stat-card-value" id="sActiveListings">--</div>
+      <div class="stat-card-sub">live right now</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Price Index</div>
+      <div class="stat-card-value" id="sPriceIndex">--</div>
+      <div class="stat-card-sub">100 = full price</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Buyers Online</div>
+      <div class="stat-card-value" id="sOnlineBuyers">--</div>
+      <div class="stat-card-sub">browsing right now</div>
+    </div>
+  </div>
+
+  <!-- PRICE INDEX + SALE CYCLE -->
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Price Index — Last 14 Days</div>
+          <div class="dash-card-sub">Catalog-wide average price relative to list price</div>
+        </div>
+        <div class="dash-card-sub" id="priceIndexNow">--</div>
+      </div>
+      <div class="sparkline-wrap"><svg id="priceSpark" width="100%" height="140" viewBox="0 0 600 140" preserveAspectRatio="none"></svg></div>
+      <div class="sparkline-labels" id="priceSparkLabels"></div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Flash Sale Cycle</div>
+          <div class="dash-card-sub">Current lifecycle phase</div>
+        </div>
+      </div>
+      <div id="saleCycleBody"></div>
+    </div>
+  </div>
+
+  <!-- GENRE POPULARITY + HOURLY SALES -->
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Category Demand Ranking</div>
+          <div class="dash-card-sub">Genre popularity score, 0–100</div>
+        </div>
+      </div>
+      <div id="genreBars"></div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Keys Sold by Hour — Today</div>
+          <div class="dash-card-sub">UTC, marketplace-wide</div>
+        </div>
+      </div>
+      <div class="hourly-chart" id="hourlyChart"></div>
+      <div class="hourly-x-labels"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span></div>
+    </div>
+  </div>
+
+  <!-- CATALOG GROWTH -->
+  <div class="section" style="padding-top:0;">
+    <div class="dash-card growth-counter-card">
+      <div class="growth-counter-val" id="growthBig">--</div>
+      <div class="growth-counter-label">Total digital-key listings created on Cerberus Market since launch, including sold-out and expired listings. Live catalog currently holds <span id="growthCatalogSize" style="color:var(--text-bright);font-weight:600;">--</span> titles across <span id="growthSellerCount" style="color:var(--text-bright);font-weight:600;">--</span> verified sellers.</div>
+    </div>
+  </div>
+
+  <!-- MOST SOLD -->
+  <div class="section" style="padding-top:0;">
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-card-title">Most Sold This Week</div>
+          <div class="dash-card-sub">Ranked by estimated weekly units across all sellers</div>
+        </div>
+      </div>
+      <div class="sold-grid" id="soldGrid"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span> Market</div>
+    <p style="margin-bottom:16px;">Guarded delivery. Verified sellers. Instant keys.</p>
+    <p style="margin-bottom:8px;"><a href="/">Home</a> &bull; <a href="/catalog/">Catalog</a> &bull; <a href="/deals/">Deals</a> &bull; <a href="/trends/">Trends</a> &bull; <a href="/status/">Status</a> &bull; <a href="/changelog/">Changelog</a></p>
+    <p style="margin-bottom:8px;"><a href="/sellers/">Sellers</a> &bull; <a href="/sell/">Sell with Us</a></p>
+    <p style="margin-bottom:16px;"><a href="/privacy/">Privacy</a> &bull; <a href="/terms/">Terms</a></p>
+    <p>&copy; 2026 Cerberus Market. All game titles are property of their respective (fictional) publishers.</p>
+  </footer>
+
+  <script src="/js/cerberus-engine.js"></script>
+  <script src="/js/cerberus-shared.js"></script>
+  <script src="/js/cerberus-stochastic.js"></script>
+  <script>
+    var E = window.CerberusEngine;
+    var CS = window.CerberusStochastic;
+    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    function updateTime() {
+      document.getElementById('dashTime').textContent = 'Updated ' + new Date().toLocaleTimeString();
+    }
+    updateTime(); setInterval(updateTime, 1000);
+
+    // ===== DEMAND BADGE =====
+    (function() {
+      var level = 'LOW';
+      try { level = E ? E.demandLevel() : 'LOW'; } catch(e) {}
+      var colors = {
+        LOW:      { bg: 'rgba(48,200,96,0.1)',  color: 'var(--green)',  border: 'rgba(48,200,96,0.25)' },
+        MODERATE: { bg: 'rgba(232,160,32,0.1)',  color: 'var(--accent)', border: 'rgba(232,160,32,0.25)' },
+        ELEVATED: { bg: 'rgba(232,140,40,0.12)', color: 'var(--orange)', border: 'rgba(232,140,40,0.3)' },
+        SURGE:    { bg: 'rgba(224,64,80,0.12)',  color: 'var(--red)',    border: 'rgba(224,64,80,0.3)' },
+      };
+      var c = colors[level] || colors.LOW;
+      var badge = document.getElementById('demandBadge');
+      badge.style.background = c.bg; badge.style.color = c.color; badge.style.border = '1px solid ' + c.border;
+      document.getElementById('demandDot').style.background = c.color;
+      document.getElementById('demandText').textContent = level + ' DEMAND';
+    })();
+
+    // ===== STAT ROW =====
+    (function() {
+      var growth = 0, keysSold = 0, listings = 0, priceIdx = 0, buyers = 0;
+      try { growth = CS ? CS.catalogSizeGrowth() : 0; } catch(e) {}
+      try { keysSold = E ? E.totalKeysSold() : 0; } catch(e) {}
+      try { listings = E ? E.activeListings() : 0; } catch(e) {}
+      try { priceIdx = CS ? CS.priceIndex() : 92; } catch(e) { priceIdx = 92; }
+      try { buyers = E ? E.onlineBuyers() : 0; } catch(e) {}
+
+      document.getElementById('sCatalogGrowth').textContent = growth.toLocaleString();
+      document.getElementById('sKeysSold').textContent = keysSold.toLocaleString();
+      document.getElementById('sActiveListings').textContent = listings.toLocaleString();
+      document.getElementById('sPriceIndex').textContent = priceIdx;
+      document.getElementById('sOnlineBuyers').textContent = buyers.toLocaleString();
+      document.getElementById('priceIndexNow').textContent = 'Now: ' + priceIdx;
+
+      document.getElementById('growthBig').textContent = growth.toLocaleString();
+      var cfgSize = 22, cfgSellers = 14;
+      try { if (E && E.CONFIG) { cfgSize = E.CONFIG.catalogSize; cfgSellers = E.CONFIG.sellerCount; } } catch(e) {}
+      document.getElementById('growthCatalogSize').textContent = cfgSize;
+      document.getElementById('growthSellerCount').textContent = cfgSellers;
+    })();
+
+    // ===== PRICE INDEX SPARKLINE (14 days) =====
+    (function() {
+      if (!E) return;
+      var days = 14;
+      var pts = [];
+      var now = new Date();
+      for (var i = days - 1; i >= 0; i--) {
+        var d = new Date(now.getTime() - i * 86400000);
+        var sale = E.flashSaleEvent(d);
+        var base = sale.isActive ? (100 - sale.discountPct * 0.6) : 92;
+        var noise = (E.seeded(E.daySeed(d) * 201) - 0.5) * 5;
+        var val = Math.max(55, Math.min(100, Math.round((base + noise) * 10) / 10));
+        pts.push({ date: d, val: val });
+      }
+
+      var w = 600, h = 140, pad = 8;
+      var maxV = 100, minV = 55;
+      var coords = pts.map(function(p, i) {
+        var x = pad + (w - pad * 2) * (i / (pts.length - 1));
+        var y = pad + (h - pad * 2) * (1 - (p.val - minV) / (maxV - minV));
+        return { x: x, y: y, val: p.val, date: p.date };
+      });
+
+      var linePath = coords.map(function(c, i) { return (i === 0 ? 'M' : 'L') + c.x.toFixed(1) + ',' + c.y.toFixed(1); }).join(' ');
+      var areaPath = linePath + ' L' + coords[coords.length-1].x.toFixed(1) + ',' + (h-pad) + ' L' + coords[0].x.toFixed(1) + ',' + (h-pad) + ' Z';
+
+      var svg = document.getElementById('priceSpark');
+      var svgNS = 'http://www.w3.org/2000/svg';
+      var defs = document.createElementNS(svgNS, 'defs');
+      defs.innerHTML = '<linearGradient id="priceGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8a020" stop-opacity="0.35"/><stop offset="100%" stop-color="#e8a020" stop-opacity="0"/></linearGradient>';
+      svg.appendChild(defs);
+
+      // gridlines
+      for (var gy = 0; gy <= 2; gy++) {
+        var ly = pad + (h - pad*2) * gy / 2;
+        var line = document.createElementNS(svgNS, 'line');
+        line.setAttribute('x1', pad); line.setAttribute('x2', w - pad);
+        line.setAttribute('y1', ly); line.setAttribute('y2', ly);
+        line.setAttribute('stroke', 'rgba(255,255,255,0.05)'); line.setAttribute('stroke-width', '1');
+        svg.appendChild(line);
+      }
+
+      var area = document.createElementNS(svgNS, 'path');
+      area.setAttribute('d', areaPath); area.setAttribute('fill', 'url(#priceGrad)');
+      svg.appendChild(area);
+
+      var line = document.createElementNS(svgNS, 'path');
+      line.setAttribute('d', linePath); line.setAttribute('fill', 'none');
+      line.setAttribute('stroke', '#e8a020'); line.setAttribute('stroke-width', '2');
+      line.setAttribute('stroke-linejoin', 'round'); line.setAttribute('stroke-linecap', 'round');
+      svg.appendChild(line);
+
+      coords.forEach(function(c, i) {
+        var dot = document.createElementNS(svgNS, 'circle');
+        dot.setAttribute('cx', c.x); dot.setAttribute('cy', c.y); dot.setAttribute('r', i === coords.length - 1 ? 4 : 2.5);
+        dot.setAttribute('fill', i === coords.length - 1 ? '#fff' : '#e8a020');
+        var title = document.createElementNS(svgNS, 'title');
+        title.textContent = (MONTHS[c.date.getMonth()] + ' ' + c.date.getDate()) + ': ' + c.val;
+        dot.appendChild(title);
+        svg.appendChild(dot);
+      });
+
+      var labels = document.getElementById('priceSparkLabels');
+      labels.innerHTML = '<span>' + (MONTHS[coords[0].date.getMonth()] + ' ' + coords[0].date.getDate()) + '</span><span>' + (MONTHS[coords[coords.length-1].date.getMonth()] + ' ' + coords[coords.length-1].date.getDate()) + '</span>';
+    })();
+
+    // ===== SALE CYCLE CARD =====
+    (function() {
+      var body = document.getElementById('saleCycleBody');
+      var sale = null;
+      try { sale = E ? E.flashSaleEvent() : null; } catch(e) {}
+      if (!sale || !sale.isActive) {
+        body.innerHTML = '<div class="no-sale-note">No flash sale currently active.<br/>Check <a href="/deals/">Deals &amp; News</a> for the next announcement.</div>';
+        return;
+      }
+      var stages = ['ANNOUNCED', 'LIVE', 'ENDING_SOON', 'ENDED'];
+      var simplePhase = sale.phaseName === 'COOLDOWN' ? 'ENDED' : sale.phaseName;
+      var curIdx = stages.indexOf(simplePhase);
+      var barHtml = '<div class="sale-stage-bar">';
+      stages.forEach(function(s, i) {
+        var cls = i < curIdx ? 'done' : i === curIdx ? 'current' : '';
+        barHtml += '<div class="sale-stage-seg ' + cls + '"></div>';
+      });
+      barHtml += '</div><div class="sale-stage-labels"><span>Announced</span><span>Live</span><span>Ending Soon</span><span>Ended</span></div>';
+
+      body.innerHTML = barHtml + '<div id="saleFeatureRow" class="sale-feature-row"><div class="sale-feature-meta">Loading featured title…</div></div>';
+
+      fetch('/data/catalog.json?' + Math.floor(Date.now()/60000)).then(function(r){return r.json();}).then(function(catalog) {
+        var game = sale.featuredIndex != null ? catalog[sale.featuredIndex] : null;
+        var row = document.getElementById('saleFeatureRow');
+        if (!row) return;
+        if (game && window.CERBERUS) {
+          row.innerHTML = CERBERUS.coverTileHTML(game, { size: 'sm' }) +
+            '<div class="sale-feature-meta"><strong>' + game.title + '</strong><br/>' + game.genre + ' · ' + sale.tier + ' sale</div>' +
+            '<div class="sale-discount-pill">-' + sale.discountPct + '%</div>';
+        } else {
+          row.innerHTML = '<div class="sale-feature-meta">Discount currently <strong>' + sale.discountPct + '%</strong> off, ' + sale.tier + ' tier.</div>';
+        }
+      }).catch(function() {});
+    })();
+
+    // ===== GENRE DEMAND RANKING =====
+    (function() {
+      var genres = [];
+      try { genres = E ? E.genreDemand() : []; } catch(e) {}
+      genres = genres.slice().sort(function(a,b){ return b.score - a.score; });
+      var html = '';
+      genres.forEach(function(g, i) {
+        var pct = Math.max(2, Math.min(100, g.score));
+        html += '<div class="genre-row"><span class="genre-rank">#' + (i+1) + '</span><span class="genre-name">' + g.name + '</span>' +
+          '<div class="genre-bar-track"><div class="genre-bar-fill" style="width:' + pct + '%;"></div></div>' +
+          '<span class="genre-score">' + g.score.toFixed(1) + '</span></div>';
+      });
+      document.getElementById('genreBars').innerHTML = html;
+    })();
+
+    // ===== HOURLY SALES CHART =====
+    (function() {
+      var series = [];
+      try { series = CS ? CS.hourlySalesSeries() : []; } catch(e) {}
+      var maxV = Math.max.apply(null, series.concat([1]));
+      var curHour = new Date().getUTCHours();
+      var html = '';
+      series.forEach(function(v, h) {
+        var pct = Math.max(4, Math.round((v / maxV) * 100));
+        html += '<div class="hourly-bar' + (h === curHour ? ' now' : '') + '" style="height:' + pct + '%;" data-tip="' + String(h).padStart(2,'0') + ':00 — ' + v + ' keys"></div>';
+      });
+      document.getElementById('hourlyChart').innerHTML = html;
+    })();
+
+    // ===== MOST SOLD THIS WEEK =====
+    (function() {
+      fetch('/data/catalog.json?' + Math.floor(Date.now()/60000)).then(function(r){return r.json();}).then(function(catalog) {
+        if (!catalog || !catalog.length) return;
+        var ws = 1;
+        try { ws = E ? E.weekSeed() : 1; } catch(e) {}
+        var scored = catalog.map(function(game, i) {
+          var noise = E ? E.seeded(ws * 97 + i * 13) : Math.random();
+          var score = game.rating * 12 + Math.log(game.ratingCount + 1) * 4 + noise * 25;
+          return { game: game, idx: i, score: score };
+        }).sort(function(a,b){ return b.score - a.score; }).slice(0, 8);
+
+        var html = '';
+        scored.forEach(function(entry, rank) {
+          var weeklyNoise = E ? E.seeded(ws * 151 + entry.idx * 7) : Math.random();
+          var weeklySold = Math.max(35, Math.round(260 - rank * 26 + weeklyNoise * 30));
+          var tileHtml = window.CERBERUS ? CERBERUS.coverTileHTML(entry.game, { size: 'md' }) : '';
+          html += '<div class="sold-item"><div class="sold-rank">' + (rank + 1) + '</div>' + tileHtml +
+            '<div class="sold-meta"><div class="sold-title">' + entry.game.title + '</div>' +
+            '<div class="sold-sub">~' + weeklySold.toLocaleString() + ' sold this week</div></div></div>';
+        });
+        document.getElementById('soldGrid').innerHTML = html;
+      }).catch(function() {});
+    })();
+  </script>
+
+</body>
+</html>

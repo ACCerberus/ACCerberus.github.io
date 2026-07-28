@@ -1,0 +1,284 @@
+{
+  "postmortems": [
+    {
+      "incidentId": "INC-20260721-0141",
+      "title": "Memory scan false positive on accessibility software",
+      "startedAt": "2026-07-21T13:58:59Z",
+      "resolvedAt": "2026-07-21T21:13:02Z",
+      "duration": "7h 14m",
+      "impactPct": 0.5,
+      "rootCause": "Cache invalidation storm after signature push",
+      "timeline": [
+        {
+          "time": "2026-07-21T13:58:59Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-21T21:13:02Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Deploy canary configuration validation",
+        "Increase load test coverage for affected code path"
+      ],
+      "lessonsLearned": [
+        "Observability gaps in this subsystem masked early warning signs"
+      ]
+    },
+    {
+      "incidentId": "INC-20260712-8655",
+      "title": "Webhook delivery delays",
+      "startedAt": "2026-07-12T09:53:10Z",
+      "resolvedAt": "2026-07-12T17:01:17Z",
+      "duration": "7h 8m",
+      "impactPct": 1.2,
+      "rootCause": "Signature database index corruption after concurrent write",
+      "timeline": [
+        {
+          "time": "2026-07-12T09:53:10Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-12T17:01:17Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement gradual rollout for configuration changes",
+        "Add automated regression test for this failure mode"
+      ],
+      "lessonsLearned": [
+        "Rollback procedures should be tested quarterly"
+      ]
+    },
+    {
+      "incidentId": "INC-20260705-9181",
+      "title": "Behavioral model confidence degradation",
+      "startedAt": "2026-07-05T23:03:36Z",
+      "resolvedAt": "2026-07-06T13:49:19Z",
+      "duration": "14h 45m",
+      "impactPct": 1.2,
+      "rootCause": "Misconfigured rate limiter on edge node",
+      "timeline": [
+        {
+          "time": "2026-07-05T23:03:36Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-06T13:49:19Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Add automated rollback trigger for similar conditions",
+        "Add pre-deployment configuration validation step"
+      ],
+      "lessonsLearned": [
+        "Capacity planning needs to account for burst traffic patterns"
+      ]
+    },
+    {
+      "incidentId": "INC-20260704-6662",
+      "title": "Ban API rate limiter false triggers",
+      "startedAt": "2026-07-04T17:09:05Z",
+      "resolvedAt": "2026-07-05T03:44:32Z",
+      "duration": "10h 35m",
+      "impactPct": 0.8,
+      "rootCause": "Load balancer health check misconfiguration",
+      "timeline": [
+        {
+          "time": "2026-07-04T17:09:05Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-05T03:44:32Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Deploy canary configuration validation",
+        "Increase load test coverage for affected code path"
+      ],
+      "lessonsLearned": [
+        "Capacity planning needs to account for burst traffic patterns"
+      ]
+    },
+    {
+      "incidentId": "INC-20260701-0819",
+      "title": "Webhook delivery delays",
+      "startedAt": "2026-07-01T20:00:34Z",
+      "resolvedAt": "2026-07-02T07:35:18Z",
+      "duration": "11h 34m",
+      "impactPct": 2.8,
+      "rootCause": "TLS certificate pinning hash mismatch after CA rotation",
+      "timeline": [
+        {
+          "time": "2026-07-01T20:00:34Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-02T07:35:18Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Increase load test coverage for affected code path",
+        "Implement gradual rollout for configuration changes"
+      ],
+      "lessonsLearned": [
+        "Detection of this failure mode should be automated"
+      ]
+    },
+    {
+      "incidentId": "INC-20260629-9194",
+      "title": "Webhook delivery delays",
+      "startedAt": "2026-06-29T18:10:19Z",
+      "resolvedAt": "2026-06-30T03:57:01Z",
+      "duration": "9h 46m",
+      "impactPct": 1.7,
+      "rootCause": "Kernel module incompatibility with latest Windows Insider build",
+      "timeline": [
+        {
+          "time": "2026-06-29T18:10:19Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-06-30T03:57:01Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Document incident pattern for on-call training",
+        "Implement additional monitoring for affected subsystem"
+      ],
+      "lessonsLearned": [
+        "Detection of this failure mode should be automated"
+      ]
+    },
+    {
+      "incidentId": "INC-20260528-3940",
+      "title": "Ban API rate limiter false triggers",
+      "startedAt": "2026-05-28T17:35:42Z",
+      "resolvedAt": "2026-05-29T03:58:31Z",
+      "duration": "10h 22m",
+      "impactPct": 1.7,
+      "rootCause": "Kernel module incompatibility with latest Windows Insider build",
+      "timeline": [
+        {
+          "time": "2026-05-28T17:35:42Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-29T03:58:31Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement additional monitoring for affected subsystem",
+        "Update runbook with new escalation procedures"
+      ],
+      "lessonsLearned": [
+        "Observability gaps in this subsystem masked early warning signs"
+      ]
+    },
+    {
+      "incidentId": "INC-20260527-0845",
+      "title": "API response time degradation",
+      "startedAt": "2026-05-27T20:25:45Z",
+      "resolvedAt": "2026-05-28T08:07:28Z",
+      "duration": "11h 41m",
+      "impactPct": 2.8,
+      "rootCause": "Disk I/O saturation on signature database primary",
+      "timeline": [
+        {
+          "time": "2026-05-27T20:25:45Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-28T08:07:28Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Review and update capacity planning for affected service",
+        "Document incident pattern for on-call training"
+      ],
+      "lessonsLearned": [
+        "Cross-region testing should include latency simulation"
+      ]
+    },
+    {
+      "incidentId": "INC-20260525-1338",
+      "title": "Elevated DMA false positives",
+      "startedAt": "2026-05-25T15:15:47Z",
+      "resolvedAt": "2026-05-25T23:08:21Z",
+      "duration": "7h 52m",
+      "impactPct": 3.4,
+      "rootCause": "Model inference out-of-memory on GPU-constrained nodes",
+      "timeline": [
+        {
+          "time": "2026-05-25T15:15:47Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-25T23:08:21Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement feature flag for rapid rollback capability",
+        "Add synthetic monitoring probe for early detection"
+      ],
+      "lessonsLearned": [
+        "Cross-region testing should include latency simulation"
+      ]
+    },
+    {
+      "incidentId": "INC-20260521-5328",
+      "title": "Scan latency increase detected",
+      "startedAt": "2026-05-21T21:43:56Z",
+      "resolvedAt": "2026-05-22T10:54:17Z",
+      "duration": "13h 10m",
+      "impactPct": 2.8,
+      "rootCause": "Garbage collection pause in scan worker",
+      "timeline": [
+        {
+          "time": "2026-05-21T21:43:56Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-22T10:54:17Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement feature flag for rapid rollback capability",
+        "Add synthetic monitoring probe for early detection"
+      ],
+      "lessonsLearned": [
+        "Configuration changes need staged rollout validation"
+      ]
+    }
+  ]
+}

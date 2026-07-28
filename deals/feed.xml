@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Cerberus Market Deals &amp; News</title>
+  <subtitle>Flash sales, restock alerts, seller news, and price-drop roundups from Cerberus Market.</subtitle>
+  <link href="https://cerberusac.dev/deals/" rel="alternate"/>
+  <link href="https://cerberusac.dev/deals/feed.xml" rel="self"/>
+  <id>https://cerberusac.dev/deals/</id>
+  <updated>2026-07-26T15:00:00Z</updated>
+  <author>
+    <name>Cerberus Market</name>
+    <email>deals@arsenalrx.dev</email>
+  </author>
+
+  <entry>
+    <title>Flash Sale: Null Signal Drops to $52.99 This Weekend</title>
+    <link href="https://cerberusac.dev/deals/#deals-014" rel="alternate"/>
+    <id>https://cerberusac.dev/deals/deals-014</id>
+    <updated>2026-07-26T15:00:00Z</updated>
+    <author><name>M. Alders</name></author>
+    <summary>Three verified sellers are running discounts on Null Signal's 32-player warfare mode this weekend, with Northbyte Trading's $52.99 listing leading the pack at 24% off.</summary>
+  </entry>
+
+  <entry>
+    <title>Restock Alert: Redshift Arena Keys Back in Stock After Sellout</title>
+    <link href="https://cerberusac.dev/deals/#deals-013" rel="alternate"/>
+    <id>https://cerberusac.dev/deals/deals-013</id>
+    <updated>2026-07-25T11:30:00Z</updated>
+    <author><name>T. Vance</name></author>
+    <summary>Vertex Keys Co. and Northbyte Trading pushed a combined 750 fresh Redshift Arena keys after last week's orbital-ring battle royale sellout.</summary>
+  </entry>
+
+  <entry>
+    <title>KeyForge Direct Nears 180,000 Keys Sold</title>
+    <link href="https://cerberusac.dev/deals/#deals-012" rel="alternate"/>
+    <id>https://cerberusac.dev/deals/deals-012</id>
+    <updated>2026-07-24T09:00:00Z</updated>
+    <author><name>R. Okafor</name></author>
+    <summary>One of the marketplace's original vendors is closing in on 180,000 lifetime keys sold, backed by a 4.9-star rating across 41,800 reviews.</summary>
+  </entry>
+
+  <entry>
+    <title>Top 5 Deals This Week: July 21–27</title>
+    <link href="https://cerberusac.dev/deals/#deals-011" rel="alternate"/>
+    <id>https://cerberusac.dev/deals/deals-011</id>
+    <updated>2026-07-23T08:00:00Z</updated>
+    <author><name>M. Alders</name></author>
+    <summary>Our weekly pick of the five best discounts live on the marketplace right now, led by 27%-off listings on Hollow Choir and The Lantern Road.</summary>
+  </entry>
+
+  <entry>
+    <title>Price Drop Roundup: 8 Titles Now Under $20</title>
+    <link href="https://cerberusac.dev/deals/#deals-010" rel="alternate"/>
+    <id>https://cerberusac.dev/deals/deals-010</id>
+    <updated>2026-07-22T10:00:00Z</updated>
+    <author><name>T. Vance</name></author>
+    <summary>From a nine-minute walking sim to a full survival crafting game, eight catalog titles are currently listed under $20 across verified sellers.</summary>
+  </entry>
+
+  <entry>
+    <title>Fernkey Store Earns Its Verified Badge</title>
+    <link href="https://cerberusac.dev/deals/#deals-009" rel="alternate"/>
+    <id>https://cerberusac.dev/deals/deals-009</id>
+    <updated>2026-07-20T13:00:00Z</updated>
+    <author><name>R. Okafor</name></author>
+    <summary>The newest storefront on Cerberus Market completed identity verification this week, less than a month after its August launch.</summary>
+  </entry>
+
+  <entry>
+    <title>Platform Update: Manual Delivery SLA Tightened to 15 Minutes</title>
+    <link href="https://cerberusac.dev/deals/#deals-008" rel="alternate"/>
+    <id>https://cerberusac.dev/deals/deals-008</id>
+    <updated>2026-07-19T09:00:00Z</updated>
+    <author><name>S. Iyer</name></author>
+    <summary>Listings using manual delivery now carry a 15-minute average fulfillment target, down from the previous 30-minute window.</summary>
+  </entry>
+
+  <entry>
+    <title>Restock Alert: Harvest Hollow Region-Locked Listings Expand to North America</title>
+    <link href="https://cerberusac.dev/deals/#deals-007" rel="alternate"/>
+    <id>https://cerberusac.dev/deals/deals-007</id>
+    <updated>2026-07-17T12:00:00Z</updated>
+    <author><name>T. Vance</name></author>
+    <summary>Previously EU/UK-only region-locked Harvest Hollow keys are now also available to North American buyers through a new seller batch.</summary>
+  </entry>
+
+  <entry>
+    <title>Flash Sale Recap: Shattergate Protocol's 25%-Off Weekend by the Numbers</title>
+    <link href="https://cerberusac.dev/deals/#deals-006" rel="alternate"/>
+    <id>https://cerberusac.dev/deals/deals-006</id>
+    <updated>2026-07-15T16:00:00Z</updated>
+    <author><name>M. Alders</name></author>
+    <summary>Last weekend's Shattergate Protocol flash sale drove a visible order spike without denting checkout reliability — here's the breakdown.</summary>
+  </entry>
+
+  <entry>
+    <title>Seller Spotlight: Vertex Keys Co. — 4.9 Stars Across 38,400 Reviews</title>
+    <link href="https://cerberusac.dev/deals/#deals-005" rel="alternate"/>
+    <id>https://cerberusac.dev/deals/deals-005</id>
+    <updated>2026-07-13T10:00:00Z</updated>
+    <author><name>R. Okafor</name></author>
+    <summary>One of the marketplace's longest-standing Top Sellers has moved 172,000 keys since 2021 without its rating dipping below 4.8.</summary>
+  </entry>
+</feed>

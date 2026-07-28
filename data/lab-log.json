@@ -1,140 +1,95 @@
 {
-  "lastUpdated": "2026-07-26",
+  "lastUpdated": "2026-07-24",
   "entries": [
     {
       "id": "lab-001",
-      "title": "NPU Offloading for Real-Time Behavioral Analysis",
-      "desc": "Investigating dedicated NPU hardware for running behavioral inference models at scan-time, bypassing CPU/GPU contention.",
+      "title": "Dynamic Pricing Signal Model",
+      "desc": "ML model that suggests optimal list price to sellers based on recent sales velocity and competitor pricing.",
       "status": "EXPERIMENT",
-      "startDate": "2026-04-10",
-      "lastUpdate": "2026-07-26",
-      "findings": "Intel Meteor Lake NPU achieves 1.8-2.5x inference throughput vs CPU baseline. Power efficiency gains promising for always-on scanning but driver support inconsistent."
+      "startDate": "2026-05-01",
+      "lastUpdate": "2026-07-24",
+      "findings": "Model recommendations tracked 6-9% higher sell-through in backtesting vs static pricing. Cold-start problem for newly listed titles remains unsolved."
     },
     {
       "id": "lab-002",
-      "title": "TPM 2.0 Remote Attestation Chain",
-      "desc": "Using TPM attestation to verify boot chain integrity and detect rootkit-level tampering before game launch.",
+      "title": "Fraud Velocity Graph Analysis",
+      "desc": "Graph-based clustering of orders, payment methods, and IP ranges to catch card-testing rings before chargebacks land.",
       "status": "EVALUATION",
-      "startDate": "2026-02-15",
-      "lastUpdate": "2026-07-26",
-      "findings": "Attestation flow works on ~87-92% of tested hardware depending on vendor. Custom BIOS and older firmware revisions require graceful fallback."
+      "startDate": "2026-03-10",
+      "lastUpdate": "2026-07-20",
+      "findings": "Catches roughly 78% of known card-testing patterns in backtest. False-positive rate on legitimate bulk gift-purchase bursts still too high (~4%) — tuning threshold."
     },
     {
       "id": "lab-003",
-      "title": "Side-Channel Timing for VM Detection",
-      "desc": "Using CPU cache timing variations to detect virtual machine environments used to bypass hardware bans.",
-      "status": "EXPERIMENT",
-      "startDate": "2026-03-20",
-      "lastUpdate": "2026-07-26",
-      "findings": "L3 cache timing delta identifies VMware/KVM with 92-96% accuracy depending on host config. Hyper-V detection requires additional rdtsc calibration."
+      "title": "Search Relevance Ranking Overhaul",
+      "desc": "Learning-to-rank model for catalog search, evaluated against the current keyword-plus-popularity heuristic.",
+      "status": "PROTOTYPE",
+      "startDate": "2026-04-15",
+      "lastUpdate": "2026-07-18",
+      "findings": "Offline ranking quality improved 11% over baseline. Needs a live A/B test before rollout; watching for interaction effects with sponsored listings."
     },
     {
       "id": "lab-004",
-      "title": "Neural Network Pruning for Edge Deployment",
-      "desc": "Structured pruning of behavioral detection models to reduce client-side inference cost by 60%+.",
-      "status": "PROTOTYPE",
-      "startDate": "2026-04-01",
-      "lastUpdate": "2026-07-26",
-      "findings": "Magnitude pruning at 70% sparsity retains 96-97% detection accuracy. Knowledge distillation recovers ~1-2% but adds training complexity."
+      "title": "Key Redemption Checksum Verification",
+      "desc": "Cryptographic checksum scheme sellers can attach to key listings so buyers can verify authenticity before redeeming on the publisher platform.",
+      "status": "EXPERIMENT",
+      "startDate": "2026-06-01",
+      "lastUpdate": "2026-07-22",
+      "findings": "Works cleanly for 4 of 6 major publisher platforms tested. Two platforms rotate key formats without notice, breaking checksum matching — investigating a fallback."
     },
     {
       "id": "lab-005",
-      "title": "GAN-Based Cheat Synthesis",
-      "desc": "Using generative adversarial networks to synthesize novel cheat patterns for proactive detection.",
+      "title": "Seller Payout Automation via Instant Rails",
+      "desc": "Evaluating instant bank payout rails as an alternative to the current weekly batch payout for sellers.",
       "status": "HYPOTHESIS",
-      "startDate": "2026-05-23",
-      "lastUpdate": "2026-05-23",
-      "findings": "Initial research phase. Literature review in progress."
+      "startDate": "2026-07-05",
+      "lastUpdate": "2026-07-05",
+      "findings": "Initial research phase. Comparing provider fee structures and settlement times."
     },
     {
       "id": "lab-006",
-      "title": "UEFI Bootkit Detection via Measured Boot",
-      "desc": "Parsing TCG event logs and TPM PCR[7] measurements to detect unauthorized UEFI modules loaded before OS initialization.",
-      "status": "HYPOTHESIS",
+      "title": "Chat Support Triage Bot",
+      "desc": "Lightweight intent-classification bot to route buyer support tickets (missing key, refund, seller dispute) before human handoff.",
+      "status": "EXPERIMENT",
       "startDate": "2026-05-20",
-      "lastUpdate": "2026-05-22",
-      "findings": "TCG event log parsing successfully detects unauthorized UEFI modules on 3 of 4 test boards (ASRock, ASUS, MSI). Gigabyte board uses non-standard event log format requiring custom parser. Vendor BIOS variations introduce noise in PCR measurements — need baseline per motherboard family."
+      "lastUpdate": "2026-07-15",
+      "findings": "Correctly routes 81% of tickets across the three most common categories. Struggles with mixed-intent messages such as 'key didn't work and I want a refund'."
     },
     {
       "id": "lab-007",
-      "title": "Instrumentation Callback Injection Analysis",
-      "desc": "Cataloging NtSetInformationProcess(ProcessInstrumentationCallback) abuse patterns and developing kernel-level monitoring for callback registration.",
-      "status": "EXPERIMENT",
-      "startDate": "2026-05-15",
-      "lastUpdate": "2026-07-26",
-      "findings": "4 distinct callback registration patterns cataloged across known cheat loaders. Kernel-level monitoring catches new registrations in real-time but cannot detect pre-existing callbacks set before Cerberus driver loads. Investigating early-boot driver load ordering to close this gap."
+      "title": "Currency Conversion Drift Monitoring",
+      "desc": "Tracking FX rate staleness on displayed regional prices to catch stale-quote complaints before they escalate.",
+      "status": "EVALUATION",
+      "startDate": "2026-06-10",
+      "lastUpdate": "2026-07-19",
+      "findings": "Median quote staleness under 40 minutes across regions. AP-Southeast lags most due to slower upstream FX feed refresh."
     },
     {
       "id": "lab-008",
-      "title": "CUDA/DirectCompute Dispatch Anomaly Analysis",
-      "desc": "Instrumenting GPU driver layer via DXGI/Vulkan intercepts to detect unauthorized compute shader dispatches during gameplay.",
-      "status": "HYPOTHESIS",
-      "startDate": "2026-05-22",
-      "lastUpdate": "2026-05-23",
-      "findings": "Proof-of-concept intercept layer working via DXGI hooks. Can enumerate active compute dispatches and flag unknown shader programs. Performance overhead is a concern — naive approach adds 3-5ms per frame. Investigating selective sampling to reduce overhead to sub-1ms."
+      "title": "Duplicate Listing Detection",
+      "desc": "Fuzzy-matching seller listings against a title and edition catalog to catch accidental or deliberate duplicate listings.",
+      "status": "PROTOTYPE",
+      "startDate": "2026-05-25",
+      "lastUpdate": "2026-07-10",
+      "findings": "Catches straightforward duplicates reliably. Regional edition variants (same base game, different key region) still trip false positives."
     },
     {
       "id": "lab-009",
-      "title": "Rust Rewrite of Scan Engine Core",
-      "desc": "Evaluating memory-safe reimplementation of performance-critical scan path in Rust.",
+      "title": "Wishlist-to-Purchase Conversion Study",
+      "desc": "Analyzing which nudges (price-drop alert, bundle suggestion, urgency messaging) actually convert wishlisted items into purchases.",
       "status": "HYPOTHESIS",
-      "startDate": "2026-05-28",
-      "lastUpdate": "2026-05-28",
-      "findings": "Initial research phase. Literature review in progress."
+      "startDate": "2026-07-15",
+      "lastUpdate": "2026-07-15",
+      "findings": "Initial research phase. Reviewing conversion-nudge studies from comparable marketplaces."
     },
     {
       "id": "lab-010",
-      "title": "Compiler-Level Obfuscation Pipeline",
-      "desc": "Custom LLVM passes for automated binary diversification to resist reverse engineering.",
+      "title": "Bundle Recommendation Engine",
+      "desc": "Collaborative-filtering model suggesting complementary key bundles at checkout based on co-purchase patterns.",
       "status": "HYPOTHESIS",
-      "startDate": "2026-06-05",
-      "lastUpdate": "2026-06-05",
-      "findings": "Initial research phase. Literature review in progress."
-    },
-    {
-      "id": "lab-011",
-      "title": "Differential Privacy in Telemetry",
-      "desc": "Applying epsilon-delta privacy to aggregated detection metrics before reporting.",
-      "status": "HYPOTHESIS",
-      "startDate": "2026-06-10",
-      "lastUpdate": "2026-06-10",
-      "findings": "Initial research phase. Literature review in progress."
-    },
-    {
-      "id": "lab-012",
-      "title": "Adversarial ML Robustness Testing",
-      "desc": "Evaluating detection model resilience against adversarial input perturbations designed to evade classification.",
-      "status": "HYPOTHESIS",
-      "startDate": "2026-06-15",
-      "lastUpdate": "2026-06-15",
-      "findings": "Initial research phase. Literature review in progress."
-    },
-    {
-      "id": "lab-013",
-      "title": "eBPF-Based Kernel Monitoring",
-      "desc": "Using eBPF programs for low-overhead kernel-space behavioral monitoring on Linux.",
-      "status": "HYPOTHESIS",
-      "startDate": "2026-06-20",
-      "lastUpdate": "2026-06-20",
-      "findings": "Initial research phase. Literature review in progress."
-    },
-    {
-      "id": "lab-014",
-      "title": "FPGA-Accelerated Pattern Matching",
-      "desc": "Using reconfigurable hardware for real-time cheat signature matching at line rate.",
-      "status": "HYPOTHESIS",
-      "startDate": "2026-06-25",
-      "lastUpdate": "2026-06-25",
-      "findings": "Initial research phase. Literature review in progress."
-    },
-    {
-      "id": "lab-015",
-      "title": "Network Traffic Fingerprinting",
-      "desc": "Detecting cheat tool communication by analyzing packet timing and payload entropy patterns.",
-      "status": "HYPOTHESIS",
-      "startDate": "2026-06-30",
-      "lastUpdate": "2026-06-30",
-      "findings": "Initial research phase. Literature review in progress."
+      "startDate": "2026-07-20",
+      "lastUpdate": "2026-07-20",
+      "findings": "Initial research phase. Scoping training data requirements."
     }
   ],
   "templatePool": []

@@ -1,10 +1,10 @@
 /**
- * Cerberus Analytics Logic Engine v2
- * Single source of truth for all metrics across the site.
+ * Cerberus Market Analytics Logic Engine v2
+ * Single source of truth for all live-marketplace metrics across the site.
  * Every number derives from world config + seeded PRNG + temporal curves.
  * Features: statistical distributions, multi-timescale seeding,
- * arms race lifecycle, correlated metrics, brownian drift,
- * provider ecosystem, performance metrics, incidents, deployments.
+ * flash-sale lifecycle, correlated metrics, brownian drift,
+ * seller ecosystem, checkout/delivery performance, incidents, restocks.
  */
 (function() {
   'use strict';
@@ -109,34 +109,33 @@
 
   // ─── WORLD CONFIG ───
   var CONFIG = {
-    games: 18,
-    avgConcurrentPerGame: 80,
-    peakCCU: 1440,
-    cheatPrevalence: 0.035,
-    falsePositiveRate: 0.0014,
-    blendedDetectionRate: 0.78,
-    regions: [
-      { name: 'US-East', weight: 0.40, tzOffset: -5 },
-      { name: 'EU-West', weight: 0.35, tzOffset: 1 },
-      { name: 'AP-Southeast', weight: 0.25, tzOffset: 8 }
-    ],
-    banWaveMin: 5,
-    banWaveMax: 15,
-    autoBanRatio: 0.65,
-    behavioralModel: 'bm-3.1.4',
-    engineVersion: 'v0.5.0.0b',
-    versionReleaseDate: new Date('2026-07-26').getTime(),
-    signatureDbBase: 4200,
-    signatureDbGrowthPerDay: 3.5,
-    signatureDbEpoch: new Date('2025-10-01').getTime(),
+    catalogSize: 22,
+    sellerCount: 14,
+    peakListings: 2600,
+    minListings: 1200,
+    restockMin: 40,
+    restockMax: 160,
+    baseCheckoutSuccessRate: 98.6,
+    platformVersion: 'v0.5.0.0b',
     launchDate: new Date('2025-10-01').getTime(),
-    detectionCategories: [
-      { name: 'Aimbot / Aim Assist',    base: 89, drift: 3 },
-      { name: 'Wallhack / ESP',         base: 84, drift: 4 },
-      { name: 'DMA External',           base: 72, drift: 5 },
-      { name: 'Kernel Driver',          base: 78, drift: 4 },
-      { name: 'Speed / Teleport',       base: 65, drift: 5 },
-      { name: 'HWID Spoof',             base: 58, drift: 4 }
+    regions: [
+      { name: 'NA', weight: 0.42, tzOffset: -6 },
+      { name: 'EU', weight: 0.36, tzOffset: 1 },
+      { name: 'APAC', weight: 0.22, tzOffset: 8 }
+    ],
+    genres: [
+      { name: 'FPS',            base: 82, drift: 5 },
+      { name: 'RPG',            base: 78, drift: 6 },
+      { name: 'Battle Royale',  base: 74, drift: 5 },
+      { name: 'Strategy',       base: 61, drift: 4 },
+      { name: 'Simulation',     base: 55, drift: 4 },
+      { name: 'Horror',         base: 58, drift: 5 },
+      { name: 'Racing',         base: 52, drift: 4 },
+      { name: 'Sports',         base: 60, drift: 4 },
+      { name: 'Survival',       base: 65, drift: 5 },
+      { name: 'Fighting',       base: 48, drift: 4 },
+      { name: 'Puzzle',         base: 40, drift: 3 },
+      { name: 'Adventure',      base: 57, drift: 4 }
     ],
     diurnalCurve: [
       0.08, 0.05, 0.03, 0.03, 0.04, 0.06,
@@ -145,27 +144,22 @@
       1.00, 1.00, 0.95, 0.85, 0.60, 0.30
     ],
     weeklyMultipliers: [1.15, 0.88, 0.92, 0.95, 1.00, 1.08, 1.18],
-    cheatProviders: [
-      'PhantomOverlay', 'GhostWare', 'VoidEngine', 'NexusCheat',
-      'PrismHack', 'CobaltEFI', 'HydraDMA', 'SpecterRing'
-    ],
     // Brownian drift volatility per metric
     driftVolatility: {
-      sessions: 8,
-      npu: 1.5,
-      latency: 0.15,
-      cpu: 0.8,
-      memory: 2,
-      network: 0.5,
-      queueDepth: 1.2,
-      apiResponse: 0.3
+      listings: 40,
+      buyers: 6,
+      deliveryTime: 0.8,
+      checkoutRate: 0.15,
+      apiResponse: 6,
+      queueDepth: 0.9,
+      priceSync: 3
     },
-    // Incident root causes per category
+    // Incident root causes per ops category
     incidentCauses: {
-      kernel: ['Driver communication timeout', 'Minifilter callback stall', 'PTE scan race condition', 'IOCTL buffer overflow protection triggered', 'Hypervisor check false alarm'],
-      ai: ['Model inference latency spike', 'Feature extraction pipeline stall', 'Behavioral baseline corruption', 'ONNX runtime memory pressure', 'Input stream desync'],
-      network: ['Packet integrity check timeout', 'Cross-player correlation backlog', 'WebSocket connection storm', 'Signature sync CDN failure', 'Rate limiter misconfiguration'],
-      hardware: ['PCIe enumeration timeout', 'DMA timing check false positive', 'Firmware DB sync failure', 'TPM attestation timeout', 'GPU shader check stall']
+      payment: ['Payment gateway timeout', 'Card issuer decline spike', 'Currency conversion API stall', 'Fraud-check false positive', 'Duplicate charge auto-reversal'],
+      delivery: ['Key-generation queue backlog', 'Manual delivery batch delay', 'Delivery email service outage', 'Key-pool exhaustion for high-demand title', 'Redemption server rate limiting'],
+      seller: ['Seller API sync failure', 'Seller inventory feed desync', 'Bulk listing upload error', 'Seller payout batch delay'],
+      infra: ['Regional CDN latency spike', 'Search index rebuild lag', 'Database replica lag', 'Cache invalidation storm', 'Load balancer health-check flap']
     }
   };
 
@@ -220,59 +214,56 @@
     return targetValue + drift;
   }
 
-  // ─── 1C: ARMS RACE LIFECYCLE ───
+  // ─── 1C: FLASH-SALE / RESTOCK LIFECYCLE ───
 
   // Phase config for the 7-day lifecycle
-  var ARMS_RACE_PHASES = [
-    { name: 'DETECTED',     threat: 'HIGH',     detRateMod: -6, banMod: 1.0,  sigPush: false, dayOffset: 0 },
-    { name: 'ANALYSIS',     threat: 'ELEVATED',  detRateMod: -3, banMod: 1.1,  sigPush: false, dayOffset: 1 },
-    { name: 'ANALYSIS',     threat: 'ELEVATED',  detRateMod: -3, banMod: 1.1,  sigPush: false, dayOffset: 2 },
-    { name: 'DEPLOYING',    threat: 'ELEVATED',  detRateMod: +4, banMod: 1.6,  sigPush: true,  dayOffset: 3 },
-    { name: 'DEPLOYING',    threat: 'ELEVATED',  detRateMod: +4, banMod: 1.6,  sigPush: true,  dayOffset: 4 },
-    { name: 'NEUTRALIZED',  threat: 'MODERATE',  detRateMod: +2, banMod: 1.3,  sigPush: false, dayOffset: 5 },
-    { name: 'NEUTRALIZED',  threat: 'MODERATE',  detRateMod: +2, banMod: 1.3,  sigPush: false, dayOffset: 6 },
-    { name: 'COOLDOWN',     threat: 'LOW',       detRateMod: 0,  banMod: 1.0,  sigPush: false, dayOffset: 7 }
+  var SALE_PHASES = [
+    { name: 'ANNOUNCED',   heat: 'MODERATE', discountMod: 0,  demandMod: 1.05, dayOffset: 0 },
+    { name: 'LIVE',        heat: 'SURGE',    discountMod: 25, demandMod: 1.6,  dayOffset: 1 },
+    { name: 'LIVE',        heat: 'SURGE',    discountMod: 30, demandMod: 1.7,  dayOffset: 2 },
+    { name: 'LIVE',        heat: 'ELEVATED', discountMod: 22, demandMod: 1.4,  dayOffset: 3 },
+    { name: 'ENDING_SOON', heat: 'ELEVATED', discountMod: 15, demandMod: 1.2,  dayOffset: 4 },
+    { name: 'ENDED',       heat: 'MODERATE', discountMod: 0,  demandMod: 1.0,  dayOffset: 5 },
+    { name: 'COOLDOWN',    heat: 'LOW',      discountMod: 0,  demandMod: 1.0,  dayOffset: 6 }
   ];
 
-  var SEVERITY_MULTIPLIERS = { major: 1.5, moderate: 1.0, minor: 0.6 };
+  var TIER_MULTIPLIERS = { mega: 1.6, standard: 1.0, micro: 0.55 };
 
-  // Find arms race events active on a given day by scanning back 3 weeks
-  function _findActiveArmsRaceEvents(now) {
+  // Find flash-sale events active on a given day by scanning back 3 weeks
+  function _findActiveSaleEvents(now) {
     now = now || new Date();
     var events = [];
     var todayMs = now.getTime();
-    // Scan back 21 days for spike start days
+    // Scan back 21 days for sale start days
     for (var d = 0; d <= 21; d++) {
       var checkDay = new Date(todayMs - d * 86400000);
       var ws = weekSeed(checkDay);
-      // Does this week have a spike?
+      // Does this week have a sale?
       if (seeded(ws * 4391) >= 0.45) continue;
       // Which day of the week?
-      var spikeDay = Math.floor(seeded(ws * 5503) * 7);
-      if (checkDay.getUTCDay() !== spikeDay) continue;
-      // This is a spike start day
+      var startDayOfWeek = Math.floor(seeded(ws * 5503) * 7);
+      if (checkDay.getUTCDay() !== startDayOfWeek) continue;
+      // This is a sale start day
       var ds = daySeed(checkDay);
-      var spikeSigs = seededInt(ds * 6607, 15, 40);
-      var providerIdx = Math.floor(seeded(ds * 7703) * CONFIG.cheatProviders.length);
-      var provider = CONFIG.cheatProviders[providerIdx];
-      var catIdx = Math.floor(seeded(ds * 7801) * CONFIG.detectionCategories.length);
-      var affectedCategory = CONFIG.detectionCategories[catIdx].name;
-      var sevRoll = seeded(ds * 7901);
-      var severity = sevRoll < 0.2 ? 'major' : sevRoll < 0.7 ? 'moderate' : 'minor';
-      var dayOffset = d; // how many days ago the spike started
+      var featuredIndex = Math.floor(seeded(ds * 6607) * CONFIG.catalogSize);
+      var genreIndex = Math.floor(seeded(ds * 6611) * CONFIG.genres.length);
+      var baseDiscount = seededInt(ds * 6701, 15, 55);
+      var tierRoll = seeded(ds * 7901);
+      var tier = tierRoll < 0.2 ? 'mega' : tierRoll < 0.7 ? 'standard' : 'micro';
+      var dayOffset = d; // how many days ago the sale started
 
-      // Only include if within lifecycle window (0-7 days)
-      if (dayOffset <= 7) {
-        var phase = ARMS_RACE_PHASES[Math.min(dayOffset, 7)];
+      // Only include if within lifecycle window (0-6 days)
+      if (dayOffset <= 6) {
+        var phase = SALE_PHASES[Math.min(dayOffset, 6)];
         events.push({
-          provider: provider,
-          affectedCategory: affectedCategory,
-          severity: severity,
-          severityMultiplier: SEVERITY_MULTIPLIERS[severity],
+          featuredIndex: featuredIndex,
+          genreIndex: genreIndex,
+          tier: tier,
+          tierMultiplier: TIER_MULTIPLIERS[tier],
+          baseDiscount: baseDiscount,
           dayOffset: dayOffset,
           phaseName: phase.name,
           phase: phase,
-          spikeSigs: spikeSigs,
           startDate: checkDay
         });
       }
@@ -280,15 +271,16 @@
     return events;
   }
 
-  // Main arms race function — backward compatible + new fields
-  function armsRaceEvent(now) {
+  // Main flash-sale function
+  function flashSaleEvent(now) {
     now = now || new Date();
-    var events = _findActiveArmsRaceEvents(now);
+    var events = _findActiveSaleEvents(now);
 
     if (events.length === 0) {
       return {
-        isSpike: false, spikeSigs: 0, provider: null, threatLevel: 'LOW',
-        phaseName: null, affectedCategory: null, severity: null, dayOffset: -1, events: []
+        isActive: false, discountPct: 0, featuredIndex: null, genreIndex: null,
+        demandLevel: 'LOW', phaseName: null, phase: null, tier: null, tierMultiplier: null,
+        dayOffset: -1, events: []
       };
     }
 
@@ -298,169 +290,145 @@
       if (events[i].dayOffset < primary.dayOffset) primary = events[i];
     }
 
-    // Sigs only accumulate during DEPLOYING phase
-    var effectiveSigs = (primary.phaseName === 'DEPLOYING') ?
-      Math.round(primary.spikeSigs * primary.severityMultiplier) : 0;
+    var jitter = (primary.baseDiscount - 35) * 0.3;
+    var discountPct = Math.round((primary.phase.discountMod + jitter) * primary.tierMultiplier);
+    discountPct = Math.max(0, Math.min(75, discountPct));
 
     return {
-      isSpike: true,
-      spikeSigs: effectiveSigs || primary.spikeSigs, // fallback for backward compat
-      provider: primary.provider,
-      threatLevel: primary.phase.threat,
+      isActive: true,
+      discountPct: discountPct,
+      featuredIndex: primary.featuredIndex,
+      genreIndex: primary.genreIndex,
+      demandLevel: primary.phase.heat,
       phaseName: primary.phaseName,
-      affectedCategory: primary.affectedCategory,
-      severity: primary.severity,
+      phase: primary.phase,
+      tier: primary.tier,
+      tierMultiplier: primary.tierMultiplier,
       dayOffset: primary.dayOffset,
       events: events
     };
   }
 
-  // ─── 1D: THREAT LEVEL (derived from lifecycle phase) ───
-  function threatLevel(now) {
+  // ─── 1D: DEMAND LEVEL (derived from lifecycle phase) ───
+  function demandLevel(now) {
     now = now || new Date();
     var ds = daySeed(now);
-    var arc = armsRaceEvent(now);
-    if (arc.isSpike) return arc.threatLevel;
-    if (seeded(ds * 8807) < 0.02) return 'HIGH';
-    if (seeded(ds * 9901) < 0.08) return 'MODERATE';
+    var sale = flashSaleEvent(now);
+    if (sale.isActive) return sale.demandLevel;
+    if (seeded(ds * 8807) < 0.015) return 'ELEVATED';
+    if (seeded(ds * 9901) < 0.10) return 'MODERATE';
     return 'LOW';
   }
 
-  // ─── DERIVED METRICS (with arms race correlation) ───
+  // ─── DERIVED METRICS (with flash-sale correlation) ───
 
-  function activeSessions(now) {
+  function activeListings(now) {
     now = now || new Date();
-    var base = CONFIG.peakCCU;
+    var base = CONFIG.peakListings;
     var mult = diurnalMultiplier(now) * weeklyMultiplier(now) * dayNoise(now);
     var val = Math.round(base * mult);
-    val = Math.max(40, Math.min(540, val));
-    return Math.round(brownianDrift('sessions', val, now));
+    val = Math.max(CONFIG.minListings, Math.min(CONFIG.peakListings, val));
+    return Math.round(brownianDrift('listings', val, now));
   }
 
-  function hourlyDetections(now) {
+  function onlineBuyers(now) {
     now = now || new Date();
-    var sessions = CONFIG.peakCCU * diurnalMultiplier(now) * weeklyMultiplier(now) * dayNoise(now);
-    sessions = Math.max(40, Math.min(540, sessions));
-    var cheaters = sessions * CONFIG.cheatPrevalence;
-    return Math.max(0, cheaters * CONFIG.blendedDetectionRate);
+    var base = 170;
+    var mult = diurnalMultiplier(now) * weeklyMultiplier(now) * dayNoise(now);
+    var val = Math.round(base * mult);
+    val = Math.max(40, Math.min(180, val));
+    return Math.round(brownianDrift('buyers', val, now));
   }
 
-  function dailyDetections(now) {
+  function hourlyOrders(now) {
+    now = now || new Date();
+    var listings = CONFIG.peakListings * diurnalMultiplier(now) * weeklyMultiplier(now) * dayNoise(now);
+    listings = Math.max(CONFIG.minListings, Math.min(CONFIG.peakListings, listings));
+    var conversionRate = 0.0055;
+    return Math.max(0, listings * conversionRate);
+  }
+
+  function dailyOrdersPlaced(now) {
     now = now || new Date();
     var ds = daySeed(now);
     var total = 0;
     for (var h = 0; h < 24; h++) {
       var sample = new Date(now);
       sample.setUTCHours(h, 30, 0, 0);
-      total += hourlyDetections(sample);
+      total += hourlyOrders(sample);
     }
-    total = total * 0.15;
-    var noise = (seeded(ds * 1303) - 0.5) * 6;
-    // Arms race correlated detection boost
-    var arc = armsRaceEvent(now);
-    var spikeBoost = 0;
-    if (arc.isSpike) {
-      var banMod = arc.events[0] ? arc.events[0].phase.banMod : 1.0;
-      var sevMult = arc.events[0] ? arc.events[0].severityMultiplier : 1.0;
-      spikeBoost = Math.round((banMod - 1) * total * sevMult) + seededInt(ds * 1307, 2, 8);
+    var noise = (seeded(ds * 1303) - 0.5) * 20;
+    // Flash-sale correlated demand boost
+    var sale = flashSaleEvent(now);
+    var demandBoost = 0;
+    if (sale.isActive) {
+      demandBoost = Math.round((sale.phase.demandMod - 1) * total) + seededInt(ds * 1307, 5, 25);
     }
-    var maxDet = arc.isSpike ? 50 : 38;
-    return Math.max(8, Math.min(maxDet, Math.round(total + noise + spikeBoost)));
+    var maxOrders = sale.isActive ? 320 : 260;
+    return Math.max(60, Math.min(maxOrders, Math.round(total + noise + demandBoost)));
   }
 
-  // Daily bans — uses yesterday's detections (1-day investigation lag)
-  function dailyBans(now) {
+  // Keys delivered — uses today's orders confirmed with a short fulfillment lag
+  function dailyKeysDelivered(now) {
     now = now || new Date();
     var yesterday = new Date(now.getTime() - 86400000);
-    return Math.round(dailyDetections(yesterday) * CONFIG.autoBanRatio);
+    var rate = 0.93 + seeded(daySeed(now) * 2209) * 0.05;
+    return Math.round(dailyOrdersPlaced(yesterday) * rate);
   }
 
-  function totalBans(now) {
+  function totalKeysSold(now) {
     now = now || new Date();
     var dsl = daysSince(CONFIG.launchDate, now);
     var ds = daySeed(now);
-    var avgDaily = 15 + (seeded(ds * 2207) - 0.5) * 4;
+    var avgDaily = 150 + (seeded(ds * 2207) - 0.5) * 40;
     return Math.round(dsl * avgDaily);
   }
 
-  // Signature count — sigs only accumulate during DEPLOYING phase
-  function signatureCount(now) {
+  // Listing freshness distribution — fresh listings correlate with restock boosts during LIVE phase
+  function listingsFreshness(now) {
     now = now || new Date();
-    var ds = daySeed(now);
-    var dse = daysSince(CONFIG.signatureDbEpoch, now);
-    var base = CONFIG.signatureDbBase + Math.floor(dse * CONFIG.signatureDbGrowthPerDay);
-    var noise = Math.floor((seeded(ds * 1709) - 0.5) * 10);
-    var spikeCumulative = 0;
-    for (var d = 0; d < Math.min(dse, 90); d++) {
-      var pastDay = new Date(now.getTime() - d * 86400000);
-      var pastArc = armsRaceEvent(pastDay);
-      if (pastArc.isSpike && pastArc.phaseName === 'DEPLOYING') {
-        spikeCumulative += Math.round(pastArc.spikeSigs * (pastArc.events[0] ? pastArc.events[0].severityMultiplier : 1));
-      }
-    }
-    return base + noise + spikeCumulative;
-  }
-
-  function signatureDistribution(now) {
-    now = now || new Date();
-    var total = signatureCount(now);
+    var total = activeListings(now);
     var ds = daySeed(now);
     var fresh = 0;
     for (var d = 0; d < 7; d++) {
       var pastDay = new Date(now.getTime() - d * 86400000);
-      var arc = armsRaceEvent(pastDay);
-      fresh += CONFIG.signatureDbGrowthPerDay + ((arc.isSpike && arc.phaseName === 'DEPLOYING') ? arc.spikeSigs : 0);
+      var pastDs = daySeed(pastDay);
+      var dailyNew = 30 + seeded(pastDs * 1709) * 35;
+      var sale = flashSaleEvent(pastDay);
+      if (sale.isActive && sale.phaseName === 'LIVE') {
+        dailyNew += dailyNew * 0.6 * sale.tierMultiplier;
+      }
+      fresh += dailyNew;
     }
     fresh = Math.round(fresh);
-    var active = Math.round(23 * CONFIG.signatureDbGrowthPerDay);
-    fresh += seededInt(ds * 3301, -2, 4);
-    active += seededInt(ds * 3307, -5, 8);
-    fresh = Math.max(10, fresh);
-    active = Math.max(50, active);
+    fresh = Math.min(fresh, Math.round(total * 0.45));
+    fresh = Math.max(Math.round(total * 0.05), fresh);
+    var active = Math.round(total * 0.38) + seededInt(ds * 3307, -30, 40);
+    active = Math.max(Math.round(total * 0.2), active);
     var legacy = Math.max(0, total - fresh - active);
     return { fresh: fresh, active: active, legacy: legacy, total: total };
   }
 
-  // Detection rates — affected category dips during DETECTED, recovers during DEPLOYING
-  function detectionRates(now) {
+  // Genre demand — featured genre dips/spikes with the flash-sale lifecycle
+  function genreDemand(now) {
     now = now || new Date();
     var ds = daySeed(now);
-    var arc = armsRaceEvent(now);
-    return CONFIG.detectionCategories.map(function(cat, i) {
-      var drift = (seeded(ds * 307 + i * 41) - 0.5) * cat.drift * 2;
-      var rate = cat.base + drift;
-      // Apply arms race lifecycle modifier to affected category
-      if (arc.isSpike && arc.affectedCategory === cat.name && arc.events[0]) {
-        var mod = arc.events[0].phase.detRateMod * arc.events[0].severityMultiplier;
-        rate += mod;
+    var sale = flashSaleEvent(now);
+    return CONFIG.genres.map(function(g, i) {
+      var drift = (seeded(ds * 307 + i * 41) - 0.5) * g.drift * 2;
+      var score = g.base + drift;
+      if (sale.isActive && sale.genreIndex === i && sale.phaseName === 'LIVE') {
+        score += (sale.phase.demandMod - 1) * 40;
       }
-      rate = Math.max(cat.base - cat.drift - 8, Math.min(cat.base + cat.drift + 5, rate));
-      return { name: cat.name, rate: Math.round(rate * 10) / 10 };
+      score = Math.max(g.base - g.drift - 8, Math.min(g.base + g.drift + 15, score));
+      return { name: g.name, score: Math.round(score * 10) / 10 };
     });
   }
 
-  function banWaveSize(now) {
+  function restockBatchSize(now) {
     now = now || new Date();
     var ds = daySeed(now);
-    return Math.floor(CONFIG.banWaveMin + seeded(ds * 1889) * (CONFIG.banWaveMax - CONFIG.banWaveMin + 1));
-  }
-
-  // NPU utilization — elevated during DETECTED/ANALYSIS (extra scanning load)
-  function npuUtilization(now) {
-    now = now || new Date();
-    var ds = daySeed(now);
-    var loadFactor = diurnalMultiplier(now);
-    var base = 20 + loadFactor * 25;
-    var noise = (seeded(ds * 2309) - 0.5) * 6;
-    // Arms race NPU boost
-    var arc = armsRaceEvent(now);
-    var arcBoost = 0;
-    if (arc.isSpike && (arc.phaseName === 'DETECTED' || arc.phaseName === 'ANALYSIS')) {
-      arcBoost = 3 + seeded(ds * 2311) * 3; // +3-6%
-    }
-    var val = base + noise + arcBoost;
-    val = Math.round(brownianDrift('npu', val, now) * 10) / 10;
-    return Math.max(18, Math.min(52, val));
+    return Math.floor(CONFIG.restockMin + seeded(ds * 1889) * (CONFIG.restockMax - CONFIG.restockMin + 1));
   }
 
   function nextEventInterval() {
@@ -471,99 +439,84 @@
     return 120000 + Math.floor(Math.random() * 480000);
   }
 
-  function pentestScenarios(now) {
+  function fraudChecksPerformed(now) {
     now = now || new Date();
     var dsl = daysSince(CONFIG.launchDate, now);
-    return Math.floor(80 + dsl * 0.4);
+    return Math.floor(400 + dsl * 3.2);
   }
 
-  function sessionsProtected(now) {
+  function buyerProtectionClaims(now) {
     now = now || new Date();
     var dsl = daysSince(CONFIG.launchDate, now);
-    return Math.round(dsl * 300);
+    return Math.round(dsl * 155);
   }
 
-  // ─── 1F: PROVIDER ECOSYSTEM ───
-  function providerEcosystem(now) {
+  // ─── 1F: SELLER ECOSYSTEM ───
+  function sellerEcosystem(now) {
     now = now || new Date();
     var ws = weekSeed(now);
     var ds = daySeed(now);
-    var arc = armsRaceEvent(now);
-    var providers = CONFIG.cheatProviders.map(function(name, i) {
-      var nameHash = 0;
-      for (var c = 0; c < name.length; c++) nameHash += name.charCodeAt(c);
-      var tier = (nameHash % 3) + 1;
-      var actRoll = seeded(ws * 2003 + i * 41);
-      var activity = actRoll < 0.3 ? 'dormant' : actRoll < 0.75 ? 'active' : 'aggressive';
-      var detRoll = seeded(ds * 2103 + i * 37);
-      var detection = detRoll < 0.4 ? 'detected' : detRoll < 0.65 ? 'partial' : detRoll < 0.85 ? 'monitoring' : 'undetected';
-      // If this provider is the arms race target, override
-      if (arc.isSpike && arc.provider === name) {
-        activity = 'aggressive';
-        if (arc.phaseName === 'DETECTED') detection = 'partial';
-        else if (arc.phaseName === 'ANALYSIS') detection = 'partial';
-        else if (arc.phaseName === 'DEPLOYING' || arc.phaseName === 'NEUTRALIZED') detection = 'detected';
-      }
-      return {
-        name: name,
+    var sellers = [];
+    for (var i = 0; i < CONFIG.sellerCount; i++) {
+      var tierRoll = seeded(ws * 2003 + i * 41);
+      var tier = tierRoll < 0.15 ? 'top' : tierRoll < 0.55 ? 'verified' : 'standard';
+      var actRoll = seeded(ds * 2103 + i * 37);
+      var status = actRoll < 0.4 ? 'away' : actRoll < 0.8 ? 'active' : 'active now';
+      var repScore = Math.round(betaSample(ds * 2203 + i * 53, 82, 99.6, 3, 1.4) * 10) / 10;
+      var lastActiveHours = seededInt(ds * 2303 + i * 53, 0, 48);
+      sellers.push({
+        index: i,
         tier: tier,
-        activity: activity,
-        detection: detection,
-        lastSeen: seededInt(ds * 2203 + i * 53, 1, 72) + 'h ago'
-      };
-    });
-    return providers;
+        status: status,
+        reputation: repScore,
+        lastActive: status === 'active now' ? 'online now' : lastActiveHours + 'h ago'
+      });
+    }
+    return sellers;
   }
 
-  // ─── 1G: PERFORMANCE METRICS SUITE ───
+  // ─── 1G: CHECKOUT / DELIVERY PERFORMANCE SUITE ───
   function performanceMetrics(now) {
     now = now || new Date();
     var ds = daySeed(now);
-    var sessions = activeSessions(now);
-    var arc = armsRaceEvent(now);
-    var isArcActive = arc.isSpike;
-    var arcPhase = arc.phaseName;
+    var listings = activeListings(now);
+    var sale = flashSaleEvent(now);
+    var loadRatio = listings / CONFIG.peakListings;
 
-    // CPU: base + sessions * perSessionCost, elevated during arms race
-    var cpuBase = 12 + (sessions / 540) * 18;
-    if (isArcActive && (arcPhase === 'DETECTED' || arcPhase === 'ANALYSIS')) cpuBase += 4;
-    var cpu = Math.round(brownianDrift('cpu', cpuBase, now) * 10) / 10;
-    cpu = Math.max(8, Math.min(45, cpu));
+    // Key delivery time: log-normal (median ~10s), elevated slightly during LIVE
+    var deliveryBase = logNormalSample(ds * 3001, Math.log(10), 0.3);
+    if (sale.isActive && sale.phaseName === 'LIVE') deliveryBase *= 1.15;
+    var avgDeliveryTime = Math.round(brownianDrift('deliveryTime', deliveryBase, now) * 10) / 10;
+    avgDeliveryTime = Math.max(3, Math.min(45, avgDeliveryTime));
 
-    // Memory: base + sessions * perSessionMem
-    var memBase = 180 + (sessions / 540) * 120;
-    var mem = Math.round(brownianDrift('memory', memBase, now));
-    mem = Math.max(150, Math.min(380, mem));
+    // Checkout success: base minus load pressure, dips slightly during LIVE surges
+    var checkoutBase = CONFIG.baseCheckoutSuccessRate - loadRatio * 0.8;
+    if (sale.isActive && sale.phaseName === 'LIVE') checkoutBase -= 0.6 * sale.tierMultiplier;
+    var checkoutSuccessRate = Math.round(brownianDrift('checkoutRate', checkoutBase, now) * 100) / 100;
+    checkoutSuccessRate = Math.max(97, Math.min(99.7, checkoutSuccessRate));
 
-    // Network: base + sig sync burst during DEPLOYING
-    var netBase = 2.4 + (sessions / 540) * 1.8;
-    if (isArcActive && arcPhase === 'DEPLOYING') netBase += 1.5;
-    var net = Math.round(brownianDrift('network', netBase, now) * 10) / 10;
-    net = Math.max(1.0, Math.min(8.0, net));
+    // Payment gateway API response: log-normal
+    var apiBase = logNormalSample(ds * 3101, Math.log(140), 0.25);
+    var paymentApiResponse = Math.round(brownianDrift('apiResponse', apiBase, now));
+    paymentApiResponse = Math.max(60, Math.min(400, paymentApiResponse));
 
-    // Scan latency: log-normal (median 2.2ms, sigma 0.35)
-    var scanLatency = logNormalSample(ds * 3001, Math.log(2.2), 0.35);
-    scanLatency = Math.round(brownianDrift('latency', scanLatency, now) * 100) / 100;
-    scanLatency = Math.max(1.2, Math.min(6.0, scanLatency));
+    // Delivery queue depth: correlates with demand surge
+    var queueBase = 1 + loadRatio * 6;
+    if (sale.isActive) queueBase *= sale.phase.demandMod;
+    var deliveryQueueDepth = Math.round(brownianDrift('queueDepth', queueBase, now));
+    deliveryQueueDepth = Math.max(0, Math.min(40, deliveryQueueDepth));
 
-    // Queue depth: correlates with detection surge
-    var queueBase = 2 + (sessions / 540) * 8;
-    if (isArcActive) queueBase *= arc.events[0] ? arc.events[0].phase.banMod : 1.2;
-    var queueDepth = Math.round(brownianDrift('queueDepth', queueBase, now));
-    queueDepth = Math.max(0, Math.min(30, queueDepth));
-
-    // API response: log-normal, correlates with throughput
-    var apiBase = logNormalSample(ds * 3101, Math.log(45), 0.3);
-    var apiResponse = Math.round(brownianDrift('apiResponse', apiBase, now) * 10) / 10;
-    apiResponse = Math.max(15, Math.min(120, apiResponse));
+    // Regional price-sync latency
+    var syncBase = 40 + loadRatio * 30;
+    var priceSyncLatency = Math.round(brownianDrift('priceSync', syncBase, now));
+    priceSyncLatency = Math.max(20, Math.min(180, priceSyncLatency));
 
     return {
-      cpu: cpu,
-      memory: mem,
-      network: net,
-      scanLatency: scanLatency,
-      queueDepth: queueDepth,
-      apiResponse: apiResponse
+      avgDeliveryTime: avgDeliveryTime,
+      checkoutSuccessRate: checkoutSuccessRate,
+      paymentApiResponse: paymentApiResponse,
+      deliveryQueueDepth: deliveryQueueDepth,
+      priceSyncLatency: priceSyncLatency
     };
   }
 
@@ -571,40 +524,38 @@
   function dailyIncidents(now) {
     now = now || new Date();
     var ds = daySeed(now);
-    var arc = armsRaceEvent(now);
+    var sale = flashSaleEvent(now);
 
-    // Base rate: ~4% daily chance, arms race multiplier 3.5x
+    // Base rate: ~4% daily chance, flash-sale multiplier while LIVE
     var baseRate = 0.04;
-    if (arc.isSpike) baseRate *= 3.5;
+    if (sale.isActive && sale.phaseName === 'LIVE') baseRate *= 3.0;
     var hasIncident = seeded(ds * 4001) < baseRate;
     if (!hasIncident) return [];
 
-    var incidentCount = poissonSample(ds * 4003, arc.isSpike ? 1.8 : 0.8);
+    var incidentCount = poissonSample(ds * 4003, sale.isActive ? 1.6 : 0.8);
     incidentCount = Math.max(1, Math.min(3, incidentCount));
     var incidents = [];
-    var categoryKeys = ['kernel', 'ai', 'network', 'hardware'];
+    var categoryKeys = ['payment', 'delivery', 'seller', 'infra'];
 
     for (var i = 0; i < incidentCount; i++) {
       var catKey = categoryKeys[Math.floor(seeded(ds * 4101 + i * 71) * categoryKeys.length)];
       var causes = CONFIG.incidentCauses[catKey];
       var cause = causes[Math.floor(seeded(ds * 4201 + i * 37) * causes.length)];
-      // Duration: log-normal (median 25min, some multi-hour)
-      var durationMin = Math.round(logNormalSample(ds * 4301 + i * 53, Math.log(25), 0.6));
-      durationMin = Math.max(5, Math.min(240, durationMin));
-      // Severity correlates with arms race severity
+      // Duration: log-normal (median 20min, some multi-hour)
+      var durationMin = Math.round(logNormalSample(ds * 4301 + i * 53, Math.log(20), 0.6));
+      durationMin = Math.max(5, Math.min(180, durationMin));
+      // Severity correlates with sale tier
       var sevRoll = seeded(ds * 4401 + i * 43);
       var severity;
-      if (arc.isSpike && arc.severity === 'major') {
-        severity = sevRoll < 0.4 ? 'critical' : sevRoll < 0.8 ? 'high' : 'medium';
-      } else if (arc.isSpike) {
-        severity = sevRoll < 0.15 ? 'critical' : sevRoll < 0.5 ? 'high' : 'medium';
+      if (sale.isActive && sale.tier === 'mega') {
+        severity = sevRoll < 0.35 ? 'critical' : sevRoll < 0.75 ? 'high' : 'medium';
+      } else if (sale.isActive) {
+        severity = sevRoll < 0.12 ? 'critical' : sevRoll < 0.45 ? 'high' : 'medium';
       } else {
-        severity = sevRoll < 0.05 ? 'critical' : sevRoll < 0.25 ? 'high' : 'medium';
+        severity = sevRoll < 0.04 ? 'critical' : sevRoll < 0.22 ? 'high' : 'medium';
       }
-      // Start hour (seeded)
       var startHour = seededInt(ds * 4501 + i * 61, 0, 23);
       var startMin = seededInt(ds * 4601 + i * 67, 0, 59);
-      // Affected region
       var regionIdx = Math.floor(seeded(ds * 4701 + i * 73) * CONFIG.regions.length);
 
       incidents.push({
@@ -621,37 +572,35 @@
     return incidents;
   }
 
-  // ─── 1I: DEPLOYMENT PIPELINE ───
-  function dailyDeployments(now) {
+  // ─── 1I: RESTOCK / OPS PIPELINE ───
+  function dailyRestocks(now) {
     now = now || new Date();
     var ds = daySeed(now);
-    var arc = armsRaceEvent(now);
-    var deployments = [];
+    var sale = flashSaleEvent(now);
+    var events = [];
 
-    // Signature pushes: 2-5/day baseline, more during DEPLOYING
-    var sigPushCount = seededInt(ds * 5001, 2, 5);
-    if (arc.isSpike && arc.phaseName === 'DEPLOYING') {
-      sigPushCount += seededInt(ds * 5003, 2, 4);
+    // Listing restocks: 2-5/day baseline, more while a sale is LIVE
+    var restockCount = seededInt(ds * 5001, 2, 5);
+    if (sale.isActive && sale.phaseName === 'LIVE') {
+      restockCount += seededInt(ds * 5003, 2, 5);
     }
-    for (var i = 0; i < sigPushCount; i++) {
+    for (var i = 0; i < restockCount; i++) {
       var hour = seededInt(ds * 5101 + i * 31, 0, 23);
       var regionIdx = Math.floor(seeded(ds * 5201 + i * 37) * CONFIG.regions.length);
-      deployments.push({
-        type: 'signature',
-        version: 'sig-' + ds + '-' + (i + 1),
+      events.push({
+        type: 'restock',
         hour: hour,
         region: CONFIG.regions[regionIdx].name,
         stage: 'complete',
-        count: seededInt(ds * 5301 + i * 41, 2, 12)
+        count: seededInt(ds * 5301 + i * 41, 15, 90)
       });
     }
 
-    // Model updates: every ~14 days
+    // Price-index recalibration: every ~14 days
     var dayCount = Math.floor(daysSince(CONFIG.launchDate, now));
     if (dayCount % 14 === 0 || (dayCount + 1) % 14 === 0) {
-      deployments.push({
-        type: 'model',
-        version: 'bm-3.' + Math.floor(dayCount / 14) + '.' + seededInt(ds * 5401, 0, 9),
+      events.push({
+        type: 'price-recalibration',
         hour: seededInt(ds * 5403, 2, 6),
         region: 'all',
         stage: dayCount % 14 === 0 ? 'rolling' : 'complete',
@@ -659,11 +608,10 @@
       });
     }
 
-    // Driver patches: every ~30 days
+    // Platform feature release: every ~30 days
     if (dayCount % 30 === 0) {
-      deployments.push({
-        type: 'driver',
-        version: CONFIG.engineVersion + '-p' + Math.floor(dayCount / 30),
+      events.push({
+        type: 'feature-release',
         hour: seededInt(ds * 5501, 2, 5),
         region: 'all',
         stage: 'staged',
@@ -671,14 +619,14 @@
       });
     }
 
-    return deployments;
+    return events;
   }
 
   // ─── DYNAMIC TIMESTAMPS ───
 
-  function versionAge(now) {
+  function platformAge(now) {
     now = now || new Date();
-    var days = Math.floor(daysSince(CONFIG.versionReleaseDate, now));
+    var days = Math.floor(daysSince(CONFIG.launchDate, now));
     if (days === 0) return 'today';
     if (days === 1) return 'yesterday';
     return days + ' days ago';
@@ -697,6 +645,7 @@
     return days + 'd ago';
   }
 
+  // Scheduled payment-processor maintenance window
   function nextMaintenance(now) {
     now = now || new Date();
     var ds = daySeed(now);
@@ -708,6 +657,7 @@
     return d;
   }
 
+  // Last regional price sync
   function lastHeartbeat(now) {
     now = now || new Date();
     var ds = daySeed(now);
@@ -715,15 +665,15 @@
     return new Date(now.getTime() - minsAgo * 60000);
   }
 
-  // ─── FALSE POSITIVE STREAK ───
-  function fpStreak(now) {
+  // ─── DISPUTE-FREE STREAK ───
+  function disputeFreeStreak(now) {
     now = now || new Date();
     var dsl = daysSince(CONFIG.launchDate, now);
     var streakDays = 0;
-    for (var d = 0; d < Math.min(dsl, 60); d++) {
+    for (var d = 0; d < Math.min(dsl, 90); d++) {
       var pastDay = new Date(now.getTime() - d * 86400000);
       var pastDs = daySeed(pastDay);
-      if (seeded(pastDs * 6101) < 0.025) break;
+      if (seeded(pastDs * 6101) < 0.02) break;
       streakDays++;
     }
     return streakDays;
@@ -734,43 +684,43 @@
     now = now || new Date();
     var yesterday = new Date(now.getTime() - 86400000);
 
-    var todaySessions = activeSessions(now);
-    var todayDetections = dailyDetections(now);
-    var todayBans = dailyBans(now);
-    var todayFP = seeded(daySeed(now) * 7201) < 0.025 ? seededInt(daySeed(now) * 7203, 1, 3) : 0;
+    var todayListings = activeListings(now);
+    var todaySales = dailyOrdersPlaced(now);
+    var todayDelivered = dailyKeysDelivered(now);
+    var todayDisputes = seeded(daySeed(now) * 7201) < 0.02 ? seededInt(daySeed(now) * 7203, 1, 3) : 0;
 
-    var yesterdaySessions = activeSessions(yesterday);
-    var yesterdayDetections = dailyDetections(yesterday);
-    var yesterdayBans = dailyBans(yesterday);
-    var yesterdayFP = seeded(daySeed(yesterday) * 7201) < 0.025 ? seededInt(daySeed(yesterday) * 7203, 1, 3) : 0;
+    var yesterdayListings = activeListings(yesterday);
+    var yesterdaySales = dailyOrdersPlaced(yesterday);
+    var yesterdayDelivered = dailyKeysDelivered(yesterday);
+    var yesterdayDisputes = seeded(daySeed(yesterday) * 7201) < 0.02 ? seededInt(daySeed(yesterday) * 7203, 1, 3) : 0;
 
-    var recentSessions = 0, priorSessions = 0;
-    var recentDetections = 0, priorDetections = 0;
+    var recentSales = 0, priorSales = 0;
+    var recentListings = 0, priorListings = 0;
     for (var d = 0; d < 7; d++) {
       var r = new Date(now.getTime() - d * 86400000);
       var p = new Date(now.getTime() - (d + 7) * 86400000);
-      recentSessions += activeSessions(r);
-      priorSessions += activeSessions(p);
-      recentDetections += dailyDetections(r);
-      priorDetections += dailyDetections(p);
+      recentSales += dailyOrdersPlaced(r);
+      priorSales += dailyOrdersPlaced(p);
+      recentListings += activeListings(r);
+      priorListings += activeListings(p);
     }
-    var sessionTrend = priorSessions > 0 ? Math.round((recentSessions / priorSessions - 1) * 100) : 0;
-    var detectionTrend = priorDetections > 0 ? Math.round((recentDetections / priorDetections - 1) * 100) : 0;
+    var salesTrend = priorSales > 0 ? Math.round((recentSales / priorSales - 1) * 100) : 0;
+    var listingsTrend = priorListings > 0 ? Math.round((recentListings / priorListings - 1) * 100) : 0;
 
     var narrative = '';
-    if (detectionTrend < -5) narrative = 'signature push effective';
-    else if (detectionTrend > 10) narrative = 'new cheat variant detected';
-    else if (sessionTrend > 5) narrative = 'player base growing';
+    if (salesTrend > 10) narrative = 'high demand this week';
+    else if (salesTrend < -10) narrative = 'demand cooling off';
+    else if (listingsTrend > 8) narrative = 'sellers restocking heavily';
     else narrative = 'stable baseline';
 
     return {
-      today: { sessions: todaySessions, detections: todayDetections, bans: todayBans, fp: todayFP },
-      yesterday: { sessions: yesterdaySessions, detections: yesterdayDetections, bans: yesterdayBans, fp: yesterdayFP },
-      trend: { sessions: sessionTrend, detections: detectionTrend, narrative: narrative }
+      today: { sales: todaySales, listings: todayListings, delivered: todayDelivered, disputes: todayDisputes },
+      yesterday: { sales: yesterdaySales, listings: yesterdayListings, delivered: yesterdayDelivered, disputes: yesterdayDisputes },
+      trend: { sales: salesTrend, listings: listingsTrend, narrative: narrative }
     };
   }
 
-  // ─── LAB-LOG PROGRESS ───
+  // ─── LAB-LOG / DEV-LOG PROGRESS ───
   function labProgress(entryIndex, now) {
     now = now || new Date();
     var ds = daySeed(now);
@@ -792,149 +742,110 @@
     return roll < 0.05 ? 'degraded' : 'operational';
   }
 
-  // ─── CHEAT PROVIDER THREAT INTEL ───
-  var providerDescriptions = {
-    PhantomOverlay: 'ESP/overlay framework targeting DX11/12 games',
-    GhostWare: 'Kernel-level aimbot with humanization engine',
-    VoidEngine: 'DMA-based read/write framework for PCIe devices',
-    NexusCheat: 'Multi-game loader with encrypted payload delivery',
-    PrismHack: 'User-mode hook bypass with anti-screenshot',
-    CobaltEFI: 'UEFI-persistent rootkit with driver mapping',
-    HydraDMA: 'Commodity DMA hardware exploit kit',
-    SpecterRing: 'Ring-0 driver mapper with certificate spoofing'
-  };
-
-  function providerThreatIntel(now) {
+  // ─── SELLER INSIGHTS (extended per-seller stats) ───
+  function sellerInsights(now) {
     now = now || new Date();
     var ds = daySeed(now);
     var ws = weekSeed(now);
-    var arc = armsRaceEvent(now);
-    var providers = providerEcosystem(now);
+    var sellers = sellerEcosystem(now);
 
-    return providers.map(function(p, i) {
-      var desc = providerDescriptions[p.name] || 'Unknown cheat framework';
-      // Revenue estimate (seeded, tier-based)
-      var revBase = p.tier === 1 ? 15000 : p.tier === 2 ? 8000 : 3000;
-      var revEst = Math.round(revBase * (0.6 + seeded(ws * 4401 + i * 67) * 0.8));
-      // Subscriber estimate
-      var subBase = p.tier === 1 ? 800 : p.tier === 2 ? 350 : 120;
-      var subs = Math.round(subBase * (0.5 + seeded(ds * 4501 + i * 43) * 1.0));
-      // Last update (how recently did they push a new version)
-      var updateHours = Math.round(2 + seeded(ds * 4601 + i * 31) * 168);
-      // Threat score (0-100)
-      var threatBase = p.activity === 'aggressive' ? 75 : p.activity === 'active' ? 50 : 20;
-      if (p.detection === 'undetected') threatBase += 20;
-      else if (p.detection === 'monitoring') threatBase += 10;
-      var threat = Math.min(100, Math.max(0, Math.round(threatBase + (seeded(ds * 4701 + i * 29) - 0.5) * 20)));
+    return sellers.map(function(s, i) {
+      var salesBase = s.tier === 'top' ? 420 : s.tier === 'verified' ? 180 : 60;
+      var salesVolume = Math.round(salesBase * (0.6 + seeded(ws * 4401 + i * 67) * 0.8));
+      var avgRating = Math.min(5, Math.round((4.2 + seeded(ds * 4501 + i * 43) * 0.75) * 10) / 10);
+      var avgResponseMinutes = Math.round(2 + seeded(ds * 4601 + i * 31) * 40);
 
       return {
-        name: p.name,
-        description: desc,
-        tier: p.tier,
-        activity: p.activity,
-        detection: p.detection,
-        lastSeen: p.lastSeen,
-        estimatedSubs: subs,
-        estimatedRevenue: revEst,
-        lastUpdate: updateHours < 24 ? updateHours + 'h ago' : Math.round(updateHours / 24) + 'd ago',
-        threatScore: threat
+        index: s.index,
+        tier: s.tier,
+        status: s.status,
+        reputation: s.reputation,
+        lastActive: s.lastActive,
+        salesVolume: salesVolume,
+        avgRating: avgRating,
+        avgResponseMinutes: avgResponseMinutes
       };
     });
   }
 
-  // ─── FP INCIDENT NARRATIVE ───
-  var fpOverlays = [
-    'NVIDIA GeForce Experience overlay v3.28',
-    'Discord overlay (game detection module)',
-    'Steam overlay (screenshot capture hook)',
-    'MSI Afterburner RTSS v7.3.4',
-    'AMD Adrenalin metrics overlay',
-    'Overwolf platform overlay',
-    'Medal.tv clip capture service',
-    'Xbox Game Bar (Win11 build 26200)'
-  ];
-  var fpCauses = [
-    'hook pattern matched unsigned code injection signature',
-    'memory region permission flags triggered kernel scan',
-    'DLL load timing matched known injection cadence',
-    'overlay render hook flagged by behavioral heuristic'
+  // ─── DISPUTE INCIDENT NARRATIVE ───
+  var disputeCauses = [
+    'buyer claimed key was already redeemed',
+    'region-lock mismatch flagged at redemption',
+    'delayed manual delivery past SLA window',
+    'duplicate order created by a checkout retry'
   ];
 
-  function fpIncidentNarrative(now) {
+  function disputeIncidentNarrative(now) {
     now = now || new Date();
-    var streak = fpStreak(now);
-    // Find the last FP day (day before streak started)
-    var fpDay = new Date(now.getTime() - streak * 86400000);
-    var fpDs = daySeed(fpDay);
-    var overlayIdx = Math.floor(seeded(fpDs * 9101) * fpOverlays.length);
-    var causeIdx = Math.floor(seeded(fpDs * 9103) * fpCauses.length);
-    var affected = 1 + Math.floor(seeded(fpDs * 9105) * 6);
-    var responseMin = 8 + Math.floor(seeded(fpDs * 9107) * 25);
+    var streak = disputeFreeStreak(now);
+    var incidentDay = new Date(now.getTime() - streak * 86400000);
+    var ds = daySeed(incidentDay);
+    var causeIdx = Math.floor(seeded(ds * 9103) * disputeCauses.length);
+    var affected = 1 + Math.floor(seeded(ds * 9105) * 4);
+    var responseMin = 10 + Math.floor(seeded(ds * 9107) * 30);
 
     return {
       streakDays: streak,
       lastIncident: {
         daysAgo: streak,
-        overlay: fpOverlays[overlayIdx],
-        cause: fpCauses[causeIdx],
-        sessionsAffected: affected,
+        cause: disputeCauses[causeIdx],
+        ordersAffected: affected,
         responseMinutes: responseMin,
-        resolution: 'Whitelist pushed via emergency hotfix pipeline'
+        resolution: 'Refund issued and replacement key delivered'
       }
     };
   }
 
-  // ─── BAN WAVE SCHEDULE ───
-  function banWaveSchedule(now) {
+  // ─── SELLER PAYOUT SCHEDULE ───
+  function payoutSchedule(now) {
     now = now || new Date();
     var ds = daySeed(now);
     var ws = weekSeed(now);
-    // 1-2 waves per week, on seeded days
-    var waveDay1 = Math.floor(seeded(ws * 5501) * 7);
-    var waveDay2 = (waveDay1 + 2 + Math.floor(seeded(ws * 5503) * 3)) % 7;
+    // 2 payout runs per week, on seeded days
+    var payoutDay1 = Math.floor(seeded(ws * 5501) * 7);
+    var payoutDay2 = (payoutDay1 + 3 + Math.floor(seeded(ws * 5503) * 2)) % 7;
     var currentDay = now.getUTCDay();
-    var isWaveDay = currentDay === waveDay1 || currentDay === waveDay2;
-    // Wave hour: always during low-traffic (2-6 UTC)
-    var waveHour = 2 + Math.floor(seeded(ds * 5601) * 4);
-    var waveSize = isWaveDay ? banWaveSize(now) : 0;
-    // Next wave
+    var isPayoutDay = currentDay === payoutDay1 || currentDay === payoutDay2;
+    var payoutHour = 2 + Math.floor(seeded(ds * 5601) * 4);
+    var payoutCount = isPayoutDay ? seededInt(ds * 5701, Math.round(CONFIG.sellerCount * 0.4), CONFIG.sellerCount) : 0;
     var daysUntilNext = 0;
     for (var d = 1; d <= 7; d++) {
       var futureDay = (currentDay + d) % 7;
-      if (futureDay === waveDay1 || futureDay === waveDay2) { daysUntilNext = d; break; }
+      if (futureDay === payoutDay1 || futureDay === payoutDay2) { daysUntilNext = d; break; }
     }
-    if (isWaveDay) daysUntilNext = 0;
+    if (isPayoutDay) daysUntilNext = 0;
 
     return {
-      isWaveDay: isWaveDay,
-      waveHour: waveHour,
-      waveSize: waveSize,
+      isPayoutDay: isPayoutDay,
+      payoutHour: payoutHour,
+      payoutCount: payoutCount,
       daysUntilNext: daysUntilNext,
-      waveDays: [waveDay1, waveDay2]
+      payoutDays: [payoutDay1, payoutDay2]
     };
   }
 
-  // ─── DRIVER LOAD METRICS ───
-  function driverLoadMetrics(now) {
+  // ─── KEY REDEMPTION METRICS ───
+  function keyRedemptionMetrics(now) {
     now = now || new Date();
     var ds = daySeed(now);
-    var sessions = sessionsProtected(now);
-    var successRate = 99.4 + seeded(ds * 6601) * 0.5; // 99.4-99.9%
-    var failures = Math.round(sessions * (1 - successRate / 100));
+    var attempts = dailyKeysDelivered(now) * (2 + Math.round(seeded(ds * 6601) * 2));
+    var successRate = 97.8 + seeded(ds * 6603) * 1.8;
+    var failures = Math.round(attempts * (1 - successRate / 100));
     var failReasons = [
-      { reason: 'Secure Boot policy conflict', pct: 38 + Math.round(seeded(ds * 6603) * 10) },
-      { reason: 'Incompatible kernel patch (KB' + (5030000 + Math.floor(seeded(ds * 6605) * 999)) + ')', pct: 0 },
-      { reason: 'Third-party AV kernel hook conflict', pct: 0 },
-      { reason: 'Virtualization platform interference', pct: 0 }
+      { reason: 'Region-locked key mismatch', pct: 0 },
+      { reason: 'Duplicate redemption attempt', pct: 0 },
+      { reason: 'Platform account linking failure', pct: 0 },
+      { reason: 'Key formatting / typo error', pct: 0 }
     ];
-    // Distribute remaining percentage
+    failReasons[0].pct = 30 + Math.round(seeded(ds * 6605) * 10);
     failReasons[1].pct = 25 + Math.round(seeded(ds * 6607) * 8);
     failReasons[2].pct = 20 + Math.round(seeded(ds * 6609) * 8);
     failReasons[3].pct = 100 - failReasons[0].pct - failReasons[1].pct - failReasons[2].pct;
 
     return {
       successRate: Math.round(successRate * 100) / 100,
-      totalAttempts: sessions,
+      totalAttempts: attempts,
       failures: failures,
       failReasons: failReasons
     };
@@ -945,59 +856,68 @@
     now = now || new Date();
     var ds = daySeed(now);
     var hour = now.getUTCHours();
-    var arc = armsRaceEvent(now);
+    var sale = flashSaleEvent(now);
     var events = [];
 
-    // Signature push events (2-4 per day at seeded hours)
-    var sigPushCount = 2 + Math.floor(seeded(ds * 7701) * 3);
-    for (var s = 0; s < sigPushCount; s++) {
+    // Restock events (2-4 per day at seeded hours)
+    var restockCount = 2 + Math.floor(seeded(ds * 7701) * 3);
+    for (var s = 0; s < restockCount; s++) {
       var pushHour = Math.floor(seeded(ds * 7703 + s * 41) * 24);
-      var pushSigs = 3 + Math.floor(seeded(ds * 7705 + s * 37) * 12);
+      var pushCount = 10 + Math.floor(seeded(ds * 7705 + s * 37) * 60);
       events.push({
-        type: 'signature',
+        type: 'restock',
         hour: pushHour,
-        message: pushSigs + ' new signatures deployed to all regions',
-        icon: '\uD83D\uDCC4'
+        message: pushCount + ' new listings added across the marketplace',
+        icon: '📦'
       });
     }
 
-    // Model update (seeded, ~every 14 days)
+    // Seller verification (seeded, occasional)
     if (seeded(ds * 7801) < 0.07) {
       events.push({
-        type: 'model',
+        type: 'seller-verified',
         hour: 6 + Math.floor(seeded(ds * 7803) * 4),
-        message: 'Behavioral model weights hot-swapped — v3.' + Math.floor(seeded(ds * 7805) * 6 + 2) + '.' + Math.floor(seeded(ds * 7807) * 40),
-        icon: '\uD83E\uDDE0'
+        message: 'A seller just completed identity verification',
+        icon: '✅'
       });
     }
 
-    // Region sync events
-    var syncRegion = ['US-East', 'EU-West', 'AP-Southeast'][Math.floor(seeded(ds * 7901) * 3)];
+    // Region price-sync events
+    var syncRegion = CONFIG.regions[Math.floor(seeded(ds * 7901) * CONFIG.regions.length)].name;
     events.push({
       type: 'sync',
       hour: (hour + 23) % 24, // always "just happened"
-      message: syncRegion + ' signature cache synced — ' + Math.round(seeded(ds * 7903) * 20 + 80) + 'ms',
-      icon: '\uD83D\uDD04'
+      message: syncRegion + ' price cache synced — ' + Math.round(seeded(ds * 7903) * 40 + 60) + 'ms',
+      icon: '🔄'
     });
 
-    // Arms race alert
-    if (arc.isSpike) {
+    // Flash-sale alert
+    if (sale.isActive && sale.phaseName === 'LIVE') {
       events.push({
-        type: 'threat',
+        type: 'sale',
         hour: hour,
-        message: 'Arms race active — ' + arc.provider + ' ' + arc.phaseName.toLowerCase(),
-        icon: '\u26A0\uFE0F'
+        message: 'Flash sale live — up to ' + sale.discountPct + '% off the featured title',
+        icon: '⚡'
       });
     }
 
-    // Ban wave
-    var wave = banWaveSchedule(now);
-    if (wave.isWaveDay && hour >= wave.waveHour) {
+    // Rolling sales ticker
+    var salesLastHour = 3 + Math.floor(seeded(ds * 7905 + hour * 13) * 18);
+    events.push({
+      type: 'sales-tick',
+      hour: hour,
+      message: salesLastHour + ' keys sold in the last hour',
+      icon: '🛒'
+    });
+
+    // Seller payouts
+    var payout = payoutSchedule(now);
+    if (payout.isPayoutDay && hour >= payout.payoutHour) {
       events.push({
-        type: 'ban',
-        hour: wave.waveHour,
-        message: 'Ban wave executed — ' + wave.waveSize + ' accounts across ' + CONFIG.regions.length + ' regions',
-        icon: '\uD83D\uDEAB'
+        type: 'payout',
+        hour: payout.payoutHour,
+        message: 'Seller payouts processed — ' + payout.payoutCount + ' sellers across ' + CONFIG.regions.length + ' regions',
+        icon: '💰'
       });
     }
 
@@ -1012,70 +932,66 @@
   // ─── 1J: UNIFIED DAILY EVENT SUMMARY ───
   function dailyEventSummary(now) {
     now = now || new Date();
-    var arc = armsRaceEvent(now);
+    var sale = flashSaleEvent(now);
     var incidents = dailyIncidents(now);
-    var deployments = dailyDeployments(now);
+    var restocks = dailyRestocks(now);
     var perf = performanceMetrics(now);
 
-    var sigPushCount = 0;
-    for (var i = 0; i < deployments.length; i++) {
-      if (deployments[i].type === 'signature') sigPushCount++;
+    var restockPushCount = 0;
+    for (var i = 0; i < restocks.length; i++) {
+      if (restocks[i].type === 'restock') restockPushCount++;
     }
 
-    var isEventDay = arc.isSpike || incidents.length > 0;
+    var isEventDay = sale.isActive || incidents.length > 0;
     var eventIntensity = 'normal';
-    if (arc.isSpike && arc.severity === 'major') eventIntensity = 'high';
-    else if (arc.isSpike) eventIntensity = 'elevated';
+    if (sale.isActive && sale.tier === 'mega') eventIntensity = 'high';
+    else if (sale.isActive) eventIntensity = 'elevated';
     else if (incidents.length > 1) eventIntensity = 'elevated';
 
     return {
-      armsRace: arc,
+      flashSale: sale,
       incidents: incidents,
-      deployments: deployments,
+      restocks: restocks,
       performance: perf,
       isEventDay: isEventDay,
       eventIntensity: eventIntensity,
-      signaturePushCount: sigPushCount,
-      threatLevel: threatLevel(now)
+      restockPushCount: restockPushCount,
+      demandLevel: demandLevel(now)
     };
   }
 
   // ─── 1K: EXTENDED SNAPSHOT ───
   function snapshot(now) {
     now = now || new Date();
-    var arc = armsRaceEvent(now);
+    var sale = flashSaleEvent(now);
     return {
-      activeSessions: activeSessions(now),
-      dailyDetections: dailyDetections(now),
-      dailyBans: dailyBans(now),
-      totalBans: totalBans(now),
-      signatureCount: signatureCount(now),
-      signatureDistribution: signatureDistribution(now),
-      detectionRates: detectionRates(now),
-      banWaveSize: banWaveSize(now),
-      npuUtilization: npuUtilization(now),
-      falsePositiveRate: CONFIG.falsePositiveRate * 100,
-      blendedDetectionRate: CONFIG.blendedDetectionRate * 100,
-      behavioralModel: CONFIG.behavioralModel,
-      engineVersion: CONFIG.engineVersion,
-      games: CONFIG.games,
+      activeListings: activeListings(now),
+      onlineBuyers: onlineBuyers(now),
+      dailyOrdersPlaced: dailyOrdersPlaced(now),
+      dailyKeysDelivered: dailyKeysDelivered(now),
+      totalKeysSold: totalKeysSold(now),
+      listingsFreshness: listingsFreshness(now),
+      genreDemand: genreDemand(now),
+      restockBatchSize: restockBatchSize(now),
+      catalogSize: CONFIG.catalogSize,
+      sellerCount: CONFIG.sellerCount,
       regions: CONFIG.regions.length,
-      pentestScenarios: pentestScenarios(now),
-      sessionsProtected: sessionsProtected(now),
+      platformVersion: CONFIG.platformVersion,
+      fraudChecksPerformed: fraudChecksPerformed(now),
+      buyerProtectionClaims: buyerProtectionClaims(now),
       nextEventInterval: nextEventInterval(),
       nextToastInterval: nextToastInterval(),
-      armsRace: arc,
-      threatLevel: threatLevel(now),
-      fpStreak: fpStreak(now),
-      versionAge: versionAge(now),
+      flashSale: sale,
+      demandLevel: demandLevel(now),
+      disputeFreeStreak: disputeFreeStreak(now),
+      platformAge: platformAge(now),
       nextMaintenance: nextMaintenance(now),
       lastHeartbeat: lastHeartbeat(now),
       dailyDigest: dailyDigest(now),
-      // New v2 fields
       performance: performanceMetrics(now),
-      providers: providerEcosystem(now),
+      sellers: sellerEcosystem(now),
       incidents: dailyIncidents(now),
-      deployments: dailyDeployments(now),
+      restocks: dailyRestocks(now),
       dailyEventSummary: dailyEventSummary(now)
     };
   }
@@ -1099,39 +1015,38 @@
     brownianDrift: brownianDrift,
     diurnalMultiplier: diurnalMultiplier,
     weeklyMultiplier: weeklyMultiplier,
-    activeSessions: activeSessions,
-    dailyDetections: dailyDetections,
-    dailyBans: dailyBans,
-    totalBans: totalBans,
-    signatureCount: signatureCount,
-    signatureDistribution: signatureDistribution,
-    detectionRates: detectionRates,
-    banWaveSize: banWaveSize,
-    npuUtilization: npuUtilization,
+    activeListings: activeListings,
+    onlineBuyers: onlineBuyers,
+    dailyOrdersPlaced: dailyOrdersPlaced,
+    dailyKeysDelivered: dailyKeysDelivered,
+    totalKeysSold: totalKeysSold,
+    listingsFreshness: listingsFreshness,
+    genreDemand: genreDemand,
+    restockBatchSize: restockBatchSize,
+    demandLevel: demandLevel,
+    flashSaleEvent: flashSaleEvent,
     nextEventInterval: nextEventInterval,
     nextToastInterval: nextToastInterval,
-    pentestScenarios: pentestScenarios,
-    sessionsProtected: sessionsProtected,
-    armsRaceEvent: armsRaceEvent,
-    threatLevel: threatLevel,
-    fpStreak: fpStreak,
-    versionAge: versionAge,
+    fraudChecksPerformed: fraudChecksPerformed,
+    buyerProtectionClaims: buyerProtectionClaims,
+    platformAge: platformAge,
     relativeTime: relativeTime,
     nextMaintenance: nextMaintenance,
     lastHeartbeat: lastHeartbeat,
+    disputeFreeStreak: disputeFreeStreak,
     dailyDigest: dailyDigest,
     labProgress: labProgress,
     labLastUpdate: labLastUpdate,
     regionUptime: regionUptime,
-    providerEcosystem: providerEcosystem,
+    sellerEcosystem: sellerEcosystem,
     performanceMetrics: performanceMetrics,
     dailyIncidents: dailyIncidents,
-    dailyDeployments: dailyDeployments,
+    dailyRestocks: dailyRestocks,
     dailyEventSummary: dailyEventSummary,
-    providerThreatIntel: providerThreatIntel,
-    fpIncidentNarrative: fpIncidentNarrative,
-    banWaveSchedule: banWaveSchedule,
-    driverLoadMetrics: driverLoadMetrics,
+    sellerInsights: sellerInsights,
+    disputeIncidentNarrative: disputeIncidentNarrative,
+    payoutSchedule: payoutSchedule,
+    keyRedemptionMetrics: keyRedemptionMetrics,
     ambientEvents: ambientEvents,
     snapshot: snapshot
   };
