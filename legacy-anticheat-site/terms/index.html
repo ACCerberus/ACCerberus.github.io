@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Cerberus Anti-Cheat terms of service. SDK license, acceptable use, liability, and beta disclaimers." />
+  <meta name="theme-color" content="#e8a020" />
+  <meta property="og:title" content="Terms of Service - Cerberus Anti-Cheat" />
+  <meta property="og:description" content="Cerberus Anti-Cheat terms of service. SDK license, acceptable use, liability, and beta disclaimers." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cerberusac.dev/terms/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c07818);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507;
+    }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
+    .nav-login { padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(232,160,32,0.4); color: var(--accent); text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-login:hover { border-color: var(--accent); background: rgba(232,160,32,0.08); transform: translateY(-1px); }
+    .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
+
+    .page-header {
+      text-align: center; padding: 140px 24px 60px; position: relative; z-index: 1;
+    }
+    .page-header-label {
+      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+      color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .page-header h1 {
+      font-family: var(--font-heading); font-size: 2.4rem; font-weight: 800;
+      color: var(--text-bright); letter-spacing: -1.5px; margin-bottom: 12px;
+    }
+    .page-header p {
+      font-size: 0.95rem; color: var(--text-dim); max-width: 520px; margin: 0 auto;
+    }
+
+    .legal-content {
+      max-width: 720px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 1;
+    }
+    .legal-content h2 {
+      font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;
+      color: var(--text-bright); margin: 40px 0 16px; padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .legal-content h2:first-of-type { border-top: none; padding-top: 0; }
+    .legal-content h3 {
+      font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600;
+      color: var(--text-bright); margin: 24px 0 10px;
+    }
+    .legal-content p {
+      font-size: 0.87rem; color: var(--text); margin-bottom: 14px; line-height: 1.75;
+    }
+    .legal-content ul, .legal-content ol {
+      margin-bottom: 14px; padding-left: 20px;
+    }
+    .legal-content li {
+      font-size: 0.85rem; color: var(--text); margin-bottom: 6px; line-height: 1.7;
+    }
+    .legal-content strong { color: var(--text-bright); }
+    .legal-content a { color: var(--accent); text-decoration: none; }
+    .legal-content a:hover { text-decoration: underline; }
+    .legal-content code {
+      font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,255,255,0.04);
+      padding: 2px 6px; border-radius: 4px; color: var(--accent);
+    }
+
+    .callout {
+      padding: 16px 20px; border-radius: 10px; margin: 16px 0 24px;
+      font-size: 0.82rem; line-height: 1.6;
+    }
+    .callout-warn { background: rgba(232,160,32,0.08); border-left: 3px solid var(--accent); color: var(--text); }
+
+    .updated-badge {
+      display: inline-block; font-family: var(--font-mono); font-size: 0.7rem;
+      color: var(--text-dim); background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      padding: 4px 12px; border-radius: 6px; margin-bottom: 32px;
+    }
+
+    .footer {
+      text-align: center; padding: 40px 24px; border-top: 1px solid var(--border); position: relative; z-index: 1;
+    }
+    .footer-brand {
+      font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem;
+      color: var(--text-bright); margin-bottom: 8px;
+    }
+    .footer-brand span { color: var(--accent); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .page-header { padding: 120px 20px 40px; }
+      .page-header h1 { font-size: 1.8rem; }
+      .legal-content { padding: 0 20px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/#pricing">Plans</a>
+      <a href="/docs/">Docs</a>
+      <a href="/api/">API</a>
+      <a href="/sdk/">SDK</a>
+      <a href="/changelog/">Changelog</a>
+      <a href="/blog/">Blog</a>
+      <a href="/status/">Status</a>
+      <a href="/updates/">Updates</a>
+      <a href="/analytics/">Analytics</a>
+      <a href="/team/">Team</a>
+    </div>
+    <div class="nav-cta-wrap">
+      <a href="/login/" class="nav-login">Partner Login</a>
+      <a href="/access/" class="nav-cta">Partner Account</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="page-header-label">Legal</div>
+    <h1>Terms of Service</h1>
+    <p>The rules for using Cerberus. Kept short because nobody reads 40-page ToS documents.</p>
+  </div>
+
+  <div class="legal-content">
+    <div class="updated-badge">Last updated: May 2026</div>
+
+    <h2>Agreement</h2>
+    <p>These terms govern your use of the Cerberus Anti-Cheat SDK, API, dashboard, and related services ("Cerberus" or "the Service"). By integrating the SDK or accessing the API, you agree to these terms. If you're integrating Cerberus on behalf of a game studio, you confirm you have authority to bind that organization.</p>
+    <p>Cerberus is currently in <strong>closed beta</strong>. These terms will be updated as we approach general availability.</p>
+
+    <h2>SDK license</h2>
+    <p>We grant you a non-exclusive, royalty-free, revocable license to:</p>
+    <ul>
+      <li>Integrate the Cerberus SDK into your game or application</li>
+      <li>Distribute the SDK runtime components (static library, driver) as part of your game's installation</li>
+      <li>Use the REST API and webhook system to manage detections programmatically</li>
+      <li>Access detection data through the partner dashboard</li>
+    </ul>
+    <p>The license is permissive for integration purposes. You don't need to open-source your game, attribute Cerberus in your UI (though we appreciate it), or pay royalties on the free tier. Paid tier terms are specified in your partner agreement.</p>
+
+    <h3>What you can't do</h3>
+    <ul>
+      <li>Reverse engineer, decompile, or disassemble the SDK, driver, or detection algorithms</li>
+      <li>Redistribute the SDK as a standalone product or include it in competing anti-cheat solutions</li>
+      <li>Modify the kernel driver binary or attempt to bypass its code-signing verification</li>
+      <li>Use the SDK to collect data about players beyond what's necessary for cheat detection</li>
+    </ul>
+
+    <h2>Acceptable use</h2>
+    <p>Cerberus is designed for protecting competitive multiplayer games. You agree to:</p>
+    <ul>
+      <li>Use Cerberus only for cheat detection and game integrity purposes</li>
+      <li>Not weaponize detection data against players for reasons unrelated to cheating</li>
+      <li>Implement a ban appeal process for your players (we provide the API -- you provide the player-facing flow)</li>
+      <li>Not use Cerberus to monitor players outside of active game sessions</li>
+      <li>Comply with applicable privacy laws in your jurisdiction when handling detection results</li>
+    </ul>
+
+    <h2>Detection accuracy disclaimers</h2>
+    <div class="callout callout-warn">Cerberus is a beta product. While we work hard to minimize false positives, no anti-cheat system is perfect. Current false positive rate in our beta cohort is approximately 0.14%, but this may vary across different games, hardware configurations, and cheat categories.</div>
+    <p>Specifically:</p>
+    <ul>
+      <li><strong>Detection is not guaranteed.</strong> New or sophisticated cheats may evade detection temporarily. We continuously update our models and signatures, but there is no claim of 100% detection coverage.</li>
+      <li><strong>False positives can occur.</strong> Unusual hardware configurations, accessibility software, or certain system tools may occasionally trigger false flags. Detections below 95% confidence are sent to manual review, not auto-banned.</li>
+      <li><strong>Confidence scores are probabilistic.</strong> A 0.98 confidence score means we are 98% certain, not 100%. We recommend game studios use auto-ban only for high-confidence detections and review lower-confidence flags manually.</li>
+    </ul>
+    <p>We provide detection data and confidence scores. <strong>The decision to ban a player is ultimately yours.</strong> Cerberus offers tools and recommendations, but game studios are responsible for their enforcement policies.</p>
+
+    <h2>Ban appeal process</h2>
+    <p>We take false positives seriously. The appeal process works as follows:</p>
+    <ol>
+      <li>Players submit an appeal through your game's support channel (or directly via the API at <code>POST /api/v2/bans/{id}/appeal</code>)</li>
+      <li>Our threat analyst team reviews the full detection evidence package</li>
+      <li>Reviews are completed within the SLA for your tier (4 hours for Cerberus tier, 24 hours for Aegis tier, 72 hours for Argus tier)</li>
+      <li>If the ban is overturned, all associated detection data is flagged as a false positive and used to improve our models</li>
+    </ol>
+    <p>Game studios can also overturn bans independently through the partner dashboard or API without going through our review process.</p>
+
+    <h2>Warranty disclaimer</h2>
+    <p>Cerberus is provided <strong>"AS-IS" during the beta period</strong>. We make no warranties, express or implied, including but not limited to:</p>
+    <ul>
+      <li>Fitness for a particular purpose</li>
+      <li>Uninterrupted or error-free operation</li>
+      <li>Compatibility with all hardware configurations</li>
+      <li>Accuracy or completeness of detection results</li>
+      <li>That the kernel driver will not cause system instability on edge-case hardware</li>
+    </ul>
+    <p>We're building in public and iterating fast. The beta label is honest -- things may break, APIs may change, and detection accuracy will improve over time. We'll communicate breaking changes through the <a href="/changelog/">changelog</a> with reasonable notice.</p>
+
+    <h2>Limitation of liability</h2>
+    <p>To the maximum extent permitted by law, the Cerberus team is not liable for:</p>
+    <ul>
+      <li>Damages arising from false positive detections or incorrect bans</li>
+      <li>Revenue loss due to service outages or detection failures</li>
+      <li>Player community backlash resulting from anti-cheat enforcement decisions</li>
+      <li>System instability caused by driver conflicts on unsupported hardware</li>
+      <li>Indirect, incidental, or consequential damages of any kind</li>
+    </ul>
+    <p>Our total liability for any claim related to the Service is limited to the amount you paid us in the 12 months preceding the claim (or $0 if you're on the free Argus tier).</p>
+
+    <h2>Intellectual property</h2>
+    <p><strong>Our IP:</strong> The Cerberus SDK, driver, detection algorithms, AI models, API, and dashboard are our intellectual property. Your license to use them is governed by the SDK License section above.</p>
+    <p><strong>Your IP:</strong> Your game, code, assets, and player data remain yours. Integrating Cerberus does not grant us any rights to your intellectual property.</p>
+    <p><strong>Detection data:</strong> Detection events generated by Cerberus are jointly useful -- you have full access to query, export, and delete detection data for your game. We retain anonymized, aggregated detection statistics (no game-specific data) to improve our models.</p>
+
+    <h2>Data ownership</h2>
+    <p>You own your player relationships and any identity mapping you maintain. We own the detection intelligence (models, signatures, heuristics). Detection event data is accessible to both parties during the retention period. See our <a href="/privacy/">Privacy Policy</a> for full details on data handling.</p>
+
+    <h2>Termination</h2>
+    <p>Either party can terminate this agreement at any time:</p>
+    <ul>
+      <li><strong>You</strong> can stop using Cerberus by removing the SDK from your game and revoking your API key through the dashboard. We'll delete your detection data according to our standard retention schedule (or immediately upon request).</li>
+      <li><strong>We</strong> may suspend or terminate your access if you violate these terms, use Cerberus for purposes other than game integrity, or if we determine your integration poses a security risk.</li>
+    </ul>
+    <p>On termination, your license to use the SDK ends immediately. Any bans already issued through your integration remain your responsibility to manage.</p>
+
+    <h2>Governing law</h2>
+    <p>These terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles. Any disputes will be resolved through binding arbitration under the rules of the American Arbitration Association, conducted in English. You agree to attempt informal resolution by contacting us before initiating arbitration.</p>
+
+    <h2>Changes to these terms</h2>
+    <p>We may update these terms as Cerberus evolves. Material changes will be communicated to partner studios via email and posted on our <a href="/changelog/">changelog</a> at least 30 days before taking effect. Continued use of Cerberus after changes take effect constitutes acceptance of the updated terms.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about these terms? Reach out:</p>
+    <p><strong>General:</strong> <a href="mailto:hello@arsenalrx.dev">hello@arsenalrx.dev</a></p>
+    <p><strong>Privacy-specific:</strong> <a href="mailto:privacy@arsenalrx.dev">privacy@arsenalrx.dev</a></p>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span></div>
+    <p>Four heads. Four layers. Nothing gets past the gate.</p>
+    <p style="margin-top: 12px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/privacy/">Privacy</a> &nbsp;&middot;&nbsp; <a href="/terms/">Terms</a></p>
+  </footer>
+
+  <script src="/js/cerberus-engine.js"></script>
+  <script src="/js/cerberus-shared.js"></script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+</body>
+</html>

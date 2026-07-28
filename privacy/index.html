@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Privacy Policy - Cerberus Anti-Cheat</title>
-  <meta name="description" content="Cerberus Anti-Cheat privacy policy. What data we collect, how we process it, and your rights." />
+  <title>Privacy Policy - Cerberus Market</title>
+  <meta name="description" content="Cerberus Market privacy policy. What data we collect from buyers and sellers, how we process it, and your rights." />
   <meta name="theme-color" content="#e8a020" />
-  <meta property="og:title" content="Privacy Policy - Cerberus Anti-Cheat" />
-  <meta property="og:description" content="Cerberus Anti-Cheat privacy policy. What data we collect, how we process it, and your rights." />
+  <meta property="og:title" content="Privacy Policy - Cerberus Market" />
+  <meta property="og:description" content="Cerberus Market privacy policy. What data we collect from buyers and sellers, how we process it, and your rights." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://cerberusac.dev/privacy/" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F511;</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -21,7 +21,7 @@
       --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15);
       --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
       --border: rgba(255,255,255,0.06);
-      --red: #e04050; --green: #30c860; --blue: #4088e8;
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
       --font: 'Inter', -apple-system, sans-serif;
       --font-heading: 'Sora', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
@@ -37,7 +37,17 @@
         linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
       background-size: 60px 60px;
     }
+    .grid-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,160,32,0.06), transparent 70%);
+    }
+    .noise-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
 
+    /* ===== NAV ===== */
     .nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
@@ -53,13 +63,15 @@
     }
     .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
     .nav-wordmark span { color: var(--accent); }
+    .nav-tag { font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; color: var(--accent); border: 1px solid rgba(232,160,32,0.3); padding: 2px 8px; border-radius: 6px; margin-left: 8px; text-transform: uppercase; }
     .nav-links { display: flex; gap: 32px; align-items: center; }
     .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text-bright); }
     .nav-links a.active { color: var(--accent); }
     .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
-    .nav-login { padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(232,160,32,0.4); color: var(--accent); text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
-    .nav-login:hover { border-color: var(--accent); background: rgba(232,160,32,0.08); transform: translateY(-1px); }
+    .nav-cart { position: relative; display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; color: var(--text-bright); text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; }
+    .nav-cart:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); }
+    .nav-cart-badge { background: var(--accent); color: #050507; font-size: 0.65rem; font-weight: 700; padding: 1px 6px; border-radius: 10px; min-width: 16px; text-align: center; margin-left: 2px; }
     .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
     .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
 
@@ -77,6 +89,7 @@
     .page-header p {
       font-size: 0.95rem; color: var(--text-dim); max-width: 520px; margin: 0 auto;
     }
+    .divider { width: 60px; height: 2px; background: var(--accent); margin: 20px auto 0; opacity: 0.3; }
 
     .legal-content {
       max-width: 720px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 1;
@@ -114,6 +127,19 @@
     }
     .callout-info { background: rgba(64,136,232,0.08); border-left: 3px solid var(--blue); color: var(--text); }
 
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px 24px; margin-bottom: 32px;
+    }
+    .toc-title {
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+    }
+    .toc ol { padding-left: 18px; }
+    .toc li { font-size: 0.8rem; margin-bottom: 6px; }
+    .toc a { color: var(--text); text-decoration: none; }
+    .toc a:hover { color: var(--accent); }
+
     .updated-badge {
       display: inline-block; font-family: var(--font-mono); font-size: 0.7rem;
       color: var(--text-dim); background: rgba(255,255,255,0.03); border: 1px solid var(--border);
@@ -130,6 +156,7 @@
     .footer-brand span { color: var(--accent); }
     .footer p { font-size: 0.75rem; color: var(--text-dim); }
     .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
 
     @media (max-width: 600px) {
       .nav { padding: 12px 20px; }
@@ -143,118 +170,146 @@
 <body>
 
   <div class="grid-bg"></div>
+  <div class="noise-overlay"></div>
 
   <nav class="nav">
     <a href="/" class="nav-brand">
       <div class="nav-logo">C</div>
       <div class="nav-wordmark">Cerbe<span>rus</span></div>
+      <div class="nav-tag">MARKET</div>
     </a>
     <div class="nav-links">
-      <a href="/">Home</a>
-      <a href="/#pricing">Plans</a>
-      <a href="/docs/">Docs</a>
-      <a href="/api/">API</a>
-      <a href="/sdk/">SDK</a>
-      <a href="/changelog/">Changelog</a>
-      <a href="/blog/">Blog</a>
+      <a href="/catalog/">Catalog</a>
+      <a href="/deals/">Deals</a>
+      <a href="/trends/">Trends</a>
+      <a href="/sellers/">Sellers</a>
       <a href="/status/">Status</a>
-      <a href="/updates/">Updates</a>
-      <a href="/analytics/">Analytics</a>
-      <a href="/team/">Team</a>
     </div>
     <div class="nav-cta-wrap">
-      <a href="/login/" class="nav-login">Partner Login</a>
-      <a href="/access/" class="nav-cta">Partner Account</a>
+      <a href="/cart/" class="nav-cart" id="navCartLink">Cart <span id="navCartCount" class="nav-cart-badge" style="display:none">0</span></a>
+      <a href="/sell/" class="nav-cta">Sell on Cerberus Market</a>
     </div>
   </nav>
 
   <div class="page-header">
     <div class="page-header-label">Legal</div>
     <h1>Privacy Policy</h1>
-    <p>How Cerberus handles data. Written to be read, not to bury things in legalese.</p>
+    <p>How Cerberus Market handles buyer and seller data. Written to be read, not to bury things in legalese.</p>
+    <div class="divider"></div>
   </div>
 
   <div class="legal-content">
-    <div class="updated-badge">Last updated: May 2026</div>
+    <div class="updated-badge">Last updated: July 2026</div>
 
-    <h2>Overview</h2>
-    <p>Cerberus Anti-Cheat is a beta product developed by the Cerberus Team ("we", "us"). This policy explains what data the Cerberus SDK and backend services collect, how it's processed, and what rights you have over it.</p>
-    <p>The short version: <strong>we process almost everything locally on the player's machine</strong>. Only detection events with anonymized metadata leave the device. We collect zero personally identifiable information (PII).</p>
+    <div class="toc">
+      <div class="toc-title">On this page</div>
+      <ol>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#buyer-data">Information we collect from buyers</a></li>
+        <li><a href="#seller-data">Information we collect from sellers</a></li>
+        <li><a href="#keys">Key delivery and order data</a></li>
+        <li><a href="#cookies">Cookies and local storage</a></li>
+        <li><a href="#sharing">How data is shared with sellers and processors</a></li>
+        <li><a href="#retention">Data retention</a></li>
+        <li><a href="#rights">Your rights</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#transfers">International transfers</a></li>
+        <li><a href="#changes">Changes to this policy</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ol>
+    </div>
 
-    <h2>What data Cerberus processes</h2>
-    <p>The Cerberus SDK runs on the player's machine during active game sessions. It processes the following data <strong>locally</strong>:</p>
+    <h2 id="overview">Overview</h2>
+    <p>Cerberus Market is a marketplace for buying and selling digital game keys, operated by the Cerberus Market team ("we", "us"). This policy explains what data we collect from buyers and sellers, how it's processed, and what rights you have over it.</p>
+    <p>The short version: <strong>we collect what's needed to run a marketplace</strong> — accounts, orders, delivered keys, and seller payout details — and nothing beyond that. We don't sell your data to advertisers, and we don't track you across other sites.</p>
+
+    <h2 id="buyer-data">Information we collect from buyers</h2>
+    <p>When you create an account or make a purchase, we collect:</p>
     <ul>
-      <li><strong>Hardware identifiers</strong> -- CPU, GPU, motherboard, and peripheral IDs used for device fingerprinting. These are one-way hashed before any transmission.</li>
-      <li><strong>Input patterns</strong> -- Mouse movement, click timing, and keyboard input analyzed by the behavioral AI engine. Raw input data never leaves the device.</li>
-      <li><strong>Memory state</strong> -- Kernel-mode scanning of memory permissions, loaded drivers, and module integrity. No memory contents are captured or transmitted.</li>
-      <li><strong>PCIe device enumeration</strong> -- List of connected hardware devices checked against known DMA attack signatures. Processed locally.</li>
+      <li><strong>Account information</strong> -- email address, username, and a securely hashed password (or your identity provider token if you sign in with a third party).</li>
+      <li><strong>Purchase history</strong> -- the titles you've bought, order dates, amounts paid, and which seller fulfilled each order.</li>
+      <li><strong>Payment information</strong> -- handled by our third-party payment processor. We store a payment method reference (e.g., last 4 digits, card brand, or wallet type) for your convenience, but we never store full card numbers, CVVs, or bank credentials on our own servers.</li>
+      <li><strong>Delivery details</strong> -- the email address or account identifier keys are delivered to, and delivery timestamps.</li>
+      <li><strong>Support and dispute records</strong> -- messages you send us about missing, invalid, or already-used keys, and the resolution of those disputes.</li>
     </ul>
 
-    <div class="callout callout-info">All of the above is processed entirely on the player's machine. The SDK performs analysis locally and only transmits structured detection results -- never raw data.</div>
-
-    <h2>What gets sent to the Cerberus API</h2>
-    <p>When the SDK detects a potential cheat, the following is transmitted to our backend over TLS 1.3:</p>
+    <h2 id="seller-data">Information we collect from sellers</h2>
+    <p>If you list keys for sale on Cerberus Market, we additionally collect:</p>
     <ul>
-      <li><strong>Detection events</strong> -- The type of detection (e.g., aimbot, injection, DMA), confidence score, and which detection layer triggered.</li>
-      <li><strong>Anonymized session metadata</strong> -- Game ID, session duration, SDK version, region, and an anonymized session identifier. No player names, emails, IPs, or account details.</li>
-      <li><strong>Hashed hardware fingerprint</strong> -- A one-way hash used solely for ban evasion tracking. Cannot be reversed to identify specific hardware.</li>
+      <li><strong>Seller verification information</strong> -- identity verification documents required for our Verified and Elite seller tiers, and business details if you're selling as an organization.</li>
+      <li><strong>Payout information</strong> -- bank account or payout-provider details used to send you proceeds from sales, and tax identification information where required by law.</li>
+      <li><strong>Listing and inventory data</strong> -- the titles, regions, and quantities you list, along with pricing history.</li>
+      <li><strong>Performance metrics</strong> -- delivery speed, dispute rate, and buyer ratings used to calculate your seller standing and tier eligibility.</li>
     </ul>
-    <p>We do <strong>not</strong> transmit: game memory contents, screenshots, keystrokes, browsing data, file system contents, running process lists (beyond game-relevant modules), or any telemetry about player behavior outside of cheat detection.</p>
 
-    <h2>Zero PII collection</h2>
-    <p>Cerberus does not collect, store, or process any personally identifiable information. We don't know who players are. We work with anonymized session tokens and hashed hardware IDs. Player identity mapping (e.g., Steam ID to a ban record) is handled entirely by the game studio's integration -- we provide the detection, they manage the identity layer.</p>
+    <div class="callout callout-info">Payout account numbers and verification documents are encrypted at rest and are never displayed to buyers or other sellers. Only the information needed to process a transaction is shared between buyer and seller.</div>
 
-    <h2>Data retention</h2>
+    <h2 id="keys">Key delivery and order data</h2>
+    <p>Digital keys purchased through Cerberus Market are held in escrow by our platform until an order is confirmed, then delivered to the buyer through our secure delivery system. We log delivery events (time, method, and delivery status) to support refund and replacement claims for invalid or already-used keys. We do not store key contents any longer than necessary to complete delivery and support the buyer's replacement window.</p>
+
+    <h2 id="cookies">Cookies and local storage</h2>
+    <p>Cerberus Market uses a small number of essential cookies and browser storage mechanisms to make the site work:</p>
     <ul>
-      <li><strong>Detection events</strong> -- Retained for 90 days to support ban appeals and accuracy analysis. Configurable per partner (shorter periods available).</li>
-      <li><strong>Session metadata</strong> -- Retained for 30 days, then permanently deleted.</li>
-      <li><strong>Hashed hardware fingerprints</strong> -- Retained for the duration of an active ban. Deleted when a ban expires or is overturned.</li>
+      <li><strong>Session cookie</strong> -- keeps you signed in. Expires when you sign out or after a period of inactivity.</li>
+      <li><strong>Local storage (cart state)</strong> -- your shopping cart contents are stored in your browser's local storage so your cart persists between visits and page reloads, even before you sign in. This data stays on your device and is only sent to our servers when you check out.</li>
+      <li><strong>Preferences</strong> -- display preferences such as region and currency selection, stored locally in your browser.</li>
     </ul>
-    <p>After retention periods expire, data is permanently deleted from all systems including backups. We do not archive detection data indefinitely.</p>
+    <p>We do not use third-party advertising cookies or cross-site tracking pixels. No cookie consent banner is shown because we only use strictly necessary cookies and locally-scoped browser storage.</p>
 
-    <h2>Your rights (GDPR and similar frameworks)</h2>
-    <p>Even though we don't collect PII, we respect data subject rights under GDPR, CCPA, and similar frameworks. If you believe Cerberus has processed data related to you, you can request:</p>
+    <h2 id="sharing">How data is shared with sellers and processors</h2>
+    <p>To fulfill an order, we share limited information between buyers and sellers:</p>
     <ul>
-      <li><strong>Access</strong> -- Request a copy of any data associated with your hashed hardware fingerprint or session tokens.</li>
-      <li><strong>Deletion</strong> -- Request deletion of all detection records and metadata tied to your identifiers.</li>
-      <li><strong>Portability</strong> -- Receive your data in a structured, machine-readable format (JSON).</li>
-      <li><strong>Rectification</strong> -- If you believe a detection was incorrect, you can request review through the ban appeal process or directly via a data request.</li>
+      <li>Sellers see the order ID, purchase timestamp, and the delivery address/account you provide for that order -- never your full account email, payment details, or purchase history with other sellers.</li>
+      <li>Buyers see the seller's public storefront name, verification tier, and public rating -- never a seller's payout details or identity verification documents.</li>
+    </ul>
+    <p>We also share data with a small number of service providers strictly to operate the marketplace: our payment processor (to process transactions), our payout provider (to pay sellers), and infrastructure providers who host our servers under standard data processing agreements. None of these providers are permitted to use your data for their own marketing purposes.</p>
+
+    <h2 id="retention">Data retention</h2>
+    <ul>
+      <li><strong>Order and delivery records</strong> -- retained for 3 years to support refund windows, dispute resolution, and tax/accounting requirements.</li>
+      <li><strong>Account information</strong> -- retained while your account is active, and for a limited period after closure in case of pending disputes.</li>
+      <li><strong>Seller payout and verification records</strong> -- retained for as long as required by applicable financial and tax regulations, then securely deleted.</li>
+      <li><strong>Support tickets</strong> -- retained for 2 years, then permanently deleted.</li>
+    </ul>
+    <p>After retention periods expire, data is permanently deleted from our systems, including backups on their normal rotation schedule.</p>
+
+    <h2 id="rights">Your rights (GDPR, CCPA, and similar frameworks)</h2>
+    <p>Depending on where you live, you may have the right to:</p>
+    <ul>
+      <li><strong>Access</strong> -- request a copy of the personal data we hold about you.</li>
+      <li><strong>Correction</strong> -- ask us to correct inaccurate account or profile information.</li>
+      <li><strong>Deletion</strong> -- request deletion of your account and associated data, subject to retention obligations described above (for example, completed order records may need to be kept for tax purposes).</li>
+      <li><strong>Portability</strong> -- receive your order history and account data in a structured, machine-readable format.</li>
+      <li><strong>Objection</strong> -- object to certain uses of your data, such as non-essential communications.</li>
     </ul>
     <p>To exercise any of these rights, contact <a href="mailto:privacy@arsenalrx.dev">privacy@arsenalrx.dev</a>. We respond to all requests within 30 days.</p>
 
-    <h2>Data processor information</h2>
-    <p>Cerberus acts as a <strong>data processor</strong> on behalf of game studios (the data controllers) who integrate our SDK. Studios determine how detection results are used (e.g., banning, flagging for review). We process data strictly according to our partner agreements and do not use detection data for any purpose beyond anti-cheat services.</p>
-    <p>Our backend infrastructure runs on dedicated servers in the EU (Frankfurt) and US (Virginia). Detection data is encrypted at rest (AES-256) and in transit (TLS 1.3).</p>
+    <h2 id="security">Security</h2>
+    <p>We encrypt data in transit (TLS 1.3) and sensitive data at rest (AES-256), including payment references, payout details, and seller verification documents. Access to buyer and seller data is limited to employees who need it to operate the marketplace, and access is logged. No online system is 100% secure, but we work to keep this one honest about its limits rather than overstate them.</p>
 
-    <h2>International transfers</h2>
-    <p>Detection data may be processed in either our EU or US data centers depending on the game session's region. For transfers from the EU to the US, we rely on Standard Contractual Clauses (SCCs) as our legal basis. All cross-region transfers use encrypted channels and are subject to the same retention and deletion policies.</p>
+    <h2 id="transfers">International transfers</h2>
+    <p>Cerberus Market operates across multiple regions, including US-East, EU-West, and AP-Southeast. Depending on your region, your data may be processed in a data center outside your home country. Where we transfer data from the EU to other regions, we rely on Standard Contractual Clauses (SCCs) as our legal basis, and all transfers use encrypted channels under the same retention and deletion policies described above.</p>
 
-    <h2>Cookies</h2>
-    <p>The Cerberus SDK does not use cookies. Our website (<a href="/">accerberus.github.io</a>) uses only essential cookies:</p>
-    <ul>
-      <li><strong>Session cookie</strong> -- Maintains your session on the partner dashboard if you're logged in. Expires when the browser closes.</li>
-      <li><strong>Preferences cookie</strong> -- Stores dashboard display preferences (theme, timezone). Expires after 30 days.</li>
-    </ul>
-    <p>We do not use analytics cookies, advertising cookies, or any third-party tracking. No cookie consent banner needed because we only use strictly necessary cookies.</p>
+    <h2 id="changes">Changes to this policy</h2>
+    <p>We'll update this policy as Cerberus Market evolves. Material changes will be announced on our <a href="/changelog/">changelog</a> and, where required, communicated directly to affected users. The "last updated" date at the top of this page always reflects the most recent revision.</p>
 
-    <h2>Changes to this policy</h2>
-    <p>We'll update this policy as Cerberus evolves from beta to general availability. Material changes will be announced on our <a href="/changelog/">changelog</a> and communicated to partner studios. The "last updated" date at the top of this page always reflects the most recent revision.</p>
-
-    <h2>Contact</h2>
+    <h2 id="contact">Contact</h2>
     <p>For privacy questions, data requests, or concerns:</p>
     <p><strong>Email:</strong> <a href="mailto:privacy@arsenalrx.dev">privacy@arsenalrx.dev</a></p>
     <p>We aim to respond to all inquiries within 5 business days.</p>
   </div>
 
   <footer class="footer">
-    <div class="footer-brand">Cerbe<span>rus</span></div>
-    <p>Four heads. Four layers. Nothing gets past the gate.</p>
-    <p style="margin-top: 12px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/privacy/">Privacy</a> &nbsp;&middot;&nbsp; <a href="/terms/">Terms</a></p>
+    <div class="footer-brand">Cerbe<span>rus</span> Market</div>
+    <p style="margin-bottom:16px;">Guarded delivery. Verified sellers. Instant keys.</p>
+    <p style="margin-bottom:8px;"><a href="/">Home</a> &bull; <a href="/catalog/">Catalog</a> &bull; <a href="/deals/">Deals</a> &bull; <a href="/trends/">Trends</a> &bull; <a href="/status/">Status</a> &bull; <a href="/changelog/">Changelog</a></p>
+    <p style="margin-bottom:8px;"><a href="/sellers/">Sellers</a> &bull; <a href="/sell/">Sell with Us</a></p>
+    <p style="margin-bottom:16px;"><a href="/privacy/">Privacy</a> &bull; <a href="/terms/">Terms</a></p>
+    <p>&copy; 2026 Cerberus Market. All game titles are property of their respective (fictional) publishers.</p>
   </footer>
 
   <script src="/js/cerberus-engine.js"></script>
   <script src="/js/cerberus-shared.js"></script>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
 </body>
 </html>

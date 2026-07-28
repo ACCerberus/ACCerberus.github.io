@@ -3,33 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cerberus - Next-Generation Anti-Cheat Engine</title>
-  <meta name="description" content="Cerberus — Four-layer anti-cheat engine with kernel protection, behavioral AI, hardware fingerprinting, and network-level sentinel analysis. No telemetry. No compromise." />
-  <meta property="og:title" content="Cerberus Anti-Cheat" />
-  <meta property="og:description" content="Four layers. Every surface. Nothing gets past the gate." />
+  <title>Cerberus Market — Game Keys, Instant Delivery, Verified Sellers</title>
+  <meta name="description" content="Cerberus Market — a digital storefront for game keys. Instant delivery, verified third-party sellers, and a buyer protection guarantee on every order." />
+  <meta property="og:title" content="Cerberus Market" />
+  <meta property="og:description" content="Guarded delivery. Every key, verified. Instant digital delivery, verified third-party sellers, buyer protection on every order." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://cerberusac.dev/" />
+  <meta property="og:url" content="https://cerberus.market/" />
   <meta name="robots" content="index, follow" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="theme-color" content="#e8a020" />
-  <link rel="canonical" href="https://cerberusac.dev/" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="canonical" href="https://cerberus.market/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F511;</text></svg>" />
   <link rel="manifest" href="/manifest.json" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Cerberus Anti-Cheat",
-    "applicationCategory": "SecurityApplication",
-    "operatingSystem": "Windows 10, Windows 11",
-    "description": "Four-layer anti-cheat engine with kernel protection, behavioral AI, hardware fingerprinting, and network sentinel analysis.",
-    "softwareVersion": "0.5.0.0b",
-    "author": {
-      "@type": "Organization",
-      "name": "Cerberus Team",
-      "url": "https://cerberusac.dev",
-      "email": "cerberus@arsenalrx.dev"
-    }
+    "@type": "Store",
+    "name": "Cerberus Market",
+    "url": "https://cerberus.market/",
+    "description": "A digital marketplace for game keys — instant delivery, verified third-party sellers, and buyer protection on every order.",
+    "priceRange": "$$",
+    "areaServed": "Worldwide"
   }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -115,6 +109,7 @@
       letter-spacing: -0.5px;
     }
     .nav-wordmark span { color: var(--accent); }
+    .nav-tag { font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; color: var(--accent); border: 1px solid rgba(232,160,32,0.3); padding: 2px 8px; border-radius: 6px; margin-left: 8px; text-transform: uppercase; }
     .nav-links { display: flex; gap: 32px; align-items: center; }
     .nav-links a {
       color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500;
@@ -122,12 +117,9 @@
     }
     .nav-links a:hover { color: var(--text-bright); }
     .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
-    .nav-login {
-      padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
-      border: 1px solid rgba(232,160,32,0.4); color: var(--accent); text-decoration: none;
-      transition: all 0.2s; letter-spacing: 0.3px;
-    }
-    .nav-login:hover { border-color: var(--accent); background: rgba(232,160,32,0.08); transform: translateY(-1px); }
+    .nav-cart { position: relative; display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; color: var(--text-bright); text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; }
+    .nav-cart:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); }
+    .nav-cart-badge { background: var(--accent); color: #050507; font-size: 0.65rem; font-weight: 700; padding: 1px 6px; border-radius: 10px; min-width: 16px; text-align: center; margin-left: 2px; }
     .nav-cta {
       padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
       background: var(--accent); color: #050507; text-decoration: none;
@@ -187,6 +179,14 @@
     .hero-stat-value { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 700; color: var(--accent); }
     .hero-stat-label { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
 
+    .live-pulse {
+      margin-top: 28px; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+      opacity: 0; transition: opacity 0.6s;
+    }
+    .live-pulse-item { font-size: 0.72rem; color: var(--text-dim); font-family: var(--font-mono); display: flex; align-items: center; gap: 8px; }
+    .live-pulse-item span { color: var(--text); }
+    .live-pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; display: inline-block; }
+
     /* ===== SECTIONS ===== */
     .section {
       padding: 100px 24px; position: relative; z-index: 1;
@@ -205,296 +205,78 @@
       font-size: 1rem; color: var(--text-dim); max-width: 560px; margin: 0 auto; line-height: 1.7;
     }
 
-    /* ===== THREAT LANDSCAPE (PROBLEM) ===== */
-    .threat-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    /* ===== GAME GRID (trending / deals) ===== */
+    .game-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
     }
-    .threat-card {
+    .game-card {
+      display: block; text-decoration: none; color: inherit;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; transition: all 0.3s ease;
+    }
+    .game-card:hover { border-color: rgba(232,160,32,0.25); background: var(--bg-card-hover); transform: translateY(-4px); }
+    .game-card-body { padding: 14px 16px 16px; }
+    .game-card-meta { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .game-card-rating { font-size: 0.75rem; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 4px; }
+    .game-card-rating span { color: var(--text-dim); }
+    .game-card-price-row { display: flex; align-items: baseline; gap: 8px; }
+    .game-card-price { font-family: var(--font-heading); font-weight: 700; color: var(--text-bright); font-size: 1.05rem; }
+    .game-card-price-strike { font-size: 0.78rem; color: var(--text-dim); text-decoration: line-through; }
+
+    /* ===== GENRE ROW ===== */
+    .genre-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .genre-chip {
+      padding: 9px 20px; border-radius: 22px; background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border); color: var(--text-dim); font-size: 0.8rem; font-weight: 600;
+      text-decoration: none; transition: all 0.2s; letter-spacing: 0.2px;
+    }
+    .genre-chip:hover { border-color: rgba(232,160,32,0.35); color: var(--text-bright); background: rgba(232,160,32,0.06); }
+
+    /* ===== TRUST CARDS ===== */
+    .trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .trust-card {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
       padding: 32px; transition: all 0.3s ease; position: relative; overflow: hidden;
     }
-    .threat-card::before {
+    .trust-card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: var(--red); opacity: 0.6;
+      background: var(--accent); opacity: 0.6;
     }
-    .threat-card:hover { border-color: rgba(224,64,80,0.2); background: var(--bg-card-hover); transform: translateY(-4px); }
-    .threat-card-icon {
+    .trust-card:hover { border-color: rgba(232,160,32,0.2); background: var(--bg-card-hover); transform: translateY(-4px); }
+    .trust-card-icon {
       width: 40px; height: 40px; border-radius: 10px; margin-bottom: 20px;
-      background: rgba(224,64,80,0.1); display: flex; align-items: center; justify-content: center;
+      background: rgba(232,160,32,0.1); display: flex; align-items: center; justify-content: center;
       font-size: 1.2rem;
     }
-    .threat-card-name {
-      font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700;
-      color: var(--text-bright); margin-bottom: 8px;
-    }
-    .threat-card-flaw {
-      font-size: 0.8rem; color: var(--red); font-weight: 600; margin-bottom: 12px;
-      text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .threat-card p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.7; }
+    .trust-card-name { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 8px; }
+    .trust-card p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.7; }
 
-    /* ===== FOUR LAYERS (FEATURES) ===== */
-    .heads-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    /* ===== DEALS BANNER ===== */
+    .deals-banner {
+      background: linear-gradient(135deg, rgba(224,64,80,0.12), rgba(232,160,32,0.06));
+      border: 1px solid rgba(224,64,80,0.3); border-radius: 20px; padding: 40px;
+      display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;
     }
-    .head-card {
+    .deals-banner-tag { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; color: var(--red); text-transform: uppercase; margin-bottom: 10px; }
+    .deals-banner-title { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: var(--text-bright); margin-bottom: 8px; }
+    .deals-banner-desc { font-size: 0.9rem; color: var(--text-dim); }
+
+    /* ===== SELLER SPOTLIGHT ===== */
+    .seller-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .seller-card {
+      display: block; text-decoration: none; color: inherit; text-align: center;
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 36px 32px; text-align: center; transition: all 0.3s ease; position: relative;
+      padding: 32px 24px; transition: all 0.3s;
     }
-    .head-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: var(--accent); opacity: 0;
-      transition: opacity 0.3s;
+    .seller-card:hover { border-color: rgba(232,160,32,0.15); background: var(--bg-card-hover); transform: translateY(-4px); }
+    .seller-avatar {
+      width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 14px;
+      background: linear-gradient(135deg, var(--accent), #c07818); display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; color: #050507; font-size: 1.1rem;
     }
-    .head-card:hover::before { opacity: 1; }
-    .head-card:hover { border-color: rgba(232,160,32,0.15); background: var(--bg-card-hover); transform: translateY(-4px); }
-    .head-number {
-      font-family: var(--font-heading); font-size: 3rem; font-weight: 800;
-      color: rgba(232,160,32,0.1); line-height: 1; margin-bottom: 8px;
-    }
-    .head-icon {
-      width: 56px; height: 56px; border-radius: 14px; margin: 0 auto 20px;
-      background: var(--accent-dim); display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem;
-    }
-    .head-title {
-      font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700;
-      color: var(--text-bright); margin-bottom: 12px;
-    }
-    .head-desc { font-size: 0.88rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 20px; }
-    .head-features { list-style: none; text-align: left; }
-    .head-features li {
-      font-size: 0.82rem; color: var(--text); padding: 6px 0;
-      border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
-    }
-    .head-features li::before { content: '\2713'; color: var(--accent); font-weight: 700; font-size: 0.75rem; }
-
-    /* ===== ARCHITECTURE ===== */
-    .arch-container {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 48px; overflow: hidden;
-    }
-    .arch-diagram {
-      font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.9;
-      color: var(--text-dim); white-space: pre; overflow-x: auto;
-      padding: 24px; background: rgba(0,0,0,0.3); border-radius: 12px;
-      border: 1px solid var(--border);
-      display: flex; justify-content: center;
-    }
-    .arch-diagram span.arch-inner { display: inline-block; text-align: left; }
-    .arch-diagram .hl { color: var(--accent); font-weight: 600; }
-    .arch-diagram .dm { color: var(--text-dim); }
-    .arch-diagram .gr { color: var(--green); }
-    .arch-diagram .bl { color: var(--blue); }
-    .arch-diagram .pr { color: var(--purple); }
-    .arch-diagram .rd { color: var(--red); }
-    .arch-layers {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 32px;
-    }
-    .arch-layer {
-      padding: 20px; border-radius: 12px; border: 1px solid var(--border);
-      background: rgba(255,255,255,0.01);
-    }
-    .arch-layer-name {
-      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600;
-      color: var(--accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;
-    }
-    .arch-layer p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; }
-
-    /* ===== COMPARISON TABLE ===== */
-    .compare-table-wrap {
-      overflow-x: auto; border-radius: 16px; border: 1px solid var(--border);
-      background: var(--bg-card);
-    }
-    .compare-table {
-      width: 100%; border-collapse: collapse; font-size: 0.85rem;
-    }
-    .compare-table th {
-      padding: 16px 20px; text-align: left; font-family: var(--font-heading);
-      font-weight: 600; color: var(--text-dim); font-size: 0.75rem;
-      letter-spacing: 1px; text-transform: uppercase;
-      border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.01);
-    }
-    .compare-table th:last-child { color: var(--accent); }
-    .compare-table td {
-      padding: 14px 20px; border-bottom: 1px solid var(--border);
-      color: var(--text); vertical-align: middle;
-    }
-    .compare-table tr:last-child td { border-bottom: none; }
-    .compare-table td:first-child { font-weight: 500; color: var(--text-bright); font-size: 0.82rem; }
-    .compare-table td:last-child { color: var(--accent); font-weight: 500; }
-    .check { color: var(--green); font-weight: 700; }
-    .cross { color: var(--red); opacity: 0.5; }
-    .partial { color: #e8a020; opacity: 0.7; }
-
-    /* ===== THREAT INTEL ===== */
-    .ti-card {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-      padding: 18px 20px; position: relative; overflow: hidden;
-      transition: border-color 0.3s, transform 0.3s;
-    }
-    .ti-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.1); }
-    .ti-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-    .ti-card-name { font-family: var(--font-heading); font-size: 0.88rem; font-weight: 700; color: var(--text-bright); }
-    .ti-card-threat { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
-    .ti-card-desc { font-size: 0.72rem; color: var(--text-dim); margin-bottom: 12px; line-height: 1.5; }
-    .ti-card-meta { display: flex; gap: 14px; flex-wrap: wrap; }
-    .ti-card-tag { font-family: var(--font-mono); font-size: 0.62rem; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); color: var(--text-dim); }
-    .ti-card-tag.active { color: var(--red); border-color: rgba(224,64,80,0.2); background: rgba(224,64,80,0.06); }
-    .ti-card-tag.dormant { color: var(--text-dim); border-color: var(--border); }
-    .ti-card-tag.aggressive { color: #ff6b4a; border-color: rgba(255,107,74,0.2); background: rgba(255,107,74,0.06); }
-    .ti-card-tag.detected { color: var(--green); border-color: rgba(48,200,96,0.2); background: rgba(48,200,96,0.06); }
-    .ti-card-tag.partial { color: var(--accent); border-color: rgba(232,160,32,0.2); background: rgba(232,160,32,0.06); }
-    .ti-card-tag.monitoring { color: var(--blue); border-color: rgba(64,136,232,0.2); background: rgba(64,136,232,0.06); }
-    .ti-card-tag.undetected { color: var(--red); border-color: rgba(224,64,80,0.2); background: rgba(224,64,80,0.06); }
-    .ti-threat-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.04); margin-top: 12px; overflow: hidden; }
-    .ti-threat-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
-    .fp-narrative {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-      padding: 20px 24px;
-    }
-    .fp-narrative-title { font-family: var(--font-heading); font-size: 0.88rem; font-weight: 700; color: var(--text-bright); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
-    .fp-narrative-detail { font-size: 0.78rem; color: var(--text-dim); line-height: 1.7; }
-    .fp-narrative-detail strong { color: var(--text); font-weight: 600; }
-
-    /* ===== METRICS ===== */
-    .metrics-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-    }
-    .metric-card {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 32px; text-align: center; transition: all 0.3s;
-    }
-    .metric-card:hover { border-color: rgba(232,160,32,0.15); transform: translateY(-4px); }
-    .metric-value {
-      font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: var(--accent);
-      margin-bottom: 4px;
-    }
-    .metric-label { font-size: 0.78rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
-    .metric-sub { font-size: 0.72rem; color: var(--text-dim); opacity: 0.5; margin-top: 4px; }
-
-    /* ===== PRICING ===== */
-    .pricing-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
-    }
-    .pricing-card {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 36px 28px; display: flex; flex-direction: column; transition: all 0.3s;
-      position: relative;
-    }
-    .pricing-card:hover { border-color: rgba(232,160,32,0.15); transform: translateY(-4px); }
-    .pricing-card-featured {
-      border-color: rgba(232,160,32,0.3);
-      background: linear-gradient(180deg, rgba(232,160,32,0.04), var(--bg-card));
-    }
-    .pricing-card-featured::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    }
-    .pricing-badge {
-      position: absolute; top: -10px; right: 20px;
-      padding: 4px 14px; border-radius: 12px; font-size: 0.65rem; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase;
-      background: var(--accent); color: #050507;
-    }
-    .pricing-tier {
-      font-family: var(--font-heading); font-size: 0.8rem; font-weight: 700;
-      color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;
-    }
-    .pricing-name {
-      font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;
-      color: var(--text-bright); margin-bottom: 8px;
-    }
-    .pricing-desc {
-      font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 20px;
-    }
-    .pricing-price {
-      font-family: var(--font-heading); font-size: 2rem; font-weight: 800;
-      color: var(--text-bright); margin-bottom: 4px;
-    }
-    .pricing-price span { font-size: 0.85rem; font-weight: 400; color: var(--text-dim); }
-    .pricing-period { font-size: 0.72rem; color: var(--text-dim); margin-bottom: 24px; }
-    .pricing-features { list-style: none; flex: 1; margin-bottom: 24px; }
-    .pricing-features li {
-      font-size: 0.8rem; color: var(--text); padding: 7px 0;
-      display: flex; align-items: flex-start; gap: 8px;
-      border-top: 1px solid var(--border);
-    }
-    .pricing-features li::before { content: '\2713'; color: var(--accent); font-weight: 700; font-size: 0.72rem; flex-shrink: 0; margin-top: 2px; }
-    .pricing-features li.disabled { color: var(--text-dim); opacity: 0.4; }
-    .pricing-features li.disabled::before { content: '\2014'; color: var(--text-dim); }
-    .pricing-btn {
-      display: block; text-align: center; padding: 12px; border-radius: 10px;
-      font-size: 0.82rem; font-weight: 600; text-decoration: none;
-      transition: all 0.2s; cursor: pointer; border: none;
-      font-family: var(--font);
-    }
-    .pricing-btn-outline {
-      background: transparent; color: var(--text-bright);
-      border: 1px solid var(--border);
-    }
-    .pricing-btn-outline:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); }
-    .pricing-btn-primary {
-      background: var(--accent); color: #050507;
-    }
-    .pricing-btn-primary:hover { background: #d09018; box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
-    .pricing-note {
-      text-align: center; font-size: 0.75rem; color: var(--text-dim); margin-top: 32px;
-      max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.6;
-    }
-    .currency-switcher {
-      display: flex; justify-content: center; gap: 8px; margin-bottom: 32px;
-    }
-    .currency-btn {
-      padding: 6px 16px; border-radius: 8px; font-size: 0.75rem; font-weight: 600;
-      background: rgba(255,255,255,0.02); color: var(--text-dim); border: 1px solid var(--border);
-      cursor: pointer; transition: all 0.2s; font-family: var(--font);
-    }
-    .currency-btn:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
-    .currency-btn.active { background: var(--accent); color: #050507; border-color: var(--accent); }
-    .genre-selector { display: flex; justify-content: center; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
-    .genre-pill {
-      padding: 7px 18px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
-      background: rgba(255,255,255,0.02); color: var(--text-dim); border: 1px solid var(--border);
-      cursor: pointer; transition: all 0.2s; font-family: var(--font); letter-spacing: 0.2px;
-    }
-    .genre-pill:hover { border-color: rgba(232,160,32,0.3); color: var(--text); }
-    .genre-pill.active { background: var(--accent); color: #050507; border-color: var(--accent); }
-    .pricing-recommended {
-      position: absolute; top: -10px; left: 20px;
-      padding: 4px 12px; border-radius: 12px; font-size: 0.6rem; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase;
-      background: var(--green); color: #050507; display: none; z-index: 2;
-    }
-    .pricing-card.genre-recommended .pricing-recommended { display: block; }
-    .pricing-annotation {
-      font-size: 0.65rem; color: var(--green); font-weight: 600; margin-left: 4px;
-      opacity: 0; transition: opacity 0.3s; display: none;
-    }
-    .pricing-annotation.visible { opacity: 1; display: inline; }
-    .pricing-desc { transition: opacity 0.25s ease; }
-    @media (max-width: 1000px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; } .genre-selector { gap: 6px; } .genre-pill { padding: 5px 12px; font-size: 0.7rem; } }
-
-    /* ===== TEAM ===== */
-    .team-banner {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 48px; text-align: center;
-    }
-    .team-count {
-      font-family: var(--font-heading); font-size: 3rem; font-weight: 800;
-      color: var(--accent); margin-bottom: 8px;
-    }
-    .team-label {
-      font-size: 1rem; color: var(--text-bright); font-weight: 500; margin-bottom: 24px;
-    }
-    .team-roles {
-      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-    }
-    .team-role {
-      padding: 6px 18px; border-radius: 20px; font-size: 0.78rem; font-weight: 500;
-      background: rgba(255,255,255,0.02); color: var(--text-dim); border: 1px solid var(--border);
-    }
+    .seller-name { font-family: var(--font-heading); font-weight: 700; color: var(--text-bright); font-size: 0.95rem; margin-bottom: 4px; }
+    .seller-tier { font-size: 0.68rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 10px; }
+    .seller-stats { font-size: 0.78rem; color: var(--text-dim); }
 
     /* ===== CTA ===== */
     .cta-section {
@@ -523,7 +305,6 @@
     .footer a { color: var(--accent); text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
 
-
     /* ===== FAQ ===== */
     .faq-grid { max-width: 800px; margin: 0 auto; }
     .faq-item { border-bottom: 1px solid var(--border); }
@@ -540,26 +321,6 @@
     .faq-item.open .faq-answer { max-height: 300px; }
     .faq-answer p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.7; padding-bottom: 20px; }
 
-    /* ===== HERO PARTICLES ===== */
-    #heroParticles { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
-
-    /* ===== SCAN LINE ===== */
-    .scan-line {
-      position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 99; pointer-events: none;
-      background: linear-gradient(90deg, transparent, rgba(232,160,32,0.15), transparent);
-      animation: scanMove 8s linear infinite;
-    }
-    @keyframes scanMove { 0% { transform: translateY(0); } 100% { transform: translateY(100vh); } }
-
-    /* ===== GLITCH TEXT ===== */
-    .glitch-hover { position: relative; display: inline-block; }
-    .glitch-hover:hover { animation: glitch 0.3s ease; }
-    @keyframes glitch {
-      0% { transform: translate(0); } 20% { transform: translate(-2px, 1px); }
-      40% { transform: translate(2px, -1px); } 60% { transform: translate(-1px, 2px); }
-      80% { transform: translate(1px, -2px); } 100% { transform: translate(0); }
-    }
-
     /* ===== DIVIDER ===== */
     .divider {
       width: 60px; height: 2px; background: var(--accent); margin: 0 auto;
@@ -575,736 +336,185 @@
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 900px) {
-      .threat-grid { grid-template-columns: 1fr; }
-      .heads-grid, .arch-layers { grid-template-columns: repeat(2, 1fr); }
-      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .game-grid { grid-template-columns: repeat(2, 1fr); }
+      .trust-grid { grid-template-columns: repeat(2, 1fr); }
+      .seller-grid { grid-template-columns: repeat(2, 1fr); }
       .hero-stats { gap: 32px; flex-wrap: wrap; }
       .nav-links { display: none; }
-      .trusted-logos { gap: 24px; }
+      .deals-banner { text-align: center; justify-content: center; }
     }
     @media (max-width: 600px) {
       .nav { padding: 12px 20px; }
-      .metrics-grid { grid-template-columns: 1fr; }
+      .game-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .trust-grid { grid-template-columns: 1fr; }
+      .seller-grid { grid-template-columns: 1fr; }
       .hero-stats { flex-direction: column; gap: 24px; }
-      .arch-container { padding: 24px; }
-      .compare-table { font-size: 0.75rem; }
     }
-
-    /* NOTIFICATION TOASTS */
-    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-    .toast { pointer-events: auto; padding: 12px 18px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; font-size: 0.78rem; color: var(--text); max-width: 360px; display: flex; align-items: flex-start; gap: 10px; animation: toastIn 0.3s ease; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
-    .toast.out { animation: toastOut 0.3s ease forwards; }
-    @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
-    @keyframes toastOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(40px); } }
-    .toast-icon { flex-shrink: 0; width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; margin-top: 1px; }
-    .toast-icon-block { background: rgba(224,64,80,0.15); color: var(--red); }
-    .toast-icon-ok { background: rgba(48,200,96,0.15); color: var(--green); }
-    .toast-icon-info { background: rgba(232,160,32,0.15); color: var(--accent); }
-    .toast-text { line-height: 1.4; }
-    .toast-text strong { color: var(--text-bright); }
-    .toast-time { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-dim); margin-top: 3px; }
-
   </style>
 </head>
 <body>
 
-  <!-- NOTIFICATION TOASTS -->
-  <div class="toast-container" id="toastContainer"></div>
-
   <div class="grid-bg"></div>
   <div class="noise-overlay"></div>
-  <div class="scan-line"></div>
 
   <!-- NAV -->
   <nav class="nav">
-    <a href="#" class="nav-brand">
+    <a href="/" class="nav-brand">
       <div class="nav-logo">C</div>
       <div class="nav-wordmark">Cerbe<span>rus</span></div>
+      <div class="nav-tag">MARKET</div>
     </a>
     <div class="nav-links">
-      <a href="#threat">Problem</a>
-      <a href="#heads">Detection</a>
-      <a href="#threat-intel">Threats</a>
-      <a href="#pricing">Plans</a>
-      <a href="/docs/">Docs</a>
-      <a href="/api/">API</a>
-      <a href="/sdk/">SDK</a>
-      <a href="/changelog/">Changelog</a>
-      <a href="/blog/">Blog</a>
+      <a href="/catalog/">Catalog</a>
+      <a href="/deals/">Deals</a>
+      <a href="/trends/">Trends</a>
+      <a href="/sellers/">Sellers</a>
       <a href="/status/">Status</a>
-      <a href="/updates/">Updates</a>
-      <a href="/team/">Team</a>
-      <a href="/analytics/">Analytics</a>
     </div>
     <div class="nav-cta-wrap">
-      <a href="/login/" class="nav-login">Partner Login</a>
-      <a href="/access/" class="nav-cta">Partner Account</a>
+      <a href="/cart/" class="nav-cart" id="navCartLink">Cart <span id="navCartCount" class="nav-cart-badge" style="display:none">0</span></a>
+      <a href="/sell/" class="nav-cta">Sell on Cerberus Market</a>
     </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
-    <canvas id="heroParticles"></canvas>
     <div class="hero-content">
       <div class="hero-badge">
         <div class="hero-badge-dot"></div>
-        IN ACTIVE DEVELOPMENT
+        LIVE MARKETPLACE
       </div>
-      <h1 class="hero-title">Four layers.<br/>Zero blind <span>spots.</span></h1>
-      <p class="hero-subtitle">Cerberus is a next-generation anti-cheat engine that combines kernel-level protection, behavioral AI, hardware fingerprinting, and network-level sentinel analysis into a unified four-layer defense system. No rootkit. No telemetry. No compromise.</p>
-      <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:12px;">
-        <span style="font-family:var(--font-mono);font-size:0.78rem;color:var(--accent);background:rgba(232,160,32,0.1);border:1px solid rgba(232,160,32,0.2);padding:4px 14px;border-radius:6px;">v0.5.0.0b</span>
-        <span id="versionAge" style="font-size:0.72rem;color:var(--text-dim);">Latest stable</span>
-      </div>
+      <h1 class="hero-title">Guarded delivery.<br/>Every key, <span>verified.</span></h1>
+      <p class="hero-subtitle">Cerberus Market is a digital storefront for game keys — instant delivery from verified third-party sellers, with a buyer protection guarantee on every order.</p>
       <div class="hero-actions">
-        <a href="/access/" class="btn-primary">
-          Request Early Access
+        <a href="/catalog/" class="btn-primary">
+          Browse Catalog
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
-        <a href="#heads" class="btn-secondary">
-          Read the Docs
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v16M18 4v16M6 12h12M6 4h12M6 20h12"/></svg>
+        <a href="/sell/" class="btn-secondary">
+          Sell on Cerberus Market
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         </a>
       </div>
       <div class="hero-stats">
         <div class="hero-stat">
-          <div class="hero-stat-value" id="statTitles">0</div>
-          <div class="hero-stat-label">Titles in Beta Testing</div>
+          <div class="hero-stat-value" id="heroStatListings">--</div>
+          <div class="hero-stat-label">Active Listings</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-value" id="statThreats">0</div>
-          <div class="hero-stat-label">Threats Blocked</div>
+          <div class="hero-stat-value" id="heroStatDelivered">--</div>
+          <div class="hero-stat-label">Keys Delivered Today</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-value" id="statSessions">0</div>
-          <div class="hero-stat-label">Sessions Protected</div>
+          <div class="hero-stat-value" id="heroStatSold">--</div>
+          <div class="hero-stat-label">Total Keys Sold</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-value" id="statPentests">0</div>
-          <div class="hero-stat-label">Pentest Scenarios Run</div>
+          <div class="hero-stat-value" id="heroStatStreak">--</div>
+          <div class="hero-stat-label">Dispute-Free Streak</div>
         </div>
       </div>
-      <!-- System Pulse — live data from heartbeat -->
-      <div id="systemPulse" style="margin-top:32px;display:flex;justify-content:center;gap:24px;flex-wrap:wrap;opacity:0;transition:opacity 0.6s;">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div id="pulseIndicator" style="width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-dot 2s ease-in-out infinite;"></div>
-          <span style="font-size:0.72rem;color:var(--text-dim);font-family:var(--font-mono);">Engine <span id="pulseVersion">--</span></span>
-        </div>
-        <div style="font-size:0.72rem;color:var(--text-dim);font-family:var(--font-mono);">
-          Sigs: <span id="pulseSigs" style="color:var(--text);">--</span>
-        </div>
-        <div style="font-size:0.72rem;color:var(--text-dim);font-family:var(--font-mono);">
-          Regions: <span id="pulseRegions" style="color:var(--text);">--</span>/3 online
-        </div>
-        <div style="font-size:0.72rem;color:var(--text-dim);font-family:var(--font-mono);">
-          Last sync: <span id="pulseSync" style="color:var(--text);">--</span>
-        </div>
-      </div>
-      <!-- FP Streak Badge -->
-      <div id="fpStreakBadge" style="margin-top:20px;display:flex;justify-content:center;opacity:0;transition:opacity 0.6s;">
-        <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:8px;background:rgba(48,200,96,0.08);border:1px solid rgba(48,200,96,0.2);">
-          <span style="font-size:0.72rem;color:var(--green);font-family:var(--font-mono);font-weight:600;">True Positive Streak: <span id="fpStreakDays">--</span> days</span>
-        </div>
-      </div>
-      <!-- Daily Digest -->
-      <div id="dailyDigest" style="margin-top:24px;max-width:540px;margin-left:auto;margin-right:auto;opacity:0;transition:opacity 0.6s;">
-        <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-          <summary style="padding:12px 18px;cursor:pointer;font-size:0.78rem;font-family:var(--font-heading);font-weight:600;color:var(--text-bright);display:flex;align-items:center;gap:8px;list-style:none;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Daily Digest
-            <span id="digestDate" style="margin-left:auto;font-family:var(--font-mono);font-size:0.68rem;color:var(--text-dim);font-weight:400;"></span>
-          </summary>
-          <div style="padding:0 18px 14px;font-family:var(--font-mono);font-size:0.72rem;line-height:1.8;">
-            <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 16px;color:var(--text-dim);">
-              <span style="color:var(--text);font-weight:600;">Today</span>
-              <span id="digestToday"></span>
-              <span style="color:var(--text);font-weight:600;">Yesterday</span>
-              <span id="digestYesterday"></span>
-              <span style="color:var(--text);font-weight:600;">7-day trend</span>
-              <span id="digestTrend"></span>
-            </div>
-          </div>
-        </details>
-      </div>
-    </div>
-  </section>
-
-
-  <div class="divider"></div>
-
-  <!-- THREAT LANDSCAPE -->
-  <section class="section" id="threat">
-    <div class="section-header reveal">
-      <div class="section-label">The Problem</div>
-      <h2 class="section-title">The gaps in current anti-cheat</h2>
-      <p class="section-desc">Most solutions still rely on techniques designed for an earlier generation of cheats. Here's where they fall short.</p>
-    </div>
-    <div class="threat-grid">
-      <div class="threat-card reveal">
-        <div class="threat-card-icon">&#9888;</div>
-        <div class="threat-card-name">Signature-Only Detection</div>
-        <div class="threat-card-flaw">Reactive &bull; Always Behind</div>
-        <p>Most anti-cheat solutions rely primarily on signature databases — known cheat hashes that are matched at runtime. This means every new cheat version, every recompile, every obfuscation pass creates a window of zero detection. The cheat ecosystem moves faster than signature updates. Public cheats get caught, but paid providers deliver undetected builds within hours of each database update.</p>
-      </div>
-      <div class="threat-card reveal">
-        <div class="threat-card-icon">&#9888;</div>
-        <div class="threat-card-name">No Hardware-Layer Defense</div>
-        <div class="threat-card-flaw">Blind to Physical Attacks</div>
-        <p>DMA attack boards, firmware-spoofed devices, and external memory readers operate below the software layer entirely. No amount of kernel scanning can detect a cheat that reads game memory from a second machine over PCIe. This attack surface is growing — DMA hardware is cheaper and more accessible every year, and virtually no anti-cheat currently addresses it.</p>
-      </div>
-      <div class="threat-card reveal">
-        <div class="threat-card-icon">&#9888;</div>
-        <div class="threat-card-name">Privacy vs Protection Tradeoff</div>
-        <div class="threat-card-flaw">Always-On &bull; Intrusive</div>
-        <p>Some solutions require boot-time kernel drivers that run 24/7 — even when you're not playing. This creates a permanent attack surface on every installed system, breaks third-party software like RGB controllers and overclocking tools, and raises serious privacy concerns. Players shouldn't have to choose between security and system integrity.</p>
+      <div class="live-pulse" id="livePulse">
+        <div class="live-pulse-item"><span class="live-pulse-dot"></span>Checkout success <span id="pulseCheckout">--</span></div>
+        <div class="live-pulse-item">Avg. delivery <span id="pulseDelivery">--</span></div>
+        <div class="live-pulse-item">Regions online <span id="pulseRegions">--</span>/3</div>
       </div>
     </div>
   </section>
 
   <div class="divider"></div>
 
-  <!-- FOUR LAYERS -->
-  <section class="section" id="heads">
+  <!-- TRENDING / FEATURED GAMES -->
+  <section class="section" id="trending">
     <div class="section-header reveal">
-      <div class="section-label">The Solution</div>
-      <h2 class="section-title">Four layers, every attack surface covered</h2>
-      <p class="section-desc">Cerberus guards every layer of the stack — kernel, behavior, hardware, and network. No other anti-cheat operates across all four simultaneously.</p>
+      <div class="section-label">Trending Now</div>
+      <h2 class="section-title">Featured on the marketplace</h2>
+      <p class="section-desc">Popular titles and the lowest verified prices across all active sellers, updated live.</p>
     </div>
-    <div class="heads-grid">
-      <div class="head-card reveal">
-        <div class="head-number">01</div>
-        <div class="head-icon">&#x1F6E1;</div>
-        <div class="head-title">Kernel Integrity</div>
-        <div class="head-desc">Deep ring-0 introspection that monitors every syscall, page table modification, and driver load in real-time. Detects threats before they touch game memory.</div>
-        <ul class="head-features">
-          <li>Hypervisor-assisted memory isolation</li>
-          <li>Syscall table tamper detection</li>
-          <li>Page table entry (PTE) manipulation detection</li>
-          <li>Vulnerable driver exploit blocking (BYOVD)</li>
-          <li>Manual map detection — PEB-unlinked executable memory scanning</li>
-          <li>Instrumentation callback &amp; exception handler monitoring</li>
-          <li>Process hollowing &amp; early bird APC injection detection</li>
-          <li>Driver stack integrity attestation</li>
-        </ul>
+    <div class="game-grid" id="trendingGrid"></div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- GENRE BROWSE -->
+  <section class="section" id="genres" style="padding-top:60px;padding-bottom:60px;">
+    <div class="section-header reveal">
+      <div class="section-label">Browse by Genre</div>
+      <h2 class="section-title">Find your next game</h2>
+    </div>
+    <div class="genre-row reveal">
+      <a class="genre-chip" href="/catalog/?genre=FPS">FPS</a>
+      <a class="genre-chip" href="/catalog/?genre=RPG">RPG</a>
+      <a class="genre-chip" href="/catalog/?genre=Battle%20Royale">Battle Royale</a>
+      <a class="genre-chip" href="/catalog/?genre=Strategy">Strategy</a>
+      <a class="genre-chip" href="/catalog/?genre=Simulation">Simulation</a>
+      <a class="genre-chip" href="/catalog/?genre=Horror">Horror</a>
+      <a class="genre-chip" href="/catalog/?genre=Racing">Racing</a>
+      <a class="genre-chip" href="/catalog/?genre=Sports">Sports</a>
+      <a class="genre-chip" href="/catalog/?genre=Survival">Survival</a>
+      <a class="genre-chip" href="/catalog/?genre=Fighting">Fighting</a>
+      <a class="genre-chip" href="/catalog/?genre=Puzzle">Puzzle</a>
+      <a class="genre-chip" href="/catalog/?genre=Adventure">Adventure</a>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- TRUST / BUYER PROTECTION -->
+  <section class="section" id="trust">
+    <div class="section-header reveal">
+      <div class="section-label">Why Buy Here</div>
+      <h2 class="section-title">Built for buyer confidence</h2>
+      <p class="section-desc">Every listing goes through seller verification, and every order is backed by our buyer protection guarantee.</p>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-card reveal">
+        <div class="trust-card-icon">&#9889;</div>
+        <div class="trust-card-name">Instant Delivery</div>
+        <p>Most keys land in your inbox within seconds of checkout. Auto-delivery listings are fulfilled the moment payment clears — no waiting on a human.</p>
       </div>
-      <div class="head-card reveal">
-        <div class="head-number">02</div>
-        <div class="head-icon">&#x1F9E0;</div>
-        <div class="head-title">Behavioral AI</div>
-        <div class="head-desc">Multi-model ML pipeline analyzing input at 1000Hz+. Builds per-player behavioral fingerprints and detects anomalies no signature scanner can catch.</div>
-        <ul class="head-features">
-          <li>Temporal convolutional network (TCN) aim analysis</li>
-          <li>Micro-movement entropy scoring</li>
-          <li>Cross-session behavioral drift detection</li>
-          <li>Humanization bypass detection (jitter/noise)</li>
-          <li>Camera-movement correlation analysis</li>
-          <li>Trigger-timing spectral decomposition</li>
-          <li>Account-sharing &amp; boosting detection</li>
-          <li>Adaptive model retraining per game title</li>
-        </ul>
+      <div class="trust-card reveal">
+        <div class="trust-card-icon">&#128737;&#65039;</div>
+        <div class="trust-card-name">Buyer Protection Guarantee</div>
+        <p>Every order is covered. If a key doesn't activate or a seller doesn't deliver, we'll issue a replacement key or a full refund.</p>
       </div>
-      <div class="head-card reveal">
-        <div class="head-number">03</div>
-        <div class="head-icon">&#x1F50D;</div>
-        <div class="head-title">Hardware Fingerprinting</div>
-        <div class="head-desc">Deep hardware interrogation — PCIe topology mapping, firmware attestation, IOMMU validation, and timing-based DMA detection that catches what device lists miss.</div>
-        <ul class="head-features">
-          <li>PCIe topology &amp; BAR region mapping</li>
-          <li>IOMMU/VT-d configuration attestation</li>
-          <li>DMA timing-anomaly analysis</li>
-          <li>FPGA bitstream fingerprinting &amp; TLP timing profiling</li>
-          <li>USB HID firmware attestation (KMBox/Arduino detection)</li>
-          <li>TPM 2.0 platform integrity attestation</li>
-          <li>GPU shader pipeline tamper detection</li>
-          <li>Multi-ban hardware identity linkage</li>
-        </ul>
+      <div class="trust-card reveal">
+        <div class="trust-card-icon">&#9989;</div>
+        <div class="trust-card-name">Verified Sellers</div>
+        <p>Every seller passes an identity and inventory review before their first listing goes live, and stays monitored on every order after.</p>
       </div>
-      <div class="head-card reveal">
-        <div class="head-number">04</div>
-        <div class="head-icon">&#x1F310;</div>
-        <div class="head-title">Network Sentinel</div>
-        <div class="head-desc">Server-side traffic analysis and cross-player intelligence. Detects coordinated cheating, replay attacks, and packet manipulation that client-side systems can never see.</div>
-        <ul class="head-features">
-          <li>Real-time packet integrity validation</li>
-          <li>Server-side movement reconciliation</li>
-          <li>Cross-player statistical anomaly detection</li>
-          <li>Cheat-cluster &amp; ring identification</li>
-          <li>Session replay forensic analysis</li>
-          <li>External AI inference pattern recognition (DMA + ML detection)</li>
-          <li>Global threat intelligence feed</li>
-          <li>Matchmaking integrity scoring</li>
-        </ul>
+      <div class="trust-card reveal">
+        <div class="trust-card-icon">&#128274;</div>
+        <div class="trust-card-name">Secure Checkout</div>
+        <p>Payments are encrypted end-to-end and held until delivery is confirmed. Automated fraud checks run on every single order.</p>
       </div>
     </div>
   </section>
 
   <div class="divider"></div>
 
-  <!-- ARCHITECTURE -->
-  <section class="section" id="architecture">
+  <!-- FEATURED DEALS -->
+  <section class="section" id="deals">
     <div class="section-header reveal">
-      <div class="section-label">Under the Hood</div>
-      <h2 class="section-title">System architecture</h2>
-      <p class="section-desc">Cerberus operates across four privilege layers — client and server — with zero persistent background processes. Each layer feeds into a unified verdict engine.</p>
+      <div class="section-label">Deals</div>
+      <h2 class="section-title">Today's best prices</h2>
+      <p class="section-desc">Flash sales and the steepest discounts across the catalog, refreshed throughout the day.</p>
     </div>
-    <div class="arch-container reveal">
-      <div class="arch-layers">
-        <div class="arch-layer">
-          <div class="arch-layer-name">Ring 0 — Kernel Mode</div>
-          <p>WHQL-signed minifilter with hypervisor-assisted memory isolation. Monitors syscall tables, PTE modifications, and driver stacks. Loads on launch, unloads on exit — zero residual footprint.</p>
-        </div>
-        <div class="arch-layer">
-          <div class="arch-layer-name">Ring 3 — User Mode</div>
-          <p>Multi-model ML pipeline running TCN-based aim analysis, entropy scoring, and behavioral fingerprinting at 1000Hz+. Sub-2ms latency, minimal frame impact in beta testing.</p>
-        </div>
-        <div class="arch-layer">
-          <div class="arch-layer-name">Hardware Layer</div>
-          <p>Deep hardware interrogation — PCIe topology mapping, IOMMU attestation, TPM 2.0 integrity verification, and timing-based DMA detection that catches what device lists miss.</p>
-        </div>
-        <div class="arch-layer">
-          <div class="arch-layer-name">Network Layer</div>
-          <p>Server-side traffic validation, cross-player anomaly correlation, cheat-ring detection, and global threat intelligence. Catches what client-side systems can never see.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SCAN LIFECYCLE -->
-  <section class="section" id="lifecycle">
-    <div class="section-header reveal">
-      <div class="section-label">Scan Lifecycle</div>
-      <h2 class="section-title">Protection from launch to exit</h2>
-      <p class="section-desc">Continuous monitoring across the entire game session. Loads on launch, scans during play, unloads on exit.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;" class="reveal">
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative;">
-        <div style="font-family:var(--font-heading);font-size:0.7rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Phase 1 — Game Launch</div>
-        <div style="font-family:var(--font-heading);font-size:1rem;font-weight:700;color:var(--text-bright);margin-bottom:12px;">Pre-Session Scan</div>
-        <ul style="list-style:none;font-size:0.8rem;color:var(--text-dim);line-height:2;">
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Hardware device enumeration and verification</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> System integrity baseline established</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Driver and module integrity verified</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Signature database synced</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> DRM license validation (if applicable)</li>
-        </ul>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative;">
-        <div style="font-family:var(--font-heading);font-size:0.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Phase 2 — Active Session</div>
-        <div style="font-family:var(--font-heading);font-size:1rem;font-weight:700;color:var(--text-bright);margin-bottom:12px;">Continuous Monitoring</div>
-        <ul style="list-style:none;font-size:0.8rem;color:var(--text-dim);line-height:2;">
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Real-time behavioral AI analysis</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Continuous system integrity verification</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Hardware anomaly detection</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Process and memory protection</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Confidence-based threat scoring</li>
-        </ul>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative;">
-        <div style="font-family:var(--font-heading);font-size:0.7rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Phase 3 — Detection Event</div>
-        <div style="font-family:var(--font-heading);font-size:1rem;font-weight:700;color:var(--text-bright);margin-bottom:12px;">Evidence Collection &amp; Response</div>
-        <ul style="list-style:none;font-size:0.8rem;color:var(--text-dim);line-height:2;">
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Session snapshot captured for review</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Detection metadata logged (type, confidence, head)</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Ban callback fired to game server</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Borderline cases escalated to manual review</li>
-          <li style="display:flex;align-items:center;gap:8px;"><span style="color:var(--accent);">&#10003;</span> Webhook event sent to partner dashboard</li>
-        </ul>
-      </div>
-    </div>
+    <div id="dealsStrip"></div>
+    <p class="reveal" style="text-align:center;margin-top:28px;"><a href="/deals/" class="btn-secondary">See All Deals</a></p>
   </section>
 
   <div class="divider"></div>
 
-  <!-- WHY CERBERUS -->
-  <section class="section" id="compare">
+  <!-- SELLER SPOTLIGHT -->
+  <section class="section" id="sellers">
     <div class="section-header reveal">
-      <div class="section-label">Why Cerberus</div>
-      <h2 class="section-title">What sets us apart</h2>
-      <p class="section-desc">Built from the ground up to cover every attack surface — software, behavioral, and hardware — in a single unified solution.</p>
+      <div class="section-label">Seller Spotlight</div>
+      <h2 class="section-title">Trusted by thousands of buyers</h2>
+      <p class="section-desc">Every seller is vetted before their first listing goes live, then rated by real buyers on every order.</p>
     </div>
-    <div class="compare-table-wrap reveal">
-      <table class="compare-table">
-        <thead>
-          <tr>
-            <th>Capability</th>
-            <th>Traditional AC</th>
-            <th>Cerberus</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Kernel-level integrity protection</td><td><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td></tr>
-          <tr><td>DMA / hardware attack detection</td><td><span class="cross">&#10005;</span></td><td><span class="check">&#10003;</span></td></tr>
-          <tr><td>Real-time behavioral AI</td><td><span class="partial">~</span></td><td><span class="check">&#10003;</span></td></tr>
-          <tr><td>Firmware-level device verification</td><td><span class="cross">&#10005;</span></td><td><span class="check">&#10003;</span></td></tr>
-          <tr><td>Zero telemetry / zero PII</td><td><span class="cross">&#10005;</span></td><td><span class="check">&#10003;</span></td></tr>
-          <tr><td>Runtime-only (no always-on driver)</td><td><span class="partial">~</span></td><td><span class="check">&#10003;</span></td></tr>
-          <tr><td>DRM integrity verification</td><td><span class="cross">&#10005;</span></td><td><span class="check">&#10003;</span></td></tr>
-          <tr><td>No third-party driver conflicts</td><td><span class="cross">&#10005;</span></td><td><span class="check">&#10003;</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- HARDWARE COMPATIBILITY -->
-  <section class="section" id="compatibility" style="padding-top:40px;">
-    <div class="section-header reveal">
-      <div class="section-label">Compatibility</div>
-      <h2 class="section-title">Certified hardware support</h2>
-      <p class="section-desc">Cerberus is tested and validated across all major hardware platforms. Zero driver conflicts, zero broken peripherals.</p>
-    </div>
-    <div class="compat-grid reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;max-width:900px;margin:0 auto;">
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--text-bright);margin-bottom:4px;">Intel</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">CPU & Chipset</div>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--text-bright);margin-bottom:4px;">AMD</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">CPU & Chipset</div>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--text-bright);margin-bottom:4px;">NVIDIA</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">GPU & Drivers</div>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:4px;">ASUS</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">Motherboard & RGB</div>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--text-bright);margin-bottom:4px;">MSI</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">Motherboard & OC</div>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--text-bright);margin-bottom:4px;">Gigabyte</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">Motherboard & RGB</div>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--text-bright);margin-bottom:4px;">ASRock</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">Motherboard</div>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--text-bright);margin-bottom:4px;">Corsair</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">Peripherals & iCUE</div>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--text-bright);margin-bottom:4px;">Logitech</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">Peripherals & GHub</div>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--text-bright);margin-bottom:4px;">Razer</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">Peripherals & Synapse</div>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--text-bright);margin-bottom:4px;">SteelSeries</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">Peripherals & GG</div>
-      </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;">
-        <div style="font-family:var(--font-heading);font-size:1.1rem;font-weight:700;color:var(--text-bright);margin-bottom:4px;">Samsung</div>
-        <div style="font-size:0.7rem;color:var(--text-dim);">NVMe & Storage</div>
-      </div>
-    </div>
-    <p class="reveal" style="text-align:center;font-size:0.75rem;color:var(--text-dim);margin-top:24px;max-width:600px;margin-left:auto;margin-right:auto;">Cerberus never blocks third-party drivers. No broken RGB software, no disabled fan controllers, no forced reboots. Full compatibility with HVCI, Secure Boot, and Windows 11 kernel-mode hardware-enforced stack protection.</p>
-  </section>
-
-
-  <div class="divider"></div>
-
-  <!-- THREAT INTELLIGENCE -->
-  <section class="section" id="threat-intel">
-    <div class="section-header reveal">
-      <div class="section-label">Threat Intelligence</div>
-      <h2 class="section-title">Live cheat landscape</h2>
-      <p class="section-desc">Real-time monitoring of known cheat providers. Detection status, activity level, and threat scoring updated continuously from our research pipeline.</p>
-    </div>
-    <div class="reveal" id="threatIntelGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:32px;"></div>
-    <div class="reveal" id="fpStreakNarrative" style="max-width:700px;margin:0 auto;"></div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- METRICS -->
-  <section class="section" id="metrics">
-    <div class="section-header reveal">
-      <div class="section-label">Performance</div>
-      <h2 class="section-title">Built for competitive framerates</h2>
-      <p class="section-desc">Cerberus was engineered to be invisible to performance. Every scan, every inference, every check — under budget.</p>
-    </div>
-    <div class="metrics-grid reveal">
-      <div class="metric-card">
-        <div class="metric-value">~78%</div>
-        <div class="metric-label">Blended Detection Rate</div>
-        <div class="metric-sub">Across all cheat categories (beta)</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value">0.14%</div>
-        <div class="metric-label">False Positive Rate</div>
-        <div class="metric-sub">Borderline cases escalate to manual review</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value">&lt;0.4%</div>
-        <div class="metric-label">CPU Overhead</div>
-        <div class="metric-sub">Avg across all layers</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value">&lt;3ms</div>
-        <div class="metric-label">Scan Latency</div>
-        <div class="metric-sub">Per detection cycle</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value">22MB</div>
-        <div class="metric-label">Memory Footprint</div>
-        <div class="metric-sub">Total runtime allocation</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value">0</div>
-        <div class="metric-label">Frame Impact</div>
-        <div class="metric-sub">Measured at 240fps</div>
-      </div>
-    </div>
-
-    <!-- Detection breakdown by category -->
-    <div class="metrics-breakdown reveal" style="max-width:960px;margin:3rem auto 0;padding:0 2rem;">
-      <h3 style="font-family:var(--font-heading);color:var(--text-bright);font-size:1.1rem;margin-bottom:0.5rem;">Detection Coverage</h3>
-      <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:2rem;">Internal benchmark results from controlled pentest environments. Exact rates vary by cheat category and are continuously improving.</p>
-      <div style="display:flex;flex-direction:column;gap:1.25rem;">
-
-        <div style="display:flex;align-items:flex-start;gap:1rem;">
-          <div style="min-width:170px;">
-            <span style="font-size:0.85rem;color:var(--text-bright);font-weight:500;">Known Signatures</span>
-            <span style="display:block;font-size:0.7rem;color:var(--text-dim);margin-top:2px;">Hash-matched binaries, public cheat DBs</span>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:4px;">
-            <div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;"><div id="drBar0" style="width:92.4%;height:100%;background:linear-gradient(90deg,var(--green),#50e890);border-radius:3px;"></div></div>
-          </div>
-          <div style="min-width:55px;text-align:right;padding-top:2px;">
-            <span id="drVal0" style="font-family:var(--font-mono);font-size:0.85rem;color:var(--green);font-weight:600;">92.4%</span>
-          </div>
-        </div>
-
-        <div style="display:flex;align-items:flex-start;gap:1rem;">
-          <div style="min-width:170px;">
-            <span style="font-size:0.85rem;color:var(--text-bright);font-weight:500;">Internal Cheats</span>
-            <span style="display:block;font-size:0.7rem;color:var(--text-dim);margin-top:2px;">DLL injection, manual mapping, shellcode</span>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:4px;">
-            <div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;"><div id="drBar1" style="width:84.7%;height:100%;background:linear-gradient(90deg,var(--green),#50e890);border-radius:3px;"></div></div>
-          </div>
-          <div style="min-width:55px;text-align:right;padding-top:2px;">
-            <span id="drVal1" style="font-family:var(--font-mono);font-size:0.85rem;color:var(--green);font-weight:600;">84.7%</span>
-          </div>
-        </div>
-
-        <div style="display:flex;align-items:flex-start;gap:1rem;">
-          <div style="min-width:170px;">
-            <span style="font-size:0.85rem;color:var(--text-bright);font-weight:500;">External Overlays</span>
-            <span style="display:block;font-size:0.7rem;color:var(--text-dim);margin-top:2px;">Screen readers, pixel bots, GDI hooks</span>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:4px;">
-            <div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;"><div id="drBar2" style="width:76.2%;height:100%;background:linear-gradient(90deg,var(--accent),#f0b840);border-radius:3px;"></div></div>
-          </div>
-          <div style="min-width:55px;text-align:right;padding-top:2px;">
-            <span id="drVal2" style="font-family:var(--font-mono);font-size:0.85rem;color:var(--accent);font-weight:600;">76.2%</span>
-          </div>
-        </div>
-
-        <div style="display:flex;align-items:flex-start;gap:1rem;">
-          <div style="min-width:170px;">
-            <span style="font-size:0.85rem;color:var(--text-bright);font-weight:500;">Kernel Exploits</span>
-            <span style="display:block;font-size:0.7rem;color:var(--text-dim);margin-top:2px;">Ring-0 rootkits, DKOM, callback removal</span>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:4px;">
-            <div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;"><div id="drBar3" style="width:71.3%;height:100%;background:linear-gradient(90deg,var(--accent),#f0b840);border-radius:3px;"></div></div>
-          </div>
-          <div style="min-width:55px;text-align:right;padding-top:2px;">
-            <span id="drVal3" style="font-family:var(--font-mono);font-size:0.85rem;color:var(--accent);font-weight:600;">71.3%</span>
-          </div>
-        </div>
-
-        <div style="display:flex;align-items:flex-start;gap:1rem;">
-          <div style="min-width:170px;">
-            <span style="font-size:0.85rem;color:var(--text-bright);font-weight:500;">DMA / Hardware</span>
-            <span style="display:block;font-size:0.7rem;color:var(--text-dim);margin-top:2px;">PCIe devices, firmware-spoofed hardware</span>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:4px;">
-            <div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;"><div id="drBar4" style="width:58.6%;height:100%;background:linear-gradient(90deg,var(--red),#e86050);border-radius:3px;"></div></div>
-          </div>
-          <div style="min-width:55px;text-align:right;padding-top:2px;">
-            <span id="drVal4" style="font-family:var(--font-mono);font-size:0.85rem;color:var(--red);font-weight:600;">58.6%</span>
-          </div>
-        </div>
-
-        <div style="display:flex;align-items:flex-start;gap:1rem;">
-          <div style="min-width:170px;">
-            <span style="font-size:0.85rem;color:var(--text-bright);font-weight:500;">DRM Tampering</span>
-            <span style="display:block;font-size:0.7rem;color:var(--text-dim);margin-top:2px;">License bypass, binary patching, loader mods</span>
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:4px;">
-            <div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;"><div id="drBar5" style="width:79.1%;height:100%;background:linear-gradient(90deg,var(--accent),#f0b840);border-radius:3px;"></div></div>
-          </div>
-          <div style="min-width:55px;text-align:right;padding-top:2px;">
-            <span id="drVal5" style="font-family:var(--font-mono);font-size:0.85rem;color:var(--accent);font-weight:600;">79.1%</span>
-          </div>
-        </div>
-
-      </div>
-      <div style="display:flex;align-items:center;gap:1.5rem;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:0.4rem;"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div><span style="font-size:0.7rem;color:var(--text-dim);">Auto-ban (&gt;95%)</span></div>
-        <div style="display:flex;align-items:center;gap:0.4rem;"><div style="width:8px;height:8px;border-radius:50%;background:var(--accent);"></div><span style="font-size:0.7rem;color:var(--text-dim);">Flagged + secondary scan</span></div>
-        <div style="display:flex;align-items:center;gap:0.4rem;"><div style="width:8px;height:8px;border-radius:50%;background:var(--red);"></div><span style="font-size:0.7rem;color:var(--text-dim);">Escalated to manual review</span></div>
-        <span style="font-size:0.7rem;color:var(--text-dim);margin-left:auto;font-style:italic;">v0.5.0.0b &middot; Internal pentest environment &middot; Real-world rates vary by title</span>
-      </div>
-    </div>
-
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- PRICING -->
-  <section class="section" id="pricing">
-    <div class="section-header reveal">
-      <div class="section-label">Pricing</div>
-      <h2 class="section-title">Protection that scales with you</h2>
-      <p class="section-desc">From indie studios to AAA publishers. Every tier includes zero telemetry, runtime-only activation, and clean session exits.</p>
-    </div>
-    <div class="genre-selector" id="genreSelector">
-      <button class="genre-pill active" data-genre="all">All Games</button>
-      <button class="genre-pill" data-genre="fps">FPS / Tactical Shooter</button>
-      <button class="genre-pill" data-genre="br">Battle Royale</button>
-      <button class="genre-pill" data-genre="rpg">RPG / MMO</button>
-      <button class="genre-pill" data-genre="racing">Racing / Sports</button>
-      <button class="genre-pill" data-genre="sandbox">Sandbox / Survival</button>
-    </div>
-    <div class="pricing-grid" id="pricingGrid">
-      <div class="pricing-card reveal" data-tier="argus">
-        <div class="pricing-recommended">RECOMMENDED</div>
-        <div class="pricing-tier">Starter</div>
-        <div class="pricing-name">Argus</div>
-        <div class="pricing-desc" data-default="Kernel-level protection for qualifying indie studios and early-access titles. Up to 10K CCU.">Kernel-level protection for qualifying indie studios and early-access titles. Up to 10K CCU.</div>
-        <div class="pricing-price" data-usd="0">Free*</div>
-        <div class="pricing-period">*Application reviewed manually — must demonstrate a shipped or near-launch title</div>
-        <ul class="pricing-features">
-          <li>Kernel integrity monitoring (ring-0)</li>
-          <li>Signature-based cheat detection</li>
-          <li>Memory permission auditing (RWX scan)</li>
-          <li>Process &amp; module enumeration</li>
-          <li>Code-signing enforcement</li>
-          <li>Basic driver verification</li>
-          <li>Standard ban API + session events</li>
-          <li>SDK documentation &amp; sample projects</li>
-          <li>Community Discord support</li>
-          <li>10K concurrent player limit</li>
-          <li class="disabled">Behavioral AI engine</li>
-          <li class="disabled">Hardware fingerprinting</li>
-          <li class="disabled">Network Sentinel</li>
-          <li class="disabled">Threat intelligence reports</li>
-          <li class="disabled">Dedicated support</li>
-        </ul>
-        <a href="/access/" class="pricing-btn pricing-btn-outline">Apply for Access</a>
-      </div>
-      <div class="pricing-card reveal" data-tier="aegis">
-        <div class="pricing-recommended">RECOMMENDED</div>
-        <div class="pricing-tier">Professional</div>
-        <div class="pricing-name">Aegis</div>
-        <div class="pricing-desc" data-default="Full AI-powered behavioral detection for competitive titles. Up to 100K CCU.">Full AI-powered behavioral detection for competitive titles. Up to 100K CCU.</div>
-        <div class="pricing-price" data-usd="0">Contact Sales</div>
-        <div class="pricing-period">Volume-based pricing — tailored to your CCU</div>
-        <ul class="pricing-features">
-          <li>Everything in Argus</li>
-          <li>Behavioral AI engine (TCN model)</li>
-          <li>500Hz input sampling &amp; analysis</li>
-          <li>Aim analysis &amp; reaction timing</li>
-          <li>Input cadence anomaly detection</li>
-          <li>Micro-movement pattern recognition</li>
-          <li>Per-player behavioral baselines</li>
-          <li>Confidence-based flag tiers (auto-ban, flag, monitor)</li>
-          <li>ONNX Runtime inference (&lt;2ms)</li>
-          <li>Advanced ban API + webhook events</li>
-          <li>Partner analytics dashboard</li>
-          <li>Priority email support (12hr SLA)</li>
-          <li>Monthly threat intelligence reports</li>
-          <li>100K concurrent player limit</li>
-          <li class="disabled">Hardware fingerprinting</li>
-          <li class="disabled">DMA attack detection</li>
-          <li class="disabled">Network Sentinel</li>
-        </ul>
-        <a href="/access/" class="pricing-btn pricing-btn-outline">Create Account</a>
-      </div>
-      <div class="pricing-card reveal" data-tier="cerberus">
-        <div class="pricing-recommended">RECOMMENDED</div>
-        <div class="pricing-tier">Complete</div>
-        <div class="pricing-name">Cerberus</div>
-        <div class="pricing-desc" data-default="All four detection layers. Kernel + AI + hardware + network sentinel protection. Up to 500K CCU.">All four detection layers. Kernel + AI + hardware + network sentinel protection. Up to 500K CCU.</div>
-        <div class="pricing-price" data-usd="0">Contact Sales</div>
-        <div class="pricing-period">Volume-based pricing — tailored to your CCU</div>
-        <ul class="pricing-features">
-          <li>Everything in Aegis</li>
-          <li>Hardware fingerprinting (full PCIe topology)</li>
-          <li>PCIe TLP timing anomaly detection</li>
-          <li>DMA attack board detection &amp; blocking</li>
-          <li>External memory read detection</li>
-          <li>Firmware signature cross-referencing</li>
-          <li>Firmware spoof identification</li>
-          <li>IOMMU/VT-d attestation</li>
-          <li>Hypervisor-aware scanning</li>
-          <li>Network Sentinel (full)</li>
-          <li>Cross-player anomaly correlation</li>
-          <li>Cheat-ring &amp; cluster detection</li>
-          <li>Session replay forensics</li>
-          <li>Matchmaking integrity scoring</li>
-          <li>Real-time threat dashboard</li>
-          <li>Dedicated threat analyst</li>
-          <li>Slack/Discord direct — 4hr SLA</li>
-          <li>500K concurrent player limit</li>
-        </ul>
-        <a href="/access/" class="pricing-btn pricing-btn-outline">Create Account</a>
-      </div>
-      <div class="pricing-card reveal" data-tier="olympus">
-        <div class="pricing-recommended">RECOMMENDED</div>
-        <div class="pricing-tier">Enterprise</div>
-        <div class="pricing-name">Olympus</div>
-        <div class="pricing-desc" data-default="Custom-engineered protection for AAA publishers and live-service titles at any scale.">Custom-engineered protection for AAA publishers and live-service titles at any scale.</div>
-        <div class="pricing-price" data-usd="0">Custom</div>
-        <div class="pricing-period">Volume pricing negotiated per title</div>
-        <ul class="pricing-features">
-          <li>Everything in Cerberus</li>
-          <li>Unlimited CCU — no player cap</li>
-          <li>Custom detection rule authoring</li>
-          <li>Title-specific AI model training</li>
-          <li>Private threat intelligence feed</li>
-          <li>On-premise deployment option</li>
-          <li>Dedicated red team penetration testing</li>
-          <li>Pre-launch cheat landscape audit</li>
-          <li>White-glove integration onboarding</li>
-          <li>Named account engineer</li>
-          <li>24/7 engineering escalation hotline</li>
-          <li>SLA-backed uptime guarantee (98%)</li>
-          <li>Custom webhook &amp; event schemas</li>
-          <li>Quarterly executive security briefings</li>
-        </ul>
-        <a href="mailto:cerberus@arsenalrx.dev" class="pricing-btn pricing-btn-outline">Contact Sales</a>
-      </div>
-    </div>
-    <p class="pricing-note reveal">All plans include zero telemetry collection, runtime-only activation, clean session exits, and full SDK access. During closed beta, all partners receive Cerberus-tier access at no cost. Pricing tiers apply at general availability. CCU = Concurrent Users.</p>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- TEAM -->
-  <section class="section" id="team">
-    <div class="team-banner reveal">
-      <div class="team-count">32</div>
-      <div class="team-label">Engineers building the future of game security</div>
-      <div class="team-roles">
-        <span class="team-role">Kernel & Hardware</span>
-        <span class="team-role">AI & Detection</span>
-        <span class="team-role">SDK & Platform</span>
-        <span class="team-role">QA & Stability</span>
-        <span class="team-role">Infrastructure & DevOps</span>
-      </div>
-      <a href="/team/" class="btn-primary" style="margin-top:28px;display:inline-flex;">
-        Meet the Team
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
+    <div class="seller-grid" id="sellerGrid"></div>
+    <p class="reveal" style="text-align:center;margin-top:32px;"><a href="/sellers/" class="btn-secondary">View All Sellers</a></p>
   </section>
 
   <div class="divider"></div>
@@ -1318,80 +528,38 @@
     <div class="faq-grid reveal">
       <div class="faq-item">
         <button class="faq-question">
-          Does Cerberus run at boot like Vanguard?
+          How does delivery actually work?
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         </button>
-        <div class="faq-answer"><p>No. The kernel driver loads only when your game launches and unloads when it exits. Cerberus has zero presence on the system outside of active game sessions. No boot-time driver, no background processes, no tray icon.</p></div>
+        <div class="faq-answer"><p>Most listings use Instant Auto-Delivery — your key is generated and shown to you (and emailed) the moment payment clears, usually within seconds. Some listings are marked Manual Delivery, where the seller sends the key by hand within their stated response time. Every listing's delivery method is shown before you buy.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">
-          What happens if a player is falsely detected?
+          What's the refund and replacement policy?
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         </button>
-        <div class="faq-answer"><p>Detections below 95% confidence are never auto-banned — they enter the manual review queue. A threat analyst reviews the full session replay within 4 hours (Cerberus tier SLA). If a ban is issued and appealed, review completes within 24 hours. Current false positive rate: 0.14%.</p></div>
+        <div class="faq-answer"><p>Every order is covered by our buyer protection guarantee. If a key doesn't redeem, is already used, or never arrives, open a claim from your order page — we'll get the seller to issue a replacement or refund you directly within the SLA window.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">
-          What data does Cerberus collect?
+          Is it safe to buy from third-party sellers?
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         </button>
-        <div class="faq-answer"><p>Zero PII. Cerberus processes hardware IDs, input patterns, and memory state locally on the player's machine. Only detection events (ban/flag) with anonymized session metadata are sent to the API. We don't track playtime, game history, browsing, or anything outside the active session.</p></div>
+        <div class="faq-answer"><p>Yes. Every seller on Cerberus Market passes an identity and inventory check before listing, and payment is held until your key is confirmed delivered. Seller ratings, response times, and badges are visible on every listing so you can buy with confidence.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">
-          What kernel access does Cerberus need?
+          How do sellers get verified?
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         </button>
-        <div class="faq-answer"><p>The driver requires ring-0 access to monitor memory permissions, detect mapped drivers, and enumerate PCIe devices. It's Microsoft WHQL-signed and undergoes third-party security audits quarterly. The driver uses ObRegisterCallbacks for process protection — it cannot read or modify game memory itself.</p></div>
+        <div class="faq-answer"><p>New sellers submit identity and inventory-source documentation before their first listing goes live. From there, sellers earn badges — Verified, Fast Delivery, Power Seller, Top Seller — based on order volume, response time, and dispute-free order history, all continuously monitored.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">
-          How long does SDK integration take?
+          Is checkout secure?
           <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         </button>
-        <div class="faq-answer"><p>Under 2 hours for Unreal Engine and Unity with our plugins. The raw C++ SDK is 4 API calls: Init, StartSession, EndSession, Shutdown. Full integration guide is available in our <a href="/docs/" style="color:var(--accent);">documentation</a>.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">
-          Is the driver tamper-resistant?
-          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
-        <div class="faq-answer"><p>The driver binary uses multiple layers of code protection and integrity verification. Critical detection logic runs server-side and is never exposed to client machines. We rotate protection schemes with each update.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">
-          Does Cerberus protect against DRM bypasses?
-          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
-        <div class="faq-answer"><p>Yes. Cerberus includes DRM integrity verification as part of the pre-session scan. It detects binary patching, license bypass attempts, loader modifications, and tampered game executables. This works alongside your existing DRM solution (Denuvo, Steam DRM, etc.) as an additional layer of protection.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">
-          What happens when a cheat is detected?
-          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
-        <div class="faq-answer"><p>On detection, Cerberus captures a session snapshot including the detection type, confidence score, which detection layer triggered, and anonymized session metadata. This evidence package is sent to the partner dashboard for review. High-confidence detections trigger an immediate ban callback to your game server. All data is retained for appeal review.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">
-          What system requirements do players need?
-          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
-        <div class="faq-answer"><p>Windows 10 20H2+ or Windows 11 (x64). Secure Boot must be enabled in BIOS for full hardware verification. TPM 2.0 is recommended but optional. Players should keep Windows and GPU drivers up to date. No special BIOS configuration beyond Secure Boot is required.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">
-          Can Cerberus cause BSODs or crashes?
-          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
-        <div class="faq-answer"><p>The kernel driver is EV code-signed (WHQL certification pending) and tested across 40+ hardware configurations. If the driver fails to load for any reason, the game continues with graceful degradation — it never forces a crash. In 8 months of beta testing, we've had no widespread BSOD issues. One incident involving Windows 11 24H2 preview was patched within 13 hours.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">
-          How does Cerberus handle ban appeals?
-          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
-        <div class="faq-answer"><p>Players can submit ban appeals through your game's support flow. Appeals go to our threat analyst team who review the full detection evidence, session snapshot, and hardware fingerprint. Cerberus tier partners get 4-hour appeal SLA. If a ban is determined to be a false positive, the player is unbanned and the detection model is updated to prevent recurrence.</p></div>
+        <div class="faq-answer"><p>Yes. Payment details are encrypted end-to-end and never stored by individual sellers. Every order runs through automated fraud checks before a key is released, and funds are held until delivery is confirmed on your end.</p></div>
       </div>
     </div>
   </section>
@@ -1399,374 +567,46 @@
   <div class="divider"></div>
 
   <!-- CTA -->
-  <section class="cta-section" id="access">
-    <h2 class="reveal">Ready to secure<br/>your <span>game?</span></h2>
-    <p class="reveal">Cerberus is currently in closed early access. Request access for your studio.</p>
-    <div class="reveal" id="accessFormWrap" style="max-width:480px;margin:32px auto 0;">
-      <form id="accessForm" action="https://formspree.io/f/xpwdgvjk" method="POST" style="display:flex;flex-direction:column;gap:12px;">
-        <input type="text" name="studio" placeholder="Studio Name" required style="padding:12px 16px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);font-size:0.85rem;" />
-        <input type="email" name="email" placeholder="Work Email" required style="padding:12px 16px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);font-size:0.85rem;" />
-        <select name="engine" style="padding:12px 16px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:0.85rem;">
-          <option value="">Game Engine (optional)</option>
-          <option>Unreal Engine 5</option>
-          <option>Unity 6</option>
-          <option>Custom Engine</option>
-          <option>Other</option>
-        </select>
-        <textarea name="message" rows="3" placeholder="Tell us about your title (optional)" style="padding:12px 16px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);font-size:0.85rem;resize:vertical;"></textarea>
-        <button type="submit" class="btn-primary" style="justify-content:center;border:none;cursor:pointer;font-family:var(--font);">Request Early Access</button>
-      </form>
-      <div id="accessSuccess" style="display:none;text-align:center;padding:32px;">
-        <div style="font-size:2rem;color:var(--green);margin-bottom:12px;">&check;</div>
-        <div style="font-family:var(--font-heading);font-size:1.1rem;color:var(--text-bright);margin-bottom:8px;">Request Submitted</div>
-        <p style="font-size:0.85rem;color:var(--text-dim);">We'll review your application and get back to you within 48 hours.</p>
-      </div>
+  <section class="cta-section">
+    <h2 class="reveal">Ready to find your next <span>game?</span></h2>
+    <p class="reveal">Thousands of verified listings, instant delivery, and a buyer protection guarantee on every order.</p>
+    <div class="cta-actions reveal">
+      <a href="/catalog/" class="btn-primary">Browse Catalog</a>
+      <a href="/sell/" class="btn-secondary">Sell on Cerberus Market</a>
     </div>
-    <p class="cta-note" style="margin-top:20px;">Cerberus is in active development. Features and specifications are subject to change.</p>
   </section>
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer-brand">Cerbe<span>rus</span></div>
-    <p>Four layers. Every surface. Nothing gets past the gate.</p>
-    <div style="display:flex;justify-content:center;gap:24px;margin-top:16px;flex-wrap:wrap;">
-      <a href="/docs/">Documentation</a>
-      <a href="/api/">API Reference</a>
-      <a href="/sdk/">SDK</a>
-      <a href="/changelog/">Changelog</a>
-      <a href="/blog/">Blog</a>
-      <a href="/status/">Status</a>
-      <a href="/updates/">Updates</a>
-      <a href="/team/">Team</a>
-      <a href="mailto:cerberus@arsenalrx.dev">Contact</a>
-    </div>
-    <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;flex-wrap:wrap;font-size:0.78rem;">
-      <a href="/privacy/" style="color:var(--text-dim);">Privacy Policy</a>
-      <a href="/terms/" style="color:var(--text-dim);">Terms of Service</a>
-      <a href="/.well-known/security.txt" style="color:var(--text-dim);">Security</a>
-    </div>
-    <p style="margin-top: 16px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved.</p>
+    <div class="footer-brand">Cerbe<span>rus</span> Market</div>
+    <p style="margin-bottom:16px;">Guarded delivery. Verified sellers. Instant keys.</p>
+    <p style="margin-bottom:8px;"><a href="/">Home</a> &bull; <a href="/catalog/">Catalog</a> &bull; <a href="/deals/">Deals</a> &bull; <a href="/trends/">Trends</a> &bull; <a href="/status/">Status</a> &bull; <a href="/changelog/">Changelog</a></p>
+    <p style="margin-bottom:8px;"><a href="/sellers/">Sellers</a> &bull; <a href="/sell/">Sell with Us</a></p>
+    <p style="margin-bottom:16px;"><a href="/privacy/">Privacy</a> &bull; <a href="/terms/">Terms</a></p>
+    <p>&copy; 2026 Cerberus Market. All game titles are property of their respective (fictional) publishers.</p>
   </footer>
 
   <script src="/js/cerberus-engine.js"></script>
   <script src="/js/cerberus-shared.js"></script>
   <script>
-    // Year
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Scroll reveal
-    var reveals = document.querySelectorAll('.reveal');
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    reveals.forEach(function(el) { observer.observe(el); });
-
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(function(a) {
-      a.addEventListener('click', function(e) {
-        e.preventDefault();
-        var target = document.querySelector(this.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
-
-    // Stagger threat cards and head cards
-    var grids = document.querySelectorAll('.threat-grid, .heads-grid, .metrics-grid');
-    grids.forEach(function(grid) {
-      var cards = grid.children;
-      var gridObserver = new IntersectionObserver(function(entries) {
+    // ===== SCROLL REVEAL =====
+    function observeReveals(nodeList) {
+      var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
           if (entry.isIntersecting) {
-            for (var i = 0; i < cards.length; i++) {
-              (function(idx) {
-                setTimeout(function() { cards[idx].classList.add('visible'); }, idx * 120);
-              })(i);
-            }
-            gridObserver.unobserve(entry.target);
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.1 });
-      gridObserver.observe(grid);
-    });
-
-    // Live counters — derived from CerberusEngine
-    (function() {
-      var E = window.CerberusEngine;
-      var snap = E ? E.snapshot() : null;
-      var TITLES = snap ? snap.games : 18;
-
-      var threats = snap ? snap.totalBans : 8420;
-      var sessions = snap ? snap.sessionsProtected : 1280;
-      var pentests = snap ? snap.pentestScenarios : 492;
-
-      // Populate system pulse bar from engine
-      if (E && snap) {
-        var pulseEl = document.getElementById('systemPulse');
-        if (pulseEl) {
-          var vEl = document.getElementById('pulseVersion');
-          var sEl = document.getElementById('pulseSigs');
-          var rEl = document.getElementById('pulseRegions');
-          var tEl = document.getElementById('pulseSync');
-          if (vEl) vEl.textContent = E.CONFIG.engineVersion;
-          if (sEl) sEl.textContent = E.signatureCount().toLocaleString();
-          if (rEl) rEl.textContent = E.CONFIG.regions.length;
-          if (tEl) tEl.textContent = E.relativeTime(snap.lastHeartbeat.getTime());
-          pulseEl.style.opacity = '1';
-        }
-      }
-
-      // Dynamic version age
-      if (E) {
-        var vaEl = document.getElementById('versionAge');
-        if (vaEl) vaEl.textContent = 'Latest stable \u00b7 ' + E.versionAge();
-      }
-
-      // FP streak badge
-      if (snap) {
-        var fpBadge = document.getElementById('fpStreakBadge');
-        var fpDays = document.getElementById('fpStreakDays');
-        if (fpBadge && fpDays) {
-          fpDays.textContent = snap.fpStreak;
-          fpBadge.style.opacity = '1';
-        }
-      }
-
-      // Daily digest widget
-      if (snap) {
-        var digestEl = document.getElementById('dailyDigest');
-        var dd = snap.dailyDigest;
-        var dateEl = document.getElementById('digestDate');
-        var todayEl = document.getElementById('digestToday');
-        var yestEl = document.getElementById('digestYesterday');
-        var trendEl = document.getElementById('digestTrend');
-        if (dateEl) {
-          var now = new Date();
-          dateEl.textContent = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        }
-        if (todayEl) todayEl.textContent = 'Sessions: ' + dd.today.sessions + ' | Detections: ' + dd.today.detections + ' | Bans: ' + dd.today.bans + ' | FP: ' + dd.today.fp;
-        if (yestEl) yestEl.textContent = 'Sessions: ' + dd.yesterday.sessions + ' | Detections: ' + dd.yesterday.detections + ' | Bans: ' + dd.yesterday.bans + ' | FP: ' + dd.yesterday.fp;
-        if (trendEl) {
-          var sDir = dd.trend.sessions >= 0 ? '\u2191' : '\u2193';
-          var dDir = dd.trend.detections >= 0 ? '\u2191' : '\u2193';
-          trendEl.textContent = sDir + ' ' + Math.abs(dd.trend.sessions) + '% sessions, ' + dDir + ' ' + Math.abs(dd.trend.detections) + '% detections (' + dd.trend.narrative + ')';
-        }
-        if (digestEl) digestEl.style.opacity = '1';
-      }
-
-      function animateCounter(el, target) {
-        var duration = 1500; var startTime = null;
-        function step(ts) {
-          if (!startTime) startTime = ts;
-          var progress = Math.min((ts - startTime) / duration, 1);
-          var ease = 1 - Math.pow(1 - progress, 3);
-          el.textContent = Math.floor(ease * target).toLocaleString();
-          if (progress < 1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-      }
-
-      var titlesEl = document.getElementById('statTitles');
-      var threatEl = document.getElementById('statThreats');
-      var sessionEl = document.getElementById('statSessions');
-      var pentestEl = document.getElementById('statPentests');
-
-      if (titlesEl) { titlesEl.textContent = TITLES; }
-      if (threatEl) animateCounter(threatEl, threats);
-      if (sessionEl) animateCounter(sessionEl, sessions);
-      if (pentestEl) animateCounter(pentestEl, pentests);
-
-      // Live ticks — very slow accumulation appropriate for beta scale
-      function tickThreat() {
-        threats += 1;
-        if (threatEl) threatEl.textContent = threats.toLocaleString();
-        setTimeout(tickThreat, 300000 + Math.floor(Math.random() * 600000)); // 5-15min
-      }
-      setTimeout(tickThreat, 120000 + Math.floor(Math.random() * 180000));
-
-      function tickSession() {
-        sessions += 1;
-        if (sessionEl) sessionEl.textContent = sessions.toLocaleString();
-        setTimeout(tickSession, 240000 + Math.floor(Math.random() * 360000)); // 4-10min
-      }
-      setTimeout(tickSession, 180000 + Math.floor(Math.random() * 120000));
-
-      function tickPentest() {
-        pentests += 1;
-        if (pentestEl) pentestEl.textContent = pentests.toLocaleString();
-        setTimeout(tickPentest, 900000 + Math.floor(Math.random() * 900000)); // 15-30min
-      }
-      setTimeout(tickPentest, 600000 + Math.floor(Math.random() * 600000));
-    })();
-
-    // ===== DETECTION RATE DRIFT (TODO #5) =====
-    // Rates derived from CerberusEngine (58-92% range, realistic for beta)
-    (function() {
-      var E = window.CerberusEngine;
-      var rates = E ? E.detectionRates() : [
-        { name: 'Aimbot', rate: 89 }, { name: 'Wallhack', rate: 84 },
-        { name: 'DMA', rate: 72 }, { name: 'Kernel', rate: 78 },
-        { name: 'Speed', rate: 65 }, { name: 'HWID Spoof', rate: 58 }
-      ];
-
-      for (var i = 0; i < rates.length; i++) {
-        var rate = rates[i].rate;
-        var bar = document.getElementById('drBar' + i);
-        var val = document.getElementById('drVal' + i);
-        if (bar) bar.style.width = rate + '%';
-        if (val) {
-          val.textContent = rate.toFixed(1) + '%';
-          val.title = 'Daily variance from new cheat releases and signature pushes. Category: ' + rates[i].name;
-        }
-      }
-    })();
-
-    // ===== THREAT INTELLIGENCE GRID =====
-    (function() {
-      var E = window.CerberusEngine;
-      if (!E || !E.providerThreatIntel) return;
-      var grid = document.getElementById('threatIntelGrid');
-      if (!grid) return;
-
-      var providers = E.providerThreatIntel();
-      var html = '';
-      providers.forEach(function(p) {
-        var threatColor = p.threatScore > 70 ? 'var(--red)' : p.threatScore > 40 ? 'var(--accent)' : 'var(--green)';
-        var threatBg = p.threatScore > 70 ? 'rgba(224,64,80,0.1)' : p.threatScore > 40 ? 'rgba(232,160,32,0.1)' : 'rgba(48,200,96,0.1)';
-        html += '<div class="ti-card">';
-        html += '<div class="ti-card-header">';
-        html += '<div class="ti-card-name">' + p.name + '</div>';
-        html += '<div class="ti-card-threat" style="color:' + threatColor + ';background:' + threatBg + ';">' + p.threatScore + '/100</div>';
-        html += '</div>';
-        html += '<div class="ti-card-desc">' + p.description + '</div>';
-        html += '<div class="ti-card-meta">';
-        html += '<span class="ti-card-tag ' + p.activity + '">' + p.activity.toUpperCase() + '</span>';
-        html += '<span class="ti-card-tag ' + p.detection + '">' + p.detection.toUpperCase() + '</span>';
-        html += '<span class="ti-card-tag">Seen ' + p.lastSeen + '</span>';
-        html += '<span class="ti-card-tag">Updated ' + p.lastUpdate + '</span>';
-        html += '</div>';
-        html += '<div class="ti-threat-bar"><div class="ti-threat-fill" style="width:' + p.threatScore + '%;background:' + threatColor + ';"></div></div>';
-        html += '</div>';
-      });
-      grid.innerHTML = html;
-
-      // FP incident narrative
-      var fpEl = document.getElementById('fpStreakNarrative');
-      if (fpEl && E.fpIncidentNarrative) {
-        var fp = E.fpIncidentNarrative();
-        var fHtml = '<div class="fp-narrative">';
-        fHtml += '<div class="fp-narrative-title"><span style="color:var(--green);">\u2713</span> True Positive Streak: ' + fp.streakDays + ' days</div>';
-        fHtml += '<div class="fp-narrative-detail">';
-        fHtml += '<strong>Last false positive</strong> (' + fp.lastIncident.daysAgo + ' days ago): ';
-        fHtml += fp.lastIncident.overlay + ' — ' + fp.lastIncident.cause + '. ';
-        fHtml += fp.lastIncident.sessionsAffected + ' session' + (fp.lastIncident.sessionsAffected > 1 ? 's' : '') + ' affected, resolved in ' + fp.lastIncident.responseMinutes + ' minutes. ';
-        fHtml += '<span style="color:var(--green);">' + fp.lastIncident.resolution + '</span>';
-        fHtml += '</div></div>';
-        fpEl.innerHTML = fHtml;
-      }
-    })();
-
-    // ===== COUNTER MICRO-JITTER =====
-    // Occasionally pause live counters for 2-4s then catch up, simulating real telemetry lag
-    (function() {
-      var threatEl = document.getElementById('statThreats');
-      var sessionEl = document.getElementById('statSessions');
-      if (!threatEl || !sessionEl) return;
-      var els = [threatEl, sessionEl];
-
-      function jitter() {
-        var el = els[Math.floor(Math.random() * els.length)];
-        var orig = el.style.transition || '';
-        // Brief dim to simulate stale data
-        el.style.transition = 'opacity 0.3s';
-        el.style.opacity = '0.5';
-        setTimeout(function() {
-          el.style.opacity = '1';
-          el.style.transition = orig;
-        }, 2000 + Math.floor(Math.random() * 2000));
-        // Schedule next jitter: 2-5 minutes
-        setTimeout(jitter, 120000 + Math.floor(Math.random() * 180000));
-      }
-      // First jitter after 60-120s
-      setTimeout(jitter, 60000 + Math.floor(Math.random() * 60000));
-    })();
-
-    // ===== FAQ TOGGLE =====
-    document.querySelectorAll('.faq-question').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var item = this.parentElement;
-        var wasOpen = item.classList.contains('open');
-        document.querySelectorAll('.faq-item.open').forEach(function(i) { i.classList.remove('open'); });
-        if (!wasOpen) item.classList.add('open');
-      });
-    });
-
-    // ===== HERO PARTICLE NETWORK =====
-    (function() {
-      var canvas = document.getElementById('heroParticles');
-      if (!canvas) return;
-      var ctx = canvas.getContext('2d');
-      var particles = [];
-      var count = 40;
-      var maxDist = 120;
-
-      function resize() {
-        var hero = canvas.parentElement;
-        canvas.width = hero.offsetWidth;
-        canvas.height = hero.offsetHeight;
-      }
-      resize();
-      window.addEventListener('resize', resize);
-
-      for (var i = 0; i < count; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          r: Math.random() * 1.5 + 0.5
-        });
-      }
-
-      function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (var i = 0; i < particles.length; i++) {
-          var p = particles[i];
-          p.x += p.vx; p.y += p.vy;
-          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(232,160,32,0.15)';
-          ctx.fill();
-
-          for (var j = i + 1; j < particles.length; j++) {
-            var q = particles[j];
-            var dx = p.x - q.x, dy = p.y - q.y;
-            var dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < maxDist) {
-              ctx.beginPath();
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(q.x, q.y);
-              ctx.strokeStyle = 'rgba(232,160,32,' + (0.06 * (1 - dist / maxDist)) + ')';
-              ctx.lineWidth = 0.5;
-              ctx.stroke();
-            }
-          }
-        }
-        requestAnimationFrame(draw);
-      }
-      draw();
-    })();
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      nodeList.forEach(function(el) { observer.observe(el); });
+    }
+    observeReveals(document.querySelectorAll('.reveal'));
 
     // Nav background on scroll
     window.addEventListener('scroll', function() {
       var nav = document.querySelector('.nav');
+      if (!nav) return;
       if (window.scrollY > 50) {
         nav.style.background = 'rgba(5,5,7,0.95)';
         nav.style.borderBottomColor = 'rgba(255,255,255,0.08)';
@@ -1776,208 +616,156 @@
       }
     }, { passive: true });
 
-    // ===== NOTIFICATION TOAST SYSTEM =====
-    (function() {
-      var container = document.getElementById('toastContainer');
-      if (!container) return;
-
-      var toastMessages = [
-        { icon: 'block', text: '<strong>Ban wave deployed</strong> — ' },
-        { icon: 'ok', text: '<strong>Signature DB synced</strong> — all regions up to date' },
-        { icon: 'info', text: '<strong>New detection rule</strong> — behavioral pattern #' },
-        { icon: 'block', text: '<strong>DMA board blocked</strong> — firmware fingerprint matched' },
-        { icon: 'ok', text: '<strong>Kernel integrity</strong> — scan cycle completed, all modules verified' },
-        { icon: 'info', text: '<strong>SDK update</strong> — v0.4.3.0a available for partners' },
-        { icon: 'block', text: '<strong>HWID ban</strong> — spoof attempt detected and flagged' },
-        { icon: 'ok', text: '<strong>Uptime milestone</strong> — 97.8% availability this month' },
-        { icon: 'info', text: '<strong>Threat intel</strong> — new loader variant catalogued' },
-        { icon: 'block', text: '<strong>Injection blocked</strong> — manual map attempt intercepted' },
-        { icon: 'ok', text: '<strong>AI model update</strong> — bm-3.1 checkpoint deployed to beta' },
-        { icon: 'info', text: '<strong>Partner onboarded</strong> — new title integrated successfully' },
-      ];
-
-      function showToast() {
-        var msg = toastMessages[Math.floor(Math.random() * toastMessages.length)];
-        var text = msg.text;
-        if (text.indexOf('Ban wave') !== -1) { var E = window.CerberusEngine; var bws = E ? E.banWaveSize() : 8; text += bws + ' accounts across ' + Math.min(E ? E.CONFIG.regions.length : 3, 3) + ' regions'; }
-        if (text.indexOf('pattern #') !== -1) text += 'BP-' + Math.floor(Math.random() * 9000 + 1000) + ' added to ruleset';
-        var toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerHTML = '<div class="toast-icon toast-icon-' + msg.icon + '">' + (msg.icon === 'block' ? 'X' : msg.icon === 'ok' ? '\u2713' : '!') + '</div><div class="toast-text">' + text + '<div class="toast-time">' + new Date().toLocaleTimeString() + '</div></div>';
-        container.appendChild(toast);
-        setTimeout(function() { toast.classList.add('out'); }, 5000);
-        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 5300);
-        // Keep max 3 toasts visible
-        while (container.children.length > 3) container.removeChild(container.firstChild);
-      }
-
-      // First toast after 60-120s, then every 2-10min (engine-paced)
-      setTimeout(function() {
-        showToast();
-        function scheduleNext() {
-          var E = window.CerberusEngine;
-          var delay = E ? E.nextToastInterval() : (120000 + Math.floor(Math.random() * 480000));
-          setTimeout(function() { showToast(); scheduleNext(); }, delay);
-        }
-        scheduleNext();
-      }, 60000 + Math.floor(Math.random() * 60000));
-    })();
-
-    // ===== EMAIL FORM HANDLER =====
-    (function() {
-      var form = document.getElementById('accessForm');
-      var successDiv = document.getElementById('accessSuccess');
-      if (!form || !successDiv) return;
-
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        var btn = form.querySelector('button[type="submit"]');
-        btn.textContent = 'Submitting...';
-        btn.disabled = true;
-
-        fetch(form.action, {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { 'Accept': 'application/json' }
-        }).then(function(r) {
-          if (r.ok) {
-            form.style.display = 'none';
-            successDiv.style.display = 'block';
-          } else {
-            btn.textContent = 'Error — Try Again';
-            btn.disabled = false;
-          }
-        }).catch(function() {
-          btn.textContent = 'Error — Try Again';
-          btn.disabled = false;
-        });
+    // ===== FAQ ACCORDION =====
+    document.querySelectorAll('.faq-question').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var item = this.parentElement;
+        var wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(function(i) { i.classList.remove('open'); });
+        if (!wasOpen) item.classList.add('open');
       });
-    })();
+    });
 
-    // ===== GENRE-BASED PRICING =====
-    (function() {
-      var genreData = {
-        all: {
-          descs: {},
-          recommended: null,
-          annotations: {}
-        },
-        fps: {
-          descs: {
-            argus: 'Kernel-level aimbot and wallhack detection for competitive shooters. Up to 10K CCU.',
-            aegis: 'Full behavioral aim analysis with 500Hz input sampling for tactical shooters. Up to 100K CCU.',
-            cerberus: 'All four detection layers — critical for competitive FPS integrity at scale. Up to 500K CCU.',
-            olympus: 'Custom-tuned detection models trained on your title\'s specific competitive meta.'
-          },
-          recommended: 'cerberus',
-          annotations: {
-            aegis: { '500Hz input sampling': 'Critical for aim detection' },
-            cerberus: { 'Cross-player anomaly correlation': 'Detects coordinated boosting' }
-          }
-        },
-        br: {
-          descs: {
-            argus: 'Signature-based cheat detection for battle royale titles. Up to 10K CCU.',
-            aegis: 'Behavioral AI tuned for large-lobby competitive play with input pattern analysis. Up to 100K CCU.',
-            cerberus: 'Full protection with Network Sentinel — essential for large-lobby integrity. Up to 500K CCU.',
-            olympus: 'Enterprise-scale protection for live-service battle royale titles at any CCU.'
-          },
-          recommended: 'cerberus',
-          annotations: {
-            cerberus: { 'Network Sentinel (full)': 'Essential for 100+ player lobbies', 'Matchmaking integrity scoring': 'Rank manipulation prevention' }
-          }
-        },
-        rpg: {
-          descs: {
-            argus: 'Basic cheat scanning for RPG and MMO titles. Covers speed hacks and memory edits. Up to 10K CCU.',
-            aegis: 'Economy exploit detection and speed-hack prevention for persistent worlds. Up to 100K CCU.',
-            cerberus: 'Full stack protection including cross-player anomaly correlation for gold farming rings. Up to 500K CCU.',
-            olympus: 'Custom economy monitoring and title-specific exploit detection models.'
-          },
-          recommended: 'aegis',
-          annotations: {
-            aegis: { 'Per-player behavioral baselines': 'Detects economy exploits over time' },
-            cerberus: { 'Cross-player anomaly correlation': 'Detects gold farming rings', 'Cheat-ring &amp; cluster detection': 'Catches organized RMT operations' }
-          }
-        },
-        racing: {
-          descs: {
-            argus: 'Basic integrity checks for racing and sports titles. Covers input manipulation. Up to 10K CCU.',
-            aegis: 'Input manipulation and teleport detection with cadence anomaly analysis for fair competition. Up to 100K CCU.',
-            cerberus: 'Full protection with hardware fingerprinting to catch controller macro devices. Up to 500K CCU.',
-            olympus: 'Custom detection models trained on your title\'s physics and input characteristics.'
-          },
-          recommended: 'aegis',
-          annotations: {
-            aegis: { 'Input cadence anomaly detection': 'Catches controller macros', '500Hz input sampling': 'Detects rapid-fire exploits' }
-          }
-        },
-        sandbox: {
-          descs: {
-            argus: 'Modular kernel protection that adapts to custom game modes and modding support. Up to 10K CCU.',
-            aegis: 'Behavioral detection with configurable thresholds for sandbox environments. Up to 100K CCU.',
-            cerberus: 'Full protection with SDK extensibility for custom game mode rulesets. Up to 500K CCU.',
-            olympus: 'White-glove integration with custom rule authoring for unique sandbox mechanics.'
-          },
-          recommended: 'argus',
-          annotations: {
-            argus: { 'SDK documentation &amp; sample projects': 'Extensible via custom rules' }
-          }
-        }
-      };
+    // ===== LIVE HERO STATS + PULSE STRIP =====
+    if (window.CERBERUS && CERBERUS.stateReady) {
+      CERBERUS.stateReady.then(function(state) {
+        if (!state) return;
+        var listingsEl = document.getElementById('heroStatListings');
+        var deliveredEl = document.getElementById('heroStatDelivered');
+        var soldEl = document.getElementById('heroStatSold');
+        var streakEl = document.getElementById('heroStatStreak');
+        if (listingsEl) listingsEl.textContent = state.activeListings.toLocaleString();
+        if (deliveredEl) deliveredEl.textContent = state.dailyKeysDelivered.toLocaleString();
+        if (soldEl) soldEl.textContent = state.totalKeysSold.toLocaleString();
+        if (streakEl) streakEl.textContent = state.disputeFreeStreak + 'd';
 
-      var selector = document.getElementById('genreSelector');
-      if (!selector) return;
+        var checkoutEl = document.getElementById('pulseCheckout');
+        var deliveryEl = document.getElementById('pulseDelivery');
+        var regionsEl = document.getElementById('pulseRegions');
+        var E = window.CerberusEngine;
+        if (checkoutEl) checkoutEl.textContent = state.checkoutSuccessRate + '%';
+        if (deliveryEl) deliveryEl.textContent = state.avgDeliveryTime + 's';
+        if (regionsEl) regionsEl.textContent = E ? E.CONFIG.regions.length : 3;
 
-      selector.addEventListener('click', function(e) {
-        var pill = e.target.closest('.genre-pill');
-        if (!pill) return;
-        selector.querySelectorAll('.genre-pill').forEach(function(p) { p.classList.remove('active'); });
-        pill.classList.add('active');
-        applyGenre(pill.dataset.genre);
+        var pulseWrap = document.getElementById('livePulse');
+        if (pulseWrap) pulseWrap.style.opacity = '1';
+      });
+    }
+
+    // ===== CATALOG / LISTINGS / SELLERS DATA =====
+    function formatPrice(n) { return '$' + Number(n).toFixed(2); }
+
+    function gameCardHTML(game, listing) {
+      if (!window.CERBERUS || !CERBERUS.coverTileHTML) return '';
+      var discount = listing ? (listing.discountPct || 0) : 0;
+      var badge = discount > 0 ? '-' + discount + '%' : null;
+      var tile = CERBERUS.coverTileHTML(game, { size: 'md', badge: badge });
+      var priceRow = '';
+      if (listing) {
+        priceRow = '<div class="game-card-price-row">' +
+          (discount > 0 ? '<span class="game-card-price-strike">' + formatPrice(game.basePrice) + '</span>' : '') +
+          '<span class="game-card-price">' + formatPrice(listing.price) + '</span>' +
+          '</div>';
+      }
+      var ratingRow = '<div class="game-card-rating">&#9733; ' + game.rating.toFixed(1) + ' <span>(' + game.ratingCount.toLocaleString() + ')</span></div>';
+      return '<a class="game-card reveal" href="/listing/?id=' + game.id + '">' + tile +
+        '<div class="game-card-body">' +
+        '<div class="game-card-meta">' + game.genre + ' &bull; ' + game.publisher + '</div>' +
+        ratingRow + priceRow +
+        '</div></a>';
+    }
+
+    function renderTrending(catalog, cheapestByGame) {
+      var grid = document.getElementById('trendingGrid');
+      if (!grid) return;
+      var E = window.CerberusEngine;
+      var sale = E ? E.flashSaleEvent() : { isActive: false };
+      var featured = [];
+      if (sale.isActive && sale.featuredIndex != null && catalog[sale.featuredIndex]) {
+        featured.push(catalog[sale.featuredIndex]);
+      }
+      var rest = catalog.slice().sort(function(a, b) {
+        return (b.rating * Math.log(b.ratingCount + 1)) - (a.rating * Math.log(a.ratingCount + 1));
+      });
+      rest.forEach(function(g) {
+        if (featured.length >= 8) return;
+        if (featured.indexOf(g) !== -1) return;
+        featured.push(g);
+      });
+      featured = featured.slice(0, 8);
+
+      grid.innerHTML = featured.map(function(g) { return gameCardHTML(g, cheapestByGame[g.id]); }).join('');
+      observeReveals(grid.querySelectorAll('.reveal'));
+    }
+
+    function renderDeals(catalog, catalogById, listings) {
+      var wrap = document.getElementById('dealsStrip');
+      if (!wrap) return;
+      var E = window.CerberusEngine;
+      var sale = E ? E.flashSaleEvent() : { isActive: false };
+
+      if (sale.isActive && sale.featuredIndex != null && catalog[sale.featuredIndex]) {
+        var game = catalog[sale.featuredIndex];
+        var phaseLabels = { ANNOUNCED: 'Starting Soon', LIVE: 'Live Now', ENDING_SOON: 'Ending Soon', ENDED: 'Just Ended', COOLDOWN: 'Cooling Down' };
+        var phaseLabel = phaseLabels[sale.phaseName] || 'Live';
+        wrap.innerHTML = '<div class="deals-banner reveal">' +
+          '<div><div class="deals-banner-tag">&#9889; Flash Sale &mdash; ' + phaseLabel + '</div>' +
+          '<div class="deals-banner-title">' + game.title + '</div>' +
+          '<div class="deals-banner-desc">Up to ' + sale.discountPct + '% off while the sale lasts.</div></div>' +
+          '<a href="/listing/?id=' + game.id + '" class="btn-primary">Shop the Deal</a>' +
+          '</div>';
+      } else {
+        var topDiscounts = listings.slice().sort(function(a, b) { return (b.discountPct || 0) - (a.discountPct || 0); }).slice(0, 2);
+        var cardsHtml = topDiscounts.map(function(l) {
+          var g = catalogById[l.catalogId];
+          return g ? gameCardHTML(g, l) : '';
+        }).join('');
+        wrap.innerHTML = '<div class="game-grid" style="grid-template-columns:repeat(2,1fr);max-width:640px;margin:0 auto;">' + cardsHtml + '</div>';
+      }
+      observeReveals(wrap.querySelectorAll('.reveal'));
+    }
+
+    function tierLabel(tier) {
+      return tier === 1 ? 'Top Seller' : tier === 2 ? 'Verified Seller' : 'Rising Seller';
+    }
+
+    function renderSellers(sellers) {
+      var grid = document.getElementById('sellerGrid');
+      if (!grid) return;
+      var top = sellers.slice().sort(function(a, b) { return b.rating - a.rating || b.itemsSold - a.itemsSold; }).slice(0, 4);
+      grid.innerHTML = top.map(function(s) {
+        return '<a class="seller-card reveal" href="/sellers/">' +
+          '<div class="seller-avatar">' + s.avatarInitials + '</div>' +
+          '<div class="seller-name">' + s.displayName + '</div>' +
+          '<div class="seller-tier">' + tierLabel(s.tier) + '</div>' +
+          '<div class="seller-stats">&#9733; ' + s.rating.toFixed(1) + ' &bull; ' + s.itemsSold.toLocaleString() + ' sold</div>' +
+          '</a>';
+      }).join('');
+      observeReveals(grid.querySelectorAll('.reveal'));
+    }
+
+    Promise.all([
+      fetch('/data/catalog.json').then(function(r) { return r.json(); }),
+      fetch('/data/listings.json').then(function(r) { return r.json(); }),
+      fetch('/data/sellers.json').then(function(r) { return r.json(); })
+    ]).then(function(results) {
+      var catalog = results[0] || [];
+      var listings = results[1] || [];
+      var sellers = results[2] || [];
+
+      var catalogById = {};
+      catalog.forEach(function(g) { catalogById[g.id] = g; });
+
+      var cheapestByGame = {};
+      listings.forEach(function(l) {
+        var cur = cheapestByGame[l.catalogId];
+        if (!cur || l.price < cur.price) cheapestByGame[l.catalogId] = l;
       });
 
-      function applyGenre(genre) {
-        var data = genreData[genre] || genreData.all;
-        var cards = document.querySelectorAll('.pricing-card[data-tier]');
-
-        cards.forEach(function(card) {
-          var tier = card.dataset.tier;
-          // Update description
-          var descEl = card.querySelector('.pricing-desc');
-          if (descEl) {
-            if (data.descs && data.descs[tier]) {
-              descEl.textContent = data.descs[tier];
-            } else {
-              descEl.textContent = descEl.dataset.default;
-            }
-          }
-          // Update recommended badge
-          card.classList.remove('genre-recommended');
-          if (data.recommended === tier) {
-            card.classList.add('genre-recommended');
-          }
-          // Remove old annotations
-          card.querySelectorAll('.pricing-annotation').forEach(function(a) { a.remove(); });
-          // Add new annotations
-          if (data.annotations && data.annotations[tier]) {
-            var annotations = data.annotations[tier];
-            card.querySelectorAll('.pricing-features li').forEach(function(li) {
-              var text = li.innerHTML.split('<span')[0].trim();
-              // Check each annotation key against the li text
-              for (var key in annotations) {
-                if (li.textContent.indexOf(key.replace(/&amp;/g, '&')) !== -1) {
-                  var ann = document.createElement('span');
-                  ann.className = 'pricing-annotation visible';
-                  ann.textContent = ' \u2014 ' + annotations[key];
-                  li.appendChild(ann);
-                }
-              }
-            });
-          }
-        });
-      }
-    })();
+      renderTrending(catalog, cheapestByGame);
+      renderDeals(catalog, catalogById, listings);
+      renderSellers(sellers);
+    }).catch(function() { /* leave sections empty on failure */ });
   </script>
 
 </body>

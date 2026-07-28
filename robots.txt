@@ -1,7 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /data/
-Disallow: /dashboard/
-Disallow: /login/
 
-Sitemap: https://cerberusac.dev/sitemap.xml
+Sitemap: https://cerberus.market/sitemap.xml

@@ -1,0 +1,59 @@
+{
+  "currentVersion": "v0.5.0.0b",
+  "buildNumber": 2875,
+  "lastPatchBump": "2026-07-26T16:00:00Z",
+  "lastMinorBump": "2026-07-26T16:00:00Z",
+  "lastFeatureBump": "2026-07-26T16:00:00Z",
+  "patchHistory": [
+    {
+      "version": "v0.5.0.0b",
+      "date": "2026-07-26T16:00:00Z",
+      "summary": "Cross-Session Behavioral Graph general availability and replay sandbox refinements"
+    },
+    {
+      "version": "v0.4.5.4b",
+      "date": "2026-07-26T08:00:01Z",
+      "summary": "Regional latency optimization"
+    },
+    {
+      "version": "v0.4.5.3b",
+      "date": "2026-07-22T08:01:27Z",
+      "summary": "Ban API error handling improvements"
+    },
+    {
+      "version": "v0.4.5.2b",
+      "date": "2026-07-20T08:30:09Z",
+      "summary": "Performance tuning and memory optimizations"
+    },
+    {
+      "version": "v0.4.5.1b",
+      "date": "2026-07-19T07:52:28Z",
+      "summary": "Session lifecycle race condition fix"
+    },
+    {
+      "version": "v0.4.5.0b",
+      "date": "2026-07-18T07:21:12Z",
+      "summary": "Multi-region optimization and new detection vectors"
+    },
+    {
+      "version": "v0.4.4.11b",
+      "date": "2026-07-17T07:46:51Z",
+      "summary": "SDK initialization performance improvements"
+    },
+    {
+      "version": "v0.4.4.10b",
+      "date": "2026-07-15T07:44:17Z",
+      "summary": "False positive corrections and signature updates"
+    },
+    {
+      "version": "v0.4.4.9b",
+      "date": "2026-07-13T08:38:21Z",
+      "summary": "Session lifecycle race condition fix"
+    },
+    {
+      "version": "v0.4.4.8b",
+      "date": "2026-07-12T07:51:43Z",
+      "summary": "Behavioral model threshold recalibration"
+    }
+  ]
+}
