@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v2.6.1",
-  "buildNumber": 3120,
-  "lastPatchBump": "2026-07-27T04:00:00Z",
+  "currentVersion": "v2.6.2",
+  "buildNumber": 3121,
+  "lastPatchBump": "2026-07-28T08:07:53Z",
   "lastMinorBump": "2026-07-24T00:00:00Z",
   "lastFeatureBump": "2026-04-22T00:00:00Z",
   "patchHistory": [
+    {
+      "version": "v2.6.2",
+      "date": "2026-07-28T08:07:53Z",
+      "summary": "Cart and checkout UI polish"
+    },
     {
       "version": "v2.6.1",
       "date": "2026-07-27T04:00:00Z",
@@ -49,11 +54,6 @@
       "version": "v2.5.0",
       "date": "2026-04-22T00:00:00Z",
       "summary": "EU-West region expansion — regional pricing and VAT-inclusive checkout"
-    },
-    {
-      "version": "v2.4.3",
-      "date": "2026-04-05T00:00:00Z",
-      "summary": "Checkout crash on Safari iOS when applying a promo code"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24",
+  "lastUpdated": "2026-07-28",
   "entries": [
     {
       "id": "lab-001",
@@ -93,11 +93,29 @@
     }
   ],
   "templatePool": [
-    { "title": "Regional Payout Currency Hedging", "desc": "Evaluating FX hedging for seller payouts to reduce month-to-month payout variance in non-USD regions." },
-    { "title": "Listing Photo/Cover Consistency Scoring", "desc": "Automated check that flags seller listings whose cover art or title text drifts from the canonical catalog entry." },
-    { "title": "Checkout Abandonment Recovery Emails", "desc": "Testing timed recovery emails for abandoned carts against a control group to measure incremental recovered orders." },
-    { "title": "Cross-Region Price Arbitrage Detection", "desc": "Detecting buyers systematically purchasing region-locked keys at the cheapest region to resell elsewhere." },
-    { "title": "Seller Response-Time SLA Modeling", "desc": "Modeling realistic response-time SLAs per seller tier based on historical ticket resolution data." },
-    { "title": "Adaptive Restock Batch Sizing", "desc": "Sizing automatic restock-suggestion batches to sellers based on recent sell-through velocity instead of fixed batch sizes." }
+    {
+      "title": "Regional Payout Currency Hedging",
+      "desc": "Evaluating FX hedging for seller payouts to reduce month-to-month payout variance in non-USD regions."
+    },
+    {
+      "title": "Listing Photo/Cover Consistency Scoring",
+      "desc": "Automated check that flags seller listings whose cover art or title text drifts from the canonical catalog entry."
+    },
+    {
+      "title": "Checkout Abandonment Recovery Emails",
+      "desc": "Testing timed recovery emails for abandoned carts against a control group to measure incremental recovered orders."
+    },
+    {
+      "title": "Cross-Region Price Arbitrage Detection",
+      "desc": "Detecting buyers systematically purchasing region-locked keys at the cheapest region to resell elsewhere."
+    },
+    {
+      "title": "Seller Response-Time SLA Modeling",
+      "desc": "Modeling realistic response-time SLAs per seller tier based on historical ticket resolution data."
+    },
+    {
+      "title": "Adaptive Restock Batch Sizing",
+      "desc": "Sizing automatic restock-suggestion batches to sellers based on recent sell-through velocity instead of fixed batch sizes."
+    }
   ]
 }
