@@ -1,0 +1,422 @@
+name: Cerberus Market Content Engine
+
+on:
+  schedule:
+    # Daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate daily changelog entry
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          TODAY=$(date -u +"%Y-%m-%d")
+
+          if [ ! -f data/changelog-entries.json ]; then
+            echo '[]' > data/changelog-entries.json
+          fi
+
+          VERSION=$(jq -r '.platformVersion' data/state.json)
+
+          AUTHORS=("j.ortiz" "priya.k" "d.silva" "m.duarte" "r.okafor" "t.vance" "a.chen")
+          AUTH_IDX=$((RANDOM % ${#AUTHORS[@]}))
+          AUTHOR="${AUTHORS[$AUTH_IDX]}"
+
+          ADDED_POOL=("New sort option: best value per key" "Wishlist button added to catalog cards" "Seller storefront pages now show total lifetime sales" "Bulk-purchase quantity selector on listing pages" "Recently viewed titles shown on homepage" "Price history sparkline added to listing pages" "Seller response-time badge added to offer cards" "Region filter added to catalog search")
+          IMPROVED_POOL=("Faster catalog search results on mobile" "Reduced checkout page load time by trimming unused scripts" "Clearer discount labeling when multiple sellers list the same title" "Improved price-sort stability when listings update mid-session" "Seller rating display now updates without a page reload" "Tightened fraud-check thresholds to reduce false declines" "Cart quantity stepper now respects live seller stock limits")
+          FIXED_POOL=("Fixed discount badge showing stale percentage after a price update" "Fixed cart total rounding error on multi-currency displays" "Fixed seller badge tooltip clipping on narrow screens" "Fixed duplicate toast notifications when adding the same item twice quickly" "Fixed genre filter not clearing correctly from the URL" "Fixed listing page 'related games' occasionally repeating the same title" "Fixed promo code field accepting trailing whitespace")
+
+          NUM_CHANGES=$((2 + RANDOM % 2))
+          CHANGES_JSON="[]"
+          FIX_ONLY=1
+          for i in $(seq 1 $NUM_CHANGES); do
+            TYPE_ROLL=$((RANDOM % 3))
+            if [ "$TYPE_ROLL" -eq 0 ]; then
+              POOL=("${ADDED_POOL[@]}"); TYPE="added"; FIX_ONLY=0
+            elif [ "$TYPE_ROLL" -eq 1 ]; then
+              POOL=("${IMPROVED_POOL[@]}"); TYPE="improved"; FIX_ONLY=0
+            else
+              POOL=("${FIXED_POOL[@]}"); TYPE="fixed"
+            fi
+            IDX=$((RANDOM % ${#POOL[@]}))
+            TEXT="${POOL[$IDX]}"
+            CHANGES_JSON=$(echo "$CHANGES_JSON" | jq --arg t "$TYPE" --arg x "$TEXT" '. + [{type: $t, text: $x}]')
+          done
+
+          if [ "$FIX_ONLY" -eq 1 ]; then TAG="fix"; else TAG="release"; fi
+
+          ENTRY=$(jq -n \
+            --arg ver "$VERSION" \
+            --arg date "$TODAY" \
+            --arg tag "$TAG" \
+            --arg author "$AUTHOR" \
+            --argjson changes "$CHANGES_JSON" \
+            '{version: $ver, date: $date, tag: $tag, author: $author, changes: $changes}')
+
+          jq --argjson entry "$ENTRY" '. + [$entry]' data/changelog-entries.json > data/cl_tmp.json && mv data/cl_tmp.json data/changelog-entries.json
+
+          echo "Generated changelog entry for $TODAY ($VERSION)"
+
+      - name: Maybe generate deals/news stub
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          TODAY=$(date -u +"%Y-%m-%d")
+
+          if [ ! -f data/blog-entries.json ]; then
+            echo '[]' > data/blog-entries.json
+          fi
+
+          LAST_DATE=$(jq -r '.[0].date // "2026-01-01T00:00:00Z"' data/blog-entries.json | cut -c1-10)
+          LAST_TS=$(date -d "$LAST_DATE" +%s 2>/dev/null || echo 0)
+          NOW_TS=$(date +%s)
+          DAYS_SINCE=$(( (NOW_TS - LAST_TS) / 86400 ))
+
+          # Generate every 2-5 days (check if enough time has passed, then 50% chance)
+          if [ "$DAYS_SINCE" -ge 2 ] && [ $((RANDOM % 2)) -eq 0 ]; then
+            GAME_COUNT=$(jq 'length' data/catalog.json)
+            GAME_IDX=$((RANDOM % GAME_COUNT))
+            GAME_ID=$(jq -r ".[$GAME_IDX].id" data/catalog.json)
+            GAME_TITLE=$(jq -r ".[$GAME_IDX].title" data/catalog.json)
+
+            SELLER_COUNT=$(jq 'length' data/sellers.json)
+            SELLER_IDX=$((RANDOM % SELLER_COUNT))
+            SELLER_ID=$(jq -r ".[$SELLER_IDX].id" data/sellers.json)
+            SELLER_NAME=$(jq -r ".[$SELLER_IDX].displayName" data/sellers.json)
+
+            AUTHORS=("M. Alders" "T. Vance" "R. Okafor" "S. Kwan" "J. Ferreira" "L. Novak")
+            AUTH_IDX=$((RANDOM % ${#AUTHORS[@]}))
+            AUTHOR="${AUTHORS[$AUTH_IDX]}"
+
+            CATS=("Flash Sale" "Restock" "Seller News" "Price Drop" "Roundup" "Platform")
+            CAT_IDX=$((RANDOM % ${#CATS[@]}))
+            CATEGORY="${CATS[$CAT_IDX]}"
+
+            DISCOUNT=$((10 + RANDOM % 35))
+
+            case "$CATEGORY" in
+              "Flash Sale")
+                TITLE="Flash Sale: ${GAME_TITLE} Discounted This Week"
+                SUMMARY="A limited-time discount on ${GAME_TITLE} is live now, with ${SELLER_NAME} among the sellers running the deal."
+                CONTENT="${GAME_TITLE} is featured in this week's flash sale window. ${SELLER_NAME} is offering roughly ${DISCOUNT}% off list price for the duration of the sale. Pricing is expected to drift back toward baseline once the window closes, so buyers eyeing this title may want to check current listings soon."
+                REF_FIELD="gameId"; REF_VAL="$GAME_ID"
+                ;;
+              "Restock")
+                TITLE="Restock Alert: ${GAME_TITLE} Keys Back in Stock"
+                SUMMARY="${SELLER_NAME} pushed a fresh batch of ${GAME_TITLE} keys after recent demand thinned out available stock."
+                CONTENT="${GAME_TITLE} saw stock tighten across a few sellers this week before ${SELLER_NAME} restocked with a new batch. Buyers who were waiting on availability should have an easier time finding a listing now, though pricing may vary while inventory levels normalize."
+                REF_FIELD="gameId"; REF_VAL="$GAME_ID"
+                ;;
+              "Seller News")
+                TITLE="Seller Spotlight: ${SELLER_NAME}"
+                SUMMARY="${SELLER_NAME} continues to grow its catalog and order volume on Cerberus Market."
+                CONTENT="${SELLER_NAME} has been steadily expanding its listed catalog and maintaining a strong response-time record. The storefront remains one of the more consistent options for buyers browsing multiple sellers on the same title."
+                REF_FIELD="sellerId"; REF_VAL="$SELLER_ID"
+                ;;
+              "Price Drop")
+                TITLE="Price Drop: ${GAME_TITLE} Hits a New Low"
+                SUMMARY="${SELLER_NAME} quietly dropped pricing on ${GAME_TITLE}, undercutting most other active listings."
+                CONTENT="${GAME_TITLE} pricing shifted downward this week after ${SELLER_NAME} adjusted its listing, roughly ${DISCOUNT}% below the title's typical range. Other sellers may follow with matching price adjustments in the coming days."
+                REF_FIELD="gameId"; REF_VAL="$GAME_ID"
+                ;;
+              "Roundup")
+                TITLE="This Week's Best Deals Across the Catalog"
+                SUMMARY="A quick roundup of the sharpest discounts live on Cerberus Market this week, including ${GAME_TITLE}."
+                CONTENT="Discount activity picked up across several categories this week. ${GAME_TITLE} stood out with one of the deeper cuts, and ${SELLER_NAME} was among the sellers offering competitive pricing. Check the catalog's on-sale filter for the full current list."
+                REF_FIELD="gameId"; REF_VAL="$GAME_ID"
+                ;;
+              "Platform")
+                TITLE="Platform Update: What Changed This Week"
+                SUMMARY="A short recap of recent platform-side changes affecting buyers and sellers."
+                CONTENT="This week's changes touched checkout reliability and seller-side tooling. See the changelog for the full list of specific fixes and improvements shipped."
+                REF_FIELD="gameId"; REF_VAL="$GAME_ID"
+                ;;
+            esac
+
+            LAST_ID=$(jq -r '.[0].id // "deals-000"' data/blog-entries.json | sed 's/deals-//')
+            NEXT_NUM=$(printf '%03d' $((10#$LAST_ID + 1)))
+            NEW_ID="deals-${NEXT_NUM}"
+
+            ENTRY=$(jq -n \
+              --arg id "$NEW_ID" \
+              --arg title "$TITLE" \
+              --arg date "$NOW" \
+              --arg category "$CATEGORY" \
+              --arg author "$AUTHOR" \
+              --arg reffield "$REF_FIELD" \
+              --arg refval "$REF_VAL" \
+              --arg summary "$SUMMARY" \
+              --arg content "$CONTENT" \
+              '{id: $id, title: $title, date: $date, category: $category, author: $author, summary: $summary, content: $content, generated: true} + {($reffield): $refval}')
+
+            jq --argjson entry "$ENTRY" '[$entry] + .' data/blog-entries.json > data/be_tmp.json && mv data/be_tmp.json data/blog-entries.json
+
+            echo "Generated deals entry: $TITLE"
+          else
+            echo "Skipping deals generation (${DAYS_SINCE} days since last, or random skip)"
+          fi
+
+      - name: Maybe bump version
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          NOW_TS=$(date +%s)
+
+          LAST_PATCH=$(jq -r '.lastPatchBump' data/version-meta.json)
+          LAST_MINOR=$(jq -r '.lastMinorBump' data/version-meta.json)
+          CUR_VERSION=$(jq -r '.currentVersion' data/version-meta.json)
+          BUILD=$(jq '.buildNumber' data/version-meta.json)
+
+          PATCH_TS=$(date -d "$LAST_PATCH" +%s 2>/dev/null || echo 0)
+          MINOR_TS=$(date -d "$LAST_MINOR" +%s 2>/dev/null || echo 0)
+          PATCH_AGE_H=$(( (NOW_TS - PATCH_TS) / 3600 ))
+          MINOR_AGE_D=$(( (NOW_TS - MINOR_TS) / 86400 ))
+
+          BUMPED="false"
+          NEW_VERSION="$CUR_VERSION"
+          NEW_BUILD=$((BUILD + 1))
+          BUMP_TYPE=""
+          BUMP_SUMMARY=""
+
+          # Parse vMAJOR.MINOR.PATCH
+          BASE=$(echo "$CUR_VERSION" | sed 's/^v//')
+          IFS='.' read -ra PARTS <<< "$BASE"
+          MAJOR="${PARTS[0]}"; MINOR="${PARTS[1]}"; PATCH="${PARTS[2]}"
+
+          # PATCH every 24h+ (50% chance when eligible)
+          if [ "$PATCH_AGE_H" -ge 24 ] && [ $((RANDOM % 2)) -eq 0 ]; then
+            NEW_PATCH=$((PATCH + 1))
+            NEW_VERSION="v${MAJOR}.${MINOR}.${NEW_PATCH}"
+            BUMPED="true"
+            BUMP_TYPE="patch"
+
+            SUMMARIES=("Checkout stability fixes and retry-path tuning" "Fraud-check threshold recalibration" "Price-sync timing improvements" "Seller payout batch processing fixes" "Catalog search relevance tuning" "Delivery queue throughput improvements" "Cart and checkout UI polish" "Regional pricing display fixes" "Listing image/cover rendering fixes" "Session and cart persistence fixes")
+            SUM_IDX=$((RANDOM % ${#SUMMARIES[@]}))
+            BUMP_SUMMARY="${SUMMARIES[$SUM_IDX]}"
+          fi
+
+          # MINOR every 14-28 days
+          if [ "$MINOR_AGE_D" -ge 14 ] && [ $((RANDOM % 7)) -eq 0 ]; then
+            NEW_MINOR=$((MINOR + 1))
+            NEW_VERSION="v${MAJOR}.${NEW_MINOR}.0"
+            BUMPED="true"
+            BUMP_TYPE="minor"
+
+            SUMMARIES=("New checkout payment method and seller tooling improvements" "Expanded regional pricing and catalog filters" "Seller verification and payout system upgrade" "Buyer protection and dispute-flow improvements" "Catalog search and discovery overhaul" "New seller tier and listing quality tools" "Mobile checkout redesign" "Fraud detection model upgrade")
+            SUM_IDX=$((RANDOM % ${#SUMMARIES[@]}))
+            BUMP_SUMMARY="${SUMMARIES[$SUM_IDX]}"
+          fi
+
+          if [ "$BUMPED" = "true" ]; then
+            if [ "$BUMP_TYPE" = "patch" ]; then
+              jq --arg ver "$NEW_VERSION" --argjson build "$NEW_BUILD" --arg now "$NOW" --arg summary "$BUMP_SUMMARY" \
+                '.currentVersion = $ver | .buildNumber = $build | .lastPatchBump = $now | .patchHistory = [{version: $ver, date: $now, summary: $summary}] + .patchHistory | .patchHistory = .patchHistory[0:10]' \
+                data/version-meta.json > data/vm_tmp.json && mv data/vm_tmp.json data/version-meta.json
+            else
+              jq --arg ver "$NEW_VERSION" --argjson build "$NEW_BUILD" --arg now "$NOW" --arg summary "$BUMP_SUMMARY" \
+                '.currentVersion = $ver | .buildNumber = $build | .lastMinorBump = $now | .lastPatchBump = $now | .patchHistory = [{version: $ver, date: $now, summary: $summary}] + .patchHistory | .patchHistory = .patchHistory[0:10]' \
+                data/version-meta.json > data/vm_tmp.json && mv data/vm_tmp.json data/version-meta.json
+            fi
+
+            jq --arg ver "$NEW_VERSION" --argjson build "$NEW_BUILD" \
+              '.platformVersion = $ver | .buildNumber = $build' \
+              data/state.json > data/st_tmp.json && mv data/st_tmp.json data/state.json
+
+            echo "BUMP_MSG=release: bump to ${NEW_VERSION} — ${BUMP_SUMMARY}" >> $GITHUB_ENV
+            echo "BUMPED=true" >> $GITHUB_ENV
+          else
+            echo "BUMPED=false" >> $GITHUB_ENV
+          fi
+
+      - name: Update roadmap progress
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          jq --arg now "$NOW" '
+            .lastUpdated = $now |
+            .items.short = [.items.short[] |
+              if .progress < 100 then
+                .progress = (.progress + (0.5 + (($now | explode | .[0]) % 15) / 10) | . * 10 | floor | . / 10)
+              else . end
+            ] |
+            .items.mid = [.items.mid[] |
+              if .progress < 100 then
+                .progress = (.progress + (0.1 + (($now | explode | .[2]) % 4) / 10) | . * 10 | floor | . / 10)
+              else . end
+            ] |
+            .items.long = [.items.long[] |
+              if .progress < 100 then
+                .progress = (.progress + (0.02 + (($now | explode | .[4]) % 3) / 100) | . * 100 | floor | . / 100)
+              else . end
+            ]
+          ' data/roadmap.json > data/rm_tmp.json && mv data/rm_tmp.json data/roadmap.json
+
+          COMPLETED=$(jq '[.items.short[] | select(.progress >= 100)] | length' data/roadmap.json)
+          if [ "$COMPLETED" -gt 0 ]; then
+            POOL_SIZE=$(jq '.templatePool | length' data/roadmap.json)
+            if [ "$POOL_SIZE" -gt 0 ]; then
+              jq '
+                (.items.short | map(select(.progress >= 100))) as $done |
+                (.items.completed + [$done[] | {id: .id, name: .name, desc: .desc, completedDate: (now | strftime("%Y-%m-%d"))}]) as $newCompleted |
+                (.templatePool | .[0:($done | length)]) as $replacements |
+                (.templatePool | .[($done | length):]) as $remainingPool |
+                .items.short = ([.items.short[] | select(.progress < 100)] + [$replacements[] | {id: ("r-s" + (now | tostring | .[-4:])), name: .name, desc: .desc, progress: 0, color: .color, added: (now | strftime("%Y-%m-%d"))}]) |
+                .items.completed = ($newCompleted | .[0:10]) |
+                .templatePool = $remainingPool
+              ' data/roadmap.json > data/rm_tmp2.json && mv data/rm_tmp2.json data/roadmap.json
+              echo "Moved $COMPLETED items to completed, replaced from template pool"
+            else
+              jq '
+                (.items.short | map(select(.progress >= 100))) as $done |
+                (.items.completed + [$done[] | {id: .id, name: .name, desc: .desc, completedDate: (now | strftime("%Y-%m-%d"))}]) as $newCompleted |
+                .items.short = [.items.short[] | select(.progress < 100)] |
+                .items.completed = ($newCompleted | .[0:10])
+              ' data/roadmap.json > data/rm_tmp2.json && mv data/rm_tmp2.json data/roadmap.json
+              echo "Moved $COMPLETED items to completed (template pool empty, no replacement)"
+            fi
+          fi
+
+      - name: Maybe generate lab log entry
+        run: |
+          TODAY=$(date -u +"%Y-%m-%d")
+
+          LAST_LAB=$(jq -r '.entries[-1].lastUpdate // "2026-01-01"' data/lab-log.json)
+          LAST_TS=$(date -d "$LAST_LAB" +%s 2>/dev/null || echo 0)
+          NOW_TS=$(date +%s)
+          DAYS_SINCE=$(( (NOW_TS - LAST_TS) / 86400 ))
+
+          jq --arg now "$TODAY" '
+            .lastUpdated = $now |
+            .entries = [.entries[] |
+              if .status == "HYPOTHESIS" and ((.id | explode | .[-1]) % 7 == 0) then
+                .status = "EXPERIMENT" | .lastUpdate = $now
+              elif .status == "EXPERIMENT" and ((.id | explode | .[-1]) % 11 == 0) then
+                .status = "PROTOTYPE" | .lastUpdate = $now
+              elif .status == "PROTOTYPE" and ((.id | explode | .[-1]) % 13 == 0) then
+                .status = "EVALUATION" | .lastUpdate = $now
+              else . end
+            ]
+          ' data/lab-log.json > data/ll_tmp.json && mv data/ll_tmp.json data/lab-log.json
+
+          if [ "$DAYS_SINCE" -ge 5 ] && [ $((RANDOM % 3)) -eq 0 ]; then
+            POOL_SIZE=$(jq '.templatePool | length' data/lab-log.json)
+            if [ "$POOL_SIZE" -gt 0 ]; then
+              IDX=$((RANDOM % POOL_SIZE))
+              ENTRY_ID="lab-$(printf '%03d' $(($(jq '.entries | length' data/lab-log.json) + 1)))"
+
+              jq --arg id "$ENTRY_ID" --arg now "$TODAY" --argjson idx "$IDX" '
+                .templatePool[$idx] as $tmpl |
+                .entries += [{
+                  id: $id,
+                  title: $tmpl.title,
+                  desc: $tmpl.desc,
+                  status: "HYPOTHESIS",
+                  startDate: $now,
+                  lastUpdate: $now,
+                  findings: "Initial research phase. Scoping requirements and reviewing prior art."
+                }] |
+                .templatePool = (.templatePool[:$idx] + .templatePool[$idx+1:])
+              ' data/lab-log.json > data/ll_tmp2.json && mv data/ll_tmp2.json data/lab-log.json
+
+              echo "Generated new lab log entry"
+            else
+              echo "Template pool empty, skipping new lab entry"
+            fi
+          fi
+
+      - name: Generate post-mortem if incident resolved
+        run: |
+          if [ ! -f data/incidents.json ]; then
+            echo '{"postmortems":[]}' > data/incidents.json
+          fi
+
+          HISTORY=$(jq -c '.incidentHistory // []' data/state.json)
+          HISTORY_LEN=$(echo "$HISTORY" | jq 'length')
+
+          if [ "$HISTORY_LEN" -gt 0 ]; then
+            LATEST_ID=$(echo "$HISTORY" | jq -r '.[0].id // empty')
+            if [ -n "$LATEST_ID" ]; then
+              EXISTS=$(jq --arg id "$LATEST_ID" '[.postmortems[] | select(.incidentId == $id)] | length' data/incidents.json)
+              if [ "$EXISTS" -eq 0 ]; then
+                INCIDENT=$(echo "$HISTORY" | jq '.[0]')
+                TITLE=$(echo "$INCIDENT" | jq -r '.title')
+                STARTED=$(echo "$INCIDENT" | jq -r '.startedAt')
+                RESOLVED=$(echo "$INCIDENT" | jq -r '.resolvedAt // .updatedAt')
+                CAUSE=$(echo "$INCIDENT" | jq -r '.rootCause // "Under investigation"')
+
+                START_TS=$(date -d "$STARTED" +%s 2>/dev/null || echo 0)
+                END_TS=$(date -d "$RESOLVED" +%s 2>/dev/null || echo "$(date +%s)")
+                DURATION_H=$(( (END_TS - START_TS) / 3600 ))
+                DURATION_M=$(( ((END_TS - START_TS) % 3600) / 60 ))
+
+                IMPACT_PCTS=("0.8" "1.2" "2.1" "3.4" "1.7" "0.5" "2.8")
+                IMP_IDX=$((RANDOM % ${#IMPACT_PCTS[@]}))
+                IMPACT="${IMPACT_PCTS[$IMP_IDX]}"
+
+                ACTIONS=("Implement additional monitoring for affected subsystem" "Add circuit breaker to prevent cascade failures" "Update runbook with new escalation procedures" "Deploy canary configuration validation" "Add automated rollback trigger for similar conditions" "Increase load test coverage for affected code path" "Add pre-deployment configuration validation step" "Implement gradual rollout for configuration changes" "Create dedicated monitoring dashboard for this subsystem" "Add automated regression test for this failure mode" "Review and update capacity planning for affected service" "Implement feature flag for rapid rollback capability" "Document incident pattern for on-call training" "Add synthetic monitoring probe for early detection")
+                ACT1_IDX=$((RANDOM % ${#ACTIONS[@]}))
+                ACT2_IDX=$(( (ACT1_IDX + 2) % ${#ACTIONS[@]} ))
+
+                LESSONS=("Detection of this failure mode should be automated" "Checkout/payment config changes need staged rollout validation" "Monitoring gaps in this subsystem need to be addressed" "Incident response time can be improved with better alerting" "Cross-region testing should include latency simulation" "Capacity planning needs to account for peak order-volume bursts" "Rollback procedures should be tested quarterly" "Dependency health checks should be more granular" "Post-deployment validation should include edge cases" "Communication during incidents needs faster escalation" "Configuration drift between environments caused delayed detection" "Observability gaps in this subsystem masked early warning signs")
+                LES_IDX=$((RANDOM % ${#LESSONS[@]}))
+
+                PM=$(jq -n \
+                  --arg id "$LATEST_ID" \
+                  --arg title "$TITLE" \
+                  --arg started "$STARTED" \
+                  --arg resolved "$RESOLVED" \
+                  --arg cause "$CAUSE" \
+                  --arg impact "$IMPACT" \
+                  --argjson durH "$DURATION_H" \
+                  --argjson durM "$DURATION_M" \
+                  --arg action1 "${ACTIONS[$ACT1_IDX]}" \
+                  --arg action2 "${ACTIONS[$ACT2_IDX]}" \
+                  --arg lesson "${LESSONS[$LES_IDX]}" \
+                  '{
+                    incidentId: $id,
+                    title: $title,
+                    startedAt: $started,
+                    resolvedAt: $resolved,
+                    duration: (($durH | tostring) + "h " + ($durM | tostring) + "m"),
+                    impactPct: ($impact | tonumber),
+                    rootCause: $cause,
+                    timeline: [
+                      {time: $started, status: "INVESTIGATING", detail: "Automated monitoring detected anomaly"},
+                      {time: $resolved, status: "RESOLVED", detail: "Root cause identified and remediated"}
+                    ],
+                    actionItems: [$action1, $action2],
+                    lessonsLearned: [$lesson]
+                  }')
+
+                jq --argjson pm "$PM" '.postmortems = [$pm] + .postmortems | .postmortems = .postmortems[0:10]' \
+                  data/incidents.json > data/inc_tmp.json && mv data/inc_tmp.json data/incidents.json
+
+                echo "Generated post-mortem for $LATEST_ID"
+              fi
+            fi
+          fi
+
+      - name: Commit and push
+        run: |
+          git config user.name "cerberus-bot"
+          git config user.email "cerberus-bot@cerberus.market"
+          git add data/
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          if [ "${BUMPED}" = "true" ]; then
+            git commit -m "$BUMP_MSG"
+          else
+            git commit -m "content: generate daily updates"
+          fi
+
+          git push

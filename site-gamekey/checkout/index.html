@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - Cerberus Market</title>
+  <meta name="description" content="Review your order and complete a simulated demo checkout on Cerberus Market. No real payment is collected or processed." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="canonical" href="https://cerberusac.dev/checkout/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6D2;</text></svg>" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #050507;
+      --bg-card: #0a0a0f;
+      --bg-card-hover: #0e0e15;
+      --accent: #e8a020;
+      --accent-dim: rgba(232,160,32,0.15);
+      --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4;
+      --text-bright: #eef0f4;
+      --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050;
+      --green: #30c860;
+      --blue: #4088e8;
+      --purple: #8860e8;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    /* ===== BACKGROUND EFFECTS ===== */
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .grid-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,160,32,0.06), transparent 70%);
+    }
+    .noise-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.8);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c07818);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507;
+    }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-tag { font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; color: var(--accent); border: 1px solid rgba(232,160,32,0.3); padding: 2px 8px; border-radius: 6px; margin-left: 8px; text-transform: uppercase; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; letter-spacing: 0.3px; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
+    .nav-cart { position: relative; display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; color: var(--text-bright); text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; }
+    .nav-cart:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); }
+    .nav-cart-badge { background: var(--accent); color: #050507; font-size: 0.65rem; font-weight: 700; padding: 1px 6px; border-radius: 10px; min-width: 16px; text-align: center; margin-left: 2px; }
+    .nav-cta {
+      padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+      background: var(--accent); color: #050507; text-decoration: none;
+      transition: all 0.2s; letter-spacing: 0.3px;
+    }
+    .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+      padding: 14px 28px; border-radius: 10px; font-size: 0.88rem; font-weight: 600;
+      background: var(--accent); color: #050507; text-decoration: none; border: none; cursor: pointer;
+      transition: all 0.25s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: var(--font);
+    }
+    .btn-primary:hover { background: #d09018; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232,160,32,0.3); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-secondary {
+      padding: 14px 28px; border-radius: 10px; font-size: 0.88rem; font-weight: 600;
+      background: transparent; color: var(--text-bright); text-decoration: none; border: 1px solid var(--border);
+      transition: all 0.25s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+      font-family: var(--font);
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); transform: translateY(-2px); }
+
+    /* ===== PAGE WRAP ===== */
+    .page-wrap { max-width: 1100px; margin: 0 auto; padding: 128px 24px 100px; position: relative; z-index: 1; }
+    .page-title { font-family: var(--font-heading); font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; color: var(--text-bright); letter-spacing: -1px; margin-bottom: 8px; }
+    .page-desc { font-size: 0.95rem; color: var(--text-dim); margin-bottom: 40px; }
+    .divider { width: 60px; height: 2px; background: var(--accent); opacity: 0.3; margin-bottom: 40px; }
+
+    .checkout-layout { display: grid; grid-template-columns: 1fr 340px; gap: 32px; align-items: start; }
+
+    .co-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 28px; margin-bottom: 24px;
+    }
+    .co-card h2 { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
+    .co-card .co-sub { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 20px; }
+
+    /* order review lines */
+    .review-line { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .review-line:last-child { border-bottom: none; }
+    .review-thumb { width: 48px; height: 48px; flex-shrink: 0; }
+    .review-info { flex: 1; min-width: 0; }
+    .review-title { font-family: var(--font-heading); font-size: 0.88rem; font-weight: 700; color: var(--text-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .review-meta { font-size: 0.72rem; color: var(--text-dim); }
+    .review-price { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-bright); font-weight: 600; white-space: nowrap; }
+
+    /* buyer form */
+    .form-row { margin-bottom: 16px; }
+    .form-row label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text-dim); margin-bottom: 6px; }
+    .form-row input {
+      width: 100%; padding: 11px 14px; border-radius: 8px; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03); color: var(--text-bright); font-family: var(--font); font-size: 0.86rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-row input:focus { border-color: rgba(232,160,32,0.4); }
+    .form-row input.invalid { border-color: rgba(224,64,80,0.5); }
+    .form-error { font-size: 0.72rem; color: var(--red); margin-top: 5px; display: none; }
+    .form-error.show { display: block; }
+
+    /* payment method tiles — decorative selector only, no account data is ever collected */
+    .pm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .pm-tile {
+      border: 1px solid var(--border); border-radius: 12px; padding: 18px 14px; text-align: center;
+      cursor: pointer; transition: all 0.2s; background: rgba(255,255,255,0.01);
+    }
+    .pm-tile:hover { border-color: rgba(255,255,255,0.15); }
+    .pm-tile.selected { border-color: var(--accent); background: rgba(232,160,32,0.06); }
+    .pm-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .pm-name { font-size: 0.8rem; font-weight: 600; color: var(--text-bright); }
+    .pm-note { font-size: 0.66rem; color: var(--text-dim); margin-top: 3px; }
+    .pm-disclaimer { font-size: 0.68rem; color: var(--text-dim); opacity: 0.65; margin-top: 14px; line-height: 1.5; }
+
+    /* summary sidebar */
+    .co-summary { position: sticky; top: 100px; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-dim); padding: 8px 0; }
+    .summary-row.discount span:last-child { color: var(--green); }
+    .summary-row.total { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 16px; font-size: 1rem; }
+    .summary-row.total span:first-child { color: var(--text-bright); font-weight: 600; }
+    .summary-row.total span:last-child { font-family: var(--font-heading); font-weight: 800; font-size: 1.3rem; color: var(--accent); }
+    .co-summary .btn-primary { width: 100%; margin-top: 16px; }
+    .summary-note { font-size: 0.68rem; color: var(--text-dim); opacity: 0.6; margin-top: 14px; text-align: center; line-height: 1.5; }
+
+    /* ===== SUCCESS SCREEN ===== */
+    .success-wrap { display: none; text-align: center; }
+    .success-badge {
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px; border-radius: 24px; margin-bottom: 24px;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      background: rgba(48,200,96,0.12); color: var(--green); border: 1px solid rgba(48,200,96,0.3);
+    }
+    .success-check { width: 64px; height: 64px; border-radius: 50%; background: rgba(48,200,96,0.12); border: 1px solid rgba(48,200,96,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--green); margin: 0 auto 24px; }
+    .success-wrap h2 { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: var(--text-bright); margin-bottom: 10px; }
+    .success-wrap > p { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 8px; }
+    .order-number { font-family: var(--font-mono); font-size: 1rem; color: var(--accent); font-weight: 600; margin-bottom: 32px; }
+
+    .key-list { max-width: 640px; margin: 0 auto 32px; text-align: left; display: flex; flex-direction: column; gap: 14px; }
+    .key-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
+    .key-card-title { font-family: var(--font-heading); font-size: 0.92rem; font-weight: 700; color: var(--text-bright); margin-bottom: 2px; }
+    .key-card-seller { font-size: 0.72rem; color: var(--text-dim); margin-bottom: 12px; }
+    .key-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+    .key-value { flex: 1; font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent); background: rgba(232,160,32,0.06); border: 1px solid rgba(232,160,32,0.2); border-radius: 8px; padding: 8px 12px; letter-spacing: 1px; }
+    .copy-btn {
+      padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); background: transparent;
+      color: var(--text-bright); font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+      font-family: var(--font);
+    }
+    .copy-btn:hover { border-color: rgba(232,160,32,0.4); color: var(--accent); }
+    .copy-btn.copied { border-color: rgba(48,200,96,0.4); color: var(--green); }
+    .delivery-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 0.68rem; color: var(--green); background: rgba(48,200,96,0.08); border: 1px solid rgba(48,200,96,0.2); border-radius: 6px; padding: 3px 9px; margin-top: 12px; }
+
+    /* ===== EMPTY / REDIRECT ===== */
+    .co-redirect { text-align: center; padding: 80px 24px; color: var(--text-dim); font-size: 0.85rem; }
+
+    /* ===== FOOTER ===== */
+    .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+    .footer-brand { font-family: var(--font-heading); font-weight: 700; font-size: 1rem; color: var(--text-bright); margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 860px) {
+      .checkout-layout { grid-template-columns: 1fr; }
+      .co-summary { position: static; }
+      .pm-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="noise-overlay"></div>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+      <div class="nav-tag">MARKET</div>
+    </a>
+    <div class="nav-links">
+      <a href="/catalog/">Catalog</a>
+      <a href="/deals/">Deals</a>
+      <a href="/trends/">Trends</a>
+      <a href="/sellers/">Sellers</a>
+      <a href="/status/">Status</a>
+    </div>
+    <div class="nav-cta-wrap">
+      <a href="/cart/" class="nav-cart" id="navCartLink">Cart <span id="navCartCount" class="nav-cart-badge" style="display:none">0</span></a>
+      <a href="/sell/" class="nav-cta">Sell on Cerberus Market</a>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+
+    <div id="coRedirect" class="co-redirect" style="display:none;">Your cart is empty — redirecting you back to <a href="/cart/" style="color:var(--accent)">Cart</a>&hellip;</div>
+
+    <div id="coOrderView">
+      <h1 class="page-title">Checkout</h1>
+      <p class="page-desc">This is a demo storefront. No real payment method is collected, stored, or transmitted anywhere on this page.</p>
+      <div class="divider"></div>
+
+      <div class="checkout-layout">
+        <div>
+          <div class="co-card">
+            <h2>Order Review</h2>
+            <p class="co-sub">Confirm what you're buying before you check out.</p>
+            <div id="reviewLines"></div>
+          </div>
+
+          <div class="co-card">
+            <h2>Buyer Information</h2>
+            <p class="co-sub">Used only to personalize this demo order confirmation — never submitted anywhere.</p>
+            <div class="form-row">
+              <label for="buyerName">Full name</label>
+              <input type="text" id="buyerName" autocomplete="off" placeholder="Jordan Rivas" />
+              <div class="form-error" id="nameError">Enter your name (at least 2 characters).</div>
+            </div>
+            <div class="form-row">
+              <label for="buyerEmail">Email address</label>
+              <input type="text" id="buyerEmail" autocomplete="off" placeholder="you@example.com" />
+              <div class="form-error" id="emailError">Enter a valid email address.</div>
+            </div>
+          </div>
+
+          <div class="co-card">
+            <h2>Payment Method</h2>
+            <p class="co-sub">Select how you'd simulate paying. No card or account numbers are ever collected here.</p>
+            <!--
+              Decorative-only payment selector. These tiles carry no numeric account
+              data of any kind, are not part of any form submission, and are never
+              read by a network call — the whole purchase flow below is local
+              browser state manipulation for demo purposes only.
+            -->
+            <div class="pm-grid" id="pmGrid">
+              <div class="pm-tile selected" data-method="card">
+                <div class="pm-icon">💳</div>
+                <div class="pm-name">Card</div>
+                <div class="pm-note">Simulated only</div>
+              </div>
+              <div class="pm-tile" data-method="wallet">
+                <div class="pm-icon">👛</div>
+                <div class="pm-name">Wallet Balance</div>
+                <div class="pm-note">Simulated only</div>
+              </div>
+              <div class="pm-tile" data-method="bank">
+                <div class="pm-icon">🏦</div>
+                <div class="pm-name">Bank Transfer</div>
+                <div class="pm-note">Simulated only</div>
+              </div>
+            </div>
+            <p class="pm-disclaimer">Demo marketplace — this selector is purely cosmetic. Cerberus Market never asks for real card numbers, CVVs, or bank details on this page.</p>
+          </div>
+        </div>
+
+        <aside class="co-card co-summary">
+          <h3 style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--text-bright);margin-bottom:16px;">Order Total</h3>
+          <div class="summary-row"><span id="coCountLabel">0 items</span><span id="coSubtotal">$0.00</span></div>
+          <div class="summary-row discount" id="coDiscountRow" style="display:none;"><span>Promo discount</span><span id="coDiscount">-$0.00</span></div>
+          <div class="summary-row total"><span>Total</span><span id="coTotal">$0.00</span></div>
+          <button type="button" class="btn-primary" id="completeBtn">Complete Purchase</button>
+          <p class="summary-note">By clicking "Complete Purchase" you're simulating a checkout — no charge occurs.</p>
+        </aside>
+      </div>
+    </div>
+
+    <div id="coSuccess" class="success-wrap">
+      <div class="success-check">&#10003;</div>
+      <div class="success-badge">Order Complete</div>
+      <h2>Thanks — your keys are ready</h2>
+      <p>Confirmation number</p>
+      <div class="order-number" id="orderNumber">CM-000000</div>
+      <div class="delivery-tag">&#9889; Delivered instantly</div>
+
+      <div class="key-list" id="keyList" style="margin-top:32px;"></div>
+
+      <a href="/catalog/" class="btn-primary">Back to Catalog</a>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span> Market</div>
+    <p style="margin-bottom:16px;">Guarded delivery. Verified sellers. Instant keys.</p>
+    <p style="margin-bottom:8px;"><a href="/">Home</a> &bull; <a href="/catalog/">Catalog</a> &bull; <a href="/deals/">Deals</a> &bull; <a href="/trends/">Trends</a> &bull; <a href="/status/">Status</a> &bull; <a href="/changelog/">Changelog</a></p>
+    <p style="margin-bottom:8px;"><a href="/sellers/">Sellers</a> &bull; <a href="/sell/">Sell with Us</a></p>
+    <p style="margin-bottom:16px;"><a href="/privacy/">Privacy</a> &bull; <a href="/terms/">Terms</a></p>
+    <p>&copy; 2026 Cerberus Market. All game titles are property of their respective (fictional) publishers.</p>
+  </footer>
+
+  <!--
+    Static catalog/seller/listing data mirrored inline from /data/*.json.
+    This checkout page intentionally performs ZERO fetch()/XHR calls of any
+    kind (see inline script below) — everything it needs to resolve cart
+    line items to display data is embedded here so the whole purchase flow
+    is pure client-side state manipulation with no network activity.
+  -->
+  <script>
+  window.__CM_CATALOG__ = [
+  {"id":"shattergate-protocol","title":"Shattergate Protocol","publisher":"Ashfall Interactive","genre":"FPS","platform":"PC","releaseYear":2024,"basePrice":59.99,"rating":4.5,"ratingCount":7200,"gradientSeed":42},
+  {"id":"loom-of-embers","title":"Loom of Embers","publisher":"Loom & Anvil","genre":"RPG","platform":"PC/Mac","releaseYear":2023,"basePrice":49.99,"rating":4.7,"ratingCount":5400,"gradientSeed":118},
+  {"id":"redshift-arena","title":"Redshift Arena","publisher":"Redshift Collective","genre":"Battle Royale","platform":"PC","releaseYear":2022,"basePrice":29.99,"rating":4.1,"ratingCount":8900,"gradientSeed":271},
+  {"id":"ironclad-doctrine","title":"Ironclad Doctrine","publisher":"Graywatch Studios","genre":"Strategy","platform":"PC","releaseYear":2021,"basePrice":39.99,"rating":4.3,"ratingCount":3100,"gradientSeed":356},
+  {"id":"harvest-hollow","title":"Harvest Hollow","publisher":"Tamarind Games","genre":"Simulation","platform":"PC/Mac","releaseYear":2023,"basePrice":24.99,"rating":4.6,"ratingCount":6800,"gradientSeed":19},
+  {"id":"hollow-choir","title":"Hollow Choir","publisher":"Nightglass Studio","genre":"Horror","platform":"PC","releaseYear":2024,"basePrice":29.99,"rating":4.4,"ratingCount":2900,"gradientSeed":404},
+  {"id":"velocity-drift-underground","title":"Velocity Drift: Underground","publisher":"Torque Union","genre":"Racing","platform":"Console","releaseYear":2022,"basePrice":44.99,"rating":4.2,"ratingCount":4700,"gradientSeed":88},
+  {"id":"fracture-league","title":"Fracture League","publisher":"Pinnacle Nine Studios","genre":"Sports","platform":"Console","releaseYear":2025,"basePrice":59.99,"rating":4.0,"ratingCount":3600,"gradientSeed":155},
+  {"id":"barrenwake","title":"Barrenwake","publisher":"Dustline Works","genre":"Survival","platform":"PC","releaseYear":2022,"basePrice":19.99,"rating":4.3,"ratingCount":5100,"gradientSeed":231},
+  {"id":"crimson-fold","title":"Crimson Fold","publisher":"Vantage Point Games","genre":"Fighting","platform":"Console","releaseYear":2023,"basePrice":49.99,"rating":4.5,"ratingCount":4100,"gradientSeed":67},
+  {"id":"knotwork","title":"Knotwork","publisher":"Quietfield","genre":"Puzzle","platform":"PC/Mac","releaseYear":2021,"basePrice":9.99,"rating":4.6,"ratingCount":2200,"gradientSeed":490},
+  {"id":"the-lantern-road","title":"The Lantern Road","publisher":"Marrow & Co.","genre":"Adventure","platform":"PC","releaseYear":2020,"basePrice":14.99,"rating":4.4,"ratingCount":3800,"gradientSeed":12},
+  {"id":"null-signal","title":"Null Signal","publisher":"Halfmoon Digital","genre":"FPS","platform":"PC","releaseYear":2025,"basePrice":69.99,"rating":4.8,"ratingCount":8300,"gradientSeed":333},
+  {"id":"thistledown","title":"Thistledown","publisher":"Pale Orchard","genre":"Adventure","platform":"PC/Mac","releaseYear":2019,"basePrice":6.99,"rating":4.2,"ratingCount":1400,"gradientSeed":76},
+  {"id":"warden-of-the-vault","title":"Warden of the Vault","publisher":"Ironline Studios","genre":"RPG","platform":"PC","releaseYear":2021,"basePrice":34.99,"rating":4.3,"ratingCount":4600,"gradientSeed":199},
+  {"id":"paperclip-kingdom","title":"Paperclip Kingdom","publisher":"Bramblegate","genre":"Strategy","platform":"PC","releaseYear":2024,"basePrice":4.99,"rating":4.1,"ratingCount":900,"gradientSeed":305},
+  {"id":"gravewind","title":"Gravewind","publisher":"Nightglass Studio","genre":"Horror","platform":"PC","releaseYear":2021,"basePrice":34.99,"rating":4.0,"ratingCount":2600,"gradientSeed":141},
+  {"id":"skyferry","title":"Skyferry","publisher":"Cumulus Bay","genre":"Adventure","platform":"PC/Mac","releaseYear":2022,"basePrice":17.99,"rating":4.5,"ratingCount":3300,"gradientSeed":22},
+  {"id":"last-light-brigade","title":"Last Light Brigade","publisher":"Foundry Nine","genre":"FPS","platform":"Console","releaseYear":2026,"basePrice":69.99,"rating":4.6,"ratingCount":2100,"gradientSeed":460},
+  {"id":"circuit-eleven","title":"Circuit Eleven","publisher":"Torque Union","genre":"Racing","platform":"PC","releaseYear":2024,"basePrice":39.99,"rating":4.3,"ratingCount":3900,"gradientSeed":58},
+  {"id":"mossgrave","title":"Mossgrave","publisher":"Dustline Works","genre":"Survival","platform":"PC","releaseYear":2025,"basePrice":27.99,"rating":4.2,"ratingCount":1700,"gradientSeed":379},
+  {"id":"kingdom-of-tin","title":"Kingdom of Tin","publisher":"Marrow & Co.","genre":"RPG","platform":"PC","releaseYear":2020,"basePrice":44.99,"rating":4.7,"ratingCount":6100,"gradientSeed":213}
+  ];
+
+  window.__CM_SELLERS__ = [
+  {"id":"vertex-keys","handle":"VertexKeys","displayName":"Vertex Keys Co.","tier":1},
+  {"id":"northbyte","handle":"Northbyte","displayName":"Northbyte Trading","tier":1},
+  {"id":"keyforge-direct","handle":"KeyForge","displayName":"KeyForge Direct","tier":1},
+  {"id":"palecask-digital","handle":"Palecask","displayName":"Palecask Digital","tier":2},
+  {"id":"fairwind-keys","handle":"Fairwind","displayName":"Fairwind Keys","tier":2},
+  {"id":"driftmart-games","handle":"Driftmart","displayName":"Driftmart Games","tier":2},
+  {"id":"ledgerlock-store","handle":"Ledgerlock","displayName":"Ledgerlock Store","tier":2},
+  {"id":"cinderlane-keys","handle":"Cinderlane","displayName":"Cinderlane Keys","tier":2},
+  {"id":"grovekey-trading","handle":"Grovekey","displayName":"Grovekey Trading","tier":2},
+  {"id":"pinbox-games","handle":"Pinbox","displayName":"Pinbox Games","tier":3},
+  {"id":"quickcrate-keys","handle":"QuickCrate","displayName":"QuickCrate Keys","tier":3},
+  {"id":"solstice-key-exchange","handle":"Solstice","displayName":"Solstice Key Exchange","tier":3},
+  {"id":"emberlot-digital","handle":"Emberlot","displayName":"Emberlot Digital","tier":3},
+  {"id":"fernkey-store","handle":"Fernkey","displayName":"Fernkey Store","tier":3}
+  ];
+
+  window.__CM_LISTINGS__ = [
+  {"id":"lst-0001","catalogId":"shattergate-protocol","sellerId":"vertex-keys","price":50.99,"discountPct":15,"stock":320,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0002","catalogId":"shattergate-protocol","sellerId":"northbyte","price":47.99,"discountPct":20,"stock":210,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0003","catalogId":"shattergate-protocol","sellerId":"keyforge-direct","price":44.99,"discountPct":25,"stock":275,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0004","catalogId":"shattergate-protocol","sellerId":"palecask-digital","price":56.99,"discountPct":5,"stock":60,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0005","catalogId":"loom-of-embers","sellerId":"keyforge-direct","price":39.99,"discountPct":20,"stock":190,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0006","catalogId":"loom-of-embers","sellerId":"driftmart-games","price":36.99,"discountPct":26,"stock":85,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0007","catalogId":"loom-of-embers","sellerId":"cinderlane-keys","price":44.99,"discountPct":10,"stock":50,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0008","catalogId":"redshift-arena","sellerId":"vertex-keys","price":23.99,"discountPct":20,"stock":400,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0009","catalogId":"redshift-arena","sellerId":"northbyte","price":21.99,"discountPct":27,"stock":350,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0010","catalogId":"redshift-arena","sellerId":"fairwind-keys","price":25.99,"discountPct":13,"stock":95,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0011","catalogId":"redshift-arena","sellerId":"quickcrate-keys","price":19.99,"discountPct":33,"stock":40,"region":"Region-Locked","regionNote":"Activates in EU/UK only","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0012","catalogId":"ironclad-doctrine","sellerId":"palecask-digital","price":31.99,"discountPct":20,"stock":70,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0013","catalogId":"ironclad-doctrine","sellerId":"grovekey-trading","price":29.99,"discountPct":25,"stock":45,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0014","catalogId":"harvest-hollow","sellerId":"northbyte","price":19.99,"discountPct":20,"stock":260,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0015","catalogId":"harvest-hollow","sellerId":"cinderlane-keys","price":18.99,"discountPct":24,"stock":90,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0016","catalogId":"harvest-hollow","sellerId":"solstice-key-exchange","price":21.99,"discountPct":12,"stock":25,"region":"Region-Locked","regionNote":"Activates in EU/UK only","deliveryMethod":"Manual Delivery (avg 15 min)"},
+  {"id":"lst-0017","catalogId":"hollow-choir","sellerId":"keyforge-direct","price":23.99,"discountPct":20,"stock":150,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0018","catalogId":"hollow-choir","sellerId":"cinderlane-keys","price":21.99,"discountPct":27,"stock":80,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0019","catalogId":"hollow-choir","sellerId":"emberlot-digital","price":26.99,"discountPct":10,"stock":18,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0020","catalogId":"velocity-drift-underground","sellerId":"vertex-keys","price":35.99,"discountPct":20,"stock":140,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0021","catalogId":"velocity-drift-underground","sellerId":"driftmart-games","price":33.99,"discountPct":24,"stock":95,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0022","catalogId":"velocity-drift-underground","sellerId":"ledgerlock-store","price":40.99,"discountPct":9,"stock":55,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0023","catalogId":"fracture-league","sellerId":"northbyte","price":47.99,"discountPct":20,"stock":130,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0024","catalogId":"fracture-league","sellerId":"palecask-digital","price":44.99,"discountPct":25,"stock":70,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0025","catalogId":"fracture-league","sellerId":"pinbox-games","price":56.99,"discountPct":5,"stock":12,"region":"Global","deliveryMethod":"Manual Delivery (avg 15 min)"},
+  {"id":"lst-0026","catalogId":"barrenwake","sellerId":"keyforge-direct","price":15.99,"discountPct":20,"stock":220,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0027","catalogId":"barrenwake","sellerId":"fairwind-keys","price":14.99,"discountPct":25,"stock":100,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0028","catalogId":"barrenwake","sellerId":"grovekey-trading","price":17.99,"discountPct":10,"stock":60,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0029","catalogId":"crimson-fold","sellerId":"vertex-keys","price":39.99,"discountPct":20,"stock":160,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0030","catalogId":"crimson-fold","sellerId":"driftmart-games","price":37.49,"discountPct":25,"stock":75,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0031","catalogId":"knotwork","sellerId":"ledgerlock-store","price":7.99,"discountPct":20,"stock":300,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0032","catalogId":"knotwork","sellerId":"fernkey-store","price":8.49,"discountPct":15,"stock":22,"region":"Region-Locked","regionNote":"Activates in North America only","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0033","catalogId":"the-lantern-road","sellerId":"northbyte","price":11.99,"discountPct":20,"stock":180,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0034","catalogId":"the-lantern-road","sellerId":"cinderlane-keys","price":10.99,"discountPct":27,"stock":65,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0035","catalogId":"the-lantern-road","sellerId":"solstice-key-exchange","price":13.49,"discountPct":10,"stock":15,"region":"Region-Locked","regionNote":"Activates in North America only","deliveryMethod":"Manual Delivery (avg 15 min)"},
+  {"id":"lst-0036","catalogId":"null-signal","sellerId":"vertex-keys","price":59.99,"discountPct":14,"stock":480,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0037","catalogId":"null-signal","sellerId":"keyforge-direct","price":55.99,"discountPct":20,"stock":500,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0038","catalogId":"null-signal","sellerId":"northbyte","price":52.99,"discountPct":24,"stock":300,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0039","catalogId":"null-signal","sellerId":"palecask-digital","price":66.99,"discountPct":4,"stock":40,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0040","catalogId":"thistledown","sellerId":"fairwind-keys","price":5.59,"discountPct":20,"stock":200,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0041","catalogId":"thistledown","sellerId":"emberlot-digital","price":6.29,"discountPct":10,"stock":30,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0042","catalogId":"warden-of-the-vault","sellerId":"keyforge-direct","price":27.99,"discountPct":20,"stock":150,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0043","catalogId":"warden-of-the-vault","sellerId":"driftmart-games","price":25.99,"discountPct":26,"stock":80,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0044","catalogId":"warden-of-the-vault","sellerId":"grovekey-trading","price":31.99,"discountPct":9,"stock":45,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0045","catalogId":"paperclip-kingdom","sellerId":"pinbox-games","price":3.99,"discountPct":20,"stock":90,"region":"Global","deliveryMethod":"Manual Delivery (avg 15 min)"},
+  {"id":"lst-0046","catalogId":"paperclip-kingdom","sellerId":"quickcrate-keys","price":4.49,"discountPct":10,"stock":35,"region":"Region-Locked","regionNote":"Activates in Asia-Pacific only","deliveryMethod":"Manual Delivery (avg 15 min)"},
+  {"id":"lst-0047","catalogId":"gravewind","sellerId":"cinderlane-keys","price":27.99,"discountPct":20,"stock":100,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0048","catalogId":"gravewind","sellerId":"ledgerlock-store","price":25.99,"discountPct":26,"stock":60,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0049","catalogId":"gravewind","sellerId":"solstice-key-exchange","price":32.99,"discountPct":6,"stock":20,"region":"Region-Locked","regionNote":"Activates in EU/UK only","deliveryMethod":"Manual Delivery (avg 15 min)"},
+  {"id":"lst-0050","catalogId":"skyferry","sellerId":"northbyte","price":14.39,"discountPct":20,"stock":210,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0051","catalogId":"skyferry","sellerId":"fairwind-keys","price":13.49,"discountPct":25,"stock":90,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0052","catalogId":"last-light-brigade","sellerId":"vertex-keys","price":59.99,"discountPct":14,"stock":320,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0053","catalogId":"last-light-brigade","sellerId":"keyforge-direct","price":55.99,"discountPct":20,"stock":400,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0054","catalogId":"last-light-brigade","sellerId":"northbyte","price":51.99,"discountPct":26,"stock":180,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0055","catalogId":"last-light-brigade","sellerId":"driftmart-games","price":66.99,"discountPct":4,"stock":50,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0056","catalogId":"circuit-eleven","sellerId":"driftmart-games","price":31.99,"discountPct":20,"stock":140,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0057","catalogId":"circuit-eleven","sellerId":"palecask-digital","price":29.99,"discountPct":25,"stock":75,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0058","catalogId":"circuit-eleven","sellerId":"pinbox-games","price":37.99,"discountPct":5,"stock":18,"region":"Global","deliveryMethod":"Manual Delivery (avg 15 min)"},
+  {"id":"lst-0059","catalogId":"mossgrave","sellerId":"grovekey-trading","price":22.39,"discountPct":20,"stock":85,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0060","catalogId":"mossgrave","sellerId":"fernkey-store","price":20.99,"discountPct":25,"stock":14,"region":"Region-Locked","regionNote":"Activates in Asia-Pacific only","deliveryMethod":"Manual Delivery (avg 15 min)"},
+  {"id":"lst-0061","catalogId":"kingdom-of-tin","sellerId":"keyforge-direct","price":35.99,"discountPct":20,"stock":200,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0062","catalogId":"kingdom-of-tin","sellerId":"cinderlane-keys","price":33.99,"discountPct":24,"stock":90,"region":"Global","deliveryMethod":"Instant Auto-Delivery"},
+  {"id":"lst-0063","catalogId":"kingdom-of-tin","sellerId":"ledgerlock-store","price":42.99,"discountPct":4,"stock":55,"region":"Global","deliveryMethod":"Instant Auto-Delivery"}
+  ];
+  </script>
+
+  <script src="/js/cerberus-engine.js"></script>
+  <script src="/js/cerberus-shared.js"></script>
+  <script>
+  // ─────────────────────────────────────────────────────────────────────────
+  // Checkout logic — SAFETY NOTE: this script performs no fetch()/XHR/network
+  // calls of any kind. All data comes from the inline consts above and from
+  // localStorage; the entire "purchase" is local browser state manipulation
+  // that generates cosmetic fake key strings and never talks to a server.
+  // ─────────────────────────────────────────────────────────────────────────
+  (function () {
+    'use strict';
+
+    var CART_KEY = 'cerberus_cart';
+    var PROMO_KEY = 'cerberus_promo';
+    var PROMO_CODES = { 'WELCOME10': 0.10 };
+    var KEY_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no ambiguous 0/O/1/I
+
+    var catalogById = {};
+    var sellersById = {};
+    var listingsById = {};
+    (window.__CM_CATALOG__ || []).forEach(function (g) { catalogById[g.id] = g; });
+    (window.__CM_SELLERS__ || []).forEach(function (s) { sellersById[s.id] = s; });
+    (window.__CM_LISTINGS__ || []).forEach(function (l) { listingsById[l.id] = l; });
+
+    function money(n) { return '$' + n.toFixed(2); }
+    function getCart() { return window.CERBERUS ? CERBERUS.getCart() : (function () {
+      try { var c = JSON.parse(localStorage.getItem(CART_KEY) || '[]'); return Array.isArray(c) ? c : []; } catch (e) { return []; }
+    })(); }
+
+    function resolveLineItems() {
+      var cart = getCart();
+      var lines = [];
+      cart.forEach(function (entry) {
+        var listing = listingsById[entry.listingId];
+        if (!listing) return;
+        var game = catalogById[listing.catalogId];
+        if (!game) return;
+        var seller = sellersById[listing.sellerId];
+        lines.push({ listingId: entry.listingId, qty: Math.max(1, entry.qty || 1), listing: listing, game: game, seller: seller });
+      });
+      return lines;
+    }
+
+    var lines = resolveLineItems();
+
+    var els = {
+      redirect: document.getElementById('coRedirect'),
+      orderView: document.getElementById('coOrderView'),
+      success: document.getElementById('coSuccess'),
+      reviewLines: document.getElementById('reviewLines'),
+      countLabel: document.getElementById('coCountLabel'),
+      subtotal: document.getElementById('coSubtotal'),
+      discountRow: document.getElementById('coDiscountRow'),
+      discount: document.getElementById('coDiscount'),
+      total: document.getElementById('coTotal'),
+      buyerName: document.getElementById('buyerName'),
+      buyerEmail: document.getElementById('buyerEmail'),
+      nameError: document.getElementById('nameError'),
+      emailError: document.getElementById('emailError'),
+      pmGrid: document.getElementById('pmGrid'),
+      completeBtn: document.getElementById('completeBtn'),
+      orderNumber: document.getElementById('orderNumber'),
+      keyList: document.getElementById('keyList')
+    };
+
+    if (!lines.length) {
+      els.orderView.style.display = 'none';
+      els.redirect.style.display = 'block';
+      setTimeout(function () { window.location.href = '/cart/'; }, 1400);
+      return;
+    }
+
+    function getPromo() {
+      var code = localStorage.getItem(PROMO_KEY);
+      return (code && PROMO_CODES.hasOwnProperty(code)) ? code : null;
+    }
+
+    var subtotal = lines.reduce(function (t, l) { return t + l.listing.price * l.qty; }, 0);
+    var promo = getPromo();
+    var discountPct = promo ? PROMO_CODES[promo] : 0;
+    var discount = subtotal * discountPct;
+    var total = subtotal - discount;
+    var itemCount = lines.reduce(function (t, l) { return t + l.qty; }, 0);
+
+    els.reviewLines.innerHTML = lines.map(function (l) {
+      var thumb = window.CERBERUS ? CERBERUS.coverTileHTML(l.game, { size: 'sm', showTitle: false }) : '';
+      var sellerName = l.seller ? l.seller.displayName : 'Unknown Seller';
+      return '' +
+        '<div class="review-line">' +
+          '<div class="review-thumb">' + thumb + '</div>' +
+          '<div class="review-info">' +
+            '<div class="review-title">' + l.game.title + (l.qty > 1 ? ' &times; ' + l.qty : '') + '</div>' +
+            '<div class="review-meta">Sold by ' + sellerName + '</div>' +
+          '</div>' +
+          '<div class="review-price">' + money(l.listing.price * l.qty) + '</div>' +
+        '</div>';
+    }).join('');
+
+    els.countLabel.textContent = itemCount + ' item' + (itemCount === 1 ? '' : 's');
+    els.subtotal.textContent = money(subtotal);
+    els.total.textContent = money(total);
+    if (promo) {
+      els.discountRow.style.display = 'flex';
+      els.discount.textContent = '-' + money(discount);
+    }
+
+    // ─── Payment method tiles (decorative selector, no data collected) ───
+    var selectedMethod = 'card';
+    els.pmGrid.addEventListener('click', function (e) {
+      var tile = e.target.closest('.pm-tile');
+      if (!tile) return;
+      els.pmGrid.querySelectorAll('.pm-tile').forEach(function (t) { t.classList.remove('selected'); });
+      tile.classList.add('selected');
+      selectedMethod = tile.getAttribute('data-method');
+    });
+
+    // ─── Buyer info validation (client-side only, never submitted) ───
+    function validName() { return (els.buyerName.value || '').trim().length >= 2; }
+    function validEmail() {
+      var v = (els.buyerEmail.value || '').trim();
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    }
+    function showFieldError(input, errorEl, ok) {
+      input.classList.toggle('invalid', !ok);
+      errorEl.classList.toggle('show', !ok);
+    }
+
+    // ─── Fake key generation (local, cosmetic only — no real license logic) ───
+    function randSeedBase() {
+      return Date.now() + Math.floor(Math.random() * 1e6);
+    }
+    function genKeySegment(seedBase, offset) {
+      var seg = '';
+      for (var i = 0; i < 5; i++) {
+        var idx = window.CerberusEngine
+          ? CerberusEngine.seededInt(seedBase + offset * 97 + i * 13, 0, KEY_CHARS.length - 1)
+          : Math.floor(Math.random() * KEY_CHARS.length);
+        seg += KEY_CHARS[idx];
+      }
+      return seg;
+    }
+    function generateFakeKey() {
+      var base = randSeedBase();
+      return [genKeySegment(base, 1), genKeySegment(base, 2), genKeySegment(base, 3), genKeySegment(base, 4)].join('-');
+    }
+
+    function generateOrderNumber() {
+      var base = randSeedBase();
+      var n = window.CerberusEngine ? CerberusEngine.seededInt(base, 100000, 999999) : Math.floor(100000 + Math.random() * 900000);
+      return 'CM-' + n;
+    }
+
+    function copyKey(btn, key) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(key).then(function () {
+          btn.textContent = 'Copied';
+          btn.classList.add('copied');
+          setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+        }).catch(function () {
+          btn.textContent = 'Copy failed';
+          setTimeout(function () { btn.textContent = 'Copy'; }, 1800);
+        });
+      }
+    }
+
+    els.completeBtn.addEventListener('click', function () {
+      var nameOk = validName();
+      var emailOk = validEmail();
+      showFieldError(els.buyerName, els.nameError, nameOk);
+      showFieldError(els.buyerEmail, els.emailError, emailOk);
+      if (!nameOk || !emailOk) return;
+
+      els.completeBtn.disabled = true;
+      els.completeBtn.textContent = 'Processing…';
+
+      // Purely local "processing" delay for UX realism — no network call involved.
+      setTimeout(function () {
+        var orderNum = generateOrderNumber();
+        els.orderNumber.textContent = orderNum;
+
+        els.keyList.innerHTML = lines.map(function (l) {
+          var sellerName = l.seller ? l.seller.displayName : 'Unknown Seller';
+          var keyRows = '';
+          for (var i = 0; i < l.qty; i++) {
+            var key = generateFakeKey();
+            keyRows += '' +
+              '<div class="key-row">' +
+                '<div class="key-value">' + key + '</div>' +
+                '<button type="button" class="copy-btn" data-key="' + key + '">Copy</button>' +
+              '</div>';
+          }
+          return '' +
+            '<div class="key-card">' +
+              '<div class="key-card-title">' + l.game.title + (l.qty > 1 ? ' (' + l.qty + ')' : '') + '</div>' +
+              '<div class="key-card-seller">Sold by ' + sellerName + '</div>' +
+              keyRows +
+            '</div>';
+        }).join('');
+
+        els.keyList.querySelectorAll('.copy-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () { copyKey(btn, btn.getAttribute('data-key')); });
+        });
+
+        // Clear the cart — local state only.
+        localStorage.removeItem(CART_KEY);
+        localStorage.removeItem(PROMO_KEY);
+        if (window.CERBERUS) CERBERUS.publishEvent('cart-updated', { count: 0, cleared: true });
+
+        els.orderView.style.display = 'none';
+        els.success.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 550);
+    });
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+[
+  {
+    "version": "v2.4.0",
+    "date": "2026-02-10",
+    "tag": "major",
+    "author": "j.ortiz",
+    "changes": [
+      {
+        "type": "added",
+        "text": "Seller verification tiers launched — Standard, Verified, and Elite"
+      },
+      {
+        "type": "improved",
+        "text": "Seller payout schedule moved from monthly to weekly"
+      },
+      {
+        "type": "added",
+        "text": "Seller onboarding checklist and listing quality guidelines"
+      }
+    ]
+  },
+  {
+    "version": "v2.4.1",
+    "date": "2026-03-02",
+    "tag": "release",
+    "author": "priya.k",
+    "changes": [
+      {
+        "type": "added",
+        "text": "New genre tags: Simulation, Tactics, Visual Novel"
+      },
+      {
+        "type": "improved",
+        "text": "Filter UI redesigned with collapsible sections"
+      },
+      {
+        "type": "fixed",
+        "text": "Genre filter counts not matching actual result counts"
+      }
+    ]
+  },
+  {
+    "version": "v2.4.2",
+    "date": "2026-03-18",
+    "tag": "release",
+    "author": "d.silva",
+    "changes": [
+      {
+        "type": "added",
+        "text": "Crypto payments (BTC, ETH) added as an experimental checkout option"
+      },
+      {
+        "type": "improved",
+        "text": "Payment method selector reorganized by popularity per region"
+      }
+    ]
+  },
+  {
+    "version": "v2.4.3",
+    "date": "2026-04-05",
+    "tag": "fix",
+    "author": "m.duarte",
+    "changes": [
+      {
+        "type": "fixed",
+        "text": "Checkout crash on Safari iOS when applying a promo code"
+      },
+      {
+        "type": "fixed",
+        "text": "Cart badge count desyncing after removing an item"
+      },
+      {
+        "type": "fixed",
+        "text": "Order confirmation email occasionally delayed by up to 20 minutes"
+      }
+    ]
+  },
+  {
+    "version": "v2.5.0",
+    "date": "2026-04-22",
+    "tag": "major",
+    "author": "t.nakashima",
+    "changes": [
+      {
+        "type": "added",
+        "text": "EU-West region expansion — regional pricing and VAT-inclusive checkout"
+      },
+      {
+        "type": "added",
+        "text": "SEPA bank transfer added as a payment method"
+      },
+      {
+        "type": "improved",
+        "text": "Mobile app checkout flow polish — fewer taps to complete purchase"
+      }
+    ]
+  },
+  {
+    "version": "v2.5.1",
+    "date": "2026-05-08",
+    "tag": "release",
+    "author": "priya.k",
+    "changes": [
+      {
+        "type": "added",
+        "text": "Verified Seller badge requirements tightened — ID verification now required"
+      },
+      {
+        "type": "improved",
+        "text": "Seller application review time reduced from 5 days to 2"
+      },
+      {
+        "type": "fixed",
+        "text": "Verification badge not displaying on mobile listing cards"
+      }
+    ]
+  },
+  {
+    "version": "v2.5.2",
+    "date": "2026-05-20",
+    "tag": "release",
+    "author": "j.ortiz",
+    "changes": [
+      {
+        "type": "added",
+        "text": "Guest checkout — no account required for single-key purchases"
+      },
+      {
+        "type": "added",
+        "text": "Saved payment methods for returning buyers"
+      },
+      {
+        "type": "improved",
+        "text": "One-click reorder from order history"
+      }
+    ]
+  },
+  {
+    "version": "v2.5.3",
+    "date": "2026-06-02",
+    "tag": "security",
+    "author": "d.silva",
+    "changes": [
+      {
+        "type": "added",
+        "text": "Device fingerprinting on checkout to catch repeat chargeback sources"
+      },
+      {
+        "type": "added",
+        "text": "Listing anomaly detection flags sellers with abnormal price or volume spikes for manual review"
+      },
+      {
+        "type": "improved",
+        "text": "Stolen-card velocity limits tightened after regional fraud spike"
+      },
+      {
+        "type": "fixed",
+        "text": "False-positive fraud holds on legitimate bulk gift purchases"
+      }
+    ]
+  },
+  {
+    "version": "v2.5.4",
+    "date": "2026-06-15",
+    "tag": "major",
+    "author": "t.nakashima",
+    "changes": [
+      {
+        "type": "added",
+        "text": "AP-Southeast region launch — localized pricing and regional payment rails"
+      },
+      {
+        "type": "added",
+        "text": "Checkout latency improvements for APAC traffic via regional edge routing"
+      },
+      {
+        "type": "improved",
+        "text": "Region selector now auto-detects based on billing address"
+      }
+    ]
+  },
+  {
+    "version": "v2.5.5",
+    "date": "2026-06-28",
+    "tag": "release",
+    "author": "priya.k",
+    "changes": [
+      {
+        "type": "added",
+        "text": "New genre filters: Roguelike, Deckbuilder, Metroidvania, Survival-Crafting"
+      },
+      {
+        "type": "improved",
+        "text": "Catalog search now matches on genre tags in addition to title"
+      },
+      {
+        "type": "improved",
+        "text": "Filter panel remembers your last selection between visits"
+      }
+    ]
+  },
+  {
+    "version": "v2.5.6",
+    "date": "2026-07-10",
+    "tag": "fix",
+    "author": "m.duarte",
+    "changes": [
+      {
+        "type": "fixed",
+        "text": "Cart drawer overlapping nav bar on iPhone SE and other narrow viewports"
+      },
+      {
+        "type": "fixed",
+        "text": "Checkout stepper progress indicator not updating on Android Chrome"
+      },
+      {
+        "type": "improved",
+        "text": "Catalog grid now reflows to 2 columns below 480px instead of 1"
+      },
+      {
+        "type": "fixed",
+        "text": "Seller dashboard charts unreadable on mobile — added horizontal scroll"
+      }
+    ]
+  },
+  {
+    "version": "v2.6.0",
+    "date": "2026-07-24",
+    "tag": "major",
+    "author": "j.ortiz",
+    "changes": [
+      {
+        "type": "added",
+        "text": "Apple Pay and Google Pay added at checkout"
+      },
+      {
+        "type": "added",
+        "text": "New Elite Seller verification tier with expedited payout and priority catalog placement"
+      },
+      {
+        "type": "improved",
+        "text": "Checkout redesigned into a single-page flow — average checkout time down from 74s to 41s"
+      },
+      {
+        "type": "security",
+        "text": "Fraud velocity checks now run before payment capture, not after"
+      },
+      {
+        "type": "fixed",
+        "text": "Guest checkout occasionally losing cart contents on payment redirect"
+      }
+    ]
+  }
+]
