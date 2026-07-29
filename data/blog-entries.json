@@ -1,5 +1,16 @@
 [
   {
+    "id": "deals-015",
+    "title": "This Week's Best Deals Across the Catalog",
+    "date": "2026-07-29T08:12:09Z",
+    "category": "Roundup",
+    "author": "R. Okafor",
+    "summary": "A quick roundup of the sharpest discounts live on Cerberus Market this week, including Mossgrave.",
+    "content": "Discount activity picked up across several categories this week. Mossgrave stood out with one of the deeper cuts, and Backalley Bytes was among the sellers offering competitive pricing. Check the catalog's on-sale filter for the full current list.",
+    "generated": true,
+    "gameId": "mossgrave"
+  },
+  {
     "id": "deals-014",
     "title": "Flash Sale: Null Signal Drops to $52.99 This Weekend",
     "date": "2026-07-26T15:00:00Z",
