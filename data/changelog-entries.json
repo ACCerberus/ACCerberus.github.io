@@ -266,5 +266,25 @@
         "text": "Fixed seller badge tooltip clipping on narrow screens"
       }
     ]
+  },
+  {
+    "version": "v2.6.2",
+    "date": "2026-07-29",
+    "tag": "release",
+    "author": "a.chen",
+    "changes": [
+      {
+        "type": "fixed",
+        "text": "Fixed listing page 'related games' occasionally repeating the same title"
+      },
+      {
+        "type": "added",
+        "text": "Seller storefront pages now show total lifetime sales"
+      },
+      {
+        "type": "fixed",
+        "text": "Fixed listing page 'related games' occasionally repeating the same title"
+      }
+    ]
   }
 ]

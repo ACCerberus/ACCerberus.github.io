@@ -1,12 +1,12 @@
 {
-  "lastUpdated": "2026-07-28T08:07:53Z",
+  "lastUpdated": "2026-07-29T08:12:09Z",
   "items": {
     "short": [
       {
         "id": "r-s-wallet",
         "name": "Wallet Balance Payments",
         "desc": "Store credit and wallet balance system for instant one-click checkout without re-entering payment details.",
-        "progress": 63,
+        "progress": 64,
         "color": "var(--green)",
         "added": "2026-06-20"
       },
@@ -14,7 +14,7 @@
         "id": "r-s-selleranalytics",
         "name": "Seller Analytics Dashboard",
         "desc": "Sales trends, conversion funnel, and regional performance breakdown for sellers with exportable reports.",
-        "progress": 49,
+        "progress": 50,
         "color": "var(--blue)",
         "added": "2026-06-28"
       },
@@ -22,7 +22,7 @@
         "id": "r-s-bulkdiscount",
         "name": "Bulk Key Purchase Discounts",
         "desc": "Tiered discounts for buyers purchasing 3+, 5+, or 10+ keys in a single order.",
-        "progress": 75,
+        "progress": 76,
         "color": "var(--accent)",
         "added": "2026-06-05"
       },
@@ -30,7 +30,7 @@
         "id": "r-s-pricealerts",
         "name": "Price-Drop Alerts",
         "desc": "Email and push notifications when wishlisted titles drop below a buyer-set price threshold.",
-        "progress": 32,
+        "progress": 33,
         "color": "var(--purple)",
         "added": "2026-07-10"
       }
@@ -40,7 +40,7 @@
         "id": "r-m-escrow",
         "name": "Escrow for High-Value Bundles",
         "desc": "Holds payout on large multi-key orders until buyer confirms successful redemption, reducing high-value dispute risk.",
-        "progress": 22.7,
+        "progress": 23,
         "color": "var(--red)",
         "added": "2026-04-01"
       },
@@ -48,7 +48,7 @@
         "id": "r-m-checksum",
         "name": "Key Authenticity Checksum Verification",
         "desc": "Publisher-aware checksum scheme so buyers can verify a key is genuine before redeeming it.",
-        "progress": 36,
+        "progress": 36.3,
         "color": "var(--accent)",
         "added": "2026-06-01"
       },
@@ -56,7 +56,7 @@
         "id": "r-m-gifting",
         "name": "Gift Key Sending",
         "desc": "Purchase a key and send it directly to another buyer's email or account instead of redeeming it yourself.",
-        "progress": 18.9,
+        "progress": 19.2,
         "color": "var(--blue)",
         "added": "2026-05-12"
       },
@@ -64,7 +64,7 @@
         "id": "r-m-reputation",
         "name": "Seller Reputation ML Model",
         "desc": "Predictive trust scoring for sellers based on listing history, dispute rate, and delivery speed.",
-        "progress": 41.5,
+        "progress": 41.8,
         "color": "var(--purple)",
         "added": "2026-03-20"
       },
@@ -72,7 +72,7 @@
         "id": "r-m-currency",
         "name": "Regional Currency Auto-Display",
         "desc": "Automatically show prices in the buyer's local currency using live FX rates, with manual override.",
-        "progress": 29.8,
+        "progress": 30.1,
         "color": "var(--green)",
         "added": "2026-05-01"
       },
@@ -80,7 +80,7 @@
         "id": "r-m-api",
         "name": "Marketplace Public API (Read-Only)",
         "desc": "Public read-only API for catalog and price data, aimed at price-tracking tools and community sites.",
-        "progress": 14.6,
+        "progress": 14.9,
         "color": "var(--blue)",
         "added": "2026-06-15"
       },
@@ -88,7 +88,7 @@
         "id": "r-m-livechat",
         "name": "Live Chat Buyer Support",
         "desc": "Real-time chat support for order issues, replacing the current ticket-only support flow.",
-        "progress": 27,
+        "progress": 27.3,
         "color": "var(--accent)",
         "added": "2026-05-25"
       }
@@ -98,7 +98,7 @@
         "id": "r-l-loyalty",
         "name": "Loyalty Points Program",
         "desc": "Earn points on every purchase, redeemable for discounts on future orders. Early scoping phase.",
-        "progress": 4.01,
+        "progress": 4.02,
         "color": "var(--accent)",
         "added": "2026-03-01"
       },
@@ -106,7 +106,7 @@
         "id": "r-l-extension",
         "name": "Browser Price-Compare Extension",
         "desc": "Browser extension that surfaces Cerberus Market pricing while browsing other storefronts. Feasibility research.",
-        "progress": 6.02,
+        "progress": 6.03,
         "color": "var(--blue)",
         "added": "2026-04-10"
       },
@@ -114,7 +114,7 @@
         "id": "r-l-subscription",
         "name": "Subscription Key Bundles",
         "desc": "Recurring monthly bundle of curated keys at a discount versus buying individually. Concept phase.",
-        "progress": 2.02,
+        "progress": 2.04,
         "color": "var(--green)",
         "added": "2026-05-05"
       },
@@ -122,7 +122,7 @@
         "id": "r-l-aggregation",
         "name": "Cross-Marketplace Price Aggregation",
         "desc": "Show comparable listing prices from other marketplaces alongside our own for transparency. Exploring data-sourcing options.",
-        "progress": 3.02,
+        "progress": 3.04,
         "color": "var(--purple)",
         "added": "2026-04-25"
       },
@@ -130,7 +130,7 @@
         "id": "r-l-mobileapp",
         "name": "Native Mobile App (iOS/Android)",
         "desc": "Dedicated native apps beyond the current responsive mobile web experience. Requirements gathering.",
-        "progress": 5.01,
+        "progress": 5.02,
         "color": "var(--red)",
         "added": "2026-06-01"
       }
