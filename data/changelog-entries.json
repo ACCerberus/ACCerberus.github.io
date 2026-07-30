@@ -286,5 +286,25 @@
         "text": "Fixed listing page 'related games' occasionally repeating the same title"
       }
     ]
+  },
+  {
+    "version": "v2.6.3",
+    "date": "2026-07-30",
+    "tag": "release",
+    "author": "priya.k",
+    "changes": [
+      {
+        "type": "added",
+        "text": "Price history sparkline added to listing pages"
+      },
+      {
+        "type": "added",
+        "text": "Recently viewed titles shown on homepage"
+      },
+      {
+        "type": "improved",
+        "text": "Tightened fraud-check thresholds to reduce false declines"
+      }
+    ]
   }
 ]
