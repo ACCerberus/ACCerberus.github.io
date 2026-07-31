@@ -306,5 +306,25 @@
         "text": "Tightened fraud-check thresholds to reduce false declines"
       }
     ]
+  },
+  {
+    "version": "v2.6.3",
+    "date": "2026-07-31",
+    "tag": "release",
+    "author": "m.duarte",
+    "changes": [
+      {
+        "type": "fixed",
+        "text": "Fixed promo code field accepting trailing whitespace"
+      },
+      {
+        "type": "improved",
+        "text": "Cart quantity stepper now respects live seller stock limits"
+      },
+      {
+        "type": "improved",
+        "text": "Cart quantity stepper now respects live seller stock limits"
+      }
+    ]
   }
 ]
