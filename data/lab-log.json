@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-30",
+  "lastUpdated": "2026-07-31",
   "entries": [
     {
       "id": "lab-001",
@@ -90,6 +90,15 @@
       "startDate": "2026-07-20",
       "lastUpdate": "2026-07-20",
       "findings": "Initial research phase. Scoping training data requirements."
+    },
+    {
+      "id": "lab-011",
+      "title": "Cross-Region Price Arbitrage Detection",
+      "desc": "Detecting buyers systematically purchasing region-locked keys at the cheapest region to resell elsewhere.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-07-31",
+      "lastUpdate": "2026-07-31",
+      "findings": "Initial research phase. Scoping requirements and reviewing prior art."
     }
   ],
   "templatePool": [
@@ -104,10 +113,6 @@
     {
       "title": "Checkout Abandonment Recovery Emails",
       "desc": "Testing timed recovery emails for abandoned carts against a control group to measure incremental recovered orders."
-    },
-    {
-      "title": "Cross-Region Price Arbitrage Detection",
-      "desc": "Detecting buyers systematically purchasing region-locked keys at the cheapest region to resell elsewhere."
     },
     {
       "title": "Seller Response-Time SLA Modeling",

@@ -1,5 +1,16 @@
 [
   {
+    "id": "deals-016",
+    "title": "Price Drop: Mossgrave Hits a New Low",
+    "date": "2026-07-31T08:24:35Z",
+    "category": "Price Drop",
+    "author": "T. Vance",
+    "summary": "Cutthorn Exchange quietly dropped pricing on Mossgrave, undercutting most other active listings.",
+    "content": "Mossgrave pricing shifted downward this week after Cutthorn Exchange adjusted its listing, roughly 35% below the title's typical range. Other sellers may follow with matching price adjustments in the coming days.",
+    "generated": true,
+    "gameId": "mossgrave"
+  },
+  {
     "id": "deals-015",
     "title": "This Week's Best Deals Across the Catalog",
     "date": "2026-07-29T08:12:09Z",

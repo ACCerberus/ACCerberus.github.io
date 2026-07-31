@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v2.6.3",
-  "buildNumber": 3122,
-  "lastPatchBump": "2026-07-29T08:12:09Z",
+  "currentVersion": "v2.6.4",
+  "buildNumber": 3123,
+  "lastPatchBump": "2026-07-31T08:24:35Z",
   "lastMinorBump": "2026-07-24T00:00:00Z",
   "lastFeatureBump": "2026-04-22T00:00:00Z",
   "patchHistory": [
+    {
+      "version": "v2.6.4",
+      "date": "2026-07-31T08:24:35Z",
+      "summary": "Price-sync timing improvements"
+    },
     {
       "version": "v2.6.3",
       "date": "2026-07-29T08:12:09Z",
@@ -49,11 +54,6 @@
       "version": "v2.5.2",
       "date": "2026-05-20T00:00:00Z",
       "summary": "Guest checkout — no account required for single-key purchases"
-    },
-    {
-      "version": "v2.5.1",
-      "date": "2026-05-08T00:00:00Z",
-      "summary": "Verified Seller badge requirements tightened — ID verification now required"
     }
   ]
 }
