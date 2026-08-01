@@ -1898,5 +1898,41 @@
         "text": "Cart quantity stepper now respects live seller stock limits"
       }
     ]
+  },
+  {
+    "date": "2026-08-01",
+    "timestamp": "2026-08-01T07:54:45Z",
+    "version": "v0.5.0.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized RingZero kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+7 signatures — 6417 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Wallpaper Engine hook"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-01",
+    "timestamp": "2026-08-01T07:54:45Z",
+    "version": "v0.5.0.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "added",
+        "text": "Docs: Added webhook signature verification examples in Python and Go"
+      }
+    ]
   }
 ]
