@@ -6,10 +6,20 @@
   <title>Team - Cerberus Anti-Cheat</title>
   <meta name="description" content="Meet the engineers and security researchers behind Cerberus." />
   <meta name="theme-color" content="#e8a020" />
+  <link rel="canonical" href="https://cerberusac.dev/team/" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Team - Cerberus Anti-Cheat",
+    "description": "Meet the engineers and security researchers behind Cerberus.",
+    "url": "https://cerberusac.dev/team/"
+  }
+  </script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -76,7 +86,7 @@
       font-family: var(--font-heading); font-size: clamp(2rem, 5vw, 3.2rem);
       font-weight: 800; color: var(--text-bright); letter-spacing: -1.5px; margin-bottom: 16px;
     }
-    .page-header p { font-size: 1rem; color: var(--text-dim); max-width: 520px; margin: 0 auto; }
+    .page-header p { font-size: 1rem; color: var(--text); max-width: 520px; margin: 0 auto; }
 
     /* STATS BAR */
     .stats-bar {
@@ -411,18 +421,38 @@
     </a>
     <div class="nav-links">
       <a href="/">Home</a>
-      <a href="/docs/">Docs</a>
-      <a href="/api/">API</a>
-      <a href="/sdk/">SDK</a>
-      <a href="/changelog/">Changelog</a>
-      <a href="/blog/">Blog</a>
-      <a href="/status/">Status</a>
-      <a href="/updates/">Updates</a>
-      <a href="/analytics/">Analytics</a>
-      <a href="/operations/">Operations</a>
-      <a href="/team/" class="active">Team</a>
-      <a href="/case-studies/">Case Studies</a>
-      <a href="/trust/">Trust</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Developers <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/docs/">Docs</a>
+          <a href="/api/">API</a>
+          <a href="/sdk/">SDK</a>
+          <a href="/changelog/">Changelog</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Live Data <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/analytics/">Analytics</a>
+          <a href="/operations/">Operations</a>
+          <a href="/status/">Status</a>
+        </div>
+      </div>
+      <div class="nav-dropdown current">
+        <button class="nav-dropdown-trigger" type="button">Company <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/team/" class="active">Team</a>
+          <a href="/case-studies/">Case Studies</a>
+          <a href="/trust/">Trust</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/blog/">Blog</a>
+          <a href="/updates/">Updates</a>
+        </div>
+      </div>
     </div>
     <div class="nav-cta-wrap">
       <a href="/login/" class="nav-login">Partner Login</a>
@@ -590,13 +620,10 @@
       { id: 'azhao', initials: 'AZ', name: 'azhao', title: 'Perf Analyst', dept: 'qa', loc: 'Shenzhen', tz: 8, joined: 'Mar 2025' },
       { id: 'pschmidt', initials: 'PS', name: 'pschmidt', title: 'HW Compat.', dept: 'qa', loc: 'Munich', tz: 2, joined: 'Apr 2025' },
       // 2026 hires — Kernel & Hardware
-      { id: 'ncarmona', initials: 'NC', name: 'ncarmona', title: 'PCIe Security', dept: 'kernel', loc: 'Barcelona', tz: 2, joined: 'Jan 2026' },
-      { id: 'yfujita', initials: 'YF', name: 'yfujita', title: 'Driver QA', dept: 'kernel', loc: 'Osaka', tz: 9, joined: 'Feb 2026' },
       { id: 'dvolkov', initials: 'DV', name: 'dvolkov', title: 'Hypervisor Security', dept: 'kernel', loc: 'Kyiv', tz: 3, joined: 'Mar 2026' },
       // 2026 hires — AI & Detection
       { id: 'kpatel', initials: 'KP', name: 'kpatel', title: 'ML Ops', dept: 'ai', loc: 'Bangalore', tz: 5, joined: 'Jan 2026' },
       { id: 'akowalski', initials: 'AK', name: 'akowalski', title: 'Threat Classifier', dept: 'ai', loc: 'Krakow', tz: 2, joined: 'Feb 2026' },
-      { id: 'lchen', initials: 'LC', name: 'lchen', title: 'Behavioral Modeling', dept: 'ai', loc: 'Beijing', tz: 8, joined: 'Apr 2026' },
       // 2026 hires — SDK & Platform
       { id: 'msilva', initials: 'MS', name: 'msilva', title: 'Godot Plugin', dept: 'sdk', loc: 'Sao Paulo', tz: -3, joined: 'Jan 2026' },
       { id: 'rnguyen', initials: 'RN', name: 'rnguyen', title: 'Dashboard Dev', dept: 'sdk', loc: 'Ho Chi Minh City', tz: 7, joined: 'Mar 2026' },
@@ -808,12 +835,12 @@
 
     // ===== RENDER DEPARTMENTS =====
     var depts = [
-      { key: 'kernel', name: 'Kernel & Hardware', icon: '&#x1F6E1;', iconClass: 'dept-icon-kernel', count: 9,
+      { key: 'kernel', name: 'Kernel & Hardware', icon: '&#x1F6E1;', iconClass: 'dept-icon-kernel', count: 7,
         desc: 'Develops the ring-0 driver, hardware fingerprinting pipeline, memory integrity verification, and PCIe/DMA detection. Owns everything that touches kernel mode or physical hardware.',
-        members: ['dkrasov', 'ArsenalRX', 'atorres', 'vpetrov', 'mradzinski', 'tkuznetsov', 'ncarmona', 'yfujita', 'dvolkov'] },
-      { key: 'ai', name: 'AI & Detection', icon: '&#x1F9E0;', iconClass: 'dept-icon-ai', count: 8,
+        members: ['dkrasov', 'ArsenalRX', 'atorres', 'vpetrov', 'mradzinski', 'tkuznetsov', 'dvolkov'] },
+      { key: 'ai', name: 'AI & Detection', icon: '&#x1F9E0;', iconClass: 'dept-icon-ai', count: 7,
         desc: 'Builds behavioral detection models, network sentinel analysis, and the verdict engine. Handles real-time inference, anomaly classification, and continuous retraining against new cheat variants.',
-        members: ['s.nakamura', 'rhuang', 'elindqvist', 'mcheng', 'jcastillo', 'kpatel', 'akowalski', 'lchen'] },
+        members: ['s.nakamura', 'rhuang', 'elindqvist', 'mcheng', 'jcastillo', 'kpatel', 'akowalski'] },
       { key: 'sdk', name: 'SDK & Platform', icon: '&#x1F4E6;', iconClass: 'dept-icon-sdk', count: 7,
         desc: 'Builds the public SDK, engine plugins, REST API, dashboard, and integration tooling. Owns the developer experience from first API call to production deployment.',
         members: ['lweber', 'cpark', 'dandrade', 'sthomas', 'msilva', 'rnguyen', 'jliu'] },
@@ -868,12 +895,12 @@
         { city: 'US East', tz: -4, members: ['ArsenalRX', 'swilson'] },
         { city: 'Sao Paulo', tz: -3, members: ['msilva'] },
         { city: 'Lisbon', tz: 1, members: ['dandrade'] },
-        { city: 'Berlin / Prague', tz: 2, members: ['dkrasov', 'lweber', 'atorres', 'mradzinski', 'elindqvist', 'tmoretti', 'bjensen', 'pschmidt', 'ncarmona', 'akowalski', 'omartin', 'fbianchi'] },
+        { city: 'Berlin / Prague', tz: 2, members: ['dkrasov', 'lweber', 'atorres', 'mradzinski', 'elindqvist', 'tmoretti', 'bjensen', 'pschmidt', 'akowalski', 'omartin', 'fbianchi'] },
         { city: 'Moscow', tz: 3, members: ['nvoronov', 'vpetrov', 'tkuznetsov', 'dvolkov'] },
         { city: 'India', tz: 5, members: ['kpatel'] },
         { city: 'Ho Chi Minh', tz: 7, members: ['rnguyen'] },
-        { city: 'Shanghai / Taipei', tz: 8, members: ['rhuang', 'mcheng', 'azhao', 'lchen'] },
-        { city: 'Tokyo / Seoul', tz: 9, members: ['s.nakamura', 'cpark', 'yfujita', 'tyamada', 'ilee'] },
+        { city: 'Shanghai / Taipei', tz: 8, members: ['rhuang', 'mcheng', 'azhao'] },
+        { city: 'Tokyo / Seoul', tz: 9, members: ['s.nakamura', 'cpark', 'tyamada', 'ilee'] },
       ];
 
       function renderTZ() {
@@ -895,7 +922,7 @@
             var s = getStatus(m.tz, mi);
             var dotColor = s === 'online' ? 'var(--green)' : s === 'busy' ? 'var(--accent)' : s === 'away' ? 'var(--text-dim)' : '#333';
             if (s === 'online' || s === 'busy') totalOnline++;
-            dotsHTML += '<div class="tz-dot" style="background:' + dotColor + ';" title="' + m.name + ' (' + s + ')"></div>';
+            dotsHTML += '<div class="tz-dot" style="background:' + dotColor + ';" title="' + m.name + ' (' + s + ')" aria-label="' + m.name + ' (' + s + ')" role="img"></div>';
           });
 
           var groupClass = 'tz-group' + (isWork ? ' tz-work' : '') + (isHub ? ' tz-hub' : '');

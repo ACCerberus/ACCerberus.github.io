@@ -6,10 +6,20 @@
   <title>API Reference - Cerberus Anti-Cheat</title>
   <meta name="description" content="Cerberus Anti-Cheat REST API reference. Manage sessions, bans, detections, and webhooks." />
   <meta name="theme-color" content="#e8a020" />
+  <link rel="canonical" href="https://cerberusac.dev/api/" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "API Reference - Cerberus Anti-Cheat",
+    "description": "Cerberus Anti-Cheat REST API reference. Manage sessions, bans, detections, and webhooks.",
+    "url": "https://cerberusac.dev/api/"
+  }
+  </script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -257,18 +267,38 @@
     </a>
     <div class="nav-links">
       <a href="/">Home</a>
-      <a href="/docs/">Docs</a>
-      <a href="/api/" class="active">API</a>
-      <a href="/sdk/">SDK</a>
-      <a href="/changelog/">Changelog</a>
-      <a href="/blog/">Blog</a>
-      <a href="/status/">Status</a>
-      <a href="/updates/">Updates</a>
-      <a href="/analytics/">Analytics</a>
-      <a href="/operations/">Operations</a>
-      <a href="/team/">Team</a>
-      <a href="/case-studies/">Case Studies</a>
-      <a href="/trust/">Trust</a>
+      <div class="nav-dropdown current">
+        <button class="nav-dropdown-trigger" type="button">Developers <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/docs/">Docs</a>
+          <a href="/api/" class="active">API</a>
+          <a href="/sdk/">SDK</a>
+          <a href="/changelog/">Changelog</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Live Data <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/analytics/">Analytics</a>
+          <a href="/operations/">Operations</a>
+          <a href="/status/">Status</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Company <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/team/">Team</a>
+          <a href="/case-studies/">Case Studies</a>
+          <a href="/trust/">Trust</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/blog/">Blog</a>
+          <a href="/updates/">Updates</a>
+        </div>
+      </div>
     </div>
     <div class="nav-cta-wrap">
       <a href="/login/" class="nav-login">Partner Login</a>

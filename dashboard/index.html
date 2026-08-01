@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Partner Dashboard - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Partner dashboard for Cerberus anti-cheat integration — session monitoring, detection analytics, and API key management." />
   <meta name="theme-color" content="#e8a020" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -65,7 +66,7 @@
 
     /* STAT CARDS */
     .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
-    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; position: relative; overflow: hidden; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; position: relative; overflow: hidden; }
     .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
     .stat-card.accent::before { background: linear-gradient(90deg, var(--accent), transparent); }
     .stat-card.green::before { background: linear-gradient(90deg, var(--green), transparent); }
@@ -84,7 +85,7 @@
     .panel.active { display: block; }
 
     /* TABLES */
-    .table-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    .table-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
     .table-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border); }
     .table-title { font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600; color: var(--text-bright); }
     table { width: 100%; border-collapse: collapse; }
@@ -103,7 +104,7 @@
     .badge-dim { background: rgba(255,255,255,0.04); color: var(--text-dim); }
 
     /* CHARTS */
-    .chart-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+    .chart-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 24px; }
     .chart-title { font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600; color: var(--text-bright); margin-bottom: 20px; }
     .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding-top: 10px; }
     .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
@@ -119,7 +120,7 @@
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 24px; }
 
     /* INFO CARD */
-    .info-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .info-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
     .info-card h3 { font-family: var(--font-heading); font-size: 0.9rem; font-weight: 600; color: var(--text-bright); margin-bottom: 16px; }
     .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
     .info-row:last-child { border-bottom: none; }
@@ -140,7 +141,7 @@
 
     /* REGION MAP */
     .region-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-    .region-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+    .region-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-align: center; }
     .region-name { font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
     .region-status { font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; }
     .region-latency { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 600; color: var(--text-bright); }
@@ -159,7 +160,7 @@
     }
 
     /* SETUP BANNER */
-    .setup-banner { background: var(--accent-dim); border: 1px solid rgba(232,160,32,0.3); border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
+    .setup-banner { background: var(--accent-dim); border: 1px solid rgba(232,160,32,0.3); border-radius: 16px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
     .setup-banner-text { font-size: 0.88rem; color: var(--accent); font-weight: 600; }
     .setup-banner-sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
     .setup-banner-btn { padding: 8px 20px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; background: var(--accent); color: #050507; border: none; cursor: pointer; font-family: var(--font); }
@@ -399,7 +400,7 @@
           <h3>Live API Key</h3>
           <div class="api-key-box">
             <div class="api-key-val" id="apiKeyDisplay">crbs_live_••••••••••••</div>
-            <button class="api-key-btn" onclick="toggleApiKey()">Reveal</button>
+            <button class="api-key-btn" onclick="toggleApiKey(event)">Reveal</button>
           </div>
           <div style="font-size:0.72rem;color:var(--text-dim);">Use this key in your SDK initialization. Never expose it in client-side code.</div>
         </div>
@@ -407,7 +408,7 @@
         <div class="grid-2">
           <div class="info-card reveal">
             <h3>SDK Configuration</h3>
-            <div class="info-row"><span class="info-key">SDK Version</span><span class="info-val">v0.5.0.0b</span></div>
+            <div class="info-row"><span class="info-key">SDK Version</span><span class="info-val">v0.4.2.0b</span></div>
             <div class="info-row"><span class="info-key">Engine</span><span class="info-val" id="cfgEngine">Unreal Engine 5</span></div>
             <div class="info-row"><span class="info-key">Integration</span><span class="info-val"><span class="badge badge-green">Active</span></span></div>
             <div class="info-row"><span class="info-key">Driver</span><span class="info-val">EV Signed</span></div>
@@ -426,10 +427,10 @@
           <h3>SDK Download</h3>
           <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;">
             <div style="flex:1;">
-              <div style="font-size:0.88rem;font-weight:600;color:var(--text-bright);">cerberus-sdk-v0.5.0.0b-win64.zip</div>
+              <div style="font-size:0.88rem;font-weight:600;color:var(--text-bright);">cerberus-sdk-v0.4.2.0b-win64.zip</div>
               <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">4.9 MB &middot; C++ static library &middot; Windows x64</div>
             </div>
-            <a href="/downloads/cerberus-sdk-v0.5.0.0b.zip" download="cerberus-sdk-v0.5.0.0b.zip" style="padding:10px 24px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--accent);color:#050507;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:8px;text-decoration:none;">
+            <a href="/downloads/cerberus-sdk-v0.4.2.0b.zip" download="cerberus-sdk-v0.4.2.0b.zip" style="padding:10px 24px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--accent);color:#050507;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:8px;text-decoration:none;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Download SDK
             </a>
@@ -456,7 +457,7 @@
 
         <div class="info-card reveal" style="margin-bottom:24px;">
           <h3>Game Configuration</h3>
-          <div class="form-group" style="margin-bottom:16px;">
+          <div style="margin-bottom:16px;">
             <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Game Title</label>
             <input type="text" id="setupGame" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);" />
           </div>
@@ -771,10 +772,10 @@
     // API PANEL
     // ═══════════════════════════════════════
     var apiKeyRevealed = false;
-    function toggleApiKey() {
+    function toggleApiKey(e) {
       apiKeyRevealed = !apiKeyRevealed;
       document.getElementById('apiKeyDisplay').textContent = apiKeyRevealed ? (partner ? partner.apiKey : 'crbs_live_000000000000') : 'crbs_live_••••••••••••';
-      event.target.textContent = apiKeyRevealed ? 'Hide' : 'Reveal';
+      e.target.textContent = apiKeyRevealed ? 'Hide' : 'Reveal';
     }
 
     document.getElementById('apiTotal').textContent = '0';

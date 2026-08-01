@@ -113,18 +113,38 @@
     </a>
     <div class="nav-links">
       <a href="/">Home</a>
-      <a href="/docs/">Docs</a>
-      <a href="/api/">API</a>
-      <a href="/sdk/">SDK</a>
-      <a href="/changelog/">Changelog</a>
-      <a href="/blog/">Blog</a>
-      <a href="/status/">Status</a>
-      <a href="/updates/">Updates</a>
-      <a href="/analytics/">Analytics</a>
-      <a href="/operations/">Operations</a>
-      <a href="/team/">Team</a>
-      <a href="/case-studies/">Case Studies</a>
-      <a href="/trust/">Trust</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Developers <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/docs/">Docs</a>
+          <a href="/api/">API</a>
+          <a href="/sdk/">SDK</a>
+          <a href="/changelog/">Changelog</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Live Data <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/analytics/">Analytics</a>
+          <a href="/operations/">Operations</a>
+          <a href="/status/">Status</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Company <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/team/">Team</a>
+          <a href="/case-studies/">Case Studies</a>
+          <a href="/trust/">Trust</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/blog/">Blog</a>
+          <a href="/updates/">Updates</a>
+        </div>
+      </div>
     </div>
     <div class="nav-cta-wrap">
       <a href="/login/" class="nav-login active" style="border-color:var(--accent);background:rgba(232,160,32,0.08)">Partner Login</a>
@@ -144,18 +164,18 @@
 
       <form id="loginForm" onsubmit="handleLogin(event)">
         <div class="form-group">
-          <label class="form-label">Email</label>
+          <label class="form-label" for="loginEmail">Email</label>
           <input type="email" id="loginEmail" placeholder="alex@studio.com" required />
         </div>
         <div class="form-group">
-          <label class="form-label">Password</label>
+          <label class="form-label" for="loginPassword">Password</label>
           <div style="position:relative;">
             <input type="password" id="loginPassword" placeholder="Enter your password" required style="padding-right:50px;" />
             <button type="button" onclick="var el=document.getElementById('loginPassword');if(el.type==='password'){el.type='text';this.textContent='Hide';}else{el.type='password';this.textContent='Show';}" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.75rem;padding:4px;">Show</button>
           </div>
         </div>
         <div class="remember-row">
-          <label><input type="checkbox" id="rememberMe" /> Remember me</label>
+          <label for="rememberMe"><input type="checkbox" id="rememberMe" /> Remember me</label>
           <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
         </div>
         <div id="forgotNote" style="display:none;margin-top:-6px;margin-bottom:16px;font-size:0.76rem;color:var(--text-dim);line-height:1.6;padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid var(--border);">

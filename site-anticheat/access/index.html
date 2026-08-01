@@ -6,10 +6,20 @@
   <title>Request Access - Cerberus Anti-Cheat</title>
   <meta name="description" content="Create a Cerberus partner account to access the SDK, API dashboard, and integration tools. Applications reviewed within 48 hours." />
   <meta name="theme-color" content="#e8a020" />
+  <link rel="canonical" href="https://cerberusac.dev/access/" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Request Access - Cerberus Anti-Cheat",
+    "description": "Create a Cerberus partner account to access the SDK, API dashboard, and integration tools. Applications reviewed within 48 hours.",
+    "url": "https://cerberusac.dev/access/"
+  }
+  </script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -85,7 +95,7 @@
       font-family: var(--font-heading); font-size: clamp(2rem, 5vw, 3.2rem);
       font-weight: 800; color: var(--text-bright); letter-spacing: -1.5px; margin-bottom: 16px;
     }
-    .page-header p { font-size: 1rem; color: var(--text-dim); max-width: 520px; margin: 0 auto; }
+    .page-header p { font-size: 1rem; color: var(--text); max-width: 520px; margin: 0 auto; }
 
     /* TRUST BADGES */
     .trust-bar {
@@ -130,6 +140,8 @@
       display: block; font-size: 0.78rem; font-weight: 600; color: var(--text);
       margin-bottom: 6px; letter-spacing: 0.2px;
     }
+    .form-fieldset { border: none; padding: 0; min-width: 0; }
+    .form-fieldset legend.form-label { padding: 0; width: 100%; }
     .form-label .optional { color: var(--text-dim); font-weight: 400; font-size: 0.72rem; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
@@ -310,18 +322,38 @@
     </a>
     <div class="nav-links">
       <a href="/">Home</a>
-      <a href="/docs/">Docs</a>
-      <a href="/api/">API</a>
-      <a href="/sdk/">SDK</a>
-      <a href="/changelog/">Changelog</a>
-      <a href="/blog/">Blog</a>
-      <a href="/status/">Status</a>
-      <a href="/updates/">Updates</a>
-      <a href="/analytics/">Analytics</a>
-      <a href="/operations/">Operations</a>
-      <a href="/team/">Team</a>
-      <a href="/case-studies/">Case Studies</a>
-      <a href="/trust/">Trust</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Developers <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/docs/">Docs</a>
+          <a href="/api/">API</a>
+          <a href="/sdk/">SDK</a>
+          <a href="/changelog/">Changelog</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Live Data <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/analytics/">Analytics</a>
+          <a href="/operations/">Operations</a>
+          <a href="/status/">Status</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Company <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/team/">Team</a>
+          <a href="/case-studies/">Case Studies</a>
+          <a href="/trust/">Trust</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/blog/">Blog</a>
+          <a href="/updates/">Updates</a>
+        </div>
+      </div>
     </div>
     <div class="nav-cta-wrap">
       <a href="/login/" class="nav-login">Partner Login</a>
@@ -362,24 +394,24 @@
           <div class="form-section-label">Account Credentials</div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Work Email</label>
-              <input type="email" name="email" placeholder="alex@studio.com" required />
+              <label class="form-label" for="regEmail">Work Email</label>
+              <input type="email" name="email" id="regEmail" placeholder="alex@studio.com" required />
             </div>
             <div class="form-group">
-              <label class="form-label">Display Name</label>
-              <input type="text" name="display_name" placeholder="e.g. Alex Carter" required />
+              <label class="form-label" for="regDisplayName">Display Name</label>
+              <input type="text" name="display_name" id="regDisplayName" placeholder="e.g. Alex Carter" required />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Password</label>
+              <label class="form-label" for="regPw">Password</label>
               <div style="position:relative;">
                 <input type="password" name="password" id="regPw" placeholder="Min. 12 characters" required minlength="12" oninput="checkPwMatch()" />
                 <button type="button" onclick="togglePwVis('regPw',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.75rem;padding:4px;">Show</button>
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">Confirm Password</label>
+              <label class="form-label" for="regPwC">Confirm Password</label>
               <div style="position:relative;">
                 <input type="password" name="password_confirm" id="regPwC" placeholder="Re-enter password" required minlength="12" oninput="checkPwMatch()" />
                 <button type="button" onclick="togglePwVis('regPwC',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.75rem;padding:4px;">Show</button>
@@ -387,7 +419,7 @@
               <div id="pwMismatch" style="display:none;color:#e04050;font-size:0.75rem;margin-top:4px;font-weight:600;">Passwords do not match</div>
             </div>
           </div>
-          <div style="font-size:0.7rem;color:var(--text-dim);margin-top:8px;">Your account will be provisioned after manual review. You'll receive an API key and dashboard access via email.</div>
+          <div style="font-size:0.7rem;color:var(--text);margin-top:8px;">Your account will be provisioned after manual review. You'll receive an API key and dashboard access via email.</div>
         </div>
 
         <!-- Section 1: Studio Information -->
@@ -395,18 +427,18 @@
           <div class="form-section-label">Studio Information</div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Studio Name</label>
-              <input type="text" name="studio_name" placeholder="e.g. Ironclad Games" required />
+              <label class="form-label" for="regStudioName">Studio Name</label>
+              <input type="text" name="studio_name" id="regStudioName" placeholder="e.g. Ironclad Games" required />
             </div>
             <div class="form-group">
-              <label class="form-label">Website URL <span class="optional">(optional)</span></label>
-              <input type="url" name="website" placeholder="https://yourstudio.com" />
+              <label class="form-label" for="regWebsite">Website URL <span class="optional">(optional)</span></label>
+              <input type="url" name="website" id="regWebsite" placeholder="https://yourstudio.com" />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Studio Size</label>
-              <select name="studio_size">
+              <label class="form-label" for="regStudioSize">Studio Size</label>
+              <select name="studio_size" id="regStudioSize">
                 <option value="">Select team size</option>
                 <option value="1-5">1-5</option>
                 <option value="6-20">6-20</option>
@@ -416,8 +448,8 @@
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Country <span class="optional">(optional)</span></label>
-              <input type="text" name="country" placeholder="e.g. United States" />
+              <label class="form-label" for="regCountry">Country <span class="optional">(optional)</span></label>
+              <input type="text" name="country" id="regCountry" placeholder="e.g. United States" />
             </div>
           </div>
         </div>
@@ -427,12 +459,12 @@
           <div class="form-section-label">Game Details</div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Game Title</label>
-              <input type="text" name="game_title" placeholder="e.g. Project Vanguard" required />
+              <label class="form-label" for="regGameTitle">Game Title</label>
+              <input type="text" name="game_title" id="regGameTitle" placeholder="e.g. Project Vanguard" required />
             </div>
             <div class="form-group">
-              <label class="form-label">Engine</label>
-              <select name="engine">
+              <label class="form-label" for="regEngine">Engine</label>
+              <select name="engine" id="regEngine">
                 <option value="">Select engine</option>
                 <option value="Unreal Engine 5">Unreal Engine 5 (full support)</option>
                 <option value="Unity 6">Unity 6 (early preview)</option>
@@ -441,13 +473,13 @@
                 <option value="Custom Engine">Custom Engine (raw C++ SDK)</option>
                 <option value="Other">Other</option>
               </select>
-              <div style="font-size:0.65rem;color:var(--text-dim);margin-top:6px;">Unreal Engine is our primary supported platform. Unity integration is functional but in early preview. All other engines use the raw C++ SDK (4 API calls).</div>
+              <div style="font-size:0.65rem;color:var(--text);margin-top:6px;">Unreal Engine is our primary supported platform. Unity integration is functional but in early preview. All other engines use the raw C++ SDK (4 API calls).</div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Genre</label>
-              <select name="genre">
+              <label class="form-label" for="regGenre">Genre</label>
+              <select name="genre" id="regGenre">
                 <option value="">Select genre</option>
                 <option value="FPS">FPS</option>
                 <option value="Battle Royale">Battle Royale</option>
@@ -460,8 +492,8 @@
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Development Stage</label>
-              <select name="dev_stage">
+              <label class="form-label" for="regDevStage">Development Stage</label>
+              <select name="dev_stage" id="regDevStage">
                 <option value="">Select stage</option>
                 <option value="Pre-Alpha">Pre-Alpha</option>
                 <option value="Alpha">Alpha</option>
@@ -472,8 +504,8 @@
               </select>
             </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Platforms</label>
+          <fieldset class="form-group form-fieldset">
+            <legend class="form-label">Platforms</legend>
             <div class="check-group">
               <label class="check-item">
                 <input type="checkbox" name="platforms" value="Windows" />
@@ -501,7 +533,7 @@
                 <span>Cross-Play</span>
               </label>
             </div>
-          </div>
+          </fieldset>
         </div>
 
         <!-- Section 3: Scale & Requirements -->
@@ -509,8 +541,8 @@
           <div class="form-section-label">Scale & Requirements</div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Expected Peak CCU</label>
-              <select name="peak_ccu">
+              <label class="form-label" for="regPeakCcu">Expected Peak CCU</label>
+              <select name="peak_ccu" id="regPeakCcu">
                 <option value="">Select range</option>
                 <option value="Under 1K">Under 1K</option>
                 <option value="1K-10K">1K-10K</option>
@@ -521,16 +553,16 @@
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Current Anti-Cheat <span class="optional">(optional)</span></label>
-              <input type="text" name="current_ac" placeholder="e.g. EasyAntiCheat, BattlEye, None" />
+              <label class="form-label" for="regCurrentAc">Current Anti-Cheat <span class="optional">(optional)</span></label>
+              <input type="text" name="current_ac" id="regCurrentAc" placeholder="e.g. EasyAntiCheat, BattlEye, None" />
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Primary Security Concerns</label>
-            <textarea name="security_concerns" placeholder="Describe the cheating threats or security challenges you're facing..." rows="3"></textarea>
+            <label class="form-label" for="regSecurityConcerns">Primary Security Concerns</label>
+            <textarea name="security_concerns" id="regSecurityConcerns" placeholder="Describe the cheating threats or security challenges you're facing..." rows="3"></textarea>
           </div>
-          <div class="form-group">
-            <label class="form-label">Desired Tier</label>
+          <fieldset class="form-group form-fieldset">
+            <legend class="form-label">Desired Tier</legend>
             <div class="radio-group">
               <label class="radio-item radio-item-tier">
                 <input type="radio" name="tier" value="Argus (Free)" />
@@ -577,7 +609,7 @@ SLA-backed uptime guarantee
 White-label SDK</span>
               </label>
             </div>
-          </div>
+          </fieldset>
         </div>
 
         <!-- Section 4: Contact -->
@@ -585,12 +617,12 @@ White-label SDK</span>
           <div class="form-section-label">Contact Details</div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Job Title <span class="optional">(optional)</span></label>
-              <input type="text" name="job_title" placeholder="e.g. Lead Engineer" />
+              <label class="form-label" for="regJobTitle">Job Title <span class="optional">(optional)</span></label>
+              <input type="text" name="job_title" id="regJobTitle" placeholder="e.g. Lead Engineer" />
             </div>
             <div class="form-group">
-              <label class="form-label">Phone <span class="optional">(optional)</span></label>
-              <input type="tel" name="phone" placeholder="+1 (555) 000-0000" />
+              <label class="form-label" for="regPhone">Phone <span class="optional">(optional)</span></label>
+              <input type="tel" name="phone" id="regPhone" placeholder="+1 (555) 000-0000" />
             </div>
           </div>
         </div>
@@ -599,8 +631,8 @@ White-label SDK</span>
         <div class="form-section reveal">
           <div class="form-section-label">Additional</div>
           <div class="form-group">
-            <label class="form-label">How did you hear about us?</label>
-            <select name="referral_source">
+            <label class="form-label" for="regReferralSource">How did you hear about us?</label>
+            <select name="referral_source" id="regReferralSource">
               <option value="">Select one</option>
               <option value="Search Engine">Search Engine</option>
               <option value="Social Media">Social Media</option>
@@ -610,8 +642,8 @@ White-label SDK</span>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Additional Notes <span class="optional">(optional)</span></label>
-            <textarea name="notes" placeholder="Anything else you'd like us to know..." rows="3"></textarea>
+            <label class="form-label" for="regNotes">Additional Notes <span class="optional">(optional)</span></label>
+            <textarea name="notes" id="regNotes" placeholder="Anything else you'd like us to know..." rows="3"></textarea>
           </div>
         </div>
 

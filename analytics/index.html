@@ -6,10 +6,20 @@
   <title>Analytics - Cerberus Anti-Cheat</title>
   <meta name="description" content="Real-time detection analytics for Cerberus Anti-Cheat Engine." />
   <meta name="theme-color" content="#e8a020" />
+  <link rel="canonical" href="https://cerberusac.dev/analytics/" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Analytics - Cerberus Anti-Cheat",
+    "description": "Real-time detection analytics for Cerberus Anti-Cheat Engine.",
+    "url": "https://cerberusac.dev/analytics/"
+  }
+  </script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -401,17 +411,38 @@
     </a>
     <div class="nav-links">
       <a href="/">Home</a>
-      <a href="/docs/">Docs</a>
-      <a href="/api/">API</a>
-      <a href="/sdk/">SDK</a>
-      <a href="/changelog/">Changelog</a>
-      <a href="/blog/">Blog</a>
-      <a href="/status/">Status</a>
-      <a href="/updates/">Updates</a>
-      <a href="/analytics/" class="active">Analytics</a>
-      <a href="/team/">Team</a>
-      <a href="/case-studies/">Case Studies</a>
-      <a href="/trust/">Trust</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Developers <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/docs/">Docs</a>
+          <a href="/api/">API</a>
+          <a href="/sdk/">SDK</a>
+          <a href="/changelog/">Changelog</a>
+        </div>
+      </div>
+      <div class="nav-dropdown current">
+        <button class="nav-dropdown-trigger" type="button">Live Data <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/analytics/" class="active">Analytics</a>
+          <a href="/operations/">Operations</a>
+          <a href="/status/">Status</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Company <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/team/">Team</a>
+          <a href="/case-studies/">Case Studies</a>
+          <a href="/trust/">Trust</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/blog/">Blog</a>
+          <a href="/updates/">Updates</a>
+        </div>
+      </div>
     </div>
     <div class="nav-status">
       <div class="nav-status-dot"></div>
@@ -836,7 +867,7 @@
 
   <!-- REPORT BUG -->
   <div style="max-width:1300px;margin:0 auto 30px;padding:0 24px;position:relative;z-index:1;display:flex;justify-content:flex-end;">
-    <a href="/report/" class="report-btn" id="reportBugBtn">
+    <a href="#" class="report-btn" id="reportBugBtn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       Report Bug / Issue
     </a>
@@ -1584,7 +1615,7 @@
           armsItem = { icon: 'feed-icon-ok', iconText: 'AR', text: '<strong style="color:var(--accent);">ARMS RACE</strong> \u2014 +' + Math.floor(Math.random()*8+3) + ' signatures pushed for ' + todaysHotProvider.provider + ' ' + armsRaceVersion + ' \u00b7 DB synced across all regions \u00b7 <span style="color:var(--green);">' + armsRaceBanCount + ' accounts banned</span>', time: time };
           armsRaceStage = 3;
         } else {
-          armsItem = { icon: 'feed-icon-ok', iconText: 'AR', text: '<strong style="color:var(--accent);">ARMS RACE</strong> \u2014 ' + todaysHotProvider.provider + ' ' + armsRaceVersion + ' fully neutralized \u00b7 Detection rate: 100% \u00b7 Avg response: ' + armsRaceResponseTime + 'min \u00b7 <span style="color:var(--green);">RESOLVED</span>', time: time };
+          armsItem = { icon: 'feed-icon-ok', iconText: 'AR', text: '<strong style="color:var(--accent);">ARMS RACE</strong> \u2014 ' + todaysHotProvider.provider + ' ' + armsRaceVersion + ' largely contained \u00b7 Detection rate: 91.4% \u00b7 Avg response: ' + armsRaceResponseTime + 'min \u00b7 <span style="color:var(--green);">RESOLVED</span>', time: time };
           armsRaceStage = 4; // done for today
         }
         return armsItem;
@@ -2883,7 +2914,7 @@
       if (!el) return;
       var digest = E ? E.dailyDigest() : null;
       var todayThreats = totalThreats24;
-      var yesterdayThreats = digest ? Math.round(todayThreats / (1 + (digest.deltaPercent || 0) / 100)) : Math.floor(12 + seeded((daySeed - 1) * 121) * 26);
+      var yesterdayThreats = digest ? digest.yesterday.detections : Math.floor(12 + seeded((daySeed - 1) * 121) * 26);
       var todayBans = E ? E.dailyBans() : Math.floor(todayThreats * 0.7);
       var yesterdayBans = Math.floor(yesterdayThreats * (0.65 + seeded((daySeed - 1) * 131) * 0.1));
       var todaySessions = totalCCU;
