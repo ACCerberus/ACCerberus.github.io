@@ -1,0 +1,41 @@
+{
+  "lastUpdated": "2026-07-31T00:00:00Z",
+  "openIssues": [
+    {
+      "id": "KI-2026-014",
+      "title": "Elevated false-positive rate on ASUS ROG boards running Armoury Crate",
+      "status": "fix-in-progress",
+      "severity": "minor",
+      "component": "kernel",
+      "openedAt": "2026-07-24T09:12:00Z",
+      "affectedRate": "~2.1% of sessions on affected hardware",
+      "description": "Armoury Crate's AsIO3.sys driver registers a kernel callback pattern that occasionally trips our instrumentation-callback heuristic. Not a security issue — purely a detection tuning problem.",
+      "workaround": "Partners can temporarily exclude AsIO3.sys via the kernel-scan allowlist in the partner dashboard (Settings → Detection Tuning → Driver Allowlist).",
+      "targetFix": "v0.5.1.0b"
+    },
+    {
+      "id": "KI-2026-015",
+      "title": "Webhook retry backoff too aggressive under regional failover",
+      "status": "confirmed",
+      "severity": "minor",
+      "component": "network",
+      "openedAt": "2026-07-27T14:40:00Z",
+      "affectedRate": "Delivery delay up to 90s during failover windows only",
+      "description": "When a region fails health checks and traffic reroutes, queued webhook retries back off further than necessary before the new region is confirmed healthy, adding avoidable delivery latency.",
+      "workaround": "None needed for most integrations — events still deliver, just later than normal during failover. Partners polling the Ban API directly are unaffected.",
+      "targetFix": "v0.5.0.2b"
+    },
+    {
+      "id": "KI-2026-016",
+      "title": "SDK Unity package occasionally double-fires OnSessionStart in Editor",
+      "status": "investigating",
+      "severity": "minor",
+      "component": "sdk",
+      "openedAt": "2026-07-29T11:05:00Z",
+      "affectedRate": "Editor/Play-mode only — not observed in packaged builds",
+      "description": "Domain reload in the Unity Editor can occasionally re-fire the session-start callback before the prior session has fully torn down, producing duplicate telemetry rows in Editor testing.",
+      "workaround": "Ignore duplicate rows in Editor test data, or wrap OnSessionStart with a one-shot guard. Packaged builds are unaffected.",
+      "targetFix": "Under investigation — no ETA yet"
+    }
+  ]
+}
