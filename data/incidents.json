@@ -2,212 +2,282 @@
   "postmortems": [
     {
       "incidentId": "INC-20260721-0141",
-      "title": "Payment gateway timeout during checkout surge",
+      "title": "Memory scan false positive on accessibility software",
       "startedAt": "2026-07-21T13:58:59Z",
       "resolvedAt": "2026-07-21T21:13:02Z",
       "duration": "7h 14m",
-      "impactPct": 2.1,
-      "rootCause": "Payment gateway timeout",
+      "impactPct": 0.5,
+      "rootCause": "Cache invalidation storm after signature push",
       "timeline": [
-        { "time": "2026-07-21T13:58:59Z", "status": "INVESTIGATING", "detail": "Elevated checkout failure rate detected during evening order surge" },
-        { "time": "2026-07-21T16:40:00Z", "status": "IDENTIFIED", "detail": "Payment gateway connection pool exhausted under load; retries backing up" },
-        { "time": "2026-07-21T21:13:02Z", "status": "RESOLVED", "detail": "Connection pool resized and retry backoff tuned; checkout success rate recovered" }
+        {
+          "time": "2026-07-21T13:58:59Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-21T21:13:02Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
       ],
       "actionItems": [
-        "Raise payment gateway connection pool ceiling for peak-hour load",
-        "Add early-warning alert on retry queue depth before failures surface to buyers"
+        "Deploy canary configuration validation",
+        "Increase load test coverage for affected code path"
       ],
       "lessonsLearned": [
-        "Checkout capacity planning needs to account for evening peak across all three regions simultaneously"
+        "Observability gaps in this subsystem masked early warning signs"
       ]
     },
     {
       "incidentId": "INC-20260712-8655",
-      "title": "Manual delivery batch delay on high-demand title",
+      "title": "Webhook delivery delays",
       "startedAt": "2026-07-12T09:53:10Z",
       "resolvedAt": "2026-07-12T17:01:17Z",
       "duration": "7h 8m",
-      "impactPct": 1.4,
-      "rootCause": "Manual delivery batch delay",
+      "impactPct": 1.2,
+      "rootCause": "Signature database index corruption after concurrent write",
       "timeline": [
-        { "time": "2026-07-12T09:53:10Z", "status": "INVESTIGATING", "detail": "Manual-delivery orders for a restocked title exceeding 15-minute SLA" },
-        { "time": "2026-07-12T12:15:00Z", "status": "IDENTIFIED", "detail": "Seller-side fulfillment queue backed up after a large restock batch landed at once" },
-        { "time": "2026-07-12T17:01:17Z", "status": "RESOLVED", "detail": "Queue cleared manually and seller notified to stagger future restock batches" }
+        {
+          "time": "2026-07-12T09:53:10Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-12T17:01:17Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
       ],
       "actionItems": [
-        "Add batch-size warning to seller restock upload flow",
-        "Auto-notify buyers with an updated ETA when manual delivery exceeds SLA"
+        "Implement gradual rollout for configuration changes",
+        "Add automated regression test for this failure mode"
       ],
       "lessonsLearned": [
-        "Large single-batch restocks should be queued incrementally rather than pushed all at once"
+        "Rollback procedures should be tested quarterly"
       ]
     },
     {
       "incidentId": "INC-20260705-9181",
-      "title": "Seller API sync failure caused stale listings",
+      "title": "Behavioral model confidence degradation",
       "startedAt": "2026-07-05T23:03:36Z",
       "resolvedAt": "2026-07-06T13:49:19Z",
       "duration": "14h 45m",
       "impactPct": 1.2,
-      "rootCause": "Seller API sync failure",
+      "rootCause": "Misconfigured rate limiter on edge node",
       "timeline": [
-        { "time": "2026-07-05T23:03:36Z", "status": "INVESTIGATING", "detail": "Stock counts on a subset of listings not matching seller-reported inventory" },
-        { "time": "2026-07-06T04:20:00Z", "status": "IDENTIFIED", "detail": "Seller API sync worker stalled after an unhandled schema change in one seller's feed" },
-        { "time": "2026-07-06T13:49:19Z", "status": "RESOLVED", "detail": "Sync worker restarted with defensive schema validation; affected listings re-synced" }
+        {
+          "time": "2026-07-05T23:03:36Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-06T13:49:19Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
       ],
       "actionItems": [
-        "Add schema validation to seller inventory feed ingestion before this reaches production sync",
-        "Alert on sync worker staleness after 30 minutes instead of 4 hours"
+        "Add automated rollback trigger for similar conditions",
+        "Add pre-deployment configuration validation step"
       ],
       "lessonsLearned": [
-        "Seller-side feed changes need a staging validation pass before hitting the live sync pipeline"
+        "Capacity planning needs to account for burst traffic patterns"
       ]
     },
     {
       "incidentId": "INC-20260704-6662",
-      "title": "Fraud-check false positive blocked legitimate orders",
+      "title": "Ban API rate limiter false triggers",
       "startedAt": "2026-07-04T17:09:05Z",
       "resolvedAt": "2026-07-05T03:44:32Z",
       "duration": "10h 35m",
       "impactPct": 0.8,
-      "rootCause": "Fraud-check false positive",
+      "rootCause": "Load balancer health check misconfiguration",
       "timeline": [
-        { "time": "2026-07-04T17:09:05Z", "status": "INVESTIGATING", "detail": "Reports of legitimate checkouts being auto-declined by fraud screening" },
-        { "time": "2026-07-04T20:30:00Z", "status": "IDENTIFIED", "detail": "Overly aggressive velocity rule flagging repeat buyers during a flash-sale window" },
-        { "time": "2026-07-05T03:44:32Z", "status": "RESOLVED", "detail": "Velocity threshold adjusted and affected orders manually cleared" }
+        {
+          "time": "2026-07-04T17:09:05Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-05T03:44:32Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
       ],
       "actionItems": [
-        "Tune fraud velocity rule to account for flash-sale order bursts specifically",
-        "Add a manual-override path for buyers with a clean order history who get auto-declined"
+        "Deploy canary configuration validation",
+        "Increase load test coverage for affected code path"
       ],
       "lessonsLearned": [
-        "Fraud rules tuned for normal traffic need separate thresholds during flash-sale surge periods"
+        "Capacity planning needs to account for burst traffic patterns"
       ]
     },
     {
       "incidentId": "INC-20260701-0819",
-      "title": "Regional CDN latency spike (APAC)",
+      "title": "Webhook delivery delays",
       "startedAt": "2026-07-01T20:00:34Z",
       "resolvedAt": "2026-07-02T07:35:18Z",
       "duration": "11h 34m",
-      "impactPct": 2.6,
-      "rootCause": "Regional CDN latency spike",
+      "impactPct": 2.8,
+      "rootCause": "TLS certificate pinning hash mismatch after CA rotation",
       "timeline": [
-        { "time": "2026-07-01T20:00:34Z", "status": "INVESTIGATING", "detail": "Catalog and listing page load times elevated for APAC buyers" },
-        { "time": "2026-07-01T23:10:00Z", "status": "IDENTIFIED", "detail": "Edge node cache invalidation storm following a catalog-wide price sync" },
-        { "time": "2026-07-02T07:35:18Z", "status": "RESOLVED", "detail": "Cache invalidation throttled and edge nodes rewarmed; latency returned to baseline" }
+        {
+          "time": "2026-07-01T20:00:34Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-07-02T07:35:18Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
       ],
       "actionItems": [
-        "Rate-limit cache invalidation triggers after large price sync events",
-        "Add regional latency monitoring dashboard with automatic paging above threshold"
+        "Increase load test coverage for affected code path",
+        "Implement gradual rollout for configuration changes"
       ],
       "lessonsLearned": [
-        "Full-catalog price syncs should stagger cache invalidation by region rather than firing simultaneously"
+        "Detection of this failure mode should be automated"
       ]
     },
     {
       "incidentId": "INC-20260629-9194",
-      "title": "Key-generation queue backlog after restock",
+      "title": "Webhook delivery delays",
       "startedAt": "2026-06-29T18:10:19Z",
       "resolvedAt": "2026-06-30T03:57:01Z",
       "duration": "9h 46m",
       "impactPct": 1.7,
-      "rootCause": "Key-generation queue backlog",
+      "rootCause": "Kernel module incompatibility with latest Windows Insider build",
       "timeline": [
-        { "time": "2026-06-29T18:10:19Z", "status": "INVESTIGATING", "detail": "Instant-delivery keys taking longer than usual to generate post-purchase" },
-        { "time": "2026-06-29T21:00:00Z", "status": "IDENTIFIED", "detail": "Key-generation worker pool undersized for a concurrent multi-seller restock push" },
-        { "time": "2026-06-30T03:57:01Z", "status": "RESOLVED", "detail": "Worker pool scaled up and backlog cleared; delivery times back under 15 seconds" }
+        {
+          "time": "2026-06-29T18:10:19Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-06-30T03:57:01Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
       ],
       "actionItems": [
-        "Auto-scale key-generation workers based on queue depth rather than fixed pool size",
-        "Coordinate restock timing across sellers to avoid simultaneous large pushes"
+        "Document incident pattern for on-call training",
+        "Implement additional monitoring for affected subsystem"
       ],
       "lessonsLearned": [
-        "Delivery pipeline capacity needs headroom for coordinated multi-seller restock events, not just single-seller spikes"
+        "Detection of this failure mode should be automated"
       ]
     },
     {
       "incidentId": "INC-20260528-3940",
-      "title": "Seller payout batch delay",
+      "title": "Ban API rate limiter false triggers",
       "startedAt": "2026-05-28T17:35:42Z",
       "resolvedAt": "2026-05-29T03:58:31Z",
       "duration": "10h 22m",
-      "impactPct": 0.6,
-      "rootCause": "Seller payout batch delay",
+      "impactPct": 1.7,
+      "rootCause": "Kernel module incompatibility with latest Windows Insider build",
       "timeline": [
-        { "time": "2026-05-28T17:35:42Z", "status": "INVESTIGATING", "detail": "Scheduled seller payout run had not completed within its normal window" },
-        { "time": "2026-05-28T22:00:00Z", "status": "IDENTIFIED", "detail": "Batch job stalled on a reconciliation mismatch for a small subset of sellers" },
-        { "time": "2026-05-29T03:58:31Z", "status": "RESOLVED", "detail": "Mismatched records reconciled manually and payout batch completed" }
+        {
+          "time": "2026-05-28T17:35:42Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-29T03:58:31Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
       ],
       "actionItems": [
-        "Add automatic alerting when a payout batch exceeds its expected runtime",
-        "Isolate reconciliation mismatches to a quarantine queue instead of stalling the full batch"
+        "Implement additional monitoring for affected subsystem",
+        "Update runbook with new escalation procedures"
       ],
       "lessonsLearned": [
-        "A single seller's mismatched records shouldn't be able to block payouts for the entire batch"
+        "Observability gaps in this subsystem masked early warning signs"
       ]
     },
     {
       "incidentId": "INC-20260527-0845",
-      "title": "Price-sync latency degradation",
+      "title": "API response time degradation",
       "startedAt": "2026-05-27T20:25:45Z",
       "resolvedAt": "2026-05-28T08:07:28Z",
       "duration": "11h 41m",
-      "impactPct": 1.9,
-      "rootCause": "Database replica lag",
+      "impactPct": 2.8,
+      "rootCause": "Disk I/O saturation on signature database primary",
       "timeline": [
-        { "time": "2026-05-27T20:25:45Z", "status": "INVESTIGATING", "detail": "Cross-region price sync latency climbing above normal range" },
-        { "time": "2026-05-27T23:50:00Z", "status": "IDENTIFIED", "detail": "Read replica falling behind primary during high write volume from a catalog update" },
-        { "time": "2026-05-28T08:07:28Z", "status": "RESOLVED", "detail": "Replica caught up after write throttling; price sync latency returned to baseline" }
+        {
+          "time": "2026-05-27T20:25:45Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-28T08:07:28Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
       ],
       "actionItems": [
-        "Throttle bulk catalog writes during business hours to protect replica lag",
-        "Add replica lag as a first-class metric on the internal ops dashboard"
+        "Review and update capacity planning for affected service",
+        "Document incident pattern for on-call training"
       ],
       "lessonsLearned": [
-        "Large catalog updates need a maintenance-window path instead of running against live replicas"
+        "Cross-region testing should include latency simulation"
       ]
     },
     {
       "incidentId": "INC-20260525-1338",
-      "title": "Bulk listing upload error affected new seller batch",
+      "title": "Elevated DMA false positives",
       "startedAt": "2026-05-25T15:15:47Z",
       "resolvedAt": "2026-05-25T23:08:21Z",
       "duration": "7h 52m",
-      "impactPct": 0.9,
-      "rootCause": "Bulk listing upload error",
+      "impactPct": 3.4,
+      "rootCause": "Model inference out-of-memory on GPU-constrained nodes",
       "timeline": [
-        { "time": "2026-05-25T15:15:47Z", "status": "INVESTIGATING", "detail": "A batch of newly uploaded listings failed to appear in search results" },
-        { "time": "2026-05-25T18:00:00Z", "status": "IDENTIFIED", "detail": "Bulk upload tool silently dropped rows with malformed price fields" },
-        { "time": "2026-05-25T23:08:21Z", "status": "RESOLVED", "detail": "Malformed rows corrected and re-uploaded; validation added to reject rather than silently drop" }
+        {
+          "time": "2026-05-25T15:15:47Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-25T23:08:21Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
       ],
       "actionItems": [
-        "Reject malformed bulk-upload rows with an explicit error instead of silently dropping them",
-        "Add a post-upload confirmation summary showing accepted vs. rejected listing counts"
+        "Implement feature flag for rapid rollback capability",
+        "Add synthetic monitoring probe for early detection"
       ],
       "lessonsLearned": [
-        "Silent data loss in bulk tooling is worse than a hard failure — sellers need visibility into what didn't import"
+        "Cross-region testing should include latency simulation"
       ]
     },
     {
       "incidentId": "INC-20260521-5328",
-      "title": "Search index rebuild lag after catalog update",
+      "title": "Scan latency increase detected",
       "startedAt": "2026-05-21T21:43:56Z",
       "resolvedAt": "2026-05-22T10:54:17Z",
       "duration": "13h 10m",
-      "impactPct": 1.5,
-      "rootCause": "Search index rebuild lag",
+      "impactPct": 2.8,
+      "rootCause": "Garbage collection pause in scan worker",
       "timeline": [
-        { "time": "2026-05-21T21:43:56Z", "status": "INVESTIGATING", "detail": "Newly listed and restocked items not appearing in catalog search results" },
-        { "time": "2026-05-22T02:00:00Z", "status": "IDENTIFIED", "detail": "Search index rebuild fell behind after a large batch of listings landed simultaneously" },
-        { "time": "2026-05-22T10:54:17Z", "status": "RESOLVED", "detail": "Index rebuild completed and incremental indexing cadence shortened" }
+        {
+          "time": "2026-05-21T21:43:56Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-05-22T10:54:17Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
       ],
       "actionItems": [
-        "Move from periodic full rebuilds to incremental indexing on every listing change",
-        "Add a search-freshness metric to the internal ops dashboard"
+        "Implement feature flag for rapid rollback capability",
+        "Add synthetic monitoring probe for early detection"
       ],
       "lessonsLearned": [
-        "Catalog and search freshness needs to be tracked as its own SLO, separate from raw uptime"
+        "Configuration changes need staged rollout validation"
       ]
     }
   ]

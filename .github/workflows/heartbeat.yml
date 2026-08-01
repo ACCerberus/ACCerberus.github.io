@@ -23,111 +23,131 @@ jobs:
           DAY=$(date -u +%u)  # 1=Monday, 7=Sunday
           NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-          # Read current state — NEVER touch platformVersion or buildNumber
+          # Read current state — NEVER touch engineVersion or buildNumber
           # Those are only changed manually during a real version bump
-          ACTIVE_LISTINGS=$(jq '.activeListings' data/state.json)
-          TOTAL_KEYS_SOLD=$(jq '.totalKeysSold' data/state.json)
-          DAILY_ORDERS=$(jq '.dailyOrdersPlaced' data/state.json)
-          DAILY_DELIVERED=$(jq '.dailyKeysDelivered' data/state.json)
-          BUYER_CLAIMS=$(jq '.buyerProtectionClaims' data/state.json)
-          FRAUD_CHECKS=$(jq '.fraudChecksPerformed' data/state.json)
-          RESTOCK_QUEUE=$(jq '.restockQueue' data/state.json)
-          PENDING_DISPUTES=$(jq '.pendingDisputes' data/state.json)
-          DISPUTE_FREE_STREAK=$(jq '.disputeFreeStreak' data/state.json)
-          VERSION=$(jq -r '.platformVersion' data/state.json)
+          SIGS=$(jq '.signatureDb' data/state.json)
+          BANS=$(jq '.totalBans' data/state.json)
+          DETECTIONS=$(jq '.dailyDetections' data/state.json)
+          LATENCY=$(jq '.avgScanLatency' data/state.json)
+          REVIEWS=$(jq '.pendingReviews' data/state.json)
+          SIG_QUEUE=$(jq '.signatureQueue' data/state.json)
+          VERSION=$(jq -r '.engineVersion' data/state.json)
 
-          # ── Core metrics (beta-scale marketplace) ──
-          NEW_ACTIVE_LISTINGS=$((ACTIVE_LISTINGS + RANDOM % 12 - 4))
-          if [ "$NEW_ACTIVE_LISTINGS" -lt 1200 ]; then NEW_ACTIVE_LISTINGS=1200; fi
-          NEW_TOTAL_KEYS_SOLD=$((TOTAL_KEYS_SOLD + RANDOM % 30 + 5))
-          NEW_DAILY_ORDERS=$((30 + RANDOM % 160))
-          NEW_DAILY_DELIVERED=$((NEW_DAILY_ORDERS - RANDOM % 6))
-          if [ "$NEW_DAILY_DELIVERED" -lt 0 ]; then NEW_DAILY_DELIVERED=0; fi
-          NEW_BUYER_CLAIMS=$((BUYER_CLAIMS + RANDOM % 4))
-          NEW_FRAUD_CHECKS=$((FRAUD_CHECKS + RANDOM % 25 + 5))
-          NEW_RESTOCK_QUEUE=$((RANDOM % 9))
-          NEW_RESTOCK_BATCH=$((60 + RANDOM % 60))
+          # ── Core metrics (beta-scale: ~6 partner titles, 1-3K peak CCU) ──
+          NEW_SIGS=$((SIGS + RANDOM % 5 + 1))
+          NEW_BANS=$((BANS + RANDOM % 8 + 1))
+          NEW_DETECTIONS=$((40 + RANDOM % 80))
+          NEW_LATENCY=$(echo "scale=1; 1.8 + $(echo "$RANDOM % 15" | bc) / 10" | bc)
+          NEW_REVIEWS=$((RANDOM % 5 + 1))
+          NEW_SIG_QUEUE=$((RANDOM % 8))
 
-          # Checkout / payment / delivery health
-          CHECKOUT_SUCCESS=$(echo "scale=2; 97.5 + $(echo "$RANDOM % 200" | bc) / 100" | bc)
-          PAYMENT_API_MS=$((100 + RANDOM % 120))
-          DELIVERY_QUEUE_DEPTH=$((RANDOM % 10))
-          PRICE_SYNC_MS=$((30 + RANDOM % 90))
-          AVG_DELIVERY_MIN=$(echo "scale=1; 5 + $(echo "$RANDOM % 90" | bc) / 10" | bc)
-
-          # Online buyers (beta-scale marketplace: peak/off-peak curve)
+          # Threat level — realistic distribution, time-aware
+          # Off-peak (00-08 UTC): mostly LOW
+          # Normal (08-14 UTC): LOW/MODERATE
+          # Peak gaming (14-22 UTC): MODERATE with small ELEVATED chance
+          # HIGH is very rare (~2%) and only during peak
+          THREAT_ROLL=$((RANDOM % 100))
           if [ "$HOUR" -ge 14 ] && [ "$HOUR" -le 22 ]; then
-            ONLINE_BUYERS=$((140 + RANDOM % 180))
+            # Peak hours — more activity, small chance of escalation
+            if [ "$THREAT_ROLL" -lt 20 ]; then NEW_LEVEL="LOW"
+            elif [ "$THREAT_ROLL" -lt 75 ]; then NEW_LEVEL="MODERATE"
+            elif [ "$THREAT_ROLL" -lt 95 ]; then NEW_LEVEL="ELEVATED"
+            else NEW_LEVEL="HIGH"
+            fi
           elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 14 ]; then
-            ONLINE_BUYERS=$((60 + RANDOM % 100))
+            # Normal hours
+            if [ "$THREAT_ROLL" -lt 40 ]; then NEW_LEVEL="LOW"
+            elif [ "$THREAT_ROLL" -lt 90 ]; then NEW_LEVEL="MODERATE"
+            elif [ "$THREAT_ROLL" -lt 98 ]; then NEW_LEVEL="ELEVATED"
+            else NEW_LEVEL="HIGH"
+            fi
           else
-            ONLINE_BUYERS=$((20 + RANDOM % 70))
+            # Off-peak — quiet
+            if [ "$THREAT_ROLL" -lt 65 ]; then NEW_LEVEL="LOW"
+            elif [ "$THREAT_ROLL" -lt 95 ]; then NEW_LEVEL="MODERATE"
+            else NEW_LEVEL="ELEVATED"
+            fi
+          fi
+
+          # Active sessions (beta-scale: ~6 titles, 1-3K peak CCU total)
+          if [ "$HOUR" -ge 14 ] && [ "$HOUR" -le 22 ]; then
+            SESSIONS=$((800 + RANDOM % 600))
+          elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 14 ]; then
+            SESSIONS=$((350 + RANDOM % 400))
+          else
+            SESSIONS=$((120 + RANDOM % 250))
           fi
 
           # Weekend boost
           if [ "$DAY" -ge 6 ]; then
-            ONLINE_BUYERS=$((ONLINE_BUYERS * 115 / 100))
+            SESSIONS=$((SESSIONS * 115 / 100))
           fi
 
-          # ── Demand level — time-aware, weekend-boosted ──
-          DEMAND_ROLL=$((RANDOM % 100))
+          # ── Next-gen metrics ──
+
+          # NPU utilization (12-42%, higher during peak)
+          NPU_BASE=20
+          if [ "$HOUR" -ge 12 ] && [ "$HOUR" -le 20 ]; then
+            NPU_BASE=32
+          elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 12 ]; then
+            NPU_BASE=25
+          fi
+          NPU_NOISE=$((RANDOM % 12 - 6))
+          NPU_VAL=$((NPU_BASE + NPU_NOISE))
+          if [ "$NPU_VAL" -lt 12 ]; then NPU_VAL=12; fi
+          if [ "$NPU_VAL" -gt 42 ]; then NPU_VAL=42; fi
+          NPU_DEC=$((RANDOM % 10))
+          NPU_UTIL="${NPU_VAL}.${NPU_DEC}"
+
+          # ML confidence (97-99.5% — high baseline, this is overall system confidence)
+          ML_BASE=$((9700 + RANDOM % 250))
+          ML_CONF=$(echo "scale=2; $ML_BASE / 100" | bc)
+
+          # DMA anomalies (0-8, higher during peak)
+          DMA_BASE=2
           if [ "$HOUR" -ge 14 ] && [ "$HOUR" -le 22 ]; then
-            if [ "$DEMAND_ROLL" -lt 15 ]; then NEW_DEMAND="LOW"
-            elif [ "$DEMAND_ROLL" -lt 65 ]; then NEW_DEMAND="MODERATE"
-            elif [ "$DEMAND_ROLL" -lt 92 ]; then NEW_DEMAND="HIGH"
-            else NEW_DEMAND="SURGING"
-            fi
-          elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 14 ]; then
-            if [ "$DEMAND_ROLL" -lt 45 ]; then NEW_DEMAND="LOW"
-            elif [ "$DEMAND_ROLL" -lt 90 ]; then NEW_DEMAND="MODERATE"
-            elif [ "$DEMAND_ROLL" -lt 98 ]; then NEW_DEMAND="HIGH"
-            else NEW_DEMAND="SURGING"
-            fi
+            DMA_BASE=4
+          fi
+          DMA_VAL=$((DMA_BASE + RANDOM % 4))
+          if [ "$DMA_VAL" -gt 8 ]; then DMA_VAL=8; fi
+
+          # Obfuscation integrity (99.8-100%)
+          OBF_BASE=$((9985 + RANDOM % 15))
+          OBF_INT=$(echo "scale=2; $OBF_BASE / 100" | bc)
+
+          # Behavioral model version (stable, rare changes)
+          BM_VER=$(jq -r '.behavioralModelVersion' data/state.json)
+
+          # PCIe firmware DB size (only grows)
+          PCIE_CUR=$(jq '.pcieFirmwareDbSize' data/state.json)
+          PCIE_GROW=$((RANDOM % 3))
+          PCIE_NEW=$((PCIE_CUR + PCIE_GROW))
+
+          # ── Ban wave tracking ──
+          LAST_BAN_WAVE=$(jq -r '.lastBanWave' data/state.json)
+          LAST_WAVE_TS=$(date -d "$LAST_BAN_WAVE" +%s 2>/dev/null || echo 0)
+          NOW_TS=$(date +%s)
+          WAVE_AGE_H=$(( (NOW_TS - LAST_WAVE_TS) / 3600 ))
+
+          # Ban wave every 48-96h (roughly every 2-4 days)
+          if [ "$WAVE_AGE_H" -ge 48 ] && [ $((RANDOM % 4)) -eq 0 ]; then
+            LAST_BAN_WAVE="$NOW"
+            BAN_WAVE_SIZE=$((3 + RANDOM % 18))
+            NEW_BANS=$((NEW_BANS + BAN_WAVE_SIZE))
           else
-            if [ "$DEMAND_ROLL" -lt 70 ]; then NEW_DEMAND="LOW"
-            elif [ "$DEMAND_ROLL" -lt 96 ]; then NEW_DEMAND="MODERATE"
-            else NEW_DEMAND="HIGH"
-            fi
+            BAN_WAVE_SIZE=$(jq '.banWaveSize' data/state.json)
           fi
 
-          # ── Dispute tracking ──
-          if [ $((RANDOM % 20)) -eq 0 ]; then
-            NEW_PENDING_DISPUTES=$((PENDING_DISPUTES + 1))
-            NEW_DISPUTE_FREE_STREAK=0
+          # Arms race cycle (0-3 based on days since last wave)
+          WAVE_DAYS=$((WAVE_AGE_H / 24))
+          if [ "$WAVE_DAYS" -le 1 ]; then
+            ARMS_CYCLE=0
+          elif [ "$WAVE_DAYS" -le 3 ]; then
+            ARMS_CYCLE=1
+          elif [ "$WAVE_DAYS" -le 6 ]; then
+            ARMS_CYCLE=2
           else
-            if [ "$PENDING_DISPUTES" -gt 0 ] && [ $((RANDOM % 3)) -eq 0 ]; then
-              NEW_PENDING_DISPUTES=$((PENDING_DISPUTES - 1))
-            else
-              NEW_PENDING_DISPUTES=$PENDING_DISPUTES
-            fi
-            NEW_DISPUTE_FREE_STREAK=$((DISPUTE_FREE_STREAK + 1))
-          fi
-          if [ "$NEW_PENDING_DISPUTES" -lt 0 ]; then NEW_PENDING_DISPUTES=0; fi
-          # Streak resets roughly every 30-45 days
-          if [ "$NEW_DISPUTE_FREE_STREAK" -gt $((30 + RANDOM % 15)) ]; then
-            NEW_DISPUTE_FREE_STREAK=$((RANDOM % 4))
-          fi
-
-          # ── Flash sale / restock wave tracking ──
-          # Occasional flash sale toggling, roughly weekly cadence
-          FLASH_ACTIVE=$(jq -r '.flashSale.isActive' data/state.json)
-          if [ "$FLASH_ACTIVE" = "true" ]; then
-            # 15% chance a running flash sale ends this tick
-            if [ $((RANDOM % 100)) -lt 15 ]; then
-              FLASH_JSON='{"isActive": false, "discountPct": 0, "featuredIndex": null, "genreIndex": null, "demandLevel": "'"$NEW_DEMAND"'", "phaseName": null, "tier": null, "dayOffset": -1}'
-            else
-              FLASH_JSON=$(jq -c --arg d "$NEW_DEMAND" '.flashSale.demandLevel = $d' data/state.json | jq -c '.flashSale')
-            fi
-          else
-            # ~4% chance of a new flash sale starting
-            if [ $((RANDOM % 100)) -lt 4 ]; then
-              DISCOUNT=$((10 + RANDOM % 40))
-              TIER_ROLL=$((RANDOM % 3))
-              if [ "$TIER_ROLL" -eq 0 ]; then TIER="bronze"; elif [ "$TIER_ROLL" -eq 1 ]; then TIER="silver"; else TIER="gold"; fi
-              FLASH_JSON='{"isActive": true, "discountPct": '"$DISCOUNT"', "featuredIndex": '"$((RANDOM % 12))"', "genreIndex": '"$((RANDOM % 12))"', "demandLevel": "'"$NEW_DEMAND"'", "phaseName": "live", "tier": "'"$TIER"'", "dayOffset": 0}'
-            else
-              FLASH_JSON=$(jq -c '.flashSale' data/state.json)
-            fi
+            ARMS_CYCLE=3
           fi
 
           # ── Incident state machine ──
@@ -135,8 +155,8 @@ jobs:
           INCIDENT_HISTORY=$(jq -c '.incidentHistory' data/state.json)
 
           # Incident template pool
-          INCIDENT_TITLES=("Payment gateway timeout during checkout surge" "Delayed manual delivery batch for high-demand title" "Seller API sync failure caused stale listings" "Fraud-check false positive blocked legitimate orders" "Regional CDN latency spike (APAC)" "Key delivery queue backlog after restock" "Price sync delay across regions" "Checkout confirmation email delivery delays" "Elevated checkout decline rate" "Seller payout processing delay" "Listing search index lag" "Buyer protection claim review backlog" "Coupon/discount code validation errors" "Order status webhook delivery failures" "Inventory oversell on flash-sale item" "Session timeout during checkout on mobile" "Duplicate charge on retry after gateway timeout" "Key redemption verification errors" "Seller dashboard metrics reporting lag" "Cart abandonment tracking pipeline delay")
-          INCIDENT_CAUSES=("Card issuer decline spike overwhelmed retry queue" "Key-generation queue backlog after restock" "Seller inventory feed desync after bulk upload" "Overly aggressive velocity rule on checkout" "Edge node cache invalidation storm" "Database connection pool exhaustion" "Network congestion on inter-region backbone" "DNS resolution delay on failover endpoint" "Load balancer health check misconfiguration" "Upstream payment provider API throttling" "Certificate renewal race condition" "Garbage collection pause in order worker" "Search index corruption after concurrent write" "Discount engine threshold miscalibration" "Third-party CDN provider rate limiting during peak" "Data pipeline race condition between order and delivery workers" "TLS certificate pinning hash mismatch after CA rotation" "Redis cluster split-brain during network partition" "Disk I/O saturation on listings database primary" "Hot-reload race condition in pricing configuration")
+          INCIDENT_TITLES=("False positive rate spike in EU-West region" "Webhook delivery delays" "API response time degradation" "Scan latency increase detected" "Region connectivity issues — Asia-Pacific" "Signature DB sync delay" "Dashboard metrics reporting lag" "Elevated DMA false positives" "SDK authentication timeout errors" "Behavioral model inference latency spike" "Kernel scan timeout on high-CCU instances" "Certificate pinning mismatch on SDK auth" "Behavioral model confidence degradation" "Partner webhook endpoint unreachable — US-East" "Memory scan false positive on accessibility software" "PCIe enumeration failure on Intel Arc GPUs" "Ban API rate limiter false triggers" "Signature verification checksum mismatch" "Session telemetry ingestion backlog" "Detection pipeline queue saturation")
+          INCIDENT_CAUSES=("Misconfigured rate limiter on edge node" "Database connection pool exhaustion" "Network congestion on inter-region backbone" "Memory pressure from concurrent scan operations" "DNS resolution delay on failover endpoint" "Cache invalidation storm after signature push" "Load balancer health check misconfiguration" "Upstream provider API throttling" "Certificate renewal race condition" "Garbage collection pause in scan worker" "Signature database index corruption after concurrent write" "Detection threshold miscalibration in latest model update" "Model inference out-of-memory on GPU-constrained nodes" "Third-party CDN provider rate limiting during peak" "Data pipeline race condition between scan and report workers" "TLS certificate pinning hash mismatch after CA rotation" "Kernel module incompatibility with latest Windows Insider build" "Redis cluster split-brain during network partition" "Disk I/O saturation on signature database primary" "Hot-reload race condition in configuration management")
 
           if [ "$ACTIVE_INCIDENT" = "null" ]; then
             # 3% chance of new incident per run (~1 every 3 days)
@@ -157,7 +177,6 @@ jobs:
             # Progress existing incident through stages
             INC_STATUS=$(echo "$ACTIVE_INCIDENT" | jq -r '.status')
             INC_STARTED=$(echo "$ACTIVE_INCIDENT" | jq -r '.startedAt')
-            NOW_TS=$(date +%s)
             INC_START_TS=$(date -d "$INC_STARTED" +%s 2>/dev/null || echo "$NOW_TS")
             INC_AGE_H=$(( (NOW_TS - INC_START_TS) / 3600 ))
 
@@ -196,78 +215,75 @@ jobs:
           fi
 
           jq --arg now "$NOW" \
-             --argjson listings "$NEW_ACTIVE_LISTINGS" \
-             --argjson buyers "$ONLINE_BUYERS" \
-             --argjson orders "$NEW_DAILY_ORDERS" \
-             --argjson delivered "$NEW_DAILY_DELIVERED" \
-             --argjson sold "$NEW_TOTAL_KEYS_SOLD" \
-             --argjson claims "$NEW_BUYER_CLAIMS" \
-             --argjson fraud "$NEW_FRAUD_CHECKS" \
-             --argjson restockbatch "$NEW_RESTOCK_BATCH" \
-             --argjson restockq "$NEW_RESTOCK_QUEUE" \
-             --argjson disputes "$NEW_PENDING_DISPUTES" \
-             --argjson disputestreak "$NEW_DISPUTE_FREE_STREAK" \
-             --arg demand "$NEW_DEMAND" \
-             --argjson avgdelivery "$AVG_DELIVERY_MIN" \
-             --argjson checkoutrate "$CHECKOUT_SUCCESS" \
-             --argjson paymentapi "$PAYMENT_API_MS" \
-             --argjson deliveryq "$DELIVERY_QUEUE_DEPTH" \
-             --argjson pricesync "$PRICE_SYNC_MS" \
-             --argjson flashsale "$FLASH_JSON" \
+             --argjson sigs "$NEW_SIGS" \
+             --argjson bans "$NEW_BANS" \
+             --argjson det "$NEW_DETECTIONS" \
+             --argjson lat "$NEW_LATENCY" \
+             --argjson sess "$SESSIONS" \
+             --argjson rev "$NEW_REVIEWS" \
+             --argjson sigq "$NEW_SIG_QUEUE" \
+             --arg level "$NEW_LEVEL" \
+             --argjson npu "$NPU_UTIL" \
+             --argjson mlconf "$ML_CONF" \
+             --argjson dma "$DMA_VAL" \
+             --argjson obf "$OBF_INT" \
+             --arg bmver "$BM_VER" \
+             --argjson pcie "$PCIE_NEW" \
+             --arg lastwave "$LAST_BAN_WAVE" \
+             --argjson wavesize "$BAN_WAVE_SIZE" \
+             --argjson armscycle "$ARMS_CYCLE" \
              --argjson incident "$INC_ARG" \
              --argjson history "$INCIDENT_HISTORY" \
              '.lastUpdate = $now |
-              .activeListings = $listings | .onlineBuyers = $buyers |
-              .dailyOrdersPlaced = $orders | .dailyKeysDelivered = $delivered |
-              .totalKeysSold = $sold | .buyerProtectionClaims = $claims |
-              .fraudChecksPerformed = $fraud | .restockBatchSize = $restockbatch |
-              .restockQueue = $restockq | .pendingDisputes = $disputes |
-              .disputeFreeStreak = $disputestreak | .demandLevel = $demand |
-              .avgDeliveryTime = $avgdelivery | .checkoutSuccessRate = $checkoutrate |
-              .paymentApiResponse = $paymentapi | .deliveryQueueDepth = $deliveryq |
-              .priceSyncLatency = $pricesync | .flashSale = $flashsale |
+              .signatureDb = $sigs | .totalBans = $bans | .dailyDetections = $det |
+              .avgScanLatency = $lat | .activeSessions = $sess |
+              .pendingReviews = $rev | .signatureQueue = $sigq | .threatLevel = $level |
+              .npuUtilization = $npu | .mlConfidence = $mlconf | .dmaAnomalies = $dma |
+              .hypervisorHeartbeat = $now | .obfuscationIntegrity = $obf |
+              .behavioralModelVersion = $bmver | .pcieFirmwareDbSize = $pcie |
+              .lastBanWave = $lastwave | .banWaveSize = $wavesize | .armsRaceCycle = $armscycle |
               .activeIncident = $incident | .incidentHistory = $history' \
              data/state.json > data/state_tmp.json && mv data/state_tmp.json data/state.json
 
           # ── Pick a realistic commit message (30 total) ──
-          LISTING_DELTA=$((NEW_ACTIVE_LISTINGS - ACTIVE_LISTINGS))
-          SELLER_COUNT=$((RANDOM % 3 + 1))
+          SIG_DELTA=$((NEW_SIGS - SIGS))
+          PROV_COUNT=$((RANDOM % 3 + 1))
           MESSAGES=(
-            # catalog (7)
-            "catalog: sync ${LISTING_DELTA} listing changes across regions"
-            "catalog: refresh active listing count — ${NEW_ACTIVE_LISTINGS} total"
-            "catalog: restock batch pushed for high-demand titles"
-            "catalog: normalize pricing after seller sync"
-            "catalog: onboard ${SELLER_COUNT} new seller inventory feeds"
-            "catalog: update key stock counts from partner sellers"
-            "catalog: backfill legacy listing metadata"
-            # orders (7)
-            "orders: update delivery queue metrics for scan cycle"
-            "orders: recalibrate fraud-check thresholds"
-            "orders: expand payment decline pattern coverage"
-            "orders: update checkout retry model weights"
-            "orders: refine buyer-protection claim heuristics"
-            "orders: update delivery time baseline parameters"
-            "orders: retrain fraud classifier on new labeled samples"
-            # platform (6)
-            "platform: tune search ranking heuristics"
-            "platform: optimize checkout path latency"
-            "platform: improve payment callback verification"
-            "platform: patch false decline on prepaid card BIN range"
-            "platform: adjust price-sync timing thresholds"
-            "platform: reduce order worker contention under high load"
+            # sig-db (7)
+            "sig-db: +${SIG_DELTA} signatures — coverage update"
+            "sig-db: push new signature batch — ${NEW_SIGS} total"
+            "sig-db: add patterns for recent loader variants"
+            "sig-db: cover new obfuscation patterns"
+            "sig-db: neutralize ${PROV_COUNT} new provider builds"
+            "sig-db: update hash DB — ${SIG_DELTA} new entries from partner submissions"
+            "sig-db: backfill signatures for legacy loader variants"
+            # detection (7)
+            "detection: update behavioral thresholds for scan cycle"
+            "detection: recalibrate AI confidence thresholds"
+            "detection: expand DMA board fingerprint database"
+            "detection: update macro detection model weights"
+            "detection: refine HWID spoof detection heuristics"
+            "detection: update input sampling baseline parameters"
+            "detection: retrain anomaly classifier on new labeled samples"
+            # engine (6)
+            "engine: tune memory scanner heuristics"
+            "engine: optimize ring-0 scan path latency"
+            "engine: improve kernel callback verification"
+            "engine: patch false positive on NVIDIA overlay hook"
+            "engine: adjust PCIe TLP timing thresholds"
+            "engine: reduce scan thread contention under high CCU"
             # infra (5)
             "infra: rotate webhook signing keys"
             "infra: update region health check intervals"
-            "infra: sync catalog DB across all regions"
+            "infra: sync signature DB across all regions"
             "infra: rotate API rate limit windows"
             "infra: update TLS certificate pinning config"
             # version/release (5)
             "build: update state metrics for ${VERSION}"
             "build: sync telemetry baselines for ${VERSION}"
             "ci: run nightly regression suite — all tests passing"
-            "ci: validate catalog integrity — ${NEW_ACTIVE_LISTINGS} listings verified"
-            "ci: automated health check — all ${ONLINE_BUYERS} online buyers nominal"
+            "ci: validate signature DB integrity — ${NEW_SIGS} entries verified"
+            "ci: automated health check — all ${SESSIONS} active sessions nominal"
           )
           MSG_IDX=$((RANDOM % ${#MESSAGES[@]}))
           COMMIT_MSG="${MESSAGES[$MSG_IDX]}"
@@ -277,7 +293,7 @@ jobs:
       - name: Commit and push
         run: |
           git config user.name "cerberus-bot"
-          git config user.email "cerberus-bot@cerberus.market"
+          git config user.email "cerberus-bot@cerberusac.dev"
           git add data/state.json
 
           # Check if there are changes

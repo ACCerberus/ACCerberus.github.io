@@ -1,187 +1,248 @@
 {
-  "lastUpdated": "2026-07-28T08:07:53Z",
+  "lastUpdated": "2026-07-26T16:00:00Z",
   "items": {
     "short": [
       {
-        "id": "r-s-wallet",
-        "name": "Wallet Balance Payments",
-        "desc": "Store credit and wallet balance system for instant one-click checkout without re-entering payment details.",
-        "progress": 63,
-        "color": "var(--green)",
-        "added": "2026-06-20"
-      },
-      {
-        "id": "r-s-selleranalytics",
-        "name": "Seller Analytics Dashboard",
-        "desc": "Sales trends, conversion funnel, and regional performance breakdown for sellers with exportable reports.",
-        "progress": 49,
+        "id": "r-s1879",
+        "name": "Retinal Scan Correlation",
+        "desc": "Eye tracking data analysis to detect ESP/wallhack users by correlating gaze patterns with enemy positions behind walls",
+        "progress": 39,
         "color": "var(--blue)",
-        "added": "2026-06-28"
+        "added": "2026-06-17"
       },
       {
-        "id": "r-s-bulkdiscount",
-        "name": "Bulk Key Purchase Discounts",
-        "desc": "Tiered discounts for buyers purchasing 3+, 5+, or 10+ keys in a single order.",
-        "progress": 75,
-        "color": "var(--accent)",
-        "added": "2026-06-05"
+        "id": "r-s3084",
+        "name": "Physics Simulation Validator",
+        "desc": "Server-side physics replay that detects impossible movement trajectories and collision bypasses",
+        "progress": 25,
+        "color": "var(--green)",
+        "added": "2026-07-01"
       },
       {
-        "id": "r-s-pricealerts",
-        "name": "Price-Drop Alerts",
-        "desc": "Email and push notifications when wishlisted titles drop below a buyer-set price threshold.",
-        "progress": 32,
+        "id": "r-s6649",
+        "name": "Binary Birthmarking",
+        "desc": "Unique per-client code mutations that make each game binary identifiable — leaked cheats can be traced to the exact account that extracted them",
+        "progress": 8,
         "color": "var(--purple)",
-        "added": "2026-07-10"
+        "added": "2026-07-18"
+      },
+      {
+        "id": "r-s-mr-rollout",
+        "name": "Replay Sandbox Multi-Region Rollout",
+        "desc": "Expands the Adversarial Replay Sandbox beyond its US-East pilot to EU-West and AP-Southeast — brings server-side verification to all regions",
+        "progress": 8,
+        "color": "var(--green)",
+        "added": "2026-07-26"
       }
     ],
     "mid": [
       {
-        "id": "r-m-escrow",
-        "name": "Escrow for High-Value Bundles",
-        "desc": "Holds payout on large multi-key orders until buyer confirms successful redemption, reducing high-value dispute risk.",
-        "progress": 22.7,
+        "id": "r-s3",
+        "name": "Zero-Footprint Mode",
+        "desc": "Kernel module unloads completely between scan cycles — leaves zero memory residue, making Cerberus undetectable by cheat developers during reverse engineering",
+        "progress": 36.4,
+        "color": "var(--accent)",
+        "added": "2026-01-20"
+      },
+      {
+        "id": "r-m1",
+        "name": "Proof-of-Play Protocol",
+        "desc": "Cryptographic attestation that a game session was played legitimately — players can prove clean sessions to tournament organizers without revealing system state",
+        "progress": 40.4,
+        "color": "var(--blue)",
+        "added": "2026-01-01"
+      },
+      {
+        "id": "r-m2",
+        "name": "Peripheral Bus Sniffer",
+        "desc": "Monitors USB/HID bus traffic patterns to detect hardware cheat devices (Cronus, XIM, strikepack) by analyzing input timing jitter and polling anomalies",
+        "progress": 34.6,
+        "color": "var(--accent)",
+        "added": "2026-02-01"
+      },
+      {
+        "id": "r-m3",
+        "name": "Silent Honeypot Injection",
+        "desc": "Injects fake memory regions that appear to contain game state — any cheat reading them triggers instant detection without false positives, since no legitimate process accesses them",
+        "progress": 47.9,
         "color": "var(--red)",
+        "added": "2026-03-15"
+      },
+      {
+        "id": "r-m4",
+        "name": "Neural Style Transfer Detection",
+        "desc": "Detects AI-powered aimbots that mimic human aim patterns by analyzing micro-corrections and acceleration curves that neural networks cannot perfectly replicate",
+        "progress": 37.1,
+        "color": "var(--purple)",
         "added": "2026-04-01"
       },
       {
-        "id": "r-m-checksum",
-        "name": "Key Authenticity Checksum Verification",
-        "desc": "Publisher-aware checksum scheme so buyers can verify a key is genuine before redeeming it.",
-        "progress": 36,
-        "color": "var(--accent)",
-        "added": "2026-06-01"
-      },
-      {
-        "id": "r-m-gifting",
-        "name": "Gift Key Sending",
-        "desc": "Purchase a key and send it directly to another buyer's email or account instead of redeeming it yourself.",
-        "progress": 18.9,
-        "color": "var(--blue)",
-        "added": "2026-05-12"
-      },
-      {
-        "id": "r-m-reputation",
-        "name": "Seller Reputation ML Model",
-        "desc": "Predictive trust scoring for sellers based on listing history, dispute rate, and delivery speed.",
-        "progress": 41.5,
-        "color": "var(--purple)",
-        "added": "2026-03-20"
-      },
-      {
-        "id": "r-m-currency",
-        "name": "Regional Currency Auto-Display",
-        "desc": "Automatically show prices in the buyer's local currency using live FX rates, with manual override.",
-        "progress": 29.8,
+        "id": "r-m5",
+        "name": "Cheat Provider Lifecycle Tracker",
+        "desc": "Automated dark web monitoring that tracks cheat providers from release to takedown — predicts new bypass attempts before they ship based on provider development patterns",
+        "progress": 43.8,
         "color": "var(--green)",
-        "added": "2026-05-01"
+        "added": "2026-03-01"
       },
       {
-        "id": "r-m-api",
-        "name": "Marketplace Public API (Read-Only)",
-        "desc": "Public read-only API for catalog and price data, aimed at price-tracking tools and community sites.",
-        "progress": 14.6,
-        "color": "var(--blue)",
-        "added": "2026-06-15"
-      },
-      {
-        "id": "r-m-livechat",
-        "name": "Live Chat Buyer Support",
-        "desc": "Real-time chat support for order issues, replacing the current ticket-only support flow.",
-        "progress": 27,
+        "id": "r-m6",
+        "name": "UEFI Pre-Boot Attestation",
+        "desc": "Validates boot chain integrity via UEFI Secure Boot measurements and TPM PCR values — detects pre-OS cheat loaders, SPI flash persistence, and bootkit tampering before the game launches",
+        "progress": 31.2,
         "color": "var(--accent)",
-        "added": "2026-05-25"
+        "added": "2026-05-10"
+      },
+      {
+        "id": "r-m7",
+        "name": "GPU Compute Abuse Detection",
+        "desc": "Monitors CUDA/OpenCL/DirectCompute dispatch queues for unauthorized compute shaders — detects cheats offloading aim calculations or ESP rendering to GPU compute pipelines",
+        "progress": 27.2,
+        "color": "var(--purple)",
+        "added": "2026-05-15"
+      },
+      {
+        "id": "r-m-cis",
+        "name": "Competitive Integrity Score",
+        "desc": "Public per-player trust score based on behavioral history that tournament organizers and matchmaking can use",
+        "progress": 4,
+        "color": "var(--accent)",
+        "added": "2026-07-26"
       }
     ],
     "long": [
       {
-        "id": "r-l-loyalty",
-        "name": "Loyalty Points Program",
-        "desc": "Earn points on every purchase, redeemable for discounts on future orders. Early scoping phase.",
-        "progress": 4.01,
+        "id": "r-l1",
+        "name": "Hardware Execution Tracing",
+        "desc": "Uses Intel PT (Processor Trace) to record actual CPU instruction flow during game execution — detects code injection at the hardware level, impossible to spoof from software. Early research phase.",
+        "progress": 3,
         "color": "var(--accent)",
         "added": "2026-03-01"
       },
       {
-        "id": "r-l-extension",
-        "name": "Browser Price-Compare Extension",
-        "desc": "Browser extension that surfaces Cerberus Market pricing while browsing other storefronts. Feasibility research.",
-        "progress": 6.02,
+        "id": "r-l2",
+        "name": "Federated Detection Mesh",
+        "desc": "Cross-title threat intelligence sharing using differential privacy — multiple game studios contribute to a shared detection model without exposing any individual game's data. Exploring feasibility.",
+        "progress": 5,
         "color": "var(--blue)",
-        "added": "2026-04-10"
+        "added": "2026-02-01"
       },
       {
-        "id": "r-l-subscription",
-        "name": "Subscription Key Bundles",
-        "desc": "Recurring monthly bundle of curated keys at a discount versus buying individually. Concept phase.",
-        "progress": 2.02,
-        "color": "var(--green)",
-        "added": "2026-05-05"
-      },
-      {
-        "id": "r-l-aggregation",
-        "name": "Cross-Marketplace Price Aggregation",
-        "desc": "Show comparable listing prices from other marketplaces alongside our own for transparency. Exploring data-sourcing options.",
-        "progress": 3.02,
-        "color": "var(--purple)",
-        "added": "2026-04-25"
-      },
-      {
-        "id": "r-l-mobileapp",
-        "name": "Native Mobile App (iOS/Android)",
-        "desc": "Dedicated native apps beyond the current responsive mobile web experience. Requirements gathering.",
-        "progress": 5.01,
+        "id": "r-l3",
+        "name": "Autonomous Red Team Agent",
+        "desc": "Reinforcement learning agent that continuously probes Cerberus detection boundaries — discovers evasion vectors before cheat developers do. Requires significant compute budget. Scoping phase.",
+        "progress": 2,
         "color": "var(--red)",
-        "added": "2026-06-01"
+        "added": "2026-04-15"
+      },
+      {
+        "id": "r-l4",
+        "name": "External AI Inference Detection",
+        "desc": "Detects neural network-assisted aiming where inference runs on separate hardware via DMA — combines DMA timing analysis with behavioral AI to identify ML-generated input patterns distinct from human aim",
+        "progress": 1,
+        "color": "var(--accent)",
+        "added": "2026-05-18"
+      },
+      {
+        "id": "r-l5",
+        "name": "Firmware Forensic Toolkit",
+        "desc": "Deep inspection of USB controller, NVMe, and PCIe endpoint firmware for cheat persistence — SPI flash integrity verification, UEFI variable analysis, and firmware CRC validation against known-good baselines",
+        "progress": 0,
+        "color": "var(--red)",
+        "added": "2026-05-20"
+      },
+      {
+        "id": "r-l-npu-edge",
+        "name": "Inference-on-Edge via NPU",
+        "desc": "Offload behavioral AI inference to dedicated NPU hardware for zero-impact scanning during gameplay — builds on internal NPU offloading research",
+        "progress": 2,
+        "color": "var(--blue)",
+        "added": "2026-07-26"
       }
     ],
     "completed": [
       {
-        "id": "r-c-sellertiers",
-        "name": "Seller Verification Tiers",
-        "desc": "Standard, Verified, and Elite seller tiers with progressively stronger vetting and catalog benefits.",
-        "completedDate": "2026-02-10"
+        "id": "r-c1",
+        "name": "DMA Board Detection",
+        "desc": "PCIe device fingerprinting for DMA-based cheats — first AC to detect Screamer and custom DMA boards via firmware timing analysis",
+        "completedDate": "2026-04-15"
       },
       {
-        "id": "r-c-fraudv2",
-        "name": "Fraud Detection v2",
-        "desc": "Device fingerprinting and listing anomaly detection to reduce chargebacks and catalog abuse.",
-        "completedDate": "2026-06-02"
+        "id": "r-c2",
+        "name": "Behavioral AI v3",
+        "desc": "3rd iteration of the behavioral analysis model — TCN-based architecture trained on 8K labeled cheat samples from beta partners",
+        "completedDate": "2026-03-20"
       },
       {
-        "id": "r-c-apsoutheast",
-        "name": "AP-Southeast Region Launch",
-        "desc": "Localized pricing, regional payment rails, and edge routing for APAC buyers.",
-        "completedDate": "2026-06-15"
+        "id": "r-c3",
+        "name": "US-East + EU-West Deployment",
+        "desc": "Initial multi-region setup — 3 regions with sub-80ms signature sync latency",
+        "completedDate": "2026-02-28"
       },
       {
-        "id": "r-c-checkoutredesign",
-        "name": "Checkout Redesign",
-        "desc": "Single-page checkout flow with Apple Pay and Google Pay support.",
-        "completedDate": "2026-07-24"
+        "id": "r-s1",
+        "name": "Adversarial Replay Sandbox",
+        "desc": "Isolated replay environment that re-executes suspicious sessions server-side to confirm cheating without client intervention — eliminates false positives on edge cases",
+        "completedDate": "2026-06-17"
+      },
+      {
+        "id": "r-s2",
+        "name": "Input Entropy Fingerprinting",
+        "desc": "Measures Shannon entropy of raw input streams to detect synthetic inputs — human input has natural entropy patterns that no cheat can replicate",
+        "completedDate": "2026-07-01"
+      },
+      {
+        "id": "r-s4",
+        "name": "Cross-Session Behavioral Graph",
+        "desc": "Graph neural network that builds player identity from behavioral patterns across sessions — detects ban evaders even with new hardware and accounts",
+        "completedDate": "2026-07-18"
       }
     ]
   },
   "templatePool": [
     {
-      "name": "Buyer Trust Score",
-      "desc": "Public per-buyer reliability score based on dispute history, used to speed up seller approval of large orders.",
+      "name": "Audio Fingerprint Scanner",
+      "desc": "Detects audio-based ESP tools by analyzing whether player reactions correlate with sound cues that should be inaudible at their position",
       "color": "var(--accent)"
     },
     {
-      "name": "Seller Payout Insurance",
-      "desc": "Optional insurance pool covering sellers against buyer-side payment reversals after key delivery.",
+      "name": "GPU Shader Integrity Monitor",
+      "desc": "Validates GPU shader programs at runtime to detect wallhack shaders and chams injected via graphics driver hooks",
+      "color": "var(--red)"
+    },
+    {
+      "name": "Network Packet Entropy Analysis",
+      "desc": "Detects packet manipulation and lag switches by analyzing entropy patterns in outbound network traffic",
       "color": "var(--blue)"
     },
     {
-      "name": "Automated Regional Pricing Rules",
-      "desc": "Rules engine letting sellers set region-relative pricing multipliers instead of manual per-region prices.",
+      "name": "Social Graph Cheater Detection",
+      "desc": "Maps player social connections to identify boosting rings and organized cheating groups through behavioral clustering",
       "color": "var(--green)"
     },
     {
-      "name": "Key Bundle Builder",
-      "desc": "Lets sellers assemble and price custom multi-key bundles directly from their existing listings.",
+      "name": "Memory Page Fault Canary",
+      "desc": "Places watchpoint-free memory canaries using page table manipulation — detects memory reads without any CPU overhead",
       "color": "var(--purple)"
+    },
+    {
+      "name": "Polymorphic Driver Loader",
+      "desc": "Each client loads a uniquely obfuscated kernel driver variant — prevents universal bypass development",
+      "color": "var(--red)"
+    },
+    {
+      "name": "Multi-Language SDK",
+      "desc": "SDK bindings for C#, Rust, Go, and Python alongside native C++",
+      "color": "var(--purple)"
+    },
+    {
+      "name": "Deployment Health Dashboard",
+      "desc": "Per-title deployment monitoring with SLA tracking and alerting",
+      "color": "var(--green)"
+    },
+    {
+      "name": "Automated Regression Test Suite",
+      "desc": "Continuous compatibility testing across 200+ hardware configurations",
+      "color": "var(--accent)"
     }
   ]
 }

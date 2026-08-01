@@ -1,173 +1,97 @@
 {
-  "lastUpdate": "2026-07-28T10:38:21Z",
-  "platformVersion": "v2.6.2",
-  "buildNumber": 3121,
-  "uptimePercent": 97.9,
-  "catalogSize": 22,
-  "sellerCount": 14,
+  "lastUpdate": "2026-07-26T15:07:59Z",
+  "signatureDb": 6413,
+  "totalBans": 5697,
+  "engineVersion": "v0.5.0.0b",
+  "buildNumber": 2875,
+  "uptimePercent": 97.8,
+  "lastIncident": "2026-05-14T08:22:00Z",
+  "activeSessions": 945,
   "regionsOnline": 3,
-  "activeListings": 1845,
-  "onlineBuyers": 136,
-  "dailyOrdersPlaced": 44,
-  "dailyKeysDelivered": 44,
-  "totalKeysSold": 44916,
-  "buyerProtectionClaims": 46345,
-  "fraudChecksPerformed": 1383,
-  "restockBatchSize": 119,
-  "restockQueue": 2,
-  "weeklyFlashSales": 1,
-  "pendingDisputes": 2,
-  "disputeFreeStreak": 23,
-  "demandLevel": "HIGH",
-  "avgDeliveryTime": 10.5,
-  "checkoutSuccessRate": 99.03,
-  "paymentApiResponse": 219,
-  "deliveryQueueDepth": 8,
-  "priceSyncLatency": 92,
-  "listingsFreshness": {
-    "fresh": 300,
-    "active": 700,
-    "legacy": 840,
-    "total": 1840
-  },
-  "genreDemand": [
-    {
-      "name": "FPS",
-      "score": 84.2
-    },
-    {
-      "name": "RPG",
-      "score": 79.6
-    },
-    {
-      "name": "Battle Royale",
-      "score": 71.8
-    },
-    {
-      "name": "Strategy",
-      "score": 63.4
-    },
-    {
-      "name": "Simulation",
-      "score": 56.1
-    },
-    {
-      "name": "Horror",
-      "score": 55.7
-    },
-    {
-      "name": "Racing",
-      "score": 50.3
-    },
-    {
-      "name": "Sports",
-      "score": 61.9
-    },
-    {
-      "name": "Survival",
-      "score": 67.2
-    },
-    {
-      "name": "Fighting",
-      "score": 46.8
-    },
-    {
-      "name": "Puzzle",
-      "score": 41.5
-    },
-    {
-      "name": "Adventure",
-      "score": 58.9
-    }
-  ],
-  "flashSale": {
-    "isActive": false,
-    "discountPct": 0,
-    "featuredIndex": null,
-    "genreIndex": null,
-    "demandLevel": "LOW",
-    "phaseName": null,
-    "tier": null,
-    "dayOffset": -1
-  },
-  "dailyDigest": {
-    "today": {
-      "sales": 142,
-      "listings": 1840,
-      "delivered": 138,
-      "disputes": 0
-    },
-    "yesterday": {
-      "sales": 135,
-      "listings": 1795,
-      "delivered": 131,
-      "disputes": 1
-    },
-    "trend": {
-      "sales": 4,
-      "listings": 2,
-      "narrative": "stable baseline"
-    }
-  },
+  "providersCovered": 3,
+  "falsePositiveRate": 0.14,
+  "avgScanLatency": 2.8,
+  "dailyDetections": 49,
+  "weeklyBanWaves": 1,
+  "pendingReviews": 5,
+  "signatureQueue": 7,
+  "threatLevel": "LOW",
+  "npuUtilization": 32,
+  "mlConfidence": 99.11,
+  "dmaAnomalies": 6,
+  "hypervisorHeartbeat": "2026-07-26T15:07:59Z",
+  "obfuscationIntegrity": 99.97,
+  "behavioralModelVersion": "bm-3.1.4",
+  "pcieFirmwareDbSize": 2183,
+  "networkSentinelStatus": "ACTIVE",
+  "packetIntegrityRate": 97.3,
+  "cheatRingsDetected": 2,
+  "crossPlayerAnomalies": 4,
+  "serverReconciliationRate": 96.1,
+  "globalThreatFeedEntries": 2341,
+  "matchmakingIntegrityScore": 91.4,
+  "lastBanWave": "2026-07-24T13:50:21Z",
+  "banWaveSize": 11,
+  "armsRaceCycle": 1,
   "activeIncident": null,
   "incidentHistory": [
     {
       "id": "INC-20260721-0141",
-      "title": "Payment gateway timeout during checkout surge",
+      "title": "Memory scan false positive on accessibility software",
       "status": "RESOLVED",
       "startedAt": "2026-07-21T13:58:59Z",
       "updatedAt": "2026-07-21T21:13:02Z",
-      "rootCause": "Card issuer decline spike overwhelmed retry queue",
+      "rootCause": "Cache invalidation storm after signature push",
       "severity": "minor",
       "impactPct": 2.5,
       "resolvedAt": "2026-07-21T21:13:02Z"
     },
     {
       "id": "INC-20260712-8655",
-      "title": "Delayed manual delivery batch for high-demand title",
+      "title": "Webhook delivery delays",
       "status": "RESOLVED",
       "startedAt": "2026-07-12T09:53:10Z",
       "updatedAt": "2026-07-12T17:01:17Z",
-      "rootCause": "Key-generation queue backlog after restock",
+      "rootCause": "Signature database index corruption after concurrent write",
       "severity": "minor",
       "impactPct": 2.5,
       "resolvedAt": "2026-07-12T17:01:17Z"
     },
     {
       "id": "INC-20260705-9181",
-      "title": "Seller API sync failure caused stale listings",
+      "title": "Behavioral model confidence degradation",
       "status": "RESOLVED",
       "startedAt": "2026-07-05T23:03:36Z",
       "updatedAt": "2026-07-06T13:49:19Z",
-      "rootCause": "Seller inventory feed desync after bulk upload",
+      "rootCause": "Misconfigured rate limiter on edge node",
       "severity": "minor",
       "impactPct": 2.5,
       "resolvedAt": "2026-07-06T13:49:19Z"
     },
     {
       "id": "INC-20260704-6662",
-      "title": "Fraud-check false positive blocked legitimate orders",
+      "title": "Ban API rate limiter false triggers",
       "status": "RESOLVED",
       "startedAt": "2026-07-04T17:09:05Z",
       "updatedAt": "2026-07-05T03:44:32Z",
-      "rootCause": "Overly aggressive velocity rule on checkout",
+      "rootCause": "Load balancer health check misconfiguration",
       "severity": "minor",
       "impactPct": 2.5,
       "resolvedAt": "2026-07-05T03:44:32Z"
     },
     {
       "id": "INC-20260701-0819",
-      "title": "Regional CDN latency spike (APAC)",
+      "title": "Webhook delivery delays",
       "status": "RESOLVED",
       "startedAt": "2026-07-01T20:00:34Z",
       "updatedAt": "2026-07-02T07:35:18Z",
-      "rootCause": "Edge node cache invalidation storm",
+      "rootCause": "TLS certificate pinning hash mismatch after CA rotation",
       "severity": "minor",
       "impactPct": 2.5,
       "resolvedAt": "2026-07-02T07:35:18Z"
     }
   ],
-  "lastPatchTimestamp": "2026-07-26T04:00:00Z",
+  "lastPatchTimestamp": "2026-07-26T16:00:00Z",
   "nextScheduledMaint": null,
   "notes": []
 }
