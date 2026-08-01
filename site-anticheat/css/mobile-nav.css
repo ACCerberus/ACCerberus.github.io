@@ -108,3 +108,67 @@ nav.nav-scrolled {
     scroll-behavior: auto !important;
   }
 }
+
+/* ===== NAV DROPDOWN GROUPS =====
+   Desktop nav-links now groups most pages under a handful of dropdown
+   triggers (Developers / Live Data / Company / Resources) instead of a
+   long flat list, to keep the nav from overflowing at common laptop
+   widths. Markup: <div class="nav-dropdown"><button class="nav-dropdown-trigger">
+   Label <svg>...</svg></button><div class="nav-dropdown-menu"><a>...</a>...</div></div> */
+.nav-dropdown { position: relative; }
+.nav-dropdown-trigger {
+  background: none; border: none; cursor: pointer; padding: 0;
+  color: var(--text-dim, #6b7084); font-size: 0.85rem; font-weight: 500;
+  font-family: inherit; letter-spacing: inherit;
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: color 0.2s;
+}
+.nav-dropdown-trigger:hover { color: var(--text-bright, #eef0f4); }
+.nav-dropdown.current .nav-dropdown-trigger { color: var(--accent, #e8a020); }
+.nav-dropdown-trigger svg { width: 11px; height: 11px; flex-shrink: 0; transition: transform 0.2s ease; }
+.nav-dropdown.open .nav-dropdown-trigger svg { transform: rotate(180deg); }
+
+.nav-dropdown-menu {
+  position: absolute; top: calc(100% + 18px); left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  min-width: 190px; background: var(--bg-card, #0a0a0f);
+  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  border-radius: 10px; padding: 6px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  z-index: 200;
+}
+.nav-dropdown.open .nav-dropdown-menu {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.nav-dropdown-menu a {
+  display: block; padding: 9px 12px; border-radius: 6px;
+  color: var(--text, #c8ccd4); font-size: 0.85rem; font-weight: 500;
+  text-decoration: none; white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-dropdown-menu a:hover { background: rgba(255,255,255,0.05); color: var(--text-bright, #eef0f4); }
+.nav-dropdown-menu a.active { color: var(--accent, #e8a020); }
+
+/* ===== BACK TO TOP =====
+   Site-wide circular scroll-to-top button, injected by mobile-nav.js on
+   every page. Hidden until the user scrolls past the threshold. */
+.back-to-top {
+  position: fixed; right: 24px; bottom: 24px; z-index: 90;
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-card, #0a0a0f);
+  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  color: var(--accent, #e8a020);
+  cursor: pointer; padding: 0;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 0.25s ease, transform 0.25s ease, border-color 0.2s ease, visibility 0.25s;
+}
+.back-to-top:hover { border-color: var(--accent, #e8a020); background: var(--bg-card-hover, #0e0e15); }
+.back-to-top.visible {
+  opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0);
+}
+.back-to-top svg { width: 18px; height: 18px; flex-shrink: 0; }

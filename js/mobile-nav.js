@@ -9,6 +9,41 @@
 
   document.addEventListener('DOMContentLoaded', init);
   document.addEventListener('DOMContentLoaded', initScrollReveal);
+  document.addEventListener('DOMContentLoaded', initDropdowns);
+  document.addEventListener('DOMContentLoaded', initBackToTop);
+
+  function initDropdowns() {
+    var dropdowns = Array.prototype.slice.call(document.querySelectorAll('.nav-dropdown'));
+    if (!dropdowns.length) return;
+
+    function closeAll(except) {
+      dropdowns.forEach(function (d) {
+        if (d === except) return;
+        d.classList.remove('open');
+        var t = d.querySelector('.nav-dropdown-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    dropdowns.forEach(function (d) {
+      var trigger = d.querySelector('.nav-dropdown-trigger');
+      if (!trigger) return;
+      trigger.setAttribute('aria-haspopup', 'true');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var willOpen = !d.classList.contains('open');
+        closeAll(d);
+        d.classList.toggle('open', willOpen);
+        trigger.setAttribute('aria-expanded', String(willOpen));
+      });
+    });
+
+    document.addEventListener('click', function () { closeAll(null); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeAll(null);
+    });
+  }
 
   function initScrollReveal() {
     var targets = document.querySelectorAll('.reveal');
@@ -103,6 +138,37 @@
     update();
   }
 
+  // Site-wide "back to top" button, appended to <body> (never into <nav>)
+  // so it stays independent of whatever nav markup a given page uses.
+  function initBackToTop() {
+    if (document.querySelector('.back-to-top')) return;
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'back-to-top';
+    btn.setAttribute('aria-label', 'Back to top');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+    document.body.appendChild(btn);
+
+    // Reuse the same threshold-based scroll-listener pattern as initScrollShadow.
+    var lastState = false;
+    function update() {
+      var scrolled = window.scrollY > 400;
+      if (scrolled !== lastState) {
+        btn.classList.toggle('visible', scrolled);
+        lastState = scrolled;
+      }
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+
+    btn.addEventListener('click', function () {
+      var reduceMotion = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  }
+
   function buildButton() {
     var btn = document.createElement('button');
     btn.type = 'button';
@@ -117,9 +183,23 @@
     var panel = document.createElement('div');
     panel.className = 'mobile-nav-panel';
 
-    // Primary nav links
-    Array.prototype.forEach.call(links.querySelectorAll('a'), function (a) {
-      panel.appendChild(a.cloneNode(true));
+    // Primary nav links — walk direct children so dropdown groups (added
+    // for the desktop nav) become labeled sections instead of a flat dump.
+    Array.prototype.forEach.call(links.children, function (child) {
+      if (child.tagName === 'A') {
+        panel.appendChild(child.cloneNode(true));
+        return;
+      }
+      if (child.classList && child.classList.contains('nav-dropdown')) {
+        var trigger = child.querySelector('.nav-dropdown-trigger');
+        var label = document.createElement('div');
+        label.className = 'mobile-nav-section-label';
+        label.textContent = trigger ? trigger.textContent.trim() : '';
+        panel.appendChild(label);
+        Array.prototype.forEach.call(child.querySelectorAll('a'), function (a) {
+          panel.appendChild(a.cloneNode(true));
+        });
+      }
     });
 
     // Secondary actions (login / CTA / user menu) — try common containers

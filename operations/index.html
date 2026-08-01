@@ -107,13 +107,13 @@
 
     .container { max-width: 1180px; margin: 0 auto; padding: 0 24px 40px; position: relative; z-index: 1; }
 
-    .section { margin-bottom: 56px; }
+    .section { padding: 72px 0; }
     .section-label {
       font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; color: var(--accent);
       letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
     }
-    .section-title { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text-bright); letter-spacing: -0.6px; margin-bottom: 10px; }
-    .section-desc { font-size: 0.87rem; color: var(--text-dim); max-width: 680px; margin-bottom: 24px; }
+    .section-title { font-family: var(--font-heading); font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; color: var(--text-bright); letter-spacing: -0.6px; margin-bottom: 10px; }
+    .section-desc { font-size: 0.87rem; color: var(--text-dim); max-width: 680px; margin-bottom: 28px; }
 
     .ops-card {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
@@ -244,18 +244,38 @@
     </a>
     <div class="nav-links">
       <a href="/">Home</a>
-      <a href="/docs/">Docs</a>
-      <a href="/api/">API</a>
-      <a href="/sdk/">SDK</a>
-      <a href="/changelog/">Changelog</a>
-      <a href="/blog/">Blog</a>
-      <a href="/status/">Status</a>
-      <a href="/updates/">Updates</a>
-      <a href="/analytics/">Analytics</a>
-      <a href="/operations/" class="active">Operations</a>
-      <a href="/team/">Team</a>
-      <a href="/case-studies/">Case Studies</a>
-      <a href="/trust/">Trust</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Developers <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/docs/">Docs</a>
+          <a href="/api/">API</a>
+          <a href="/sdk/">SDK</a>
+          <a href="/changelog/">Changelog</a>
+        </div>
+      </div>
+      <div class="nav-dropdown current">
+        <button class="nav-dropdown-trigger" type="button">Live Data <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/analytics/">Analytics</a>
+          <a href="/operations/" class="active">Operations</a>
+          <a href="/status/">Status</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Company <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/team/">Team</a>
+          <a href="/case-studies/">Case Studies</a>
+          <a href="/trust/">Trust</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/blog/">Blog</a>
+          <a href="/updates/">Updates</a>
+        </div>
+      </div>
     </div>
     <div class="nav-cta-wrap">
       <a href="/login/" class="nav-login">Partner Login</a>
@@ -576,18 +596,11 @@
 
     // ===== FOOTER STATS STRIP =====
     (function() {
-      var sigs = 0, sessions = 0, bans = 0, rates = [];
+      var sigs = 0, sessions = 0, bans = 0, avgRate = 0;
       try { sigs = E ? E.signatureCount(now) : 0; } catch (e) {}
       try { sessions = E ? E.activeSessions(now) : 0; } catch (e) {}
       try { bans = E ? E.totalBans(now) : 0; } catch (e) {}
-      try { rates = E ? E.detectionRates(now) : []; } catch (e) {}
-
-      var avgRate = 0;
-      if (rates.length) {
-        var sum = 0;
-        rates.forEach(function(r) { sum += r.rate; });
-        avgRate = Math.round((sum / rates.length) * 10) / 10;
-      }
+      try { avgRate = E ? Math.round(E.CONFIG.blendedDetectionRate * 1000) / 10 : 0; } catch (e) {}
 
       document.getElementById('statSignatures').textContent = sigs.toLocaleString();
       document.getElementById('statDetection').textContent = avgRate + '%';
