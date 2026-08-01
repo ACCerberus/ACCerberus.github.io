@@ -198,5 +198,13 @@
     "title": "Our Approach to Kernel-Level Security",
     "author": "nvoronov",
     "generated": true
+  },
+  {
+    "date": "2026-08-01",
+    "timestamp": "2026-08-01T07:54:45Z",
+    "type": "casestudy",
+    "title": "MMO Launch Day Anti-Cheat Results",
+    "author": "mzhang",
+    "generated": true
   }
 ]

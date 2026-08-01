@@ -246,7 +246,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on Logitech G Hub macro engine"
+        "text": "Resolved a scan latency regression caused by a garbage collection pause in the scan worker",
+        "relatedIncident": "INC-20260521-5328"
       },
       {
         "type": "improved",
@@ -318,7 +319,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on OBS capture layer"
+        "text": "Resolved elevated DMA false positives caused by model inference running out of memory on GPU-constrained nodes",
+        "relatedIncident": "INC-20260525-1338"
       },
       {
         "type": "improved",
@@ -390,7 +392,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on Razer Synapse module"
+        "text": "Resolved API response time degradation caused by disk I/O saturation on the signature database primary",
+        "relatedIncident": "INC-20260527-0845"
       },
       {
         "type": "improved",
@@ -414,7 +417,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on VMware Workstation compatibility"
+        "text": "Resolved Ban API rate limiter false triggers caused by a kernel module incompatibility",
+        "relatedIncident": "INC-20260528-3940"
       },
       {
         "type": "improved",
@@ -1182,7 +1186,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on Steam overlay compatibility"
+        "text": "Resolved webhook delivery delays caused by a kernel module incompatibility with a Windows Insider build",
+        "relatedIncident": "INC-20260629-9194"
       },
       {
         "type": "improved",
@@ -1230,7 +1235,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on OBS capture layer"
+        "text": "Resolved webhook delivery delays caused by a TLS certificate pinning hash mismatch after CA rotation",
+        "relatedIncident": "INC-20260701-0819"
       },
       {
         "type": "improved",
@@ -1302,7 +1308,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on ASUS Aura SDK"
+        "text": "Resolved Ban API rate limiter false triggers caused by a load balancer health check misconfiguration",
+        "relatedIncident": "INC-20260704-6662"
       },
       {
         "type": "improved",
@@ -1326,7 +1333,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on VMware Workstation compatibility"
+        "text": "Resolved behavioral model confidence degradation caused by a misconfigured edge-node rate limiter",
+        "relatedIncident": "INC-20260705-9181"
       },
       {
         "type": "improved",
@@ -1470,7 +1478,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on OBS capture layer"
+        "text": "Resolved webhook delivery delays caused by signature database index corruption under concurrent writes",
+        "relatedIncident": "INC-20260712-8655"
       },
       {
         "type": "improved",
@@ -1686,7 +1695,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on Discord hook detection"
+        "text": "Resolved memory scan false positive triggered by accessibility software (screen readers, magnifiers)",
+        "relatedIncident": "INC-20260721-0141"
       },
       {
         "type": "improved",
@@ -1826,6 +1836,102 @@
       {
         "type": "fixed",
         "text": "Rare deadlock in verdict engine when replay sandbox and manual review resolved simultaneously"
+      }
+    ]
+  },
+  {
+    "version": "v2.6.2",
+    "date": "2026-07-29",
+    "tag": "release",
+    "author": "a.chen",
+    "changes": [
+      {
+        "type": "fixed",
+        "text": "Fixed listing page 'related games' occasionally repeating the same title"
+      },
+      {
+        "type": "added",
+        "text": "Seller storefront pages now show total lifetime sales"
+      },
+      {
+        "type": "fixed",
+        "text": "Fixed listing page 'related games' occasionally repeating the same title"
+      }
+    ]
+  },
+  {
+    "version": "v2.6.3",
+    "date": "2026-07-30",
+    "tag": "release",
+    "author": "priya.k",
+    "changes": [
+      {
+        "type": "added",
+        "text": "Price history sparkline added to listing pages"
+      },
+      {
+        "type": "added",
+        "text": "Recently viewed titles shown on homepage"
+      },
+      {
+        "type": "improved",
+        "text": "Tightened fraud-check thresholds to reduce false declines"
+      }
+    ]
+  },
+  {
+    "version": "v2.6.3",
+    "date": "2026-07-31",
+    "tag": "release",
+    "author": "m.duarte",
+    "changes": [
+      {
+        "type": "fixed",
+        "text": "Fixed promo code field accepting trailing whitespace"
+      },
+      {
+        "type": "improved",
+        "text": "Cart quantity stepper now respects live seller stock limits"
+      },
+      {
+        "type": "improved",
+        "text": "Cart quantity stepper now respects live seller stock limits"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-01",
+    "timestamp": "2026-08-01T07:54:45Z",
+    "version": "v0.5.0.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized RingZero kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+7 signatures — 6417 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Wallpaper Engine hook"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-01",
+    "timestamp": "2026-08-01T07:54:45Z",
+    "version": "v0.5.0.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "added",
+        "text": "Docs: Added webhook signature verification examples in Python and Go"
       }
     ]
   }

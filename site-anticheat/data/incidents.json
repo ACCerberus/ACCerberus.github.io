@@ -26,7 +26,9 @@
       ],
       "lessonsLearned": [
         "Observability gaps in this subsystem masked early warning signs"
-      ]
+      ],
+      "fixedInVersion": "v0.4.5.2b",
+      "fixedInVersionDate": "2026-07-22"
     },
     {
       "incidentId": "INC-20260712-8655",
@@ -54,7 +56,9 @@
       ],
       "lessonsLearned": [
         "Rollback procedures should be tested quarterly"
-      ]
+      ],
+      "fixedInVersion": "v0.4.4.8b",
+      "fixedInVersionDate": "2026-07-13"
     },
     {
       "incidentId": "INC-20260705-9181",
@@ -82,7 +86,9 @@
       ],
       "lessonsLearned": [
         "Capacity planning needs to account for burst traffic patterns"
-      ]
+      ],
+      "fixedInVersion": "v0.4.4.6b",
+      "fixedInVersionDate": "2026-07-07"
     },
     {
       "incidentId": "INC-20260704-6662",
@@ -110,7 +116,9 @@
       ],
       "lessonsLearned": [
         "Capacity planning needs to account for burst traffic patterns"
-      ]
+      ],
+      "fixedInVersion": "v0.4.4.6b",
+      "fixedInVersionDate": "2026-07-06"
     },
     {
       "incidentId": "INC-20260701-0819",
@@ -138,7 +146,9 @@
       ],
       "lessonsLearned": [
         "Detection of this failure mode should be automated"
-      ]
+      ],
+      "fixedInVersion": "v0.4.4.5b",
+      "fixedInVersionDate": "2026-07-03"
     },
     {
       "incidentId": "INC-20260629-9194",
@@ -166,7 +176,9 @@
       ],
       "lessonsLearned": [
         "Detection of this failure mode should be automated"
-      ]
+      ],
+      "fixedInVersion": "v0.4.4.4b",
+      "fixedInVersionDate": "2026-07-01"
     },
     {
       "incidentId": "INC-20260528-3940",
@@ -194,7 +206,9 @@
       ],
       "lessonsLearned": [
         "Observability gaps in this subsystem masked early warning signs"
-      ]
+      ],
+      "fixedInVersion": "v0.4.3.0b",
+      "fixedInVersionDate": "2026-05-30"
     },
     {
       "incidentId": "INC-20260527-0845",
@@ -222,7 +236,9 @@
       ],
       "lessonsLearned": [
         "Cross-region testing should include latency simulation"
-      ]
+      ],
+      "fixedInVersion": "v0.4.3.0b",
+      "fixedInVersionDate": "2026-05-29"
     },
     {
       "incidentId": "INC-20260525-1338",
@@ -250,7 +266,9 @@
       ],
       "lessonsLearned": [
         "Cross-region testing should include latency simulation"
-      ]
+      ],
+      "fixedInVersion": "v0.4.2.1b",
+      "fixedInVersionDate": "2026-05-26"
     },
     {
       "incidentId": "INC-20260521-5328",
@@ -278,7 +296,9 @@
       ],
       "lessonsLearned": [
         "Configuration changes need staged rollout validation"
-      ]
+      ],
+      "fixedInVersion": "v0.4.2.0b",
+      "fixedInVersionDate": "2026-05-23"
     }
   ]
 }

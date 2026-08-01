@@ -1,12 +1,12 @@
 {
-  "lastUpdated": "2026-07-26T16:00:00Z",
+  "lastUpdated": "2026-08-01T07:54:45Z",
   "items": {
     "short": [
       {
         "id": "r-s1879",
         "name": "Retinal Scan Correlation",
         "desc": "Eye tracking data analysis to detect ESP/wallhack users by correlating gaze patterns with enemy positions behind walls",
-        "progress": 39,
+        "progress": 40,
         "color": "var(--blue)",
         "added": "2026-06-17"
       },
@@ -14,7 +14,7 @@
         "id": "r-s3084",
         "name": "Physics Simulation Validator",
         "desc": "Server-side physics replay that detects impossible movement trajectories and collision bypasses",
-        "progress": 25,
+        "progress": 26,
         "color": "var(--green)",
         "added": "2026-07-01"
       },
@@ -22,7 +22,7 @@
         "id": "r-s6649",
         "name": "Binary Birthmarking",
         "desc": "Unique per-client code mutations that make each game binary identifiable — leaked cheats can be traced to the exact account that extracted them",
-        "progress": 8,
+        "progress": 9,
         "color": "var(--purple)",
         "added": "2026-07-18"
       },
@@ -30,7 +30,7 @@
         "id": "r-s-mr-rollout",
         "name": "Replay Sandbox Multi-Region Rollout",
         "desc": "Expands the Adversarial Replay Sandbox beyond its US-East pilot to EU-West and AP-Southeast — brings server-side verification to all regions",
-        "progress": 8,
+        "progress": 9,
         "color": "var(--green)",
         "added": "2026-07-26"
       }
@@ -40,7 +40,7 @@
         "id": "r-s3",
         "name": "Zero-Footprint Mode",
         "desc": "Kernel module unloads completely between scan cycles — leaves zero memory residue, making Cerberus undetectable by cheat developers during reverse engineering",
-        "progress": 36.4,
+        "progress": 36.6,
         "color": "var(--accent)",
         "added": "2026-01-20"
       },
@@ -48,7 +48,7 @@
         "id": "r-m1",
         "name": "Proof-of-Play Protocol",
         "desc": "Cryptographic attestation that a game session was played legitimately — players can prove clean sessions to tournament organizers without revealing system state",
-        "progress": 40.4,
+        "progress": 40.6,
         "color": "var(--blue)",
         "added": "2026-01-01"
       },
@@ -56,7 +56,7 @@
         "id": "r-m2",
         "name": "Peripheral Bus Sniffer",
         "desc": "Monitors USB/HID bus traffic patterns to detect hardware cheat devices (Cronus, XIM, strikepack) by analyzing input timing jitter and polling anomalies",
-        "progress": 34.6,
+        "progress": 34.9,
         "color": "var(--accent)",
         "added": "2026-02-01"
       },
@@ -64,7 +64,7 @@
         "id": "r-m3",
         "name": "Silent Honeypot Injection",
         "desc": "Injects fake memory regions that appear to contain game state — any cheat reading them triggers instant detection without false positives, since no legitimate process accesses them",
-        "progress": 47.9,
+        "progress": 48.1,
         "color": "var(--red)",
         "added": "2026-03-15"
       },
@@ -72,7 +72,7 @@
         "id": "r-m4",
         "name": "Neural Style Transfer Detection",
         "desc": "Detects AI-powered aimbots that mimic human aim patterns by analyzing micro-corrections and acceleration curves that neural networks cannot perfectly replicate",
-        "progress": 37.1,
+        "progress": 37.4,
         "color": "var(--purple)",
         "added": "2026-04-01"
       },
@@ -80,7 +80,7 @@
         "id": "r-m5",
         "name": "Cheat Provider Lifecycle Tracker",
         "desc": "Automated dark web monitoring that tracks cheat providers from release to takedown — predicts new bypass attempts before they ship based on provider development patterns",
-        "progress": 43.8,
+        "progress": 44,
         "color": "var(--green)",
         "added": "2026-03-01"
       },
@@ -88,7 +88,7 @@
         "id": "r-m6",
         "name": "UEFI Pre-Boot Attestation",
         "desc": "Validates boot chain integrity via UEFI Secure Boot measurements and TPM PCR values — detects pre-OS cheat loaders, SPI flash persistence, and bootkit tampering before the game launches",
-        "progress": 31.2,
+        "progress": 31.5,
         "color": "var(--accent)",
         "added": "2026-05-10"
       },
@@ -96,7 +96,7 @@
         "id": "r-m7",
         "name": "GPU Compute Abuse Detection",
         "desc": "Monitors CUDA/OpenCL/DirectCompute dispatch queues for unauthorized compute shaders — detects cheats offloading aim calculations or ESP rendering to GPU compute pipelines",
-        "progress": 27.2,
+        "progress": 27.5,
         "color": "var(--purple)",
         "added": "2026-05-15"
       },
@@ -104,7 +104,7 @@
         "id": "r-m-cis",
         "name": "Competitive Integrity Score",
         "desc": "Public per-player trust score based on behavioral history that tournament organizers and matchmaking can use",
-        "progress": 4,
+        "progress": 4.3,
         "color": "var(--accent)",
         "added": "2026-07-26"
       }
@@ -164,37 +164,43 @@
         "id": "r-c1",
         "name": "DMA Board Detection",
         "desc": "PCIe device fingerprinting for DMA-based cheats — first AC to detect Screamer and custom DMA boards via firmware timing analysis",
-        "completedDate": "2026-04-15"
+        "completedDate": "2026-04-15",
+        "shippedInVersion": "v0.4.1.8b"
       },
       {
         "id": "r-c2",
         "name": "Behavioral AI v3",
         "desc": "3rd iteration of the behavioral analysis model — TCN-based architecture trained on 8K labeled cheat samples from beta partners",
-        "completedDate": "2026-03-20"
+        "completedDate": "2026-03-20",
+        "shippedInVersion": "v0.4.1.6b"
       },
       {
         "id": "r-c3",
         "name": "US-East + EU-West Deployment",
         "desc": "Initial multi-region setup — 3 regions with sub-80ms signature sync latency",
-        "completedDate": "2026-02-28"
+        "completedDate": "2026-02-28",
+        "shippedInVersion": "v0.4.1.6b"
       },
       {
         "id": "r-s1",
         "name": "Adversarial Replay Sandbox",
         "desc": "Isolated replay environment that re-executes suspicious sessions server-side to confirm cheating without client intervention — eliminates false positives on edge cases",
-        "completedDate": "2026-06-17"
+        "completedDate": "2026-06-17",
+        "shippedInVersion": "v0.4.3.7b"
       },
       {
         "id": "r-s2",
         "name": "Input Entropy Fingerprinting",
         "desc": "Measures Shannon entropy of raw input streams to detect synthetic inputs — human input has natural entropy patterns that no cheat can replicate",
-        "completedDate": "2026-07-01"
+        "completedDate": "2026-07-01",
+        "shippedInVersion": "v0.4.4.4b"
       },
       {
         "id": "r-s4",
         "name": "Cross-Session Behavioral Graph",
         "desc": "Graph neural network that builds player identity from behavioral patterns across sessions — detects ban evaders even with new hardware and accounts",
-        "completedDate": "2026-07-18"
+        "completedDate": "2026-07-18",
+        "shippedInVersion": "v0.4.4.11b"
       }
     ]
   },
