@@ -476,7 +476,7 @@
     .trusted-logo-item {
       font-family: var(--font-heading); font-weight: 700; font-size: 1.05rem;
       color: var(--text-dim); opacity: 0.55; letter-spacing: -0.3px;
-      transition: opacity 0.25s, color 0.25s; cursor: default;
+      transition: opacity 0.25s, color 0.25s; text-decoration: none;
     }
     .trusted-logo-item:hover { opacity: 1; color: var(--text-bright); }
     @media (max-width: 700px) { .trusted-logos { gap: 28px; } .trusted-logo-item { font-size: 0.9rem; } }
@@ -592,6 +592,7 @@
           <a href="/api/">API</a>
           <a href="/sdk/">SDK</a>
           <a href="/changelog/">Changelog</a>
+          <a href="/integrations/">Integrations</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -608,6 +609,7 @@
           <a href="/team/">Team</a>
           <a href="/case-studies/">Case Studies</a>
           <a href="/trust/">Trust</a>
+          <a href="/about/">About</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -719,11 +721,11 @@
   <section class="trusted-strip reveal">
     <div class="trusted-label">Protecting titles in closed beta</div>
     <div class="trusted-logos">
-      <span class="trusted-logo-item">Northwind Interactive</span>
-      <span class="trusted-logo-item">Loose Thread Games</span>
-      <span class="trusted-logo-item">Ferrous Point Studio</span>
-      <span class="trusted-logo-item">Backline Collective</span>
-      <span class="trusted-logo-item">Redwatch Games</span>
+      <a class="trusted-logo-item" href="/case-studies/#vantage-point">Vantage Point Games</a>
+      <a class="trusted-logo-item" href="/case-studies/#cindercrest">Cindercrest Studios</a>
+      <a class="trusted-logo-item" href="/case-studies/#molten-anvil">Molten Anvil Interactive</a>
+      <a class="trusted-logo-item" href="/case-studies/#paperlight">Paperlight Games</a>
+      <a class="trusted-logo-item" href="/case-studies/#driftwood-signal">Driftwood Signal</a>
     </div>
   </section>
 
@@ -979,6 +981,7 @@
         </tbody>
       </table>
     </div>
+    <p class="reveal" style="text-align:center;margin-top:20px;font-size:0.82rem;color:var(--text-dim);">Want the full breakdown, including where a lighter solution might still be the right call? <a href="/compare/" style="color:var(--accent);">See the full comparison →</a></p>
   </section>
 
   <!-- HARDWARE COMPATIBILITY -->

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integrations - Cerberus Anti-Cheat</title>
+  <meta name="description" content="What Cerberus plugs into: game engines, matchmaking/platform services, DRM coexistence, and the webhook/Ban API ecosystem." />
+  <meta name="theme-color" content="#e8a020" />
+  <meta property="og:title" content="Integrations - Cerberus Anti-Cheat" />
+  <meta property="og:description" content="Fits into the stack you already have — engines, platform services, DRM, and the API ecosystem." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cerberusac.dev/integrations/" />
+  <link rel="canonical" href="https://cerberusac.dev/integrations/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Integrations - Cerberus Anti-Cheat",
+    "description": "What Cerberus plugs into: game engines, matchmaking/platform services, DRM coexistence, and the webhook/Ban API ecosystem.",
+    "url": "https://cerberusac.dev/integrations/"
+  }
+  </script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --bg-card-hover: #0e0e15;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15); --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084; --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
+      --font: 'Inter', -apple-system, sans-serif; --font-heading: 'Sora', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c07818);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507;
+    }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 26px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
+    .nav-login { padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(232,160,32,0.4); color: var(--accent); text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-login:hover { border-color: var(--accent); background: rgba(232,160,32,0.08); transform: translateY(-1px); }
+    .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
+
+    .page-header { text-align: center; padding: 140px 24px 56px; position: relative; z-index: 1; }
+    .page-header-label {
+      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+      color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .page-header h1 { font-family: var(--font-heading); font-size: 2.4rem; font-weight: 800; color: var(--text-bright); letter-spacing: -1.5px; margin-bottom: 12px; }
+    .page-header p { font-size: 0.95rem; color: var(--text); max-width: 600px; margin: 0 auto; }
+
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
+    .btn-primary {
+      padding: 13px 28px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
+      background: var(--accent); color: #050507; text-decoration: none; border: none; cursor: pointer;
+      transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { background: #d09018; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232,160,32,0.3); }
+    .btn-secondary {
+      padding: 13px 28px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
+      background: transparent; color: var(--text-bright); text-decoration: none; border: 1px solid var(--border);
+      transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); transform: translateY(-2px); }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px 40px; position: relative; z-index: 1; }
+
+    .section { margin-bottom: 56px; }
+    .section-label {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; color: var(--accent);
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .section-title { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; color: var(--text-bright); letter-spacing: -0.6px; margin-bottom: 10px; }
+    .section-desc { font-size: 0.9rem; color: var(--text-dim); max-width: 680px; margin-bottom: 28px; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card-grid.two-up { grid-template-columns: repeat(2, 1fr); }
+    .int-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 24px; transition: border-color 0.2s, background 0.2s;
+    }
+    .int-card:hover { border-color: rgba(232,160,32,0.2); background: var(--bg-card-hover); }
+    .int-card-icon {
+      width: 40px; height: 40px; border-radius: 10px; background: var(--accent-dim);
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 14px;
+    }
+    .int-card h3 { font-family: var(--font-heading); font-size: 0.95rem; font-weight: 700; color: var(--text-bright); margin-bottom: 8px; }
+    .int-card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; }
+    .status-chip {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; padding: 3px 10px; border-radius: 6px;
+    }
+    .chip-live { background: rgba(48,200,96,0.1); color: var(--green); }
+    .chip-pending { background: rgba(232,160,32,0.1); color: var(--accent); }
+    .chip-scheduled { background: rgba(64,136,232,0.1); color: var(--blue); }
+    .chip-community { background: rgba(136,96,232,0.1); color: var(--purple); }
+
+    .note-strip {
+      display: flex; gap: 12px; align-items: flex-start; padding: 16px 20px; margin-top: 20px;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px;
+    }
+    .note-strip .icon { font-size: 1.1rem; flex-shrink: 0; }
+    .note-strip p { font-size: 0.82rem; color: var(--text); line-height: 1.6; }
+    .note-strip strong { color: var(--text-bright); }
+
+    .platform-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px 22px; display: flex; gap: 14px; align-items: flex-start;
+    }
+    .platform-card .icon {
+      width: 36px; height: 36px; border-radius: 9px; background: rgba(255,255,255,0.04);
+      display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+    }
+    .platform-card h4 { font-family: var(--font-heading); font-size: 0.88rem; font-weight: 700; color: var(--text-bright); margin-bottom: 4px; }
+    .platform-card p { font-size: 0.78rem; color: var(--text-dim); line-height: 1.55; }
+
+    .dtc-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 28px 32px;
+    }
+    .dtc-card p { font-size: 0.87rem; color: var(--text); margin-bottom: 14px; line-height: 1.7; }
+    .dtc-card p:last-child { margin-bottom: 0; }
+    .drm-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .drm-badge {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; padding: 6px 14px;
+      border-radius: 20px; border: 1px solid var(--border); color: var(--text-dim); background: rgba(255,255,255,0.02);
+    }
+
+    .usecase-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+    .usecase-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+    }
+    .usecase-card .tag {
+      display: inline-block; font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+      color: var(--accent); background: var(--accent-dim); padding: 3px 9px; border-radius: 5px;
+      margin-bottom: 10px; letter-spacing: 0.5px;
+    }
+    .usecase-card h4 { font-family: var(--font-heading); font-size: 0.85rem; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
+    .usecase-card p { font-size: 0.78rem; color: var(--text-dim); line-height: 1.55; }
+
+    .api-links { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 20px; }
+    .api-link-card {
+      flex: 1; min-width: 220px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 22px 24px; text-decoration: none; display: block; transition: all 0.2s;
+    }
+    .api-link-card:hover { border-color: rgba(232,160,32,0.25); transform: translateY(-2px); }
+    .api-link-card h3 { font-family: var(--font-heading); font-size: 0.98rem; font-weight: 700; color: var(--text-bright); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .api-link-card p { font-size: 0.8rem; color: var(--text-dim); }
+    .api-link-card .arrow { color: var(--accent); font-family: var(--font-mono); font-size: 0.78rem; margin-top: 12px; display: inline-block; }
+
+    .closing-cta {
+      text-align: center; padding: 56px 32px; border-radius: 20px;
+      background: var(--bg-card); border: 1px solid var(--border); margin-bottom: 16px;
+    }
+    .closing-cta h2 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: var(--text-bright); letter-spacing: -0.8px; margin-bottom: 10px; }
+    .closing-cta p { font-size: 0.88rem; color: var(--text-dim); max-width: 480px; margin: 0 auto; }
+
+    .footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+    .footer-brand { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; color: var(--text-bright); margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 720px) {
+      .card-grid, .card-grid.two-up, .usecase-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .page-header { padding: 120px 20px 40px; }
+      .page-header h1 { font-size: 1.8rem; }
+      .container { padding: 0 20px 40px; }
+      .dtc-card { padding: 22px 20px; }
+      .api-links { flex-direction: column; }
+    }
+  </style>
+  <link rel="stylesheet" href="/css/mobile-nav.css">
+  <script src="/js/mobile-nav.js" defer></script>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <div class="nav-dropdown current">
+        <button class="nav-dropdown-trigger" type="button">Developers <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/docs/">Docs</a>
+          <a href="/api/">API</a>
+          <a href="/sdk/">SDK</a>
+          <a href="/changelog/">Changelog</a>
+          <a href="/integrations/" class="active">Integrations</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Live Data <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/analytics/">Analytics</a>
+          <a href="/operations/">Operations</a>
+          <a href="/status/">Status</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Company <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/team/">Team</a>
+          <a href="/case-studies/">Case Studies</a>
+          <a href="/trust/">Trust</a>
+          <a href="/about/">About</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/blog/">Blog</a>
+          <a href="/updates/">Updates</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-cta-wrap">
+      <a href="/login/" class="nav-login">Partner Login</a>
+      <a href="/access/" class="nav-cta">Partner Account</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="page-header-label">Integrations</div>
+    <h1>Fits into the stack you already have</h1>
+    <p>Cerberus isn't a platform you migrate onto — it's a layer that drops into the engine, matchmaking stack, and DRM you're already shipping with. Here's exactly what it plugs into, and what it leaves alone.</p>
+    <div class="hero-actions">
+      <a href="/access/" class="btn-primary">
+        Request Early Access
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/docs/" class="btn-secondary">
+        Read the Docs
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v16M18 4v16M6 12h12M6 4h12M6 20h12"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- GAME ENGINES -->
+    <div class="section">
+      <div class="section-label">Game Engines</div>
+      <h2 class="section-title">First-class plugins, plus a raw SDK for everything else</h2>
+      <p class="section-desc">Cerberus ships dedicated plugins for the two engines most partner studios build on, and a minimal C++ SDK for anything custom or in-house.</p>
+
+      <div class="card-grid">
+        <div class="int-card">
+          <div class="int-card-icon">🎮</div>
+          <h3>Unreal Engine 5.1+</h3>
+          <p>Fully functional Unreal Engine 5.1+ plugin with Blueprint bindings, a <code style="font-family:var(--font-mono);color:var(--accent);background:rgba(255,255,255,0.04);padding:1px 5px;border-radius:4px;">UGameInstanceSubsystem</code>-based session lifecycle, and ban-hook examples out of the box.</p>
+          <span class="status-chip chip-live">FIRST-CLASS SUPPORT</span>
+        </div>
+        <div class="int-card">
+          <div class="int-card-icon">🧩</div>
+          <h3>Unity 2022+</h3>
+          <p>Unity 2022 LTS+ package with C# P/Invoke bindings over the C++ core (.NET 6.0+ required), session lifecycle hooks, and ban/flag callback handlers.</p>
+          <span class="status-chip chip-live">SUPPORTED</span>
+        </div>
+        <div class="int-card">
+          <div class="int-card-icon">⚙️</div>
+          <h3>Custom / In-House Engines</h3>
+          <p>No Unreal or Unity? The raw C++ static library and single header work with any Windows game that can link a C++ or C# library — 4 calls to integrate: Init, StartSession, EndSession, Shutdown.</p>
+          <span class="status-chip chip-live">RAW SDK</span>
+        </div>
+      </div>
+
+      <div class="note-strip">
+        <span class="icon">🕒</span>
+        <p><strong>Typical integration time:</strong> under 2 hours end to end for Unreal or Unity via the first-class plugins. Custom-engine integration against the raw SDK typically takes 1-2 hours on top of that, since it's just four API calls (Init / StartSession / EndSession / Shutdown) wired into your existing engine lifecycle.</p>
+      </div>
+    </div>
+
+    <!-- MATCHMAKING & PLATFORM SERVICES -->
+    <div class="section">
+      <div class="section-label">Matchmaking &amp; Platform Services</div>
+      <h2 class="section-title">Runs independently of your platform layer</h2>
+      <p class="section-desc">Cerberus doesn't touch matchmaking, lobbies, identity, or storefront logic — it's a detection layer that sits alongside whatever platform services your title already uses. No conflicts, no shared state, nothing to reconfigure on your end. These are commonly used alongside Cerberus by partner studios, not integrated dependencies:</p>
+
+      <div class="card-grid two-up">
+        <div class="platform-card">
+          <div class="icon">🅢</div>
+          <div>
+            <h4>Steamworks</h4>
+            <p>Cerberus runs alongside Steamworks matchmaking, lobbies, and Steam's own anti-tamper measures. The SDK accepts any platform-specific player ID as a plain string — including a Steam64 ID — for session identification; it doesn't call into the Steamworks SDK itself.</p>
+          </div>
+        </div>
+        <div class="platform-card">
+          <div class="icon">🌐</div>
+          <div>
+            <h4>Epic Online Services (EOS)</h4>
+            <p>Same story for studios on EOS matchmaking, sessions, or identity — Cerberus operates independently and simply takes your EOS player/product ID as the session identifier when you call StartSession.</p>
+          </div>
+        </div>
+        <div class="platform-card">
+          <div class="icon">☁️</div>
+          <div>
+            <h4>PlayFab</h4>
+            <p>Studios running PlayFab for backend services, matchmaking, or economy can continue to do so unmodified — Cerberus's REST API and webhooks run as a separate, parallel system rather than replacing or wrapping PlayFab functionality.</p>
+          </div>
+        </div>
+        <div class="platform-card">
+          <div class="icon">🧱</div>
+          <div>
+            <h4>No shared state, by design</h4>
+            <p>Because Cerberus doesn't hook into any specific matchmaking or platform SDK, adding or swapping your platform layer later doesn't require touching your Cerberus integration at all.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANTI-TAMPER / DRM COEXISTENCE -->
+    <div class="section">
+      <div class="section-label">Anti-Tamper &amp; DRM</div>
+      <h2 class="section-title">Coexists with your existing DRM, doesn't replace it</h2>
+
+      <div class="dtc-card">
+        <p>Cerberus includes DRM integrity verification as part of its pre-session scan. It detects binary patching, license bypass attempts, loader modifications, and tampered game executables — the same category of tampering DRM systems are built to catch.</p>
+        <p>This runs <strong style="color:var(--text-bright);">alongside</strong> your existing DRM solution as an additional layer, not a replacement for it. Cerberus doesn't hook, patch, or interfere with your DRM's own protection routines — the pre-session scan and the DRM's runtime checks operate independently, so there's no conflict between the two.</p>
+        <p>In practice that means a title shipping with Denuvo or Steam DRM keeps that protection exactly as-is; Cerberus adds kernel-level tamper detection, behavioral monitoring, and hardware fingerprinting on top, without needing to be "aware" of which DRM you're running.</p>
+        <div class="drm-badges">
+          <span class="drm-badge">Denuvo — coexists, no conflict</span>
+          <span class="drm-badge">Steam DRM — coexists, no conflict</span>
+          <span class="drm-badge">Custom / in-house DRM — coexists, no conflict</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEBHOOK & API ECOSYSTEM -->
+    <div class="section">
+      <div class="section-label">Webhook &amp; API Ecosystem</div>
+      <h2 class="section-title">Build your own integrations on top</h2>
+      <p class="section-desc">Every ban and detection event that flows through Cerberus is also available over the REST API and as signed webhooks (HMAC-SHA256, verified via the <code style="font-family:var(--font-mono);color:var(--accent);background:rgba(255,255,255,0.04);padding:1px 5px;border-radius:4px;">X-Cerberus-Signature</code> header). Nothing about it is closed off — if it's data Cerberus already tracks, you can pull it or subscribe to it.</p>
+
+      <div class="usecase-grid">
+        <div class="usecase-card">
+          <span class="tag">OPS DASHBOARD</span>
+          <h4>Internal analyst view</h4>
+          <p>Pull <code style="font-family:var(--font-mono);font-size:0.72rem;color:var(--accent);">GET /v2/bans</code> and <code style="font-family:var(--font-mono);font-size:0.72rem;color:var(--accent);">GET /v2/detections</code> into a custom ops dashboard, filtered by reason (AIMBOT, DMA, INJECTION, WALLHACK, SPEED) or detection layer, so your trust &amp; safety team isn't tied to the partner dashboard UI.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="tag">DISCORD MOD-BOT</span>
+          <h4>Real-time ban alerts</h4>
+          <p>Subscribe a webhook to <code style="font-family:var(--font-mono);font-size:0.72rem;color:var(--accent);">ban.created</code> and <code style="font-family:var(--font-mono);font-size:0.72rem;color:var(--accent);">flag.created</code> events and have your mod-bot post them straight into a moderation channel — no polling, just a signed payload the moment it happens.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="tag">SUPPORT TOOLING</span>
+          <h4>Appeals &amp; manual bans</h4>
+          <p>Route ban appeals into your existing support queue, and use <code style="font-family:var(--font-mono);font-size:0.72rem;color:var(--accent);">POST /v2/bans</code> to issue manual bans from your own reporting system — Cerberus records them, propagates them across regions, and fires the webhook like any other ban.</p>
+        </div>
+      </div>
+
+      <div class="api-links">
+        <a href="/api/" class="api-link-card">
+          <h3>📖 API Reference</h3>
+          <p>Full REST API docs: sessions, bans, detections, and webhook registration.</p>
+          <span class="arrow">View API reference →</span>
+        </a>
+        <a href="/docs/" class="api-link-card">
+          <h3>🛠️ SDK Docs</h3>
+          <p>Ban API, detection evidence, webhooks, and engine-specific integration guides.</p>
+          <span class="arrow">View documentation →</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- CLOSING CTA -->
+    <div class="closing-cta">
+      <h2>Ready to see it in your stack?</h2>
+      <p>Closed beta partner accounts get SDK access, a sandbox API key, and direct access to the team integrating your engine and platform stack.</p>
+      <div class="hero-actions">
+        <a href="/access/" class="btn-primary">
+          Request Early Access
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/docs/" class="btn-secondary">
+          Read the Docs
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v16M18 4v16M6 12h12M6 4h12M6 20h12"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span></div>
+    <p>Four layers. Nothing gets past the gate.</p>
+    <p style="margin-top: 12px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/privacy/">Privacy</a> &nbsp;&middot;&nbsp; <a href="/terms/">Terms</a> &nbsp;&middot;&nbsp; <a href="/.well-known/security.txt">Security</a></p>
+  </footer>
+
+  <script src="/js/cerberus-engine.js"></script>
+  <script src="/js/cerberus-shared.js"></script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+</body>
+</html>

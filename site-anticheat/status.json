@@ -1,0 +1,86 @@
+{
+  "_note": "STATIC EXAMPLE SNAPSHOT. This is a portfolio/demo build of the Cerberus site — there is no backend, so this file is a hand-authored example of what a machine-readable status feed WOULD return, not a live-updating endpoint. Values below were seeded from the human-readable dashboard at /status/ on the date in 'generatedAt' and will not change automatically. A real implementation would regenerate this file (or serve an equivalent response) on every status change from the same engine that powers the dashboard.",
+  "schemaVersion": "1.0.0-example",
+  "generatedAt": "2026-08-01T17:02:47Z",
+  "status": "operational",
+  "statusMessage": "All Systems Operational",
+  "uptime": {
+    "period": "30d",
+    "overallPercent": 97.8
+  },
+  "regions": [
+    { "name": "US-East", "status": "operational" },
+    { "name": "EU-West", "status": "operational" },
+    { "name": "AP-Southeast", "status": "operational" }
+  ],
+  "services": [
+    {
+      "id": "detection-engine",
+      "name": "Detection Engine",
+      "status": "operational",
+      "uptimePercent30d": 97.9,
+      "regions": {
+        "US-East": { "status": "operational", "uptimePercent30d": 98.1 },
+        "EU-West": { "status": "operational", "uptimePercent30d": 97.6 },
+        "AP-Southeast": { "status": "operational", "uptimePercent30d": 97.9 }
+      }
+    },
+    {
+      "id": "api-dashboard",
+      "name": "API & Dashboard",
+      "status": "operational",
+      "uptimePercent30d": 97.7,
+      "regions": {
+        "US-East": { "status": "operational", "uptimePercent30d": 97.8 },
+        "EU-West": { "status": "operational", "uptimePercent30d": 98.0 },
+        "AP-Southeast": { "status": "operational", "uptimePercent30d": 97.3 }
+      }
+    },
+    {
+      "id": "data-pipeline",
+      "name": "Data Pipeline",
+      "status": "operational",
+      "uptimePercent30d": 97.9,
+      "regions": {
+        "US-East": { "status": "operational", "uptimePercent30d": 97.5 },
+        "EU-West": { "status": "operational", "uptimePercent30d": 97.9 },
+        "AP-Southeast": { "status": "operational", "uptimePercent30d": 98.2 }
+      }
+    }
+  ],
+  "incidents": [],
+  "recentResolvedIncidents": [
+    {
+      "id": "INC-20260721-0141",
+      "title": "Memory scan false positive on accessibility software",
+      "severity": "minor",
+      "startedAt": "2026-07-21T13:58:59Z",
+      "resolvedAt": "2026-07-21T21:13:02Z",
+      "rootCause": "Cache invalidation storm after signature push"
+    },
+    {
+      "id": "INC-20260712-8655",
+      "title": "Webhook delivery delays",
+      "severity": "minor",
+      "startedAt": "2026-07-12T09:53:10Z",
+      "resolvedAt": "2026-07-12T17:01:17Z",
+      "rootCause": "Signature database index corruption after concurrent write"
+    },
+    {
+      "id": "INC-20260705-9181",
+      "title": "Behavioral model confidence degradation",
+      "severity": "minor",
+      "startedAt": "2026-07-05T23:03:36Z",
+      "resolvedAt": "2026-07-06T13:49:19Z",
+      "rootCause": "Misconfigured rate limiter on edge node"
+    }
+  ],
+  "components": {
+    "kernelDriver": "v0.5.0.0b",
+    "behavioralModel": "bm-3.1.4",
+    "signatureDbCount": 6426
+  },
+  "metrics": {
+    "falsePositiveRatePercent": 0.14
+  }
+}
