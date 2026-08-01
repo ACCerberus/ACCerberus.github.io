@@ -162,6 +162,7 @@
       <a href="/updates/">Updates</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
+      <a href="/trust/">Trust</a>
     </div>
     <div class="nav-cta-wrap">
       <a href="/login/" class="nav-login">Partner Login</a>
@@ -178,11 +179,11 @@
   <div class="legal-content">
     <div class="updated-badge">Last updated: May 2026</div>
 
-    <h2>Agreement</h2>
+    <h2 class="reveal">Agreement</h2>
     <p>These terms govern your use of the Cerberus Anti-Cheat SDK, API, dashboard, and related services ("Cerberus" or "the Service"). By integrating the SDK or accessing the API, you agree to these terms. If you're integrating Cerberus on behalf of a game studio, you confirm you have authority to bind that organization.</p>
     <p>Cerberus is currently in <strong>closed beta</strong>. These terms will be updated as we approach general availability.</p>
 
-    <h2>SDK license</h2>
+    <h2 class="reveal">SDK license</h2>
     <p>We grant you a non-exclusive, royalty-free, revocable license to:</p>
     <ul>
       <li>Integrate the Cerberus SDK into your game or application</li>
@@ -200,7 +201,7 @@
       <li>Use the SDK to collect data about players beyond what's necessary for cheat detection</li>
     </ul>
 
-    <h2>Acceptable use</h2>
+    <h2 class="reveal">Acceptable use</h2>
     <p>Cerberus is designed for protecting competitive multiplayer games. You agree to:</p>
     <ul>
       <li>Use Cerberus only for cheat detection and game integrity purposes</li>
@@ -210,8 +211,8 @@
       <li>Comply with applicable privacy laws in your jurisdiction when handling detection results</li>
     </ul>
 
-    <h2>Detection accuracy disclaimers</h2>
-    <div class="callout callout-warn">Cerberus is a beta product. While we work hard to minimize false positives, no anti-cheat system is perfect. Current false positive rate in our beta cohort is approximately 0.14%, but this may vary across different games, hardware configurations, and cheat categories.</div>
+    <h2 class="reveal">Detection accuracy disclaimers</h2>
+    <div class="callout callout-warn reveal">Cerberus is a beta product. While we work hard to minimize false positives, no anti-cheat system is perfect. Current false positive rate in our beta cohort is approximately 0.14%, but this may vary across different games, hardware configurations, and cheat categories.</div>
     <p>Specifically:</p>
     <ul>
       <li><strong>Detection is not guaranteed.</strong> New or sophisticated cheats may evade detection temporarily. We continuously update our models and signatures, but there is no claim of 100% detection coverage.</li>
@@ -220,7 +221,7 @@
     </ul>
     <p>We provide detection data and confidence scores. <strong>The decision to ban a player is ultimately yours.</strong> Cerberus offers tools and recommendations, but game studios are responsible for their enforcement policies.</p>
 
-    <h2>Ban appeal process</h2>
+    <h2 class="reveal">Ban appeal process</h2>
     <p>We take false positives seriously. The appeal process works as follows:</p>
     <ol>
       <li>Players submit an appeal through your game's support channel (or directly via the API at <code>POST /api/v2/bans/{id}/appeal</code>)</li>
@@ -230,7 +231,7 @@
     </ol>
     <p>Game studios can also overturn bans independently through the partner dashboard or API without going through our review process.</p>
 
-    <h2>Warranty disclaimer</h2>
+    <h2 class="reveal">Warranty disclaimer</h2>
     <p>Cerberus is provided <strong>"AS-IS" during the beta period</strong>. We make no warranties, express or implied, including but not limited to:</p>
     <ul>
       <li>Fitness for a particular purpose</li>
@@ -241,7 +242,7 @@
     </ul>
     <p>We're building in public and iterating fast. The beta label is honest -- things may break, APIs may change, and detection accuracy will improve over time. We'll communicate breaking changes through the <a href="/changelog/">changelog</a> with reasonable notice.</p>
 
-    <h2>Limitation of liability</h2>
+    <h2 class="reveal">Limitation of liability</h2>
     <p>To the maximum extent permitted by law, the Cerberus team is not liable for:</p>
     <ul>
       <li>Damages arising from false positive detections or incorrect bans</li>
@@ -252,15 +253,15 @@
     </ul>
     <p>Our total liability for any claim related to the Service is limited to the amount you paid us in the 12 months preceding the claim (or $0 if you're on the free Argus tier).</p>
 
-    <h2>Intellectual property</h2>
+    <h2 class="reveal">Intellectual property</h2>
     <p><strong>Our IP:</strong> The Cerberus SDK, driver, detection algorithms, AI models, API, and dashboard are our intellectual property. Your license to use them is governed by the SDK License section above.</p>
     <p><strong>Your IP:</strong> Your game, code, assets, and player data remain yours. Integrating Cerberus does not grant us any rights to your intellectual property.</p>
     <p><strong>Detection data:</strong> Detection events generated by Cerberus are jointly useful -- you have full access to query, export, and delete detection data for your game. We retain anonymized, aggregated detection statistics (no game-specific data) to improve our models.</p>
 
-    <h2>Data ownership</h2>
+    <h2 class="reveal">Data ownership</h2>
     <p>You own your player relationships and any identity mapping you maintain. We own the detection intelligence (models, signatures, heuristics). Detection event data is accessible to both parties during the retention period. See our <a href="/privacy/">Privacy Policy</a> for full details on data handling.</p>
 
-    <h2>Termination</h2>
+    <h2 class="reveal">Termination</h2>
     <p>Either party can terminate this agreement at any time:</p>
     <ul>
       <li><strong>You</strong> can stop using Cerberus by removing the SDK from your game and revoking your API key through the dashboard. We'll delete your detection data according to our standard retention schedule (or immediately upon request).</li>
@@ -268,13 +269,13 @@
     </ul>
     <p>On termination, your license to use the SDK ends immediately. Any bans already issued through your integration remain your responsibility to manage.</p>
 
-    <h2>Governing law</h2>
+    <h2 class="reveal">Governing law</h2>
     <p>These terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles. Any disputes will be resolved through binding arbitration under the rules of the American Arbitration Association, conducted in English. You agree to attempt informal resolution by contacting us before initiating arbitration.</p>
 
-    <h2>Changes to these terms</h2>
+    <h2 class="reveal">Changes to these terms</h2>
     <p>We may update these terms as Cerberus evolves. Material changes will be communicated to partner studios via email and posted on our <a href="/changelog/">changelog</a> at least 30 days before taking effect. Continued use of Cerberus after changes take effect constitutes acceptance of the updated terms.</p>
 
-    <h2>Contact</h2>
+    <h2 class="reveal">Contact</h2>
     <p>Questions about these terms? Reach out:</p>
     <p><strong>General:</strong> <a href="mailto:hello@arsenalrx.dev">hello@arsenalrx.dev</a></p>
     <p><strong>Privacy-specific:</strong> <a href="mailto:privacy@arsenalrx.dev">privacy@arsenalrx.dev</a></p>

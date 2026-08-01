@@ -266,6 +266,7 @@
       <a href="/updates/">Updates</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
+      <a href="/trust/">Trust</a>
     </div>
     <div class="nav-cta-wrap">
       <a href="/login/" class="nav-login">Partner Login</a>
@@ -331,7 +332,7 @@
       <div class="section-title">Authentication</div>
       <p class="section-desc">All API requests must include a valid API key in the <code style="font-family:var(--font-mono);font-size:0.82em;color:var(--accent)">Authorization</code> header. Keys are scoped per game and can be managed in your partner dashboard.</p>
 
-      <div class="auth-box">
+      <div class="auth-box reveal">
         <h3>API Key Format</h3>
         <p>Cerberus API keys follow the format <code style="font-family:var(--font-mono);color:var(--accent)">crb_{env}_{24-char-token}</code>. Live keys begin with <code style="font-family:var(--font-mono);color:var(--green)">crb_live_</code>; sandbox keys with <code style="font-family:var(--font-mono);color:var(--blue)">crb_test_</code>.</p>
         <div class="auth-key-display">
@@ -355,7 +356,7 @@
       <p class="section-desc">Check system health and per-region API availability.</p>
 
       <a class="section-anchor" id="ep-status"></a>
-      <div class="endpoint-card" id="card-status">
+      <div class="endpoint-card reveal" id="card-status">
         <div class="endpoint-header" onclick="toggleCard('card-status')">
           <span class="badge badge-get">GET</span>
           <span class="endpoint-path">/v2/status</span>
@@ -397,7 +398,7 @@
       <p class="section-desc">A session represents a single protected match or gameplay interval. The SDK calls these endpoints automatically — you only need the REST API if you manage sessions server-side.</p>
 
       <a class="section-anchor" id="ep-sessions-start"></a>
-      <div class="endpoint-card" id="card-sessions-start">
+      <div class="endpoint-card reveal" id="card-sessions-start">
         <div class="endpoint-header" onclick="toggleCard('card-sessions-start')">
           <span class="badge badge-post">POST</span>
           <span class="endpoint-path">/v2/sessions/start</span>
@@ -449,7 +450,7 @@
       </div>
 
       <a class="section-anchor" id="ep-sessions-end"></a>
-      <div class="endpoint-card" id="card-sessions-end">
+      <div class="endpoint-card reveal" id="card-sessions-end">
         <div class="endpoint-header" onclick="toggleCard('card-sessions-end')">
           <span class="badge badge-post">POST</span>
           <span class="endpoint-path">/v2/sessions/end</span>
@@ -504,7 +505,7 @@
       <p class="section-desc">Query, issue, and revoke bans. All ban records include a confidence score and the detection layer that triggered the ban. Bans with confidence &ge; 0.95 are issued automatically; lower scores go to manual review.</p>
 
       <a class="section-anchor" id="ep-bans-list"></a>
-      <div class="endpoint-card" id="card-bans-list">
+      <div class="endpoint-card reveal" id="card-bans-list">
         <div class="endpoint-header" onclick="toggleCard('card-bans-list')">
           <span class="badge badge-get">GET</span>
           <span class="endpoint-path">/v2/bans</span>
@@ -561,7 +562,7 @@
       </div>
 
       <a class="section-anchor" id="ep-bans-create"></a>
-      <div class="endpoint-card" id="card-bans-create">
+      <div class="endpoint-card reveal" id="card-bans-create">
         <div class="endpoint-header" onclick="toggleCard('card-bans-create')">
           <span class="badge badge-post">POST</span>
           <span class="endpoint-path">/v2/bans</span>
@@ -614,7 +615,7 @@
       </div>
 
       <a class="section-anchor" id="ep-bans-delete"></a>
-      <div class="endpoint-card" id="card-bans-delete">
+      <div class="endpoint-card reveal" id="card-bans-delete">
         <div class="endpoint-header" onclick="toggleCard('card-bans-delete')">
           <span class="badge badge-del">DELETE</span>
           <span class="endpoint-path">/v2/bans/{ban_id}</span>
@@ -654,7 +655,7 @@
       <p class="section-desc">Raw detection events from all four Cerberus heads. Each detection includes a confidence score, the triggering head, and structured evidence metadata.</p>
 
       <a class="section-anchor" id="ep-detections"></a>
-      <div class="endpoint-card" id="card-detections">
+      <div class="endpoint-card reveal" id="card-detections">
         <div class="endpoint-header" onclick="toggleCard('card-detections')">
           <span class="badge badge-get">GET</span>
           <span class="endpoint-path">/v2/detections</span>
@@ -731,7 +732,7 @@
       <p class="section-desc">Register HTTPS endpoints to receive real-time event notifications. Cerberus signs every payload with HMAC-SHA256 using your webhook secret. Verify the <code style="font-family:var(--font-mono);font-size:0.85em;color:var(--accent)">X-Cerberus-Signature</code> header on every delivery.</p>
 
       <a class="section-anchor" id="ep-webhooks-list"></a>
-      <div class="endpoint-card" id="card-webhooks-list">
+      <div class="endpoint-card reveal" id="card-webhooks-list">
         <div class="endpoint-header" onclick="toggleCard('card-webhooks-list')">
           <span class="badge badge-get">GET</span>
           <span class="endpoint-path">/v2/webhooks</span>
@@ -773,7 +774,7 @@
       </div>
 
       <a class="section-anchor" id="ep-webhooks-create"></a>
-      <div class="endpoint-card" id="card-webhooks-create">
+      <div class="endpoint-card reveal" id="card-webhooks-create">
         <div class="endpoint-header" onclick="toggleCard('card-webhooks-create')">
           <span class="badge badge-post">POST</span>
           <span class="endpoint-path">/v2/webhooks</span>
@@ -823,7 +824,7 @@
       </div>
 
       <a class="section-anchor" id="ep-webhooks-delete"></a>
-      <div class="endpoint-card" id="card-webhooks-delete">
+      <div class="endpoint-card reveal" id="card-webhooks-delete">
         <div class="endpoint-header" onclick="toggleCard('card-webhooks-delete')">
           <span class="badge badge-del">DELETE</span>
           <span class="endpoint-path">/v2/webhooks/{webhook_id}</span>
@@ -862,7 +863,7 @@
 
       <div class="callout callout-info">Full SDK integration guide, C++ reference, Unreal Engine and Unity plugin documentation are available at <a href="/docs/" style="color:var(--accent)">cerberusac.dev/docs</a>.</div>
 
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:28px;">
+      <div class="reveal" style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:28px;">
         <div style="padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
           <span style="font-family:var(--font-heading);font-size:0.9rem;font-weight:700;color:var(--text-bright);">SDK vs REST API — when to use each</span>
         </div>

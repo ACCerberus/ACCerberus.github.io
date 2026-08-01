@@ -596,6 +596,7 @@
       <a href="/status/">Status</a>
       <a href="/updates/">Updates</a>
       <a href="/team/">Team</a>
+      <a href="/trust/">Trust</a>
       <a href="/analytics/">Analytics</a>
     </div>
     <div class="nav-cta-wrap">
@@ -667,6 +668,10 @@
         <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:8px;background:rgba(48,200,96,0.08);border:1px solid rgba(48,200,96,0.2);">
           <span style="font-size:0.72rem;color:var(--green);font-family:var(--font-mono);font-weight:600;">True Positive Streak: <span id="fpStreakDays">--</span> days</span>
         </div>
+      </div>
+      <!-- Known Issues Link -->
+      <div id="knownIssuesLink" style="margin-top:12px;display:none;justify-content:center;opacity:0;transition:opacity 0.6s;">
+        <a href="/status/#known-issues" style="font-size:0.7rem;color:var(--text-dim);font-family:var(--font-mono);text-decoration:none;border-bottom:1px dotted var(--text-dim);"><span id="knownIssuesCount">0</span> known issue(s) in progress</a>
       </div>
       <!-- Daily Digest -->
       <div id="dailyDigest" style="margin-top:24px;max-width:540px;margin-left:auto;margin-right:auto;opacity:0;transition:opacity 0.6s;">
@@ -1321,6 +1326,7 @@
       <a href="/status/">Status</a>
       <a href="/updates/">Updates</a>
       <a href="/team/">Team</a>
+      <a href="/trust/">Trust</a>
       <a href="mailto:cerberus@arsenalrx.dev">Contact</a>
     </div>
     <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;flex-wrap:wrap;font-size:0.78rem;">
@@ -1455,7 +1461,17 @@
           var sEl = document.getElementById('pulseSigs');
           var rEl = document.getElementById('pulseRegions');
           var tEl = document.getElementById('pulseSync');
-          if (vEl) vEl.textContent = E.CONFIG.engineVersion;
+          if (vEl) {
+            var engineVersion = E.CONFIG.engineVersion;
+            vEl.textContent = engineVersion;
+            var pulseVersionLink = document.createElement('a');
+            pulseVersionLink.href = '/changelog/#' + engineVersion;
+            pulseVersionLink.style.color = 'inherit';
+            pulseVersionLink.style.textDecoration = 'none';
+            pulseVersionLink.style.borderBottom = '1px dotted var(--text-dim)';
+            vEl.parentNode.replaceChild(pulseVersionLink, vEl);
+            pulseVersionLink.appendChild(vEl);
+          }
           if (sEl) sEl.textContent = E.signatureCount().toLocaleString();
           if (rEl) rEl.textContent = E.CONFIG.regions.length;
           if (tEl) tEl.textContent = E.relativeTime(snap.lastHeartbeat.getTime());
@@ -1500,6 +1516,20 @@
         }
         if (digestEl) digestEl.style.opacity = '1';
       }
+
+      // Known issues link — only shown when open issues exist
+      fetch('/data/known-issues.json').then(function(r) { return r.json(); }).then(function(data) {
+        var openIssues = data && data.openIssues ? data.openIssues : [];
+        if (openIssues.length > 0) {
+          var kiEl = document.getElementById('knownIssuesLink');
+          var kiCount = document.getElementById('knownIssuesCount');
+          if (kiEl && kiCount) {
+            kiCount.textContent = openIssues.length;
+            kiEl.style.display = 'flex';
+            requestAnimationFrame(function() { kiEl.style.opacity = '1'; });
+          }
+        }
+      }).catch(function() {});
 
       function animateCounter(el, target) {
         var duration = 1500; var startTime = null;

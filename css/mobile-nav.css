@@ -59,3 +59,31 @@
 @media (max-width: 900px) {
   .nav-hamburger { display: inline-flex; }
 }
+
+/* Shared UI polish — applies site-wide via the same include every page already has */
+
+/* Consistent, visible keyboard focus states (accessibility) */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--accent, #e8a020);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Subtle depth on the fixed nav once the page has scrolled past the top */
+nav {
+  transition: box-shadow 0.25s ease, background-color 0.25s ease;
+}
+nav.nav-scrolled {
+  box-shadow: 0 4px 28px rgba(0,0,0,0.35);
+}
+
+/* Scroll-reveal utility (same treatment already used on the homepage) —
+   pages opt in per-element by adding class="reveal"; observed automatically. */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}

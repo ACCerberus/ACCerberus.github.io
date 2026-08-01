@@ -45,6 +45,19 @@
     .page-title { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: var(--text-bright); letter-spacing: -1px; margin-bottom: 8px; }
     .page-desc { font-size: 1rem; color: var(--text-dim); margin-bottom: 48px; }
 
+    /* Known issues callout */
+    .known-issues-banner { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; padding: 14px 18px; background: rgba(232,160,32,0.06); border: 1px solid rgba(232,160,32,0.25); border-radius: 12px; text-decoration: none; color: var(--text-bright); font-size: 0.82rem; transition: all 0.2s; }
+    .known-issues-banner:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .known-issues-icon { font-size: 1rem; color: var(--accent); flex-shrink: 0; }
+    .known-issues-arrow { margin-left: auto; color: var(--accent); flex-shrink: 0; }
+
+    /* Cross-link tags */
+    .related-incident-tag, .shipped-in-tag { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600; padding: 1px 8px; border-radius: 4px; text-decoration: none; white-space: nowrap; }
+    .related-incident-tag { background: rgba(224,64,80,0.1); color: var(--red); }
+    .related-incident-tag:hover { background: rgba(224,64,80,0.18); }
+    .shipped-in-tag { background: rgba(48,200,96,0.1); color: var(--green); margin-left: auto; }
+    .shipped-in-tag:hover { background: rgba(48,200,96,0.18); }
+
     /* Roadmap */
     .roadmap { margin-bottom: 56px; padding: 28px 32px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; }
     .roadmap-title { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
@@ -130,6 +143,7 @@
       <a href="/updates/">Updates</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
+      <a href="/trust/">Trust</a>
     </div>
     <div class="nav-cta-wrap">
       <a href="/login/" class="nav-login">Partner Login</a>
@@ -140,6 +154,9 @@
   <div class="container">
     <h1 class="page-title">Changelog</h1>
     <p class="page-desc">Version history, detection updates, and patch notes since v0.0.1. <span id="sigSyncBadge" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--green);"></span></p>
+
+    <!-- Known Issues callout (data-driven from known-issues.json) -->
+    <div id="knownIssuesBanner"></div>
 
     <!-- Roadmap (data-driven from roadmap.json) -->
     <div class="roadmap">
@@ -215,7 +232,8 @@
       if (data.items.completed && data.items.completed.length > 0) {
         var compHTML = '<div style="font-size:0.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600;">Recently Completed</div>';
         data.items.completed.forEach(function(item) {
-          compHTML += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:0.78rem;"><span style="color:var(--green);">&#10003;</span><span style="color:var(--text);">' + item.name + '</span><span style="color:var(--text-dim);font-size:0.68rem;">' + (item.completedDate || '') + '</span></div>';
+          var shippedTag = item.shippedInVersion ? ' <a href="#' + item.shippedInVersion + '" class="shipped-in-tag">Shipped in ' + item.shippedInVersion + '</a>' : '';
+          compHTML += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:0.78rem;"><span style="color:var(--green);">&#10003;</span><span style="color:var(--text);">' + item.name + '</span><span style="color:var(--text-dim);font-size:0.68rem;">' + (item.completedDate || '') + '</span>' + shippedTag + '</div>';
         });
         document.getElementById('roadmapCompleted').innerHTML = compHTML;
       }
@@ -250,6 +268,19 @@
     }).catch(function() {
       renderRoadmap(fallbackRoadmap);
     });
+
+    // ===== KNOWN ISSUES CALLOUT (from known-issues.json) =====
+    fetch('/data/known-issues.json?' + Date.now()).then(function(r) { return r.json(); }).then(function(data) {
+      var openIssues = (data && data.openIssues) || [];
+      if (openIssues.length === 0) return;
+      var n = openIssues.length;
+      var html = '<a href="/status/#known-issues" class="known-issues-banner">' +
+        '<span class="known-issues-icon">&#9888;</span>' +
+        '<span>' + n + ' known issue' + (n === 1 ? '' : 's') + ' currently being worked on &mdash; see Status for details</span>' +
+        '<span class="known-issues-arrow">&rarr;</span>' +
+        '</a>';
+      document.getElementById('knownIssuesBanner').innerHTML = html;
+    }).catch(function() {});
 
     // ===== R&D LAB LOG (from lab-log.json, with engine-derived progress) =====
     var BE = window.CerberusEngine;
@@ -601,7 +632,7 @@
     var changeClasses = { 'ADDED':'type-added', 'FIXED':'type-fixed', 'IMPROVED':'type-improved', 'REMOVED':'type-removed', 'SECURITY':'type-security', 'TEST':'type-test' };
 
     function renderRelease(rel, isFirst) {
-      var html = '<div class="release' + (isFirst ? ' latest' : '') + (rel.isDaily ? ' daily' : '') + '">';
+      var html = '<div class="release' + (isFirst ? ' latest' : '') + (rel.isDaily ? ' daily' : '') + '"' + (rel.ver ? ' id="' + rel.ver + '"' : '') + '>';
       html += '<div class="release-header"><span class="release-version">' + rel.ver + '</span>';
       (rel.tags || []).forEach(function(t) {
         html += ' <span class="release-tag ' + (tagClasses[t]||'tag-beta') + '">' + t + '</span>';
@@ -609,7 +640,9 @@
       html += ' <span class="release-date">' + rel.date + '</span></div>';
       html += '<ul class="release-changes">';
       rel.changes.forEach(function(c) {
-        html += '<li><span class="change-type ' + (changeClasses[c.t]||'type-added') + '">' + c.t + '</span> ' + c.c + '</li>';
+        html += '<li><span class="change-type ' + (changeClasses[c.t]||'type-added') + '">' + c.t + '</span> <span>' + c.c +
+          (c.relatedIncident ? ' <a href="/status/#incident-' + c.relatedIncident + '" class="related-incident-tag">Postmortem &rarr;</a>' : '') +
+          '</span></li>';
       });
       html += '</ul>';
       if (rel.sig) {
@@ -631,7 +664,11 @@
             ver: entry.version,
             date: entry.date,
             tags: entry.author ? ['BETA', 'MAJOR'] : ['SIG UPDATE'],
-            changes: rawChanges.map(function(c) { return { t: c.type.toUpperCase(), c: c.text }; }),
+            changes: rawChanges.map(function(c) {
+              var mapped = { t: c.type.toUpperCase(), c: c.text };
+              if (c.relatedIncident) mapped.relatedIncident = c.relatedIncident;
+              return mapped;
+            }),
             isDaily: true,
             isLatest: idx === 0
           };

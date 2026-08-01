@@ -162,6 +162,7 @@
       <a href="/updates/">Updates</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
+      <a href="/trust/">Trust</a>
     </div>
     <div class="nav-cta-wrap">
       <a href="/login/" class="nav-login">Partner Login</a>
@@ -178,11 +179,11 @@
   <div class="legal-content">
     <div class="updated-badge">Last updated: May 2026</div>
 
-    <h2>Overview</h2>
+    <h2 class="reveal">Overview</h2>
     <p>Cerberus Anti-Cheat is a beta product developed by the Cerberus Team ("we", "us"). This policy explains what data the Cerberus SDK and backend services collect, how it's processed, and what rights you have over it.</p>
     <p>The short version: <strong>we process almost everything locally on the player's machine</strong>. Only detection events with anonymized metadata leave the device. We collect zero personally identifiable information (PII).</p>
 
-    <h2>What data Cerberus processes</h2>
+    <h2 class="reveal">What data Cerberus processes</h2>
     <p>The Cerberus SDK runs on the player's machine during active game sessions. It processes the following data <strong>locally</strong>:</p>
     <ul>
       <li><strong>Hardware identifiers</strong> -- CPU, GPU, motherboard, and peripheral IDs used for device fingerprinting. These are one-way hashed before any transmission.</li>
@@ -191,9 +192,9 @@
       <li><strong>PCIe device enumeration</strong> -- List of connected hardware devices checked against known DMA attack signatures. Processed locally.</li>
     </ul>
 
-    <div class="callout callout-info">All of the above is processed entirely on the player's machine. The SDK performs analysis locally and only transmits structured detection results -- never raw data.</div>
+    <div class="callout callout-info reveal">All of the above is processed entirely on the player's machine. The SDK performs analysis locally and only transmits structured detection results -- never raw data.</div>
 
-    <h2>What gets sent to the Cerberus API</h2>
+    <h2 class="reveal">What gets sent to the Cerberus API</h2>
     <p>When the SDK detects a potential cheat, the following is transmitted to our backend over TLS 1.3:</p>
     <ul>
       <li><strong>Detection events</strong> -- The type of detection (e.g., aimbot, injection, DMA), confidence score, and which detection layer triggered.</li>
@@ -202,10 +203,10 @@
     </ul>
     <p>We do <strong>not</strong> transmit: game memory contents, screenshots, keystrokes, browsing data, file system contents, running process lists (beyond game-relevant modules), or any telemetry about player behavior outside of cheat detection.</p>
 
-    <h2>Zero PII collection</h2>
+    <h2 class="reveal">Zero PII collection</h2>
     <p>Cerberus does not collect, store, or process any personally identifiable information. We don't know who players are. We work with anonymized session tokens and hashed hardware IDs. Player identity mapping (e.g., Steam ID to a ban record) is handled entirely by the game studio's integration -- we provide the detection, they manage the identity layer.</p>
 
-    <h2>Data retention</h2>
+    <h2 class="reveal">Data retention</h2>
     <ul>
       <li><strong>Detection events</strong> -- Retained for 90 days to support ban appeals and accuracy analysis. Configurable per partner (shorter periods available).</li>
       <li><strong>Session metadata</strong> -- Retained for 30 days, then permanently deleted.</li>
@@ -213,7 +214,7 @@
     </ul>
     <p>After retention periods expire, data is permanently deleted from all systems including backups. We do not archive detection data indefinitely.</p>
 
-    <h2>Your rights (GDPR and similar frameworks)</h2>
+    <h2 class="reveal">Your rights (GDPR and similar frameworks)</h2>
     <p>Even though we don't collect PII, we respect data subject rights under GDPR, CCPA, and similar frameworks. If you believe Cerberus has processed data related to you, you can request:</p>
     <ul>
       <li><strong>Access</strong> -- Request a copy of any data associated with your hashed hardware fingerprint or session tokens.</li>
@@ -223,14 +224,14 @@
     </ul>
     <p>To exercise any of these rights, contact <a href="mailto:privacy@arsenalrx.dev">privacy@arsenalrx.dev</a>. We respond to all requests within 30 days.</p>
 
-    <h2>Data processor information</h2>
+    <h2 class="reveal">Data processor information</h2>
     <p>Cerberus acts as a <strong>data processor</strong> on behalf of game studios (the data controllers) who integrate our SDK. Studios determine how detection results are used (e.g., banning, flagging for review). We process data strictly according to our partner agreements and do not use detection data for any purpose beyond anti-cheat services.</p>
     <p>Our backend infrastructure runs on dedicated servers in the EU (Frankfurt) and US (Virginia). Detection data is encrypted at rest (AES-256) and in transit (TLS 1.3).</p>
 
-    <h2>International transfers</h2>
+    <h2 class="reveal">International transfers</h2>
     <p>Detection data may be processed in either our EU or US data centers depending on the game session's region. For transfers from the EU to the US, we rely on Standard Contractual Clauses (SCCs) as our legal basis. All cross-region transfers use encrypted channels and are subject to the same retention and deletion policies.</p>
 
-    <h2>Cookies</h2>
+    <h2 class="reveal">Cookies</h2>
     <p>The Cerberus SDK does not use cookies. Our website (<a href="/">accerberus.github.io</a>) uses only essential cookies:</p>
     <ul>
       <li><strong>Session cookie</strong> -- Maintains your session on the partner dashboard if you're logged in. Expires when the browser closes.</li>
@@ -238,10 +239,10 @@
     </ul>
     <p>We do not use analytics cookies, advertising cookies, or any third-party tracking. No cookie consent banner needed because we only use strictly necessary cookies.</p>
 
-    <h2>Changes to this policy</h2>
+    <h2 class="reveal">Changes to this policy</h2>
     <p>We'll update this policy as Cerberus evolves from beta to general availability. Material changes will be announced on our <a href="/changelog/">changelog</a> and communicated to partner studios. The "last updated" date at the top of this page always reflects the most recent revision.</p>
 
-    <h2>Contact</h2>
+    <h2 class="reveal">Contact</h2>
     <p>For privacy questions, data requests, or concerns:</p>
     <p><strong>Email:</strong> <a href="mailto:privacy@arsenalrx.dev">privacy@arsenalrx.dev</a></p>
     <p>We aim to respond to all inquiries within 5 business days.</p>

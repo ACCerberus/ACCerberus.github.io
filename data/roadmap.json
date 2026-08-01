@@ -164,37 +164,43 @@
         "id": "r-c1",
         "name": "DMA Board Detection",
         "desc": "PCIe device fingerprinting for DMA-based cheats — first AC to detect Screamer and custom DMA boards via firmware timing analysis",
-        "completedDate": "2026-04-15"
+        "completedDate": "2026-04-15",
+        "shippedInVersion": "v0.4.1.8b"
       },
       {
         "id": "r-c2",
         "name": "Behavioral AI v3",
         "desc": "3rd iteration of the behavioral analysis model — TCN-based architecture trained on 8K labeled cheat samples from beta partners",
-        "completedDate": "2026-03-20"
+        "completedDate": "2026-03-20",
+        "shippedInVersion": "v0.4.1.6b"
       },
       {
         "id": "r-c3",
         "name": "US-East + EU-West Deployment",
         "desc": "Initial multi-region setup — 3 regions with sub-80ms signature sync latency",
-        "completedDate": "2026-02-28"
+        "completedDate": "2026-02-28",
+        "shippedInVersion": "v0.4.1.6b"
       },
       {
         "id": "r-s1",
         "name": "Adversarial Replay Sandbox",
         "desc": "Isolated replay environment that re-executes suspicious sessions server-side to confirm cheating without client intervention — eliminates false positives on edge cases",
-        "completedDate": "2026-06-17"
+        "completedDate": "2026-06-17",
+        "shippedInVersion": "v0.4.3.7b"
       },
       {
         "id": "r-s2",
         "name": "Input Entropy Fingerprinting",
         "desc": "Measures Shannon entropy of raw input streams to detect synthetic inputs — human input has natural entropy patterns that no cheat can replicate",
-        "completedDate": "2026-07-01"
+        "completedDate": "2026-07-01",
+        "shippedInVersion": "v0.4.4.4b"
       },
       {
         "id": "r-s4",
         "name": "Cross-Session Behavioral Graph",
         "desc": "Graph neural network that builds player identity from behavioral patterns across sessions — detects ban evaders even with new hardware and accounts",
-        "completedDate": "2026-07-18"
+        "completedDate": "2026-07-18",
+        "shippedInVersion": "v0.4.4.11b"
       }
     ]
   },

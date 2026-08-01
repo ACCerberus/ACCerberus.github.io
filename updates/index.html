@@ -193,6 +193,7 @@
       <a href="/updates/" class="active">Updates</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
+      <a href="/trust/">Trust</a>
     </div>
     <div class="nav-links">
       <a href="/login/" class="nav-login">Partner Login</a>
@@ -211,7 +212,7 @@
         Most updates are transparent — your players never notice them. Here's how each type flows from our team to your live environment.
       </p>
 
-      <div class="ud-flow">
+      <div class="ud-flow reveal">
         <div class="ud-flow-step">
           <div class="ud-flow-step-num">01</div>
           <div class="ud-flow-step-name">Threat Research</div>
@@ -247,28 +248,28 @@
     <div class="ud-section">
       <div class="ud-section-title">Update Types</div>
       <div class="ud-pipeline">
-        <div class="ud-pipe-card pipe-sig">
+        <div class="ud-pipe-card pipe-sig reveal">
           <div class="ud-pipe-icon">&#x1F4C4;</div>
           <div class="ud-pipe-name">Signature Updates</div>
           <div class="ud-pipe-freq">Continuous &middot; multiple times per day</div>
           <div class="ud-pipe-desc">New cheat signatures pushed to all regions via CDN. The client-side engine pulls fresh signatures on session start and periodically during play. No restart required.</div>
           <div class="ud-pipe-action auto">NO ACTION REQUIRED</div>
         </div>
-        <div class="ud-pipe-card pipe-model">
+        <div class="ud-pipe-card pipe-model reveal">
           <div class="ud-pipe-icon">&#x1F9E0;</div>
           <div class="ud-pipe-name">AI Model Updates</div>
           <div class="ud-pipe-freq">Bi-weekly &middot; hot-swapped</div>
           <div class="ud-pipe-desc">Retrained behavioral AI weights are deployed via hot-swap — the engine loads the new model between scan cycles. Brief inference latency spike (~5ms) during transition, no downtime.</div>
           <div class="ud-pipe-action auto">NO ACTION REQUIRED</div>
         </div>
-        <div class="ud-pipe-card pipe-driver">
+        <div class="ud-pipe-card pipe-driver reveal">
           <div class="ud-pipe-icon">&#x1F6E1;&#xFE0F;</div>
           <div class="ud-pipe-name">Driver Updates</div>
           <div class="ud-pipe-freq">Monthly &middot; with SDK release</div>
           <div class="ud-pipe-desc">Kernel driver updates ship with the SDK. Partners pull the new SDK version and include the updated driver in their next game patch. EV code-signed, WHQL certification pending.</div>
           <div class="ud-pipe-action pull">SDK PULL REQUIRED</div>
         </div>
-        <div class="ud-pipe-card pipe-hotfix">
+        <div class="ud-pipe-card pipe-hotfix reveal">
           <div class="ud-pipe-icon">&#x26A1;</div>
           <div class="ud-pipe-name">Emergency Hotfixes</div>
           <div class="ud-pipe-freq">As needed &middot; fast-tracked</div>
@@ -280,7 +281,7 @@
 
     <div class="ud-section">
       <div class="ud-section-title">What This Means for Partners</div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:4px 20px;overflow-x:auto;">
+      <div class="reveal" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:4px 20px;overflow-x:auto;">
         <table class="ud-table">
           <thead>
             <tr><th>Scenario</th><th>Update Type</th><th>Partner Action</th><th>Player Impact</th><th>Downtime</th></tr>
@@ -335,11 +336,11 @@
 
     <div class="ud-section">
       <div class="ud-section-title">Recent Deployments</div>
-      <div id="recentDeployments"></div>
+      <div class="reveal" id="recentDeployments"></div>
     </div>
 
     <div class="ud-section">
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;">
+      <div class="reveal" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;">
         <div class="ud-section-title" style="margin-bottom:8px;">SDK Compatibility</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;">
           <div>
@@ -363,7 +364,7 @@
     </div>
 
     <div class="ud-section">
-      <div style="background:rgba(64,136,232,0.05);border:1px solid rgba(64,136,232,0.15);border-radius:12px;padding:20px 24px;">
+      <div class="reveal" style="background:rgba(64,136,232,0.05);border:1px solid rgba(64,136,232,0.15);border-radius:12px;padding:20px 24px;">
         <div style="display:flex;align-items:flex-start;gap:12px;">
           <div style="font-size:1.2rem;">&#x1F4E1;</div>
           <div>
@@ -381,12 +382,12 @@
 
     <div class="ud-section">
       <div class="ud-section-title">Delivery Metrics</div>
-      <div class="ud-stat-grid" id="webhookMetrics"></div>
+      <div class="ud-stat-grid reveal" id="webhookMetrics"></div>
     </div>
 
     <div class="ud-section">
       <div class="ud-section-title">Driver Load Success</div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;" id="driverLoadSection"></div>
+      <div class="reveal" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;" id="driverLoadSection"></div>
     </div>
 
     <div class="footer-link">
