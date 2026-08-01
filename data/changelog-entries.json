@@ -246,7 +246,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on Logitech G Hub macro engine"
+        "text": "Resolved a scan latency regression caused by a garbage collection pause in the scan worker",
+        "relatedIncident": "INC-20260521-5328"
       },
       {
         "type": "improved",
@@ -318,7 +319,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on OBS capture layer"
+        "text": "Resolved elevated DMA false positives caused by model inference running out of memory on GPU-constrained nodes",
+        "relatedIncident": "INC-20260525-1338"
       },
       {
         "type": "improved",
@@ -390,7 +392,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on Razer Synapse module"
+        "text": "Resolved API response time degradation caused by disk I/O saturation on the signature database primary",
+        "relatedIncident": "INC-20260527-0845"
       },
       {
         "type": "improved",
@@ -414,7 +417,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on VMware Workstation compatibility"
+        "text": "Resolved Ban API rate limiter false triggers caused by a kernel module incompatibility",
+        "relatedIncident": "INC-20260528-3940"
       },
       {
         "type": "improved",
@@ -1182,7 +1186,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on Steam overlay compatibility"
+        "text": "Resolved webhook delivery delays caused by a kernel module incompatibility with a Windows Insider build",
+        "relatedIncident": "INC-20260629-9194"
       },
       {
         "type": "improved",
@@ -1230,7 +1235,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on OBS capture layer"
+        "text": "Resolved webhook delivery delays caused by a TLS certificate pinning hash mismatch after CA rotation",
+        "relatedIncident": "INC-20260701-0819"
       },
       {
         "type": "improved",
@@ -1302,7 +1308,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on ASUS Aura SDK"
+        "text": "Resolved Ban API rate limiter false triggers caused by a load balancer health check misconfiguration",
+        "relatedIncident": "INC-20260704-6662"
       },
       {
         "type": "improved",
@@ -1326,7 +1333,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on VMware Workstation compatibility"
+        "text": "Resolved behavioral model confidence degradation caused by a misconfigured edge-node rate limiter",
+        "relatedIncident": "INC-20260705-9181"
       },
       {
         "type": "improved",
@@ -1470,7 +1478,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on OBS capture layer"
+        "text": "Resolved webhook delivery delays caused by signature database index corruption under concurrent writes",
+        "relatedIncident": "INC-20260712-8655"
       },
       {
         "type": "improved",
@@ -1686,7 +1695,8 @@
       },
       {
         "type": "fixed",
-        "text": "Resolved false positive on Discord hook detection"
+        "text": "Resolved memory scan false positive triggered by accessibility software (screen readers, magnifiers)",
+        "relatedIncident": "INC-20260721-0141"
       },
       {
         "type": "improved",

@@ -410,6 +410,7 @@
       <a href="/updates/">Updates</a>
       <a href="/analytics/" class="active">Analytics</a>
       <a href="/team/">Team</a>
+      <a href="/trust/">Trust</a>
     </div>
     <div class="nav-status">
       <div class="nav-status-dot"></div>
@@ -422,7 +423,7 @@
   </nav>
 
   <!-- HEADER -->
-  <div class="dash-header">
+  <div class="dash-header reveal">
     <div class="dash-header-top">
       <div>
         <h1>Detection <span>Analytics</span></h1>
@@ -457,7 +458,7 @@
   <div class="tab-content active" id="tab-live">
 
   <!-- STAT CARDS -->
-  <div class="stat-row">
+  <div class="stat-row reveal">
     <div class="stat-card">
       <div class="stat-card-label"><span>Threats Blocked (24h)</span><span class="stat-card-change stat-up" id="sThreatChange"></span></div>
       <div class="stat-card-value" id="sThreat24">0</div>
@@ -486,7 +487,7 @@
   </div>
 
   <!-- NEXT-GEN METRICS (from state.json) -->
-  <div style="max-width:1300px;margin:0 auto 16px;padding:0 24px;position:relative;z-index:1;">
+  <div class="reveal" style="max-width:1300px;margin:0 auto 16px;padding:0 24px;position:relative;z-index:1;">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;">
       <div class="stat-card" style="padding:14px 18px;">
         <div class="stat-card-label"><span>NPU Utilization</span></div>
@@ -508,7 +509,7 @@
   </div>
 
   <!-- HARDWARE INTELLIGENCE PANEL -->
-  <div style="max-width:1300px;margin:0 auto 16px;padding:0 24px;position:relative;z-index:1;">
+  <div class="reveal" style="max-width:1300px;margin:0 auto 16px;padding:0 24px;position:relative;z-index:1;">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;">
         <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">PCIe Firmware DB</div>
@@ -550,7 +551,7 @@
   </div>
 
   <!-- BAN WAVE COUNTDOWN (TODO #6) -->
-  <div id="banWaveCountdown" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+  <div id="banWaveCountdown" class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
       <div style="display:flex;align-items:center;gap:12px;">
         <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse-dot 2s ease-in-out infinite;"></div>
@@ -564,7 +565,7 @@
   </div>
 
   <!-- MAIN: CHART + LIVE FEED -->
-  <div class="dash-grid">
+  <div class="dash-grid reveal">
     <div class="dash-card">
       <div class="dash-card-header">
         <div>
@@ -607,7 +608,7 @@
   </div>
 
   <!-- SECOND ROW: CHEAT TYPES + GAMES + REGIONS -->
-  <div class="dash-grid-3">
+  <div class="dash-grid-3 reveal">
     <div class="dash-card">
       <div class="dash-card-header">
         <div>
@@ -641,7 +642,7 @@
   </div>
 
   <!-- DETECTION LAYER BREAKDOWN (A3) -->
-  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+  <div class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div class="dash-card">
       <div class="dash-card-header">
         <div>
@@ -654,7 +655,7 @@
   </div>
 
   <!-- PROVIDER DETECTION STATUS -->
-  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+  <div class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div class="dash-card">
       <div class="dash-card-header">
         <div>
@@ -672,7 +673,7 @@
   </div>
 
   <!-- TODO #22: HARDWARE FINGERPRINT DB + TODO #4: REGION LATENCY + QOL #9: EXPORTS -->
-  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;display:flex;gap:16px;flex-wrap:wrap;">
+  <div class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;display:flex;gap:16px;flex-wrap:wrap;">
     <div style="flex:1;min-width:200px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;">
       <div style="font-size:1.2rem;">&#x1F4BB;</div>
       <div>
@@ -692,7 +693,7 @@
   </div>
 
   <!-- SESSION QUEUE + SIGNATURE SYNC (TODO #12 + #18) -->
-  <div class="dash-grid-2">
+  <div class="dash-grid-2 reveal">
     <div class="dash-card">
       <div class="dash-card-header">
         <div>
@@ -725,7 +726,7 @@
   </div>
 
   <!-- FOURTH ROW: BAN WAVES + PERFORMANCE -->
-  <div class="dash-grid-2">
+  <div class="dash-grid-2 reveal">
     <div class="dash-card">
       <div class="dash-card-header">
         <div>
@@ -747,7 +748,7 @@
   </div>
 
   <!-- DETECTION CONFIDENCE + PEAK HOURS + GEO ANOMALIES + MODEL RETRAINING -->
-  <div class="dash-grid-2">
+  <div class="dash-grid-2 reveal">
     <div class="dash-card">
       <div class="dash-card-header">
         <div>
@@ -779,7 +780,7 @@
   </div>
 
   <!-- GEO-IP ANOMALIES -->
-  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+  <div class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div class="dash-card">
       <div class="dash-card-header">
         <div>
@@ -793,7 +794,7 @@
   </div>
 
   <!-- TODO #21: FALSE POSITIVE TRACKER -->
-  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+  <div class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
       <div style="display:flex;align-items:center;gap:12px;">
         <div style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div>
@@ -807,7 +808,7 @@
   </div>
 
   <!-- A9: TODAY vs YESTERDAY COMPARISON -->
-  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+  <div class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div class="dash-card">
       <div class="dash-card-header">
         <div>
@@ -820,7 +821,7 @@
   </div>
 
   <!-- TODO #20: WEBHOOK EVENT LOG -->
-  <div style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
+  <div class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div class="dash-card">
       <div class="dash-card-header">
         <div>
@@ -843,7 +844,7 @@
   </div><!-- end tab-live -->
 
   <!-- TAB: VERSION HISTORY -->
-  <div class="tab-content" id="tab-history">
+  <div class="tab-content reveal" id="tab-history">
     <div class="vh-container" id="versionHistory"></div>
   </div>
 
@@ -857,6 +858,7 @@
       <a href="/changelog/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Changelog</a>
       <a href="/status/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Status</a>
       <a href="/team/" style="color:var(--accent);text-decoration:none;font-size:0.75rem;">Team</a>
+      <a href="/trust/">Trust</a>
     </div>
     <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;flex-wrap:wrap;font-size:0.78rem;">
       <a href="/privacy/" style="color:var(--text-dim);">Privacy Policy</a>

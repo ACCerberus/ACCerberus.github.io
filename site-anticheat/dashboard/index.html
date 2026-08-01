@@ -185,6 +185,8 @@
       .stats-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
+  <link rel="stylesheet" href="/css/mobile-nav.css">
+  <script src="/js/mobile-nav.js" defer></script>
 </head>
 <body>
   <div class="grid-bg"></div>
@@ -326,7 +328,7 @@
 
         <div class="stats-grid" id="banStats"></div>
 
-        <div class="info-card" style="margin-bottom:24px;">
+        <div class="info-card reveal" style="margin-bottom:24px;">
           <h3>Manual Ban / Unban</h3>
           <div style="display:flex;gap:12px;align-items:flex-end;">
             <div style="flex:1;">
@@ -393,7 +395,7 @@
           <p>Integration credentials and SDK configuration</p>
         </div>
 
-        <div class="info-card" style="margin-bottom:24px;">
+        <div class="info-card reveal" style="margin-bottom:24px;">
           <h3>Live API Key</h3>
           <div class="api-key-box">
             <div class="api-key-val" id="apiKeyDisplay">crbs_live_••••••••••••</div>
@@ -403,7 +405,7 @@
         </div>
 
         <div class="grid-2">
-          <div class="info-card">
+          <div class="info-card reveal">
             <h3>SDK Configuration</h3>
             <div class="info-row"><span class="info-key">SDK Version</span><span class="info-val">v0.5.0.0b</span></div>
             <div class="info-row"><span class="info-key">Engine</span><span class="info-val" id="cfgEngine">Unreal Engine 5</span></div>
@@ -411,7 +413,7 @@
             <div class="info-row"><span class="info-key">Driver</span><span class="info-val">EV Signed</span></div>
             <div class="info-row"><span class="info-key">WHQL</span><span class="info-val"><span class="badge badge-accent">Pending</span></span></div>
           </div>
-          <div class="info-card">
+          <div class="info-card reveal">
             <h3>Webhook Endpoints</h3>
             <div class="info-row"><span class="info-key">Ban Events</span><span class="info-val"><span class="badge badge-green">Connected</span></span></div>
             <div class="info-row"><span class="info-key">Detection Alerts</span><span class="info-val"><span class="badge badge-green">Connected</span></span></div>
@@ -420,7 +422,7 @@
           </div>
         </div>
 
-        <div class="info-card" style="margin-top:24px;margin-bottom:24px;">
+        <div class="info-card reveal" style="margin-top:24px;margin-bottom:24px;">
           <h3>SDK Download</h3>
           <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;">
             <div style="flex:1;">
@@ -434,7 +436,7 @@
           </div>
         </div>
 
-        <div class="info-card" style="margin-top:24px;">
+        <div class="info-card reveal" style="margin-top:24px;">
           <h3>API Usage (This Month)</h3>
           <div class="info-row"><span class="info-key">Total Requests</span><span class="info-val" id="apiTotal">0</span></div>
           <div class="info-row"><span class="info-key">Session Init Calls</span><span class="info-val" id="apiSessInit">0</span></div>
@@ -452,7 +454,7 @@
           <p>Configure your game title and integration settings</p>
         </div>
 
-        <div class="info-card" style="margin-bottom:24px;">
+        <div class="info-card reveal" style="margin-bottom:24px;">
           <h3>Game Configuration</h3>
           <div class="form-group" style="margin-bottom:16px;">
             <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Game Title</label>
@@ -501,13 +503,13 @@
           <button onclick="saveSetup()" style="margin-top:20px;padding:10px 24px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--accent);color:#050507;border:none;cursor:pointer;font-family:var(--font);transition:all 0.2s;">Save Configuration</button>
         </div>
 
-        <div class="info-card" style="margin-bottom:24px;">
+        <div class="info-card reveal" style="margin-bottom:24px;">
           <h3>Detection Layers</h3>
           <div style="font-size:0.82rem;color:var(--text-dim);margin-bottom:16px;">Available detection layers are based on your plan tier. <a href="mailto:cerberus@arsenalrx.dev?subject=Upgrade%20request" style="color:var(--accent);">Contact your account team</a> to unlock more layers.</div>
           <div id="detectionLayersList" style="display:grid;gap:12px;"></div>
         </div>
 
-        <div class="info-card">
+        <div class="info-card reveal">
           <h3>Webhook Configuration</h3>
           <div style="margin-bottom:12px;">
             <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Ban Webhook URL</label>
@@ -533,7 +535,7 @@
         </div>
 
         <div class="grid-2">
-          <div class="info-card">
+          <div class="info-card reveal">
             <h3>Account Details</h3>
             <div class="info-row"><span class="info-key">Email</span><span class="info-val" id="setEmail">-</span></div>
             <div class="info-row"><span class="info-key">Name</span><span class="info-val" id="setName">-</span></div>
@@ -541,7 +543,7 @@
             <div class="info-row"><span class="info-key">Plan</span><span class="info-val" id="setTier">-</span></div>
             <div class="info-row"><span class="info-key">Joined</span><span class="info-val" id="setJoined">-</span></div>
           </div>
-          <div class="info-card">
+          <div class="info-card reveal">
             <h3>Game Configuration</h3>
             <div class="info-row"><span class="info-key">Game Title</span><span class="info-val" id="setGame">-</span></div>
             <div class="info-row"><span class="info-key">Genre</span><span class="info-val" id="setGenre">-</span></div>

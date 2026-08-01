@@ -149,6 +149,7 @@
       <a href="/updates/">Updates</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
+      <a href="/trust/">Trust</a>
     </div>
     <div class="nav-cta-wrap">
       <a href="/login/" class="nav-login">Partner Login</a>
@@ -199,7 +200,7 @@
 
       <p class="docs-no-results" id="docs-no-results"></p>
 
-      <h2 id="quickstart">Quick Start</h2>
+      <h2 id="quickstart" class="reveal">Quick Start</h2>
       <p>Cerberus ships as a single static library (<code>cerberus_sdk.lib</code>) and a header file. The SDK handles all communication with the Cerberus kernel driver — your game code only needs to initialize, start a session, and listen for callbacks.</p>
 
       <div class="callout callout-info">Cerberus is currently in closed beta. You'll need an API key from your partner dashboard to initialize the SDK.</div>
@@ -231,7 +232,7 @@ config.<span class="fn">banCallback</span>  = OnPlayerBanned;
 <span class="cmt">// 5. Shutdown on game exit</span>
 <span class="fn">Cerberus_Shutdown</span>();</div>
 
-      <h2 id="requirements">System Requirements</h2>
+      <h2 id="requirements" class="reveal">System Requirements</h2>
 
       <h3>Developer / Studio Requirements</h3>
       <ul>
@@ -255,7 +256,7 @@ config.<span class="fn">banCallback</span>  = OnPlayerBanned;
 
       <div class="callout callout-warn">Players do NOT need to change any BIOS settings beyond enabling Secure Boot. No manual TPM configuration, no VT-x/AMD-V changes, no special setup. If Secure Boot is already on (default on most PCs sold after 2016), the player is ready.</div>
 
-      <h2 id="installation">Installation</h2>
+      <h2 id="installation" class="reveal">Installation</h2>
       <p>Add the SDK to your project:</p>
       <div class="code-header"><span class="code-lang">Shell</span></div>
       <div class="code-block"><span class="cmt"># Download the SDK package (provided via partner dashboard)</span>
@@ -272,7 +273,7 @@ cerberus-sdk-v0.5.0.0b-win64.zip
 └── docs/
     └── integration_guide.pdf</div>
 
-      <h2 id="init">Initialization</h2>
+      <h2 id="init" class="reveal">Initialization</h2>
       <h3>CerberusConfig</h3>
       <table class="param-table">
         <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
@@ -287,7 +288,7 @@ cerberus-sdk-v0.5.0.0b-win64.zip
         <tr><td>logLevel</td><td>CerberusLogLevel</td><td>LOG_NONE, LOG_ERROR, LOG_WARN, LOG_INFO, LOG_DEBUG.</td></tr>
       </table>
 
-      <h2 id="config">Configuration</h2>
+      <h2 id="config" class="reveal">Configuration</h2>
       <p>Cerberus can be configured at runtime. Common patterns:</p>
       <div class="code-header"><span class="code-lang">C++</span></div>
       <div class="code-block"><span class="cmt">// Disable hardware scanning for singleplayer modes</span>
@@ -300,7 +301,7 @@ cerberus-sdk-v0.5.0.0b-win64.zip
 <span class="fn">Cerberus_SetOption</span>(<span class="num">CERBERUS_OPT_AI_SAMPLE_RATE</span>, <span class="num">2000</span>);
 <span class="fn">Cerberus_SetOption</span>(<span class="num">CERBERUS_OPT_SCAN_INTERVAL</span>, <span class="num">500</span>);</div>
 
-      <h2 id="callbacks">Callbacks</h2>
+      <h2 id="callbacks" class="reveal">Callbacks</h2>
       <div class="code-header"><span class="code-lang">C++</span></div>
       <div class="code-block"><span class="kw">void</span> <span class="fn">OnPlayerBanned</span>(<span class="kw">const</span> <span class="type">CerberusBanEvent</span>* event) {
     <span class="cmt">// event->playerId   — the banned player</span>
@@ -324,7 +325,7 @@ cerberus-sdk-v0.5.0.0b-win64.zip
     Analytics_Track(<span class="str">"cerberus_flag"</span>, event-><span class="fn">playerId</span>);
 }</div>
 
-      <h2 id="session">Session Lifecycle</h2>
+      <h2 id="session" class="reveal">Session Lifecycle</h2>
       <div class="callout callout-warn">Always call <code>Cerberus_EndSession()</code> when a match ends. Orphaned sessions consume monitoring resources and may trigger false stale-session alerts.</div>
       <p>Typical flow:</p>
       <div class="code-block"><span class="fn">Cerberus_Init</span>()          <span class="cmt">// Game launch — loads driver</span>
@@ -336,7 +337,7 @@ cerberus-sdk-v0.5.0.0b-win64.zip
   │   └─ <span class="fn">Cerberus_EndSession</span>()
   └─ <span class="fn">Cerberus_Shutdown</span>()     <span class="cmt">// Game exit — unloads driver</span></div>
 
-      <h2 id="ban-api">Ban API</h2>
+      <h2 id="ban-api" class="reveal">Ban API</h2>
       <p>Query and manage bans via the REST API. All endpoints require your API key in the <code>Authorization</code> header.</p>
 
       <div class="endpoint">
@@ -369,7 +370,7 @@ cerberus-sdk-v0.5.0.0b-win64.zip
       </div>
       <p>Submit a ban appeal for manual review. Returns the review ticket ID.</p>
 
-      <h2 id="webhooks">Webhooks</h2>
+      <h2 id="webhooks" class="reveal">Webhooks</h2>
       <p>Cerberus sends real-time webhook events to your configured endpoint. Configure webhooks in your partner dashboard.</p>
 
       <div class="code-header"><span class="code-lang">Webhook payload — ban.created</span></div>
@@ -386,7 +387,7 @@ cerberus-sdk-v0.5.0.0b-win64.zip
   }
 }</div>
 
-      <h2 id="evidence">Detection Evidence</h2>
+      <h2 id="evidence" class="reveal">Detection Evidence</h2>
       <p>When Cerberus detects a cheat, it captures a structured evidence package for review. This data is stored on the Cerberus backend and accessible through your partner dashboard.</p>
 
       <h3>What is collected on detection</h3>
@@ -412,7 +413,7 @@ cerberus-sdk-v0.5.0.0b-win64.zip
         <li><strong>Webhooks</strong> — <code>ban.created</code> events include a summary; full evidence available via API</li>
       </ul>
 
-      <h2 id="events">Event Types</h2>
+      <h2 id="events" class="reveal">Event Types</h2>
       <table class="param-table">
         <tr><th>Event</th><th>Trigger</th><th>Description</th></tr>
         <tr><td>ban.created</td><td>Auto-ban</td><td>Player banned with >95% confidence</td></tr>
@@ -425,7 +426,7 @@ cerberus-sdk-v0.5.0.0b-win64.zip
         <tr><td>hw.anomaly</td><td>Layer 3</td><td>Unrecognized or suspicious hardware detected</td></tr>
       </table>
 
-      <h2 id="unreal">Unreal Engine Integration</h2>
+      <h2 id="unreal" class="reveal">Unreal Engine Integration</h2>
       <p>For Unreal Engine projects, use the Cerberus plugin instead of the raw SDK:</p>
       <div class="code-block"><span class="cmt">// In your .Build.cs</span>
 PublicDependencyModuleNames.Add(<span class="str">"CerberusSDK"</span>);
@@ -438,7 +439,7 @@ PublicDependencyModuleNames.Add(<span class="str">"CerberusSDK"</span>);
     Cerberus-><span class="fn">StartSession</span>(PlayerState-><span class="fn">GetUniqueId</span>(), MatchId);
 }</div>
 
-      <h2 id="unity">Unity Integration</h2>
+      <h2 id="unity" class="reveal">Unity Integration</h2>
       <div class="code-header"><span class="code-lang">C# — Unity</span></div>
       <div class="code-block"><span class="kw">using</span> Cerberus.SDK;
 
@@ -460,7 +461,7 @@ PublicDependencyModuleNames.Add(<span class="str">"CerberusSDK"</span>);
     <span class="kw">void</span> <span class="fn">OnDestroy</span>() => <span class="type">CerberusSDK</span>.<span class="fn">Shutdown</span>();
 }</div>
 
-      <h2 id="faq">FAQ</h2>
+      <h2 id="faq" class="reveal">FAQ</h2>
 
       <h3>Does Cerberus run at boot?</h3>
       <p>No. The kernel driver loads only when your game launches and unloads when it exits. Cerberus has zero presence on the system outside of active game sessions.</p>

@@ -8,9 +8,38 @@
   'use strict';
 
   document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+
+  function initScrollReveal() {
+    var targets = document.querySelectorAll('.reveal');
+    if (!targets.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach(function (el) { el.classList.add('visible'); });
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    targets.forEach(function (el) { observer.observe(el); });
+
+    // Safety net: never leave content permanently invisible if something goes wrong.
+    setTimeout(function () {
+      targets.forEach(function (el) { el.classList.add('visible'); });
+    }, 4000);
+  }
 
   function init() {
     var nav = document.querySelector('nav');
+    if (nav) initScrollShadow(nav);
+
     var links = nav && nav.querySelector('.nav-links');
     if (!nav || !links) return;
 
@@ -38,6 +67,19 @@
     window.addEventListener('resize', function () {
       if (open && window.innerWidth > 900) setOpen(false);
     });
+  }
+
+  function initScrollShadow(nav) {
+    var lastState = false;
+    function update() {
+      var scrolled = window.scrollY > 20;
+      if (scrolled !== lastState) {
+        nav.classList.toggle('nav-scrolled', scrolled);
+        lastState = scrolled;
+      }
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
   }
 
   function buildButton() {
