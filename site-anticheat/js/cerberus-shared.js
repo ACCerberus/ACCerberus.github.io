@@ -209,6 +209,12 @@
       { name: 'Blog', desc: 'Threat reports & engineering', url: '/blog/' },
       { name: 'Team', desc: 'Engineering team', url: '/team/' },
       { name: 'Request Access', desc: 'Early access application form', url: '/access/' },
+      { name: 'Trust Center', desc: 'Security, compliance & disclosure', url: '/trust/' },
+      { name: 'Case Studies', desc: 'Closed-beta partner results', url: '/case-studies/' },
+      { name: 'Updates', desc: 'How update delivery works', url: '/updates/' },
+      { name: 'Privacy Policy', desc: 'Data handling & privacy practices', url: '/privacy/' },
+      { name: 'Terms of Service', desc: 'Terms & conditions of use', url: '/terms/' },
+      { name: 'Partner Login', desc: 'Partner portal sign-in', url: '/login/' },
     ];
 
     var overlay = null;

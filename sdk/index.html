@@ -197,7 +197,8 @@
       font-size: 0.65rem; cursor: pointer; transition: all 0.2s;
     }
     .code-copy:hover { border-color: var(--accent); color: var(--accent); }
-    .code-body { padding: 24px; overflow-x: auto; }
+    .code-body { display: none; padding: 24px; overflow-x: auto; }
+    .code-body.active { display: block; }
     .code-body pre { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.75; color: var(--text); }
     .c-comment { color: var(--text-dim); }
     .c-keyword { color: var(--purple); }
@@ -205,6 +206,18 @@
     .c-fn { color: var(--accent); }
     .c-str { color: var(--green); }
     .c-include { color: var(--red); }
+
+    .lang-tabs {
+      display: flex; gap: 4px; padding: 0 20px; border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .lang-tab-btn {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; color: var(--text-dim);
+      background: none; border: none; padding: 10px 12px; cursor: pointer;
+      border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s;
+    }
+    .lang-tab-btn:hover { color: var(--text-bright); }
+    .lang-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
     /* ===== VERSION HISTORY TABLE ===== */
     .version-table-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 40px; }
@@ -296,6 +309,7 @@
       .version-table tbody td:nth-child(5) { display: none; }
     }
   </style>
+  <script>(function(){try{var t=localStorage.getItem("cerberus_theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}})();</script>
   <link rel="stylesheet" href="/css/mobile-nav.css">
   <script src="/js/mobile-nav.js" defer></script>
 </head>
@@ -320,6 +334,7 @@
       <a href="/updates/">Updates</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
+      <a href="/case-studies/">Case Studies</a>
       <a href="/trust/">Trust</a>
     </div>
     <div class="nav-cta-wrap">
@@ -597,15 +612,21 @@
         <div class="quickstart-card reveal">
           <div class="code-header">
             <div style="display:flex;gap:12px;align-items:center;">
-              <span class="code-title">main.cpp</span>
-              <span class="code-lang">C++</span>
+              <span class="code-title" id="codeFileTitle">main.cpp</span>
+              <span class="code-lang" id="codeLangLabel">C++</span>
             </div>
             <button class="code-copy" onclick="copyCode()" id="codeCopyBtn">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               Copy
             </button>
           </div>
-          <div class="code-body">
+          <div class="lang-tabs" role="tablist" aria-label="Quick Start language">
+            <button type="button" class="lang-tab-btn active" data-lang="cpp" data-file="main.cpp" data-langlabel="C++" role="tab" aria-selected="true">C++</button>
+            <button type="button" class="lang-tab-btn" data-lang="csharp" data-file="Program.cs" data-langlabel="C# / Unity" role="tab" aria-selected="false">C# / Unity</button>
+            <button type="button" class="lang-tab-btn" data-lang="unreal" data-file="MyGameMode.cpp" data-langlabel="Unreal Engine" role="tab" aria-selected="false">Unreal Engine</button>
+            <button type="button" class="lang-tab-btn" data-lang="rust" data-file="main.rs" data-langlabel="Rust" role="tab" aria-selected="false">Rust</button>
+          </div>
+          <div class="code-body active" data-lang-body="cpp">
             <pre><span class="c-include">#include</span> <span class="c-str">"cerberus_sdk.h"</span>
 
 <span class="c-type">int</span> <span class="c-fn">main</span>() {
@@ -618,6 +639,62 @@
     <span class="c-comment">// ... game loop ...</span>
     <span class="c-fn">cerberus_end_session</span>();
     <span class="c-fn">cerberus_shutdown</span>();
+}</pre>
+          </div>
+          <div class="code-body" data-lang-body="csharp">
+            <pre><span class="c-keyword">using</span> Cerberus.SDK;
+
+<span class="c-keyword">class</span> <span class="c-type">Program</span> {
+    <span class="c-keyword">static</span> <span class="c-keyword">void</span> <span class="c-fn">Main</span>() {
+        <span class="c-keyword">var</span> config = <span class="c-keyword">new</span> <span class="c-type">CerberusConfig</span> {
+            ApiKey  = <span class="c-str">"crb_live_xxxxxxxxxxxx"</span>,
+            GameId  = <span class="c-str">"CRB-0117"</span>
+        };
+
+        <span class="c-type">CerberusSDK</span>.<span class="c-fn">Init</span>(config);
+        <span class="c-type">CerberusSDK</span>.<span class="c-fn">StartSession</span>(playerId);
+        <span class="c-comment">// ... game loop ...</span>
+        <span class="c-type">CerberusSDK</span>.<span class="c-fn">EndSession</span>();
+        <span class="c-type">CerberusSDK</span>.<span class="c-fn">Shutdown</span>();
+    }
+}</pre>
+          </div>
+          <div class="code-body" data-lang-body="unreal">
+            <pre><span class="c-keyword">UCLASS</span>()
+<span class="c-keyword">class</span> <span class="c-type">UMyGameMode</span> : <span class="c-keyword">public</span> <span class="c-type">AGameModeBase</span> {
+    GENERATED_BODY()
+<span class="c-keyword">public</span>:
+    <span class="c-keyword">virtual</span> <span class="c-keyword">void</span> <span class="c-fn">BeginPlay</span>() <span class="c-keyword">override</span> {
+        <span class="c-type">FCerberusConfig</span> Config;
+        Config.ApiKey = TEXT(<span class="c-str">"crb_live_xxxxxxxxxxxx"</span>);
+        Config.GameId = TEXT(<span class="c-str">"CRB-0117"</span>);
+
+        <span class="c-type">UCerberusSubsystem</span>::<span class="c-fn">Get</span>()-><span class="c-fn">Init</span>(Config);
+        <span class="c-type">UCerberusSubsystem</span>::<span class="c-fn">Get</span>()-><span class="c-fn">StartSession</span>(PlayerId);
+    }
+
+    <span class="c-keyword">virtual</span> <span class="c-keyword">void</span> <span class="c-fn">EndPlay</span>(<span class="c-keyword">const</span> <span class="c-type">EEndPlayReason</span>::Type Reason) <span class="c-keyword">override</span> {
+        <span class="c-comment">// ... game loop ends ...</span>
+        <span class="c-type">UCerberusSubsystem</span>::<span class="c-fn">Get</span>()-><span class="c-fn">EndSession</span>();
+        <span class="c-type">UCerberusSubsystem</span>::<span class="c-fn">Get</span>()-><span class="c-fn">Shutdown</span>();
+    }
+};</pre>
+          </div>
+          <div class="code-body" data-lang-body="rust">
+            <pre><span class="c-keyword">use</span> cerberus_sdk::<span class="c-type">CerberusConfig</span>;
+
+<span class="c-keyword">fn</span> <span class="c-fn">main</span>() {
+    <span class="c-keyword">let</span> config = <span class="c-type">CerberusConfig</span> {
+        api_key: <span class="c-str">"crb_live_xxxxxxxxxxxx"</span>.to_string(),
+        game_id: <span class="c-str">"CRB-0117"</span>.to_string(),
+        ..<span class="c-type">Default</span>::default()
+    };
+
+    cerberus_sdk::<span class="c-fn">init</span>(&amp;config);
+    cerberus_sdk::<span class="c-fn">start_session</span>(player_id);
+    <span class="c-comment">// ... game loop ...</span>
+    cerberus_sdk::<span class="c-fn">end_session</span>();
+    cerberus_sdk::<span class="c-fn">shutdown</span>();
 }</pre>
           </div>
         </div>
@@ -772,8 +849,10 @@
     }
 
     // ===== CODE COPY =====
-    var codeText = '#include "cerberus_sdk.h"\n\nint main() {\n    CerberusConfig config = {};\n    config.api_key  = "crb_live_xxxxxxxxxxxx";\n    config.title_id = "CRB-0117";\n\n    cerberus_init(&config);\n    cerberus_start_session(player_id);\n    // ... game loop ...\n    cerberus_end_session();\n    cerberus_shutdown();\n}';
     function copyCode() {
+      var activeBody = document.querySelector('.code-body.active pre');
+      if (!activeBody) return;
+      var codeText = activeBody.innerText || activeBody.textContent;
       navigator.clipboard.writeText(codeText).then(function() {
         var btn = document.getElementById('codeCopyBtn');
         btn.textContent = 'Copied!';
@@ -782,6 +861,34 @@
         }, 1800);
       });
     }
+
+    // ===== QUICK START LANGUAGE TABS =====
+    (function () {
+      var tabButtons = Array.prototype.slice.call(document.querySelectorAll('.lang-tab-btn'));
+      var bodies = Array.prototype.slice.call(document.querySelectorAll('.code-body'));
+      var titleEl = document.getElementById('codeFileTitle');
+      var langEl = document.getElementById('codeLangLabel');
+      if (!tabButtons.length || !bodies.length) return;
+
+      tabButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var lang = btn.getAttribute('data-lang');
+
+          tabButtons.forEach(function (b) {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          bodies.forEach(function (b) { b.classList.remove('active'); });
+
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          var body = document.querySelector('[data-lang-body="' + lang + '"]');
+          if (body) body.classList.add('active');
+          if (titleEl && btn.getAttribute('data-file')) titleEl.textContent = btn.getAttribute('data-file');
+          if (langEl && btn.getAttribute('data-langlabel')) langEl.textContent = btn.getAttribute('data-langlabel');
+        });
+      });
+    })();
 
     // ===== VERSION HISTORY DATA =====
     var versions = [
