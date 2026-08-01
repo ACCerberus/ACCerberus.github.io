@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Operations Center - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Live view of the Cerberus detection backend: region topology, operations feed, threat intelligence, and ban wave scheduling in one place." />
+  <meta name="theme-color" content="#e8a020" />
+  <meta property="og:title" content="Operations Center - Cerberus Anti-Cheat" />
+  <meta property="og:description" content="One live, cohesive view of the entire Cerberus detection backend." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cerberusac.dev/operations/" />
+  <link rel="canonical" href="https://cerberusac.dev/operations/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Operations Center - Cerberus Anti-Cheat",
+    "description": "Live view of the Cerberus detection backend: region topology, operations feed, threat intelligence, and ban wave scheduling in one place.",
+    "url": "https://cerberusac.dev/operations/"
+  }
+  </script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --bg-card-hover: #0e0e15;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15); --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084; --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
+      --orange: #e87830;
+      --font: 'Inter', -apple-system, sans-serif; --font-heading: 'Sora', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(5,5,7,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #c07818);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 0.85rem; color: #050507;
+    }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
+    .nav-login { padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(232,160,32,0.4); color: var(--accent); text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-login:hover { border-color: var(--accent); background: rgba(232,160,32,0.08); transform: translateY(-1px); }
+    .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; letter-spacing: 0.3px; }
+    .nav-cta:hover { background: #d09018; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.3); }
+
+    /* HERO */
+    .ops-hero { text-align: center; padding: 140px 24px 48px; position: relative; z-index: 1; }
+    .ops-hero-label {
+      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+      color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .ops-hero h1 { font-family: var(--font-heading); font-size: 2.6rem; font-weight: 800; color: var(--text-bright); letter-spacing: -1.5px; margin-bottom: 12px; }
+    .ops-hero p { font-size: 0.95rem; color: var(--text-dim); max-width: 600px; margin: 0 auto 28px; }
+
+    .ops-hero-status { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .threat-badge {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 20px;
+      font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.6px;
+      border: 1px solid var(--border); background: var(--bg-card);
+    }
+    .threat-badge .dot { width: 8px; height: 8px; border-radius: 50%; animation: threatPulse 2s ease-in-out infinite; }
+    @keyframes threatPulse { 0%,100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; } 50% { opacity: 0.6; } }
+    .threat-badge.level-low { color: var(--green); border-color: rgba(48,200,96,0.25); }
+    .threat-badge.level-low .dot { background: var(--green); }
+    .threat-badge.level-moderate { color: var(--accent); border-color: rgba(232,160,32,0.25); }
+    .threat-badge.level-moderate .dot { background: var(--accent); }
+    .threat-badge.level-elevated { color: var(--orange); border-color: rgba(232,120,48,0.3); }
+    .threat-badge.level-elevated .dot { background: var(--orange); }
+    .threat-badge.level-high { color: var(--red); border-color: rgba(224,64,80,0.3); }
+    .threat-badge.level-high .dot { background: var(--red); }
+
+    .ops-clock {
+      display: inline-flex; align-items: center; gap: 10px; padding: 8px 18px; border-radius: 20px;
+      font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; color: var(--text-bright);
+      border: 1px solid var(--border); background: var(--bg-card); letter-spacing: 1px;
+    }
+    .ops-clock .clock-label { font-size: 0.65rem; color: var(--text-dim); font-weight: 500; letter-spacing: 0.5px; }
+
+    .container { max-width: 1180px; margin: 0 auto; padding: 0 24px 40px; position: relative; z-index: 1; }
+
+    .section { margin-bottom: 56px; }
+    .section-label {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; color: var(--accent);
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .section-title { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text-bright); letter-spacing: -0.6px; margin-bottom: 10px; }
+    .section-desc { font-size: 0.87rem; color: var(--text-dim); max-width: 680px; margin-bottom: 24px; }
+
+    .ops-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 28px; transition: border-color 0.2s, background 0.2s;
+    }
+
+    /* TOPOLOGY */
+    .topology-card { padding: 32px 24px 24px; }
+    .topology-viz { position: relative; width: 100%; height: 320px; }
+    .topology-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .topology-link {
+      stroke: var(--accent); stroke-opacity: 0.35; stroke-width: 1.6; fill: none;
+      stroke-dasharray: 5 6; animation: dashFlow 1.8s linear infinite;
+    }
+    @keyframes dashFlow { to { stroke-dashoffset: -44; } }
+    .topo-node {
+      position: absolute; transform: translate(-50%, -50%); text-align: center; width: 170px;
+    }
+    .topo-node-ring {
+      width: 76px; height: 76px; border-radius: 50%; margin: 0 auto 10px;
+      background: var(--bg-card-hover); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .topo-node-icon { font-size: 1.6rem; }
+    .topo-status-dot {
+      position: absolute; bottom: 2px; right: 2px; width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid var(--bg-card); background: var(--green);
+    }
+    .topo-status-dot.operational { animation: topoPulse 2s ease-in-out infinite; }
+    .topo-status-dot.degraded { background: var(--red); }
+    @keyframes topoPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(48,200,96,0.5); } 50% { box-shadow: 0 0 0 7px rgba(48,200,96,0); } }
+    .topo-node-name { font-family: var(--font-heading); font-size: 0.9rem; font-weight: 700; color: var(--text-bright); }
+    .topo-node-status { font-family: var(--font-mono); font-size: 0.68rem; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .topo-node-status.operational { color: var(--green); }
+    .topo-node-status.degraded { color: var(--red); }
+    .topo-node-sessions { font-size: 0.72rem; color: var(--text-dim); margin-top: 4px; font-family: var(--font-mono); }
+    .topo-node-sessions strong { color: var(--accent); font-weight: 600; }
+
+    /* FEED */
+    .feed-card { padding: 24px 26px; }
+    .ops-feed { max-height: 380px; overflow-y: auto; font-family: var(--font-mono); font-size: 0.78rem; }
+    .ops-feed::-webkit-scrollbar { width: 5px; }
+    .ops-feed::-webkit-scrollbar-track { background: transparent; }
+    .ops-feed::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+    .ops-feed-item {
+      display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border);
+      opacity: 0; transform: translateX(-6px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .ops-feed-item.visible { opacity: 1; transform: translateX(0); }
+    .ops-feed-item:last-child { border-bottom: none; }
+    .ops-feed-time { color: var(--text-dim); flex-shrink: 0; }
+    .ops-feed-icon { flex-shrink: 0; width: 18px; text-align: center; }
+    .ops-feed-text { color: var(--text); }
+    .ops-feed-text.sev-critical { color: var(--red); }
+    .ops-feed-text.sev-high { color: var(--orange); }
+    .ops-feed-text.sev-medium { color: var(--accent); }
+    .ops-feed-empty { color: var(--text-dim); padding: 12px 0; }
+
+    /* THREAT INTEL */
+    .intel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .intel-card { padding: 20px 22px; }
+    .intel-card-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+    .intel-name { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); }
+    .intel-tier { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-dim); padding: 2px 8px; border: 1px solid var(--border); border-radius: 10px; }
+    .intel-desc { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 12px; line-height: 1.5; }
+    .intel-badges { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .intel-badge { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; padding: 3px 9px; border-radius: 5px; letter-spacing: 0.3px; }
+    .act-dormant { background: rgba(107,112,132,0.15); color: var(--text-dim); }
+    .act-active { background: rgba(64,136,232,0.1); color: var(--blue); }
+    .act-aggressive { background: rgba(224,64,80,0.1); color: var(--red); }
+    .det-detected { background: rgba(48,200,96,0.1); color: var(--green); }
+    .det-partial { background: rgba(232,160,32,0.1); color: var(--accent); }
+    .det-monitoring { background: rgba(64,136,232,0.1); color: var(--blue); }
+    .det-undetected { background: rgba(224,64,80,0.1); color: var(--red); }
+    .intel-gauge-row { display: flex; align-items: center; gap: 10px; }
+    .intel-gauge-track { flex: 1; height: 6px; background: rgba(255,255,255,0.04); border-radius: 3px; overflow: hidden; }
+    .intel-gauge-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+    .intel-gauge-val { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-bright); font-weight: 600; min-width: 32px; text-align: right; }
+
+    /* BAN WAVE */
+    .banwave-row { display: flex; align-items: center; gap: 16px; padding: 22px 26px; flex-wrap: wrap; }
+    .banwave-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .banwave-dot.active { background: var(--red); animation: threatPulse 1.6s ease-in-out infinite; }
+    .banwave-dot.pending { background: var(--accent); }
+    .banwave-text { font-size: 0.9rem; color: var(--text-bright); font-weight: 600; }
+    .banwave-sub { font-size: 0.78rem; color: var(--text-dim); margin-left: auto; font-family: var(--font-mono); }
+
+    /* FOOTER STATS STRIP */
+    .footer-stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .footer-stat { padding: 20px; text-align: center; }
+    .footer-stat-label { font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .footer-stat-val { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+
+    .footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+    .footer-brand { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; color: var(--text-bright); margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 900px) {
+      .intel-grid { grid-template-columns: 1fr; }
+      .footer-stats-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .ops-hero { padding: 120px 20px 36px; }
+      .ops-hero h1 { font-size: 1.9rem; }
+      .container { padding: 0 20px 40px; }
+      .topology-viz { height: 460px; }
+      .topo-node { width: 130px; }
+      .banwave-sub { margin-left: 0; }
+      .footer-stats-strip { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="/css/mobile-nav.css">
+  <script src="/js/mobile-nav.js" defer></script>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/docs/">Docs</a>
+      <a href="/api/">API</a>
+      <a href="/sdk/">SDK</a>
+      <a href="/changelog/">Changelog</a>
+      <a href="/blog/">Blog</a>
+      <a href="/status/">Status</a>
+      <a href="/updates/">Updates</a>
+      <a href="/analytics/">Analytics</a>
+      <a href="/operations/" class="active">Operations</a>
+      <a href="/team/">Team</a>
+      <a href="/case-studies/">Case Studies</a>
+      <a href="/trust/">Trust</a>
+    </div>
+    <div class="nav-cta-wrap">
+      <a href="/login/" class="nav-login">Partner Login</a>
+      <a href="/access/" class="nav-cta">Partner Account</a>
+    </div>
+  </nav>
+
+  <div class="ops-hero">
+    <div class="ops-hero-label">Operations Center</div>
+    <h1>The whole detection backend, live</h1>
+    <p>One view of region topology, live signature and incident activity, active cheat providers, and ban wave scheduling — everything else on this site broken out separately, unified here.</p>
+    <div class="ops-hero-status">
+      <span class="threat-badge" id="threatBadge"><span class="dot"></span><span id="threatBadgeText">-- THREAT LEVEL</span></span>
+      <span class="ops-clock"><span class="clock-label">UTC</span><span id="opsClock">--:--:--</span></span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- REGION TOPOLOGY -->
+    <div class="section">
+      <div class="section-label">Region Topology</div>
+      <h2 class="section-title">Three regions, one detection mesh</h2>
+      <p class="section-desc">Cerberus runs across three regional deployments. Each hub independently scores sessions and syncs signatures with the other two — there's no single geographic center, just a small, honest mesh.</p>
+
+      <div class="ops-card topology-card">
+        <div class="topology-viz" id="topologyViz">
+          <svg class="topology-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <line class="topology-link" x1="15" y1="72" x2="50" y2="18" />
+            <line class="topology-link" x1="50" y1="18" x2="85" y2="72" />
+            <line class="topology-link" x1="15" y1="72" x2="85" y2="72" />
+          </svg>
+          <div class="topo-node" id="topoNode0" style="left:15%; top:72%;">
+            <div class="topo-node-ring"><span class="topo-node-icon">&#x1F5FC;</span><span class="topo-status-dot" id="topoDot0"></span></div>
+            <div class="topo-node-name" id="topoName0">--</div>
+            <div class="topo-node-status" id="topoStatus0">--</div>
+            <div class="topo-node-sessions" id="topoSessions0">-- sessions</div>
+          </div>
+          <div class="topo-node" id="topoNode1" style="left:50%; top:18%;">
+            <div class="topo-node-ring"><span class="topo-node-icon">&#x1F5FC;</span><span class="topo-status-dot" id="topoDot1"></span></div>
+            <div class="topo-node-name" id="topoName1">--</div>
+            <div class="topo-node-status" id="topoStatus1">--</div>
+            <div class="topo-node-sessions" id="topoSessions1">-- sessions</div>
+          </div>
+          <div class="topo-node" id="topoNode2" style="left:85%; top:72%;">
+            <div class="topo-node-ring"><span class="topo-node-icon">&#x1F5FC;</span><span class="topo-status-dot" id="topoDot2"></span></div>
+            <div class="topo-node-name" id="topoName2">--</div>
+            <div class="topo-node-status" id="topoStatus2">--</div>
+            <div class="topo-node-sessions" id="topoSessions2">-- sessions</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE OPERATIONS FEED -->
+    <div class="section">
+      <div class="section-label">Live Operations Feed</div>
+      <h2 class="section-title">Today's signature pushes and incidents</h2>
+      <p class="section-desc">A merged, time-sorted log of every signature deployment and incident the detection engine has logged today. Quiet days show few or zero incident lines — that's the system working as intended, not a placeholder.</p>
+
+      <div class="ops-card feed-card">
+        <div class="ops-feed" id="opsFeed"></div>
+      </div>
+    </div>
+
+    <!-- THREAT INTELLIGENCE -->
+    <div class="section">
+      <div class="section-label">Threat Intelligence</div>
+      <h2 class="section-title">Active cheat providers</h2>
+      <p class="section-desc">The highest-threat cheat providers currently being tracked, ranked by our composite threat score.</p>
+
+      <div class="intel-grid" id="intelGrid"></div>
+    </div>
+
+    <!-- BAN WAVE STATUS -->
+    <div class="section">
+      <div class="section-label">Enforcement</div>
+      <h2 class="section-title">Ban wave status</h2>
+
+      <div class="ops-card banwave-row" id="banWaveCard">
+        <div class="banwave-dot" id="banWaveDot"></div>
+        <div class="banwave-text" id="banWaveText">Checking schedule…</div>
+        <div class="banwave-sub" id="banWaveSub"></div>
+      </div>
+    </div>
+
+    <!-- FOOTER STATS STRIP -->
+    <div class="section" style="margin-bottom: 24px;">
+      <div class="section-label">System At A Glance</div>
+      <div class="footer-stats-strip">
+        <div class="ops-card footer-stat">
+          <div class="footer-stat-label">Active Signatures</div>
+          <div class="footer-stat-val" id="statSignatures">--</div>
+        </div>
+        <div class="ops-card footer-stat">
+          <div class="footer-stat-label">Blended Detection Rate</div>
+          <div class="footer-stat-val" id="statDetection">--</div>
+        </div>
+        <div class="ops-card footer-stat">
+          <div class="footer-stat-label">Active Sessions</div>
+          <div class="footer-stat-val" id="statSessions">--</div>
+        </div>
+        <div class="ops-card footer-stat">
+          <div class="footer-stat-label">Total Bans To Date</div>
+          <div class="footer-stat-val" id="statBans">--</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span></div>
+    <p>Four layers. Nothing gets past the gate.</p>
+    <p style="margin-top: 12px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/privacy/">Privacy</a> &nbsp;&middot;&nbsp; <a href="/terms/">Terms</a> &nbsp;&middot;&nbsp; <a href="/.well-known/security.txt">Security</a></p>
+  </footer>
+
+  <script src="/js/cerberus-engine.js"></script>
+  <script src="/js/cerberus-shared.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    var E = window.CerberusEngine;
+    var now = new Date();
+
+    function pad2(n) { return String(n).padStart(2, '0'); }
+
+    // ===== HERO: THREAT BADGE + LIVE CLOCK =====
+    (function() {
+      var level = 'LOW';
+      try { level = E ? E.threatLevel(now) : 'LOW'; } catch (e) {}
+      var badge = document.getElementById('threatBadge');
+      var text = document.getElementById('threatBadgeText');
+      var cls = 'level-' + level.toLowerCase();
+      badge.classList.add(cls);
+      text.textContent = level + ' THREAT LEVEL';
+    })();
+
+    function tickClock() {
+      var d = new Date();
+      var s = pad2(d.getUTCHours()) + ':' + pad2(d.getUTCMinutes()) + ':' + pad2(d.getUTCSeconds());
+      var el = document.getElementById('opsClock');
+      if (el) el.textContent = s;
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
+
+    // ===== REGION TOPOLOGY =====
+    (function() {
+      var regions = [];
+      try { regions = E ? E.CONFIG.regions : []; } catch (e) {}
+      if (!regions.length) {
+        regions = [
+          { name: 'US-East', weight: 0.40 },
+          { name: 'EU-West', weight: 0.35 },
+          { name: 'AP-Southeast', weight: 0.25 }
+        ];
+      }
+      var totalSessions = 480;
+      try { totalSessions = E ? E.activeSessions(now) : 480; } catch (e) {}
+
+      regions.forEach(function(region, i) {
+        var sessions = Math.max(1, Math.round(totalSessions * region.weight));
+        var status = 'operational';
+        try { status = E ? E.regionUptime(0, i, 0, now) : 'operational'; } catch (e) {}
+
+        var nameEl = document.getElementById('topoName' + i);
+        var statusEl = document.getElementById('topoStatus' + i);
+        var dotEl = document.getElementById('topoDot' + i);
+        var sessionsEl = document.getElementById('topoSessions' + i);
+        if (!nameEl) return;
+
+        nameEl.textContent = region.name;
+        statusEl.textContent = status === 'operational' ? 'Operational' : 'Degraded';
+        statusEl.className = 'topo-node-status ' + status;
+        dotEl.className = 'topo-status-dot ' + status;
+        sessionsEl.innerHTML = '<strong>~' + sessions.toLocaleString() + '</strong> sessions';
+      });
+    })();
+
+    // ===== LIVE OPERATIONS FEED =====
+    (function() {
+      var feedEl = document.getElementById('opsFeed');
+      var deployments = [];
+      var incidents = [];
+      var ds = 1;
+      try { deployments = E ? E.dailyDeployments(now) : []; } catch (e) {}
+      try { incidents = E ? E.dailyIncidents(now) : []; } catch (e) {}
+      try { ds = E ? E.daySeed(now) : 1; } catch (e) {}
+
+      var events = [];
+
+      deployments.forEach(function(d, i) {
+        var minute = 0, second = 0;
+        try { minute = E.seededInt(ds * 6101 + i * 17, 0, 59); } catch (e) {}
+        try { second = E.seededInt(ds * 6103 + i * 19, 0, 59); } catch (e) {}
+        var regionLabel = (d.region === 'all') ? 'All Regions' : d.region;
+        var text, icon = '📄';
+        if (d.type === 'signature') {
+          text = 'Signature push completed: ' + d.version + ' (+' + d.count + ' sigs) — ' + regionLabel;
+        } else if (d.type === 'model') {
+          text = 'Behavioral model update ' + d.version + ' — ' + d.stage + ' rollout — ' + regionLabel;
+          icon = '🧠';
+        } else if (d.type === 'driver') {
+          text = 'Driver patch staged: ' + d.version + ' — ' + regionLabel;
+          icon = '🔏';
+        } else {
+          text = 'Deployment event — ' + regionLabel;
+        }
+        events.push({
+          time: d.hour * 3600 + minute * 60 + second,
+          hour: d.hour, minute: minute, second: second,
+          icon: icon, text: text, sevClass: ''
+        });
+      });
+
+      incidents.forEach(function(inc, i) {
+        var second = 0;
+        try { second = E.seededInt(ds * 6201 + i * 23, 0, 59); } catch (e) {}
+        var icon = inc.severity === 'critical' ? '🔴' : inc.severity === 'high' ? '🟠' : '🟡';
+        var sevClass = inc.severity === 'critical' ? 'sev-critical' : inc.severity === 'high' ? 'sev-high' : 'sev-medium';
+        var text = 'Incident ' + (inc.resolved ? 'resolved' : 'detected') + ': ' + inc.cause + ' — '
+          + inc.severity.toUpperCase() + ' — ' + inc.region
+          + (inc.resolved ? ' (resolved in ' + inc.durationMinutes + 'm)' : '');
+        events.push({
+          time: inc.startHour * 3600 + inc.startMinute * 60 + second,
+          hour: inc.startHour, minute: inc.startMinute, second: second,
+          icon: icon, text: text, sevClass: sevClass
+        });
+      });
+
+      events.sort(function(a, b) { return a.time - b.time; });
+
+      if (events.length === 0) {
+        feedEl.innerHTML = '<div class="ops-feed-empty">No operational events logged yet today.</div>';
+        return;
+      }
+
+      var items = [];
+      events.forEach(function(ev) {
+        var row = document.createElement('div');
+        row.className = 'ops-feed-item';
+        var timeStr = pad2(ev.hour) + ':' + pad2(ev.minute) + ':' + pad2(ev.second) + ' UTC';
+        row.innerHTML = '<span class="ops-feed-time">' + timeStr + '</span>'
+          + '<span class="ops-feed-icon">' + ev.icon + '</span>'
+          + '<span class="ops-feed-text ' + ev.sevClass + '">' + ev.text + '</span>';
+        feedEl.appendChild(row);
+        items.push(row);
+      });
+
+      // Stagger reveal, 400-800ms apart
+      items.forEach(function(row, i) {
+        setTimeout(function() { row.classList.add('visible'); }, i * (400 + Math.floor(Math.random() * 400)));
+      });
+
+      // Safety net: guarantee every entry is visible within a few seconds regardless of animation state
+      setTimeout(function() {
+        items.forEach(function(row) { row.classList.add('visible'); });
+      }, 4000);
+    })();
+
+    // ===== THREAT INTELLIGENCE =====
+    (function() {
+      var providers = [];
+      try { providers = E ? E.providerThreatIntel(now) : []; } catch (e) {}
+      providers = providers.slice().sort(function(a, b) { return b.threatScore - a.threatScore; }).slice(0, 4);
+
+      var grid = document.getElementById('intelGrid');
+      if (!providers.length) {
+        grid.innerHTML = '<div class="ops-card intel-card">No active provider intel available.</div>';
+        return;
+      }
+
+      var gaugeColor = function(score) {
+        if (score >= 70) return 'var(--red)';
+        if (score >= 45) return 'var(--accent)';
+        return 'var(--green)';
+      };
+
+      providers.forEach(function(p) {
+        var card = document.createElement('div');
+        card.className = 'ops-card intel-card';
+        card.innerHTML =
+          '<div class="intel-card-header"><span class="intel-name">' + p.name + '</span><span class="intel-tier">TIER ' + p.tier + '</span></div>'
+          + '<div class="intel-desc">' + p.description + '</div>'
+          + '<div class="intel-badges">'
+          + '<span class="intel-badge act-' + p.activity + '">' + p.activity.toUpperCase() + '</span>'
+          + '<span class="intel-badge det-' + p.detection + '">' + p.detection.toUpperCase() + '</span>'
+          + '<span class="intel-badge" style="background:rgba(255,255,255,0.03);color:var(--text-dim);">LAST UPDATE ' + p.lastUpdate + '</span>'
+          + '</div>'
+          + '<div class="intel-gauge-row"><div class="intel-gauge-track"><div class="intel-gauge-fill" style="width:' + p.threatScore + '%; background:' + gaugeColor(p.threatScore) + ';"></div></div><span class="intel-gauge-val">' + p.threatScore + '</span></div>';
+        grid.appendChild(card);
+      });
+    })();
+
+    // ===== BAN WAVE STATUS =====
+    (function() {
+      var wave = null;
+      try { wave = E ? E.banWaveSchedule(now) : null; } catch (e) {}
+      var dot = document.getElementById('banWaveDot');
+      var text = document.getElementById('banWaveText');
+      var sub = document.getElementById('banWaveSub');
+      if (!wave) {
+        text.textContent = 'Ban wave schedule unavailable';
+        return;
+      }
+      if (wave.isWaveDay) {
+        dot.className = 'banwave-dot active';
+        text.textContent = 'Ban wave active today — ' + wave.waveSize + ' accounts scheduled';
+        sub.textContent = 'Executes ~' + pad2(wave.waveHour) + ':00 UTC (low-traffic window)';
+      } else {
+        dot.className = 'banwave-dot pending';
+        var days = wave.daysUntilNext;
+        text.textContent = 'Next ban wave in ' + days + ' day' + (days === 1 ? '' : 's');
+        sub.textContent = 'Enforcement runs during low-traffic hours (02:00–06:00 UTC)';
+      }
+    })();
+
+    // ===== FOOTER STATS STRIP =====
+    (function() {
+      var sigs = 0, sessions = 0, bans = 0, rates = [];
+      try { sigs = E ? E.signatureCount(now) : 0; } catch (e) {}
+      try { sessions = E ? E.activeSessions(now) : 0; } catch (e) {}
+      try { bans = E ? E.totalBans(now) : 0; } catch (e) {}
+      try { rates = E ? E.detectionRates(now) : []; } catch (e) {}
+
+      var avgRate = 0;
+      if (rates.length) {
+        var sum = 0;
+        rates.forEach(function(r) { sum += r.rate; });
+        avgRate = Math.round((sum / rates.length) * 10) / 10;
+      }
+
+      document.getElementById('statSignatures').textContent = sigs.toLocaleString();
+      document.getElementById('statDetection').textContent = avgRate + '%';
+      document.getElementById('statSessions').textContent = sessions.toLocaleString();
+      document.getElementById('statBans').textContent = bans.toLocaleString();
+    })();
+  </script>
+
+</body>
+</html>

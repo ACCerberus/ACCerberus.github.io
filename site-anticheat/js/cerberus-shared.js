@@ -201,6 +201,7 @@
     var pages = [
       { name: 'Home', desc: 'Main landing page', url: '/' },
       { name: 'Analytics Dashboard', desc: 'Live threat monitoring', url: '/analytics/' },
+      { name: 'Operations Center', desc: 'Region topology, live feed & threat intel', url: '/operations/' },
       { name: 'Status Page', desc: 'System health & uptime', url: '/status/' },
       { name: 'Changelog', desc: 'Version history & updates', url: '/changelog/' },
       { name: 'Documentation', desc: 'SDK integration guides', url: '/docs/' },
