@@ -565,6 +565,7 @@
     .toast-time { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-dim); margin-top: 3px; }
 
   </style>
+  <script>(function(){try{var t=localStorage.getItem("cerberus_theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}})();</script>
   <link rel="stylesheet" href="/css/mobile-nav.css">
   <script src="/js/mobile-nav.js" defer></script>
 </head>
@@ -596,6 +597,7 @@
       <a href="/status/">Status</a>
       <a href="/updates/">Updates</a>
       <a href="/team/">Team</a>
+      <a href="/case-studies/">Case Studies</a>
       <a href="/trust/">Trust</a>
       <a href="/analytics/">Analytics</a>
     </div>
@@ -1326,6 +1328,7 @@
       <a href="/status/">Status</a>
       <a href="/updates/">Updates</a>
       <a href="/team/">Team</a>
+      <a href="/case-studies/">Case Studies</a>
       <a href="/trust/">Trust</a>
       <a href="mailto:cerberus@arsenalrx.dev">Contact</a>
     </div>
@@ -1682,6 +1685,7 @@
     (function() {
       var canvas = document.getElementById('heroParticles');
       if (!canvas) return;
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var ctx = canvas.getContext('2d');
       var particles = [];
       var count = 40;
@@ -1732,7 +1736,7 @@
             }
           }
         }
-        requestAnimationFrame(draw);
+        if (!reduceMotion) requestAnimationFrame(draw);
       }
       draw();
     })();

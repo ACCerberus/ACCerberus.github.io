@@ -99,6 +99,18 @@
     .code-header + .code-block { border-radius: 0 0 10px 10px; margin-top: 0; }
     .code-lang { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); }
 
+    .lang-tabs { display: flex; gap: 4px; margin-top: 16px; border-bottom: 1px solid var(--border); }
+    .lang-tab-btn {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; color: var(--text-dim);
+      background: none; border: none; padding: 8px 14px; cursor: pointer;
+      border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s;
+    }
+    .lang-tab-btn:hover { color: var(--text-bright); }
+    .lang-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .lang-panel { display: none; }
+    .lang-panel.active { display: block; }
+    .lang-panel .code-header { margin-top: 16px; }
+
     .callout {
       padding: 16px 20px; border-radius: 10px; margin: 16px 0 24px;
       font-size: 0.82rem; line-height: 1.6;
@@ -128,6 +140,7 @@
       .content { padding: 32px 24px 80px; }
     }
   </style>
+  <script>(function(){try{var t=localStorage.getItem("cerberus_theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}})();</script>
   <link rel="stylesheet" href="/css/mobile-nav.css">
   <script src="/js/mobile-nav.js" defer></script>
 </head>
@@ -149,6 +162,7 @@
       <a href="/updates/">Updates</a>
       <a href="/analytics/">Analytics</a>
       <a href="/team/">Team</a>
+      <a href="/case-studies/">Case Studies</a>
       <a href="/trust/">Trust</a>
     </div>
     <div class="nav-cta-wrap">
@@ -205,8 +219,16 @@
 
       <div class="callout callout-info">Cerberus is currently in closed beta. You'll need an API key from your partner dashboard to initialize the SDK.</div>
 
-      <div class="code-header"><span class="code-lang">C++ — Minimal integration</span></div>
-      <div class="code-block"><span class="cmt">// 1. Include the SDK header</span>
+      <div class="lang-tabs" role="tablist" aria-label="Quick Start language">
+        <button type="button" class="lang-tab-btn active" data-lang="cpp" role="tab" aria-selected="true">C++</button>
+        <button type="button" class="lang-tab-btn" data-lang="csharp" role="tab" aria-selected="false">C# / Unity</button>
+        <button type="button" class="lang-tab-btn" data-lang="unreal" role="tab" aria-selected="false">Unreal Engine</button>
+        <button type="button" class="lang-tab-btn" data-lang="rust" role="tab" aria-selected="false">Rust</button>
+      </div>
+
+      <div class="lang-panel active" data-lang-panel="cpp">
+        <div class="code-header"><span class="code-lang">C++ — Minimal integration</span></div>
+        <div class="code-block"><span class="cmt">// 1. Include the SDK header</span>
 <span class="kw">#include</span> <span class="str">"cerberus_sdk.h"</span>
 
 <span class="cmt">// 2. Initialize on game launch</span>
@@ -231,6 +253,126 @@ config.<span class="fn">banCallback</span>  = OnPlayerBanned;
 
 <span class="cmt">// 5. Shutdown on game exit</span>
 <span class="fn">Cerberus_Shutdown</span>();</div>
+      </div>
+
+      <div class="lang-panel" data-lang-panel="csharp">
+        <div class="code-header"><span class="code-lang">C# / Unity — Minimal integration</span></div>
+        <div class="code-block"><span class="cmt">// 1. Import the SDK</span>
+<span class="kw">using</span> Cerberus.SDK;
+
+<span class="cmt">// 2. Initialize on game launch</span>
+<span class="kw">public class</span> <span class="type">AntiCheatManager</span> : <span class="type">MonoBehaviour</span> {
+    <span class="kw">void</span> <span class="fn">Start</span>() {
+        <span class="type">CerberusSDK</span>.<span class="fn">Init</span>(<span class="kw">new</span> <span class="type">CerberusConfig</span> {
+            ApiKey   = <span class="str">"crb_live_xxxxxxxxxxxxxxxx"</span>,
+            GameId   = <span class="str">"your-game-id"</span>,
+            EnableAI = <span class="kw">true</span>,   <span class="cmt">// Layer 2: Behavioral AI</span>
+            EnableHW = <span class="kw">true</span>,   <span class="cmt">// Layer 3: Hardware fingerprinting</span>
+            OnBan    = <span class="fn">HandleBan</span>
+        });
+    }
+
+    <span class="cmt">// 3. Start session when player joins match</span>
+    <span class="kw">void</span> <span class="fn">OnMatchStart</span>(<span class="type">string</span> playerId, <span class="type">string</span> matchId) {
+        <span class="type">CerberusSDK</span>.<span class="fn">StartSession</span>(playerId, matchId);
+    }
+
+    <span class="cmt">// 4. End session when match ends</span>
+    <span class="kw">void</span> <span class="fn">OnMatchEnd</span>() {
+        <span class="type">CerberusSDK</span>.<span class="fn">EndSession</span>();
+    }
+
+    <span class="cmt">// 5. Shutdown on game exit</span>
+    <span class="kw">void</span> <span class="fn">OnDestroy</span>() => <span class="type">CerberusSDK</span>.<span class="fn">Shutdown</span>();
+
+    <span class="cmt">// Detection callback — fires when a player is banned mid-session</span>
+    <span class="kw">void</span> <span class="fn">HandleBan</span>(<span class="type">BanEvent</span> e) {
+        Debug.Log($<span class="str">"Player {e.PlayerId} banned: {e.Reason} ({e.Confidence:P0})"</span>);
+        NetworkManager.Singleton.<span class="fn">DisconnectClient</span>(e.PlayerId);
+    }
+}</div>
+      </div>
+
+      <div class="lang-panel" data-lang-panel="unreal">
+        <div class="code-header"><span class="code-lang">Unreal Engine (C++) — Minimal integration</span></div>
+        <div class="code-block"><span class="cmt">// 1. Add the module dependency (MyGame.Build.cs)</span>
+PublicDependencyModuleNames.Add(<span class="str">"CerberusSDK"</span>);
+
+<span class="cmt">// 2. Declare + initialize the subsystem on game launch</span>
+<span class="kw">UCLASS</span>()
+<span class="kw">class</span> <span class="type">UCerberusGameSubsystem</span> : <span class="kw">public</span> <span class="type">UGameInstanceSubsystem</span> {
+    GENERATED_BODY()
+<span class="kw">public</span>:
+    <span class="kw">virtual</span> <span class="kw">void</span> <span class="fn">Initialize</span>(<span class="type">FSubsystemCollectionBase</span>&amp; Collection) <span class="kw">override</span> {
+        <span class="type">FCerberusConfig</span> Config;
+        Config.ApiKey    = TEXT(<span class="str">"crb_live_xxxxxxxxxxxxxxxx"</span>);
+        Config.GameId    = TEXT(<span class="str">"your-game-id"</span>);
+        Config.bEnableAI = <span class="kw">true</span>;   <span class="cmt">// Layer 2: Behavioral AI</span>
+        Config.bEnableHW = <span class="kw">true</span>;   <span class="cmt">// Layer 3: Hardware fingerprinting</span>
+
+        <span class="fn">Init</span>(Config);
+        OnPlayerBanned.AddDynamic(<span class="kw">this</span>, &amp;<span class="type">UCerberusGameSubsystem</span>::<span class="fn">HandleBan</span>);
+    }
+
+    <span class="cmt">// Detection callback — fires when a player is banned mid-session</span>
+    <span class="kw">UFUNCTION</span>()
+    <span class="kw">void</span> <span class="fn">HandleBan</span>(<span class="kw">const</span> <span class="type">FCerberusBanEvent</span>&amp; Event) {
+        UE_LOG(LogTemp, Warning, TEXT(<span class="str">"Player %s banned: %s"</span>), *Event.PlayerId, *Event.Details);
+    }
+};
+
+<span class="cmt">// 3. Start session when player joins match</span>
+<span class="kw">void</span> <span class="type">AMyGameMode</span>::<span class="fn">BeginPlay</span>() {
+    Super::<span class="fn">BeginPlay</span>();
+    <span class="type">UCerberusGameSubsystem</span>* Cerberus = GetGameInstance()-><span class="fn">GetSubsystem</span>&lt;<span class="type">UCerberusGameSubsystem</span>&gt;();
+    Cerberus-><span class="fn">StartSession</span>(PlayerState-><span class="fn">GetUniqueId</span>(), MatchId);
+}
+
+<span class="cmt">// 4. End session when match ends</span>
+<span class="kw">void</span> <span class="type">AMyGameMode</span>::<span class="fn">HandleMatchEnd</span>() {
+    GetGameInstance()-><span class="fn">GetSubsystem</span>&lt;<span class="type">UCerberusGameSubsystem</span>&gt;()-><span class="fn">EndSession</span>();
+}
+
+<span class="cmt">// 5. Shutdown is handled automatically when the GameInstance subsystem is destroyed</span></div>
+      </div>
+
+      <div class="lang-panel" data-lang-panel="rust">
+        <div class="code-header"><span class="code-lang">Rust — Minimal integration</span></div>
+        <div class="code-block"><span class="cmt">// 1. Add the crate and import the SDK</span>
+<span class="kw">use</span> cerberus_sdk::{<span class="type">CerberusConfig</span>, <span class="type">CerberusResult</span>};
+
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cmt">// 2. Initialize on game launch</span>
+    <span class="kw">let</span> config = <span class="type">CerberusConfig</span> {
+        api_key: <span class="str">"crb_live_xxxxxxxxxxxxxxxx"</span>.to_string(),
+        game_id: <span class="str">"your-game-id"</span>.to_string(),
+        enable_ai: <span class="kw">true</span>,  <span class="cmt">// Layer 2: Behavioral AI</span>
+        enable_hw: <span class="kw">true</span>,  <span class="cmt">// Layer 3: Hardware fingerprinting</span>
+        ban_callback: <span class="type">Some</span>(on_player_banned),
+        ..<span class="type">Default</span>::default()
+    };
+
+    <span class="kw">let</span> result = cerberus_sdk::<span class="fn">init</span>(&amp;config);
+    <span class="kw">if</span> result != <span class="type">CerberusResult</span>::Ok {
+        <span class="cmt">// Handle init failure — game can still run (graceful degradation)</span>
+        eprintln!(<span class="str">"Cerberus init failed: {:?}"</span>, result);
+    }
+
+    <span class="cmt">// 3. Start session when player joins match</span>
+    cerberus_sdk::<span class="fn">start_session</span>(&amp;player_id, &amp;match_id);
+
+    <span class="cmt">// 4. End session when match ends</span>
+    cerberus_sdk::<span class="fn">end_session</span>();
+
+    <span class="cmt">// 5. Shutdown on game exit</span>
+    cerberus_sdk::<span class="fn">shutdown</span>();
+}
+
+<span class="cmt">// Detection callback — fires when a player is banned mid-session</span>
+<span class="kw">fn</span> <span class="fn">on_player_banned</span>(event: &amp;<span class="type">BanEvent</span>) {
+    println!(<span class="str">"Player {} banned: {} ({:.1}% confidence)"</span>, event.player_id, event.details, event.confidence * <span class="num">100.0</span>);
+}</div>
+      </div>
 
       <h2 id="requirements" class="reveal">System Requirements</h2>
 
@@ -567,6 +709,31 @@ PublicDependencyModuleNames.Add(<span class="str">"CerberusSDK"</span>);
           noResults.textContent = "No results for '" + raw + "'";
           noResults.style.display = '';
         }
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      var tabButtons = Array.prototype.slice.call(document.querySelectorAll('.lang-tab-btn'));
+      var panels = Array.prototype.slice.call(document.querySelectorAll('.lang-panel'));
+      if (!tabButtons.length || !panels.length) return;
+
+      tabButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var lang = btn.getAttribute('data-lang');
+
+          tabButtons.forEach(function (b) {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          panels.forEach(function (p) { p.classList.remove('active'); });
+
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          var panel = document.querySelector('[data-lang-panel="' + lang + '"]');
+          if (panel) panel.classList.add('active');
+        });
       });
     })();
   </script>
