@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Privacy Policy - Cerberus Anti-Cheat</title>
-  <meta name="description" content="Cerberus Anti-Cheat privacy policy. What data we collect, how we process it, and your rights." />
+  <title>Service Level Agreement - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Cerberus Anti-Cheat service level agreement for partner studios. Uptime commitment, service credits, and incident response targets." />
   <meta name="theme-color" content="#e8a020" />
-  <meta property="og:title" content="Privacy Policy - Cerberus Anti-Cheat" />
-  <meta property="og:description" content="Cerberus Anti-Cheat privacy policy. What data we collect, how we process it, and your rights." />
+  <meta property="og:title" content="Service Level Agreement - Cerberus Anti-Cheat" />
+  <meta property="og:description" content="Cerberus Anti-Cheat service level agreement for partner studios. Uptime commitment, service credits, and incident response targets." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://cerberusac.dev/privacy/" />
-  <link rel="canonical" href="https://cerberusac.dev/privacy/" />
+  <meta property="og:url" content="https://cerberusac.dev/sla/" />
+  <link rel="canonical" href="https://cerberusac.dev/sla/" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,9 +19,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Privacy Policy - Cerberus Anti-Cheat",
-    "description": "Cerberus Anti-Cheat privacy policy. What data we collect, how we process it, and your rights.",
-    "url": "https://cerberusac.dev/privacy/"
+    "name": "Service Level Agreement - Cerberus Anti-Cheat",
+    "description": "Cerberus Anti-Cheat service level agreement for partner studios. Uptime commitment, service credits, and incident response targets.",
+    "url": "https://cerberusac.dev/sla/"
   }
   </script>
   <style>
@@ -85,7 +85,7 @@
       color: var(--text-bright); letter-spacing: -1.5px; margin-bottom: 12px;
     }
     .page-header p {
-      font-size: 0.95rem; color: var(--text-dim); max-width: 520px; margin: 0 auto;
+      font-size: 0.95rem; color: var(--text-dim); max-width: 560px; margin: 0 auto;
     }
 
     .legal-content {
@@ -104,7 +104,7 @@
     .legal-content p {
       font-size: 0.87rem; color: var(--text); margin-bottom: 14px; line-height: 1.75;
     }
-    .legal-content ul {
+    .legal-content ul, .legal-content ol {
       margin-bottom: 14px; padding-left: 20px;
     }
     .legal-content li {
@@ -122,6 +122,7 @@
       padding: 16px 20px; border-radius: 10px; margin: 16px 0 24px;
       font-size: 0.82rem; line-height: 1.6;
     }
+    .callout-warn { background: rgba(232,160,32,0.08); border-left: 3px solid var(--accent); color: var(--text); }
     .callout-info { background: rgba(64,136,232,0.08); border-left: 3px solid var(--blue); color: var(--text); }
 
     .updated-badge {
@@ -129,6 +130,17 @@
       color: var(--text-dim); background: rgba(255,255,255,0.03); border: 1px solid var(--border);
       padding: 4px 12px; border-radius: 6px; margin-bottom: 32px;
     }
+
+    .data-table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--border); margin: 16px 0 24px; }
+    table.data-table { width: 100%; border-collapse: collapse; min-width: 480px; background: var(--bg-card); }
+    table.data-table th {
+      text-align: left; font-family: var(--font-heading); font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-bright);
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+    }
+    table.data-table td { padding: 12px 18px; font-size: 0.82rem; color: var(--text); border-bottom: 1px solid var(--border); vertical-align: top; }
+    table.data-table tr:last-child td { border-bottom: none; }
+    table.data-table td.num { font-family: var(--font-mono); color: var(--accent); font-weight: 600; }
 
     .footer {
       text-align: center; padding: 40px 24px; border-top: 1px solid var(--border); position: relative; z-index: 1;
@@ -206,86 +218,75 @@
 
   <div class="page-header">
     <div class="page-header-label">Legal</div>
-    <h1>Privacy Policy</h1>
-    <p>How Cerberus handles data. Written to be read, not to bury things in legalese.</p>
+    <h1>Service Level Agreement</h1>
+    <p>What we commit to on uptime and incident response for partner studios — set at numbers we can actually hit, not numbers that sound good in a deck.</p>
   </div>
 
   <div class="legal-content">
-    <div class="updated-badge">Last updated: May 2026</div>
+    <div class="updated-badge">Last updated: August 2026</div>
 
-    <h2 class="reveal">Overview</h2>
-    <p>Cerberus Anti-Cheat is a beta product developed by the Cerberus Team ("we", "us"). This policy explains what data the Cerberus SDK and backend services collect, how it's processed, and what rights you have over it.</p>
-    <p>The short version: <strong>we process almost everything locally on the player's machine</strong>. Only detection events with anonymized metadata leave the device. We collect zero personally identifiable information (PII).</p>
+    <h2 class="reveal">Agreement</h2>
+    <p>This Service Level Agreement ("SLA") supplements the <a href="/terms/">Terms of Service</a> and applies to partner studios on paid tiers (Cerberus or Aegis) integrating the Cerberus Anti-Cheat SDK and API. It defines our uptime commitment, service credit schedule, and incident response targets.</p>
+    <div class="callout callout-warn reveal">Cerberus is in <strong>closed beta</strong>. This SLA reflects beta-appropriate commitments — we'd rather commit to numbers we consistently clear than promise enterprise-grade figures we can't back up yet. The free Argus tier is not covered by this SLA; see the <a href="/terms/">Terms of Service</a> for tier details.</div>
 
-    <h2 class="reveal">What data Cerberus processes</h2>
-    <p>The Cerberus SDK runs on the player's machine during active game sessions. It processes the following data <strong>locally</strong>:</p>
+    <h2 class="reveal">Uptime commitment</h2>
+    <p>We commit to <strong>97% monthly uptime</strong> across the combined Detection Engine, API &amp; Dashboard, and Data Pipeline services, measured across all three of our operating regions (US-East, EU-West, AP-Southeast).</p>
+    <p>This number is set deliberately at or below what we already deliver. Our public <a href="/status/">Status page</a> shows actual trailing uptime in the 97–98% range — this SLA formalizes that as a commitment rather than promising a figure we haven't demonstrated.</p>
+    <p>Uptime is calculated per calendar month as:</p>
+    <p><code>(total minutes in month − downtime minutes) / total minutes in month × 100</code></p>
+    <p>Downtime means the covered services are unreachable or returning failure responses for the majority of requests in a given minute, as recorded by our monitoring and reflected on <a href="/status/">/status/</a>. Scheduled maintenance windows announced at least 48 hours in advance via the status page are excluded from downtime calculations, as are the exclusions listed below.</p>
+
+    <h2 class="reveal">Service credits</h2>
+    <p>If we miss the 97% monthly uptime commitment, partner studios on paid tiers are eligible for a service credit against that month's fees, applied to the following month's invoice.</p>
+
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Monthly uptime</th><th>Service credit</th></tr></thead>
+        <tbody>
+          <tr><td>97.0% or higher</td><td class="num">No credit — target met</td></tr>
+          <tr><td>95.0% – 96.99%</td><td class="num">5% of monthly fees</td></tr>
+          <tr><td>90.0% – 94.99%</td><td class="num">10% of monthly fees</td></tr>
+          <tr><td>Below 90.0%</td><td class="num">15% of monthly fees</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Total service credits in any single month are capped at 15% of that month's fees. Service credits are your sole and exclusive remedy for a missed uptime commitment — this section works alongside, not in place of, the liability terms in our <a href="/terms/">Terms of Service</a>.</p>
+
+    <h2 class="reveal">Incident response commitments</h2>
+    <p>Incidents on <a href="/status/">/status/</a> are tracked through the same lifecycle you can watch in real time: <strong>Investigating → Identified → Monitoring → Resolving → Resolved</strong>. We commit to the following response targets by severity:</p>
     <ul>
-      <li><strong>Hardware identifiers</strong> -- CPU, GPU, motherboard, and peripheral IDs used for device fingerprinting. These are one-way hashed before any transmission.</li>
-      <li><strong>Input patterns</strong> -- Mouse movement, click timing, and keyboard input analyzed by the behavioral AI engine. Raw input data never leaves the device.</li>
-      <li><strong>Memory state</strong> -- Kernel-mode scanning of memory permissions, loaded drivers, and module integrity. No memory contents are captured or transmitted.</li>
-      <li><strong>PCIe device enumeration</strong> -- List of connected hardware devices checked against known DMA attack signatures. Processed locally.</li>
+      <li><strong>Major incidents</strong> (service-wide outage or an entire detection layer down) — acknowledged and moved to Investigating within 30 minutes of detection, with a status update posted to <a href="/status/">/status/</a> at least every 60 minutes until Resolved.</li>
+      <li><strong>Minor incidents</strong> (degraded performance, single-region issue, elevated latency) — acknowledged within 4 business hours, with a status update posted at least once every 24 hours until Resolved.</li>
+    </ul>
+    <p>These are closed-beta targets, not sub-minute enterprise SLAs — we're a 32-person team and we'd rather set targets we hit reliably than ones we quietly miss. Issues already disclosed under <strong>Known Issues</strong> on the status page are tracked there and are not newly eligible for these response commitments until they're reclassified as an active incident.</p>
+
+    <h2 class="reveal">Exclusions</h2>
+    <p>This SLA does not apply to unavailability caused by or resulting from:</p>
+    <ul>
+      <li>Scheduled maintenance announced at least 48 hours in advance via <a href="/status/">/status/</a></li>
+      <li>Force majeure events outside our reasonable control (natural disasters, upstream cloud provider outages, internet backbone failures, etc.)</li>
+      <li>Issues caused by the partner's own integration code, misconfiguration, or use of the API outside documented rate limits</li>
+      <li>Downtime affecting only the free Argus tier, which is not covered by this SLA</li>
+      <li>Known issues already disclosed on <a href="/status/">/status/</a> prior to the start of the affected billing period</li>
     </ul>
 
-    <div class="callout callout-info reveal">All of the above is processed entirely on the player's machine. The SDK performs analysis locally and only transmits structured detection results -- never raw data.</div>
+    <h2 class="reveal">How to claim a credit</h2>
+    <p>Service credits aren't automatic during beta — request them through the <strong>Billing</strong> section of your partner dashboard, or email <a href="mailto:cerberus@arsenalrx.dev">cerberus@arsenalrx.dev</a> within 30 days of the end of the affected month. Reference the relevant incident ID from <a href="/status/">/status/</a> where applicable. We'll confirm eligibility and apply approved credits to your next invoice.</p>
 
-    <h2 class="reveal">What gets sent to the Cerberus API</h2>
-    <p>When the SDK detects a potential cheat, the following is transmitted to our backend over TLS 1.3:</p>
-    <ul>
-      <li><strong>Detection events</strong> -- The type of detection (e.g., aimbot, injection, DMA), confidence score, and which detection layer triggered.</li>
-      <li><strong>Anonymized session metadata</strong> -- Game ID, session duration, SDK version, region, and an anonymized session identifier. No player names, emails, IPs, or account details.</li>
-      <li><strong>Hashed hardware fingerprint</strong> -- A one-way hash used solely for ban evasion tracking. Cannot be reversed to identify specific hardware.</li>
-    </ul>
-    <p>We do <strong>not</strong> transmit: game memory contents, screenshots, keystrokes, browsing data, file system contents, running process lists (beyond game-relevant modules), or any telemetry about player behavior outside of cheat detection.</p>
-
-    <h2 class="reveal">Zero PII collection</h2>
-    <p>Cerberus does not collect, store, or process any personally identifiable information. We don't know who players are. We work with anonymized session tokens and hashed hardware IDs. Player identity mapping (e.g., Steam ID to a ban record) is handled entirely by the game studio's integration -- we provide the detection, they manage the identity layer.</p>
-
-    <h2 class="reveal">Data retention</h2>
-    <ul>
-      <li><strong>Detection events</strong> -- Retained for 90 days to support ban appeals and accuracy analysis. Configurable per partner (shorter periods available).</li>
-      <li><strong>Session metadata</strong> -- Retained for 30 days, then permanently deleted.</li>
-      <li><strong>Hashed hardware fingerprints</strong> -- Retained for the duration of an active ban. Deleted when a ban expires or is overturned.</li>
-    </ul>
-    <p>After retention periods expire, data is permanently deleted from all systems including backups. We do not archive detection data indefinitely.</p>
-
-    <h2 class="reveal">Your rights (GDPR and similar frameworks)</h2>
-    <p>Even though we don't collect PII, we respect data subject rights under GDPR, CCPA, and similar frameworks. If you believe Cerberus has processed data related to you, you can request:</p>
-    <ul>
-      <li><strong>Access</strong> -- Request a copy of any data associated with your hashed hardware fingerprint or session tokens.</li>
-      <li><strong>Deletion</strong> -- Request deletion of all detection records and metadata tied to your identifiers.</li>
-      <li><strong>Portability</strong> -- Receive your data in a structured, machine-readable format (JSON).</li>
-      <li><strong>Rectification</strong> -- If you believe a detection was incorrect, you can request review through the ban appeal process or directly via a data request.</li>
-    </ul>
-    <p>To exercise any of these rights, contact <a href="mailto:privacy@arsenalrx.dev">privacy@arsenalrx.dev</a>. We respond to all requests within 30 days.</p>
-
-    <h2 class="reveal">Data processor information</h2>
-    <p>Cerberus acts as a <strong>data processor</strong> on behalf of game studios (the data controllers) who integrate our SDK. Studios determine how detection results are used (e.g., banning, flagging for review). We process data strictly according to our partner agreements and do not use detection data for any purpose beyond anti-cheat services.</p>
-    <p>Our backend infrastructure runs on dedicated servers in the EU (Frankfurt) and US (Virginia). Detection data is encrypted at rest (AES-256) and in transit (TLS 1.3).</p>
-
-    <h2 class="reveal">International transfers</h2>
-    <p>Detection data may be processed in either our EU or US data centers depending on the game session's region. For transfers from the EU to the US, we rely on Standard Contractual Clauses (SCCs) as our legal basis. All cross-region transfers use encrypted channels and are subject to the same retention and deletion policies.</p>
-
-    <h2 class="reveal">Cookies</h2>
-    <p>The Cerberus SDK does not use cookies. Our website (<a href="/">accerberus.github.io</a>) uses only essential cookies:</p>
-    <ul>
-      <li><strong>Session cookie</strong> -- Maintains your session on the partner dashboard if you're logged in. Expires when the browser closes.</li>
-      <li><strong>Preferences cookie</strong> -- Stores dashboard display preferences (theme, timezone). Expires after 30 days.</li>
-    </ul>
-    <p>We do not use analytics cookies, advertising cookies, or any third-party tracking. No cookie consent banner needed because we only use strictly necessary cookies.</p>
-
-    <h2 class="reveal">Changes to this policy</h2>
-    <p>We'll update this policy as Cerberus evolves from beta to general availability. Material changes will be announced on our <a href="/changelog/">changelog</a> and communicated to partner studios. The "last updated" date at the top of this page always reflects the most recent revision.</p>
+    <h2 class="reveal">Changes to this SLA</h2>
+    <p>We may update this SLA as Cerberus moves from closed beta toward general availability. Material changes — including any change to the uptime commitment or credit schedule — will be communicated to partner studios via email and posted on our <a href="/changelog/">changelog</a> at least 30 days before taking effect.</p>
 
     <h2 class="reveal">Contact</h2>
-    <p>For privacy questions, data requests, or concerns:</p>
-    <p><strong>Email:</strong> <a href="mailto:privacy@arsenalrx.dev">privacy@arsenalrx.dev</a></p>
-    <p>We aim to respond to all inquiries within 5 business days.</p>
+    <p>Questions about this SLA or a specific incident? Reach out:</p>
+    <p><strong>General / partner support:</strong> <a href="mailto:cerberus@arsenalrx.dev">cerberus@arsenalrx.dev</a></p>
+    <p>For the underlying legal terms, see our <a href="/terms/">Terms of Service</a>, <a href="/privacy/">Privacy Policy</a>, and <a href="/dpa/">Data Processing Agreement</a>. For our full security posture, see the <a href="/trust/">Trust Center</a>.</p>
   </div>
 
   <footer class="footer">
     <div class="footer-brand">Cerbe<span>rus</span></div>
     <p>Four layers. Nothing gets past the gate.</p>
-    <p style="margin-top: 12px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/privacy/">Privacy</a> &nbsp;&middot;&nbsp; <a href="/terms/">Terms</a></p>
+    <p style="margin-top: 12px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved. &nbsp;&middot;&nbsp; <a href="/privacy/">Privacy</a> &nbsp;&middot;&nbsp; <a href="/terms/">Terms</a> &nbsp;&middot;&nbsp; <a href="/dpa/">DPA</a> &nbsp;&middot;&nbsp; <a href="/trust/">Trust</a></p>
   </footer>
 
   <script src="/js/cerberus-engine.js"></script>

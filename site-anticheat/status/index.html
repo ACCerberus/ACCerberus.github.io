@@ -285,6 +285,7 @@
           <a href="/api/">API</a>
           <a href="/sdk/">SDK</a>
           <a href="/changelog/">Changelog</a>
+          <a href="/integrations/">Integrations</a>
         </div>
       </div>
       <div class="nav-dropdown current">
@@ -301,6 +302,7 @@
           <a href="/team/">Team</a>
           <a href="/case-studies/">Case Studies</a>
           <a href="/trust/">Trust</a>
+          <a href="/about/">About</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -333,6 +335,14 @@
       <label>Subscribe to Updates</label>
       <input type="email" id="subEmail" placeholder="you@example.com" />
       <button class="subscribe-btn" id="subBtn">Subscribe</button>
+    </div>
+
+    <!-- Machine-readable status feed docs -->
+    <div class="subscribe-section" id="statusJsonSection" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+      <label>Need machine-readable status?</label>
+      <p style="margin: 0; font-size: 0.78rem; color: var(--text-dim); line-height: 1.6;">
+        See our example <a href="/status.json" style="color: var(--accent);">status.json</a> format for piping uptime into PagerDuty, an internal dashboard, or any other monitor. This build is static (no backend), so <code style="font-family: var(--font-mono); font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; border-radius: 4px;">/status.json</code> is a hand-authored example snapshot rather than a live-updating endpoint &mdash; but it documents the shape a real feed would take: an overall <code style="font-family: var(--font-mono); font-size: 0.72rem;">status</code> field, a per-region <code style="font-family: var(--font-mono); font-size: 0.72rem;">regions[]</code> array, a per-service <code style="font-family: var(--font-mono); font-size: 0.72rem;">services[]</code> array (each with its own per-region breakdown), a current <code style="font-family: var(--font-mono); font-size: 0.72rem;">incidents[]</code> array (empty on quiet days, the common case &mdash; populated only during an active incident), and historical <code style="font-family: var(--font-mono); font-size: 0.72rem;">recentResolvedIncidents[]</code>. A production deployment would regenerate this from the same engine that drives the dashboard above, on every status change.
+      </p>
     </div>
 
     <!-- SYSTEM STATUS -->
