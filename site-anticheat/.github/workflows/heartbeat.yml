@@ -294,6 +294,13 @@ jobs:
         run: |
           git config user.name "cerberus-bot"
           git config user.email "cerberus-bot@cerberusac.dev"
+
+          # Keep the site-anticheat/ mirror's state.json in sync with root's,
+          # so a future switch-site.ps1 swap doesn't silently revert this.
+          if [ -f site-anticheat/data/state.json ]; then
+            cp -f data/state.json site-anticheat/data/state.json
+            git add site-anticheat/data/state.json
+          fi
           git add data/state.json
 
           # Check if there are changes
