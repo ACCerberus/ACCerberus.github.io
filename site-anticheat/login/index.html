@@ -100,6 +100,8 @@
       .login-card { padding: 36px 24px; }
     }
   </style>
+  <link rel="stylesheet" href="/css/mobile-nav.css">
+  <script src="/js/mobile-nav.js" defer></script>
 </head>
 <body>
   <div class="grid-bg"></div>
@@ -152,13 +154,20 @@
         </div>
         <div class="remember-row">
           <label><input type="checkbox" id="rememberMe" /> Remember me</label>
-          <a href="#" class="forgot-link" onclick="alert('Contact security@cerberus-ac.com for password resets.');return false;">Forgot password?</a>
+          <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
+        </div>
+        <div id="forgotNote" style="display:none;margin-top:-6px;margin-bottom:16px;font-size:0.76rem;color:var(--text-dim);line-height:1.6;padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid var(--border);">
+          Password resets are handled by our partner success team — email <a href="mailto:security@cerberus-ac.com" style="color:var(--accent);">security@cerberus-ac.com</a> from your registered studio address.
         </div>
         <button type="submit" class="btn-login" id="loginBtn">Sign In</button>
       </form>
 
       <div class="login-footer">
         <p>Don't have an account? <a href="/access/">Request Access</a></p>
+      </div>
+
+      <div style="margin-top:20px;padding:14px 16px;border-radius:10px;background:rgba(232,160,32,0.06);border:1px solid rgba(232,160,32,0.15);font-size:0.75rem;color:var(--text-dim);line-height:1.6;">
+        <strong style="color:var(--text-bright);">Demo access:</strong> <code style="color:var(--accent);">demo@cerberus-ac.dev</code> / <code style="color:var(--accent);">CerberusDemo2026!</code>
       </div>
     </div>
   </div>
@@ -287,6 +296,12 @@
       var p = localStorage.getItem('cerberus_partner') || sessionStorage.getItem('cerberus_partner');
       if (p) window.location.href = '/dashboard/';
     })();
+
+    document.getElementById('forgotLink').addEventListener('click', function (e) {
+      e.preventDefault();
+      var note = document.getElementById('forgotNote');
+      note.style.display = note.style.display === 'none' ? 'block' : 'none';
+    });
   </script>
 </body>
 </html>

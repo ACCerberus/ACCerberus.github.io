@@ -1,14 +1,14 @@
 {
-  "name": "Cerberus Market",
+  "name": "Cerberus Anti-Cheat",
   "short_name": "Cerberus",
-  "description": "A marketplace for digital game keys — verified sellers, instant delivery, buyer protection.",
+  "description": "Four-layer anti-cheat engine — kernel, AI, hardware, network.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#08080d",
   "theme_color": "#e8a020",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗝</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡</text></svg>",
       "sizes": "any",
       "type": "image/svg+xml"
     }

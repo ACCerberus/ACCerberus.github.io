@@ -566,6 +566,69 @@
       opacity: 0.3;
     }
 
+    /* ===== TRUSTED BY ===== */
+    .trusted-strip { padding: 48px 24px 0; text-align: center; position: relative; z-index: 1; }
+    .trusted-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 28px;
+    }
+    .trusted-logos {
+      display: flex; justify-content: center; align-items: center; gap: 48px; flex-wrap: wrap;
+      max-width: 900px; margin: 0 auto;
+    }
+    .trusted-logo-item {
+      font-family: var(--font-heading); font-weight: 700; font-size: 1.05rem;
+      color: var(--text-dim); opacity: 0.55; letter-spacing: -0.3px;
+      transition: opacity 0.25s, color 0.25s; cursor: default;
+    }
+    .trusted-logo-item:hover { opacity: 1; color: var(--text-bright); }
+    @media (max-width: 700px) { .trusted-logos { gap: 28px; } .trusted-logo-item { font-size: 0.9rem; } }
+
+    /* ===== LIVE DETECTION DEMO ===== */
+    .demo-panel {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
+    }
+    .demo-copy h3 {
+      font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700;
+      color: var(--text-bright); margin-bottom: 12px;
+    }
+    .demo-copy p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 24px; }
+    .demo-run-btn {
+      padding: 12px 28px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
+      background: var(--accent); color: #050507; border: none; cursor: pointer;
+      transition: all 0.2s; font-family: var(--font);
+    }
+    .demo-run-btn:hover:not(:disabled) { background: #d09018; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,160,32,0.3); }
+    .demo-run-btn:disabled { opacity: 0.6; cursor: default; }
+    .demo-stage { display: flex; flex-direction: column; gap: 10px; }
+    .demo-layer {
+      display: flex; align-items: center; gap: 14px; padding: 12px 16px;
+      border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.01);
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .demo-layer-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+      background: var(--text-dim); opacity: 0.4; transition: all 0.3s;
+    }
+    .demo-layer.checking .demo-layer-dot { background: var(--accent); opacity: 1; animation: pulse-dot 0.8s ease-in-out infinite; }
+    .demo-layer.clear .demo-layer-dot { background: var(--green); opacity: 1; }
+    .demo-layer.flagged .demo-layer-dot { background: var(--red); opacity: 1; }
+    .demo-layer.checking { border-color: rgba(232,160,32,0.25); }
+    .demo-layer.clear { border-color: rgba(48,200,96,0.2); }
+    .demo-layer.flagged { border-color: rgba(224,64,80,0.3); background: rgba(224,64,80,0.05); }
+    .demo-layer-name { font-size: 0.82rem; font-weight: 600; color: var(--text-bright); flex: 1; }
+    .demo-layer-status { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); }
+    .demo-verdict {
+      margin-top: 6px; padding: 14px 16px; border-radius: 10px; font-family: var(--font-mono);
+      font-size: 0.78rem; text-align: center; opacity: 0; max-height: 0; overflow: hidden;
+      transition: opacity 0.3s, max-height 0.3s;
+    }
+    .demo-verdict.show { opacity: 1; max-height: 80px; }
+    .demo-verdict.blocked { background: rgba(224,64,80,0.08); border: 1px solid rgba(224,64,80,0.25); color: var(--red); }
+    .demo-verdict.clean { background: rgba(48,200,96,0.08); border: 1px solid rgba(48,200,96,0.25); color: var(--green); }
+    @media (max-width: 800px) { .demo-panel { grid-template-columns: 1fr; padding: 28px; } }
+
     /* ===== SCROLL REVEAL ===== */
     .reveal {
       opacity: 0; transform: translateY(30px);
@@ -605,6 +668,8 @@
     .toast-time { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-dim); margin-top: 3px; }
 
   </style>
+  <link rel="stylesheet" href="/css/mobile-nav.css">
+  <script src="/js/mobile-nav.js" defer></script>
 </head>
 <body>
 
@@ -624,6 +689,7 @@
     <div class="nav-links">
       <a href="#threat">Problem</a>
       <a href="#heads">Detection</a>
+      <a href="#demo">Demo</a>
       <a href="#threat-intel">Threats</a>
       <a href="#pricing">Plans</a>
       <a href="/docs/">Docs</a>
@@ -729,6 +795,17 @@
     </div>
   </section>
 
+  <!-- TRUSTED BY -->
+  <section class="trusted-strip reveal">
+    <div class="trusted-label">Protecting titles in closed beta</div>
+    <div class="trusted-logos">
+      <span class="trusted-logo-item">Northwind Interactive</span>
+      <span class="trusted-logo-item">Loose Thread Games</span>
+      <span class="trusted-logo-item">Ferrous Point Studio</span>
+      <span class="trusted-logo-item">Backline Collective</span>
+      <span class="trusted-logo-item">Redwatch Games</span>
+    </div>
+  </section>
 
   <div class="divider"></div>
 
@@ -834,6 +911,45 @@
           <li>Global threat intelligence feed</li>
           <li>Matchmaking integrity scoring</li>
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE DETECTION DEMO -->
+  <section class="section" id="demo">
+    <div class="section-header reveal">
+      <div class="section-label">See It Work</div>
+      <h2 class="section-title">Watch the four layers respond</h2>
+      <p class="section-desc">A simplified walkthrough of what happens, in milliseconds, when Cerberus evaluates a session. Real detections run continuously and silently — this just slows it down so you can see it.</p>
+    </div>
+    <div class="demo-panel reveal">
+      <div class="demo-copy">
+        <h3>Simulated session evaluation</h3>
+        <p>Every layer reports independently to the verdict engine. A clean session clears all four; a flagged one gets isolated at whichever layer catches it first — no single point of failure, no single point of bypass.</p>
+        <button class="demo-run-btn" id="demoRunBtn" onclick="runDetectionDemo()">Simulate a Session</button>
+      </div>
+      <div class="demo-stage">
+        <div class="demo-layer" id="demoLayer0" data-name="Kernel Integrity">
+          <div class="demo-layer-dot"></div>
+          <div class="demo-layer-name">Kernel Integrity</div>
+          <div class="demo-layer-status" id="demoStatus0">Idle</div>
+        </div>
+        <div class="demo-layer" id="demoLayer1" data-name="Behavioral AI">
+          <div class="demo-layer-dot"></div>
+          <div class="demo-layer-name">Behavioral AI</div>
+          <div class="demo-layer-status" id="demoStatus1">Idle</div>
+        </div>
+        <div class="demo-layer" id="demoLayer2" data-name="Hardware Fingerprinting">
+          <div class="demo-layer-dot"></div>
+          <div class="demo-layer-name">Hardware Fingerprinting</div>
+          <div class="demo-layer-status" id="demoStatus2">Idle</div>
+        </div>
+        <div class="demo-layer" id="demoLayer3" data-name="Network Sentinel">
+          <div class="demo-layer-dot"></div>
+          <div class="demo-layer-name">Network Sentinel</div>
+          <div class="demo-layer-status" id="demoStatus3">Idle</div>
+        </div>
+        <div class="demo-verdict" id="demoVerdict"></div>
       </div>
     </div>
   </section>
@@ -1453,6 +1569,66 @@
   <script>
     // Year
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ─── LIVE DETECTION DEMO ───
+    var demoRunCount = 0;
+    function runDetectionDemo() {
+      var btn = document.getElementById('demoRunBtn');
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = 'Running...';
+      demoRunCount++;
+
+      var verdictEl = document.getElementById('demoVerdict');
+      verdictEl.className = 'demo-verdict';
+      verdictEl.textContent = '';
+      for (var r = 0; r < 4; r++) {
+        document.getElementById('demoLayer' + r).className = 'demo-layer';
+        document.getElementById('demoStatus' + r).textContent = 'Idle';
+      }
+
+      var seedBase = (window.CerberusEngine ? CerberusEngine.minuteSeed() : Date.now()) + demoRunCount * 7;
+      function rand(i) { return window.CerberusEngine ? CerberusEngine.seeded(seedBase + i * 13) : Math.random(); }
+
+      // ~1 in 4 runs surfaces a flagged layer so the demo shows both outcomes over repeat clicks
+      var flagAt = rand(99) < 0.28 ? Math.floor(rand(50) * 4) : -1;
+      var layerLatencies = [180, 340, 260, 220];
+
+      for (var i = 0; i < 4; i++) {
+        if (flagAt !== -1 && i > flagAt) break;
+        (function (i) {
+          setTimeout(function () {
+            var row = document.getElementById('demoLayer' + i);
+            var status = document.getElementById('demoStatus' + i);
+            row.className = 'demo-layer checking';
+            status.textContent = 'Scanning...';
+
+            setTimeout(function () {
+              var isFlagged = (flagAt === i);
+              row.className = 'demo-layer ' + (isFlagged ? 'flagged' : 'clear');
+              status.textContent = isFlagged
+                ? 'Flagged · ' + Math.round(70 + rand(i + 1) * 25) + '% confidence'
+                : 'Clear · ' + layerLatencies[i] + 'μs';
+
+              if (isFlagged || i === 3) {
+                setTimeout(function () {
+                  if (isFlagged) {
+                    var layerName = row.getAttribute('data-name');
+                    verdictEl.textContent = 'BLOCKED — flagged at ' + layerName + ' (session terminated, evidence captured)';
+                    verdictEl.className = 'demo-verdict show blocked';
+                  } else {
+                    verdictEl.textContent = 'CLEAR — all four layers passed, session continues';
+                    verdictEl.className = 'demo-verdict show clean';
+                  }
+                  btn.disabled = false;
+                  btn.textContent = 'Run Again';
+                }, 250);
+              }
+            }, 450);
+          }, i * 550);
+        })(i);
+      }
+    }
 
     // Scroll reveal
     var reveals = document.querySelectorAll('.reveal');

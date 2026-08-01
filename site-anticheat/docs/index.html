@@ -51,6 +51,23 @@
     .sidebar a { display: block; font-size: 0.82rem; color: var(--text-dim); text-decoration: none; padding: 5px 0; transition: color 0.2s; }
     .sidebar a:hover, .sidebar a.active { color: var(--text-bright); }
 
+    .sidebar-search { position: relative; margin-bottom: 20px; }
+    .sidebar-search-icon {
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      color: var(--text-dim); pointer-events: none;
+    }
+    .sidebar-search-input {
+      width: 100%; padding: 8px 10px 8px 32px; border-radius: 8px;
+      background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
+      font-family: var(--font); font-size: 0.82rem; line-height: 1.4; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .sidebar-search-input::placeholder { color: var(--text-dim); }
+    .sidebar-search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+    .sidebar-search-input::-webkit-search-cancel-button { filter: grayscale(1) opacity(0.6); }
+
+    .docs-no-results { display: none; font-size: 0.85rem; color: var(--text-dim); padding: 8px 0 24px; font-style: italic; }
+
     .content { flex: 1; padding: 40px 48px 80px; max-width: 760px; }
     .content h1 { font-family: var(--font-heading); font-size: 2rem; font-weight: 800; color: var(--text-bright); letter-spacing: -1px; margin-bottom: 8px; }
     .content .subtitle { font-size: 1rem; color: var(--text-dim); margin-bottom: 40px; }
@@ -111,6 +128,8 @@
       .content { padding: 32px 24px 80px; }
     }
   </style>
+  <link rel="stylesheet" href="/css/mobile-nav.css">
+  <script src="/js/mobile-nav.js" defer></script>
 </head>
 <body>
 
@@ -140,6 +159,13 @@
 
   <div class="layout">
     <aside class="sidebar">
+      <div class="sidebar-search">
+        <svg class="sidebar-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="search" id="docs-search-input" class="sidebar-search-input" placeholder="Search docs..." aria-label="Search documentation" autocomplete="off">
+      </div>
       <div class="sidebar-section">
         <div class="sidebar-label">Getting Started</div>
         <a href="#quickstart" class="active">Quick Start</a>
@@ -171,6 +197,8 @@
     <main class="content">
       <h1>Cerberus SDK Documentation</h1>
       <p class="subtitle">Integrate Cerberus anti-cheat into your game in under 2 hours.</p>
+
+      <p class="docs-no-results" id="docs-no-results"></p>
 
       <h2 id="quickstart">Quick Start</h2>
       <p>Cerberus ships as a single static library (<code>cerberus_sdk.lib</code>) and a header file. The SDK handles all communication with the Cerberus kernel driver — your game code only needs to initialize, start a session, and listen for callbacks.</p>
@@ -467,5 +495,80 @@ PublicDependencyModuleNames.Add(<span class="str">"CerberusSDK"</span>);
 
   <script src="/js/cerberus-engine.js"></script>
   <script src="/js/cerberus-shared.js"></script>
+
+  <script>
+    (function () {
+      var searchInput = document.getElementById('docs-search-input');
+      var noResults = document.getElementById('docs-no-results');
+      var sidebar = document.querySelector('.sidebar');
+      var main = document.querySelector('.content');
+      if (!searchInput || !sidebar || !main) return;
+
+      var sidebarSections = Array.prototype.slice.call(sidebar.querySelectorAll('.sidebar-section'));
+
+      // Group each h2 with all of the elements that follow it up to (but not
+      // including) the next h2, so a whole doc section can be shown/hidden as one unit.
+      var contentSections = [];
+      var headings = Array.prototype.slice.call(main.querySelectorAll('h2'));
+      headings.forEach(function (heading) {
+        var group = [heading];
+        var sibling = heading.nextElementSibling;
+        while (sibling && sibling.tagName !== 'H2') {
+          group.push(sibling);
+          sibling = sibling.nextElementSibling;
+        }
+        contentSections.push(group);
+      });
+
+      function showAll() {
+        sidebarSections.forEach(function (section) {
+          section.style.display = '';
+          Array.prototype.slice.call(section.querySelectorAll('a')).forEach(function (a) {
+            a.style.display = '';
+          });
+        });
+        contentSections.forEach(function (group) {
+          group.forEach(function (el) { el.style.display = ''; });
+        });
+        noResults.style.display = 'none';
+      }
+
+      searchInput.addEventListener('input', function () {
+        var raw = searchInput.value;
+        var query = raw.trim().toLowerCase();
+
+        if (!query) {
+          showAll();
+          return;
+        }
+
+        sidebarSections.forEach(function (section) {
+          var links = Array.prototype.slice.call(section.querySelectorAll('a'));
+          var sectionMatched = false;
+          links.forEach(function (a) {
+            var matched = a.textContent.toLowerCase().indexOf(query) !== -1;
+            a.style.display = matched ? '' : 'none';
+            if (matched) sectionMatched = true;
+          });
+          section.style.display = sectionMatched ? '' : 'none';
+        });
+
+        var anyContentMatch = false;
+        contentSections.forEach(function (group) {
+          var combinedText = group.map(function (el) { return el.textContent; }).join(' ').toLowerCase();
+          var matched = combinedText.indexOf(query) !== -1;
+          group.forEach(function (el) { el.style.display = matched ? '' : 'none'; });
+          if (matched) anyContentMatch = true;
+        });
+
+        if (anyContentMatch) {
+          noResults.style.display = 'none';
+        } else {
+          noResults.textContent = "No results for '" + raw + "'";
+          noResults.style.display = '';
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

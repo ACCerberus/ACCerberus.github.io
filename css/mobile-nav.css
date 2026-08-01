@@ -1,0 +1,61 @@
+/* Cerberus — shared mobile navigation (hamburger + slide-down panel)
+   Loaded on every marketing/docs/portal page alongside mobile-nav.js.
+   Relies on the CSS custom properties already defined per-page (--bg-card, --border, --accent, etc). */
+
+.nav-hamburger {
+  display: none;
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+  padding: 0;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.nav-hamburger:hover { border-color: var(--accent, #e8a020); }
+.nav-hamburger-lines {
+  position: relative; width: 18px; height: 13px;
+}
+.nav-hamburger-lines span {
+  position: absolute; left: 0; right: 0; height: 2px; border-radius: 2px;
+  background: var(--text-bright, #eef0f4);
+  transition: transform 0.25s ease, opacity 0.2s ease, top 0.25s ease;
+}
+.nav-hamburger-lines span:nth-child(1) { top: 0; }
+.nav-hamburger-lines span:nth-child(2) { top: 5.5px; }
+.nav-hamburger-lines span:nth-child(3) { top: 11px; }
+.nav-hamburger[aria-expanded="true"] .nav-hamburger-lines span:nth-child(1) { top: 5.5px; transform: rotate(45deg); }
+.nav-hamburger[aria-expanded="true"] .nav-hamburger-lines span:nth-child(2) { opacity: 0; }
+.nav-hamburger[aria-expanded="true"] .nav-hamburger-lines span:nth-child(3) { top: 5.5px; transform: rotate(-45deg); }
+
+.mobile-nav-panel {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 99;
+  background: var(--bg-card, #0a0a0f);
+  border-bottom: 1px solid var(--border, rgba(255,255,255,0.08));
+  padding: 76px 24px 20px;
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+}
+.mobile-nav-panel.open { max-height: 100vh; opacity: 1; overflow-y: auto; }
+.mobile-nav-panel a, .mobile-nav-panel button {
+  display: block; width: 100%; text-align: left;
+  padding: 13px 4px; font-size: 0.92rem; font-weight: 500;
+  color: var(--text, #c8ccd4); text-decoration: none;
+  border-bottom: 1px solid var(--border, rgba(255,255,255,0.06));
+  background: none; border-left: none; border-right: none; border-top: none;
+  font-family: var(--font, inherit); cursor: pointer;
+}
+.mobile-nav-panel a:last-child { border-bottom: none; }
+.mobile-nav-panel a:hover, .mobile-nav-panel a.active { color: var(--accent, #e8a020); }
+.mobile-nav-panel .mobile-nav-section-label {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-dim, #6b7084); padding: 16px 4px 6px;
+}
+.mobile-nav-panel .mobile-nav-cta {
+  color: var(--accent, #e8a020); font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .nav-hamburger { display: inline-flex; }
+}
