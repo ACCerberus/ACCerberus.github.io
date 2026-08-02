@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.5.0.0b",
-  "buildNumber": 2875,
-  "lastPatchBump": "2026-07-26T16:00:00Z",
+  "currentVersion": "v0.5.0.1b",
+  "buildNumber": 2876,
+  "lastPatchBump": "2026-08-02T07:57:03Z",
   "lastMinorBump": "2026-07-26T16:00:00Z",
   "lastFeatureBump": "2026-07-26T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.5.0.1b",
+      "date": "2026-08-02T07:57:03Z",
+      "summary": "DMA fingerprint database expansion"
+    },
     {
       "version": "v0.5.0.0b",
       "date": "2026-07-26T16:00:00Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.4.9b",
       "date": "2026-07-13T08:38:21Z",
       "summary": "Session lifecycle race condition fix"
-    },
-    {
-      "version": "v0.4.4.8b",
-      "date": "2026-07-12T07:51:43Z",
-      "summary": "Behavioral model threshold recalibration"
     }
   ]
 }
