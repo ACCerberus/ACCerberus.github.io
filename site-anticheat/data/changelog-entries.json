@@ -1934,5 +1934,29 @@
         "text": "Docs: Added webhook signature verification examples in Python and Go"
       }
     ]
+  },
+  {
+    "date": "2026-08-02",
+    "timestamp": "2026-08-02T07:57:02Z",
+    "version": "v0.5.0.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized CipherLoad kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 6438 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on EVGA Precision X1 overlay"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
   }
 ]
