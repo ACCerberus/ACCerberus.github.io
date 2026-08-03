@@ -1958,5 +1958,29 @@
         "text": "false positive rate improved by 0.002%"
       }
     ]
+  },
+  {
+    "date": "2026-08-03",
+    "timestamp": "2026-08-03T08:54:00Z",
+    "version": "v0.5.0.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized RingZero speedhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 6466 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
   }
 ]
