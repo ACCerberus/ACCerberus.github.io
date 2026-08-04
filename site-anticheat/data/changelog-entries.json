@@ -1982,5 +1982,29 @@
         "text": "webhook delivery success rate up to 99.98%"
       }
     ]
+  },
+  {
+    "date": "2026-08-04",
+    "timestamp": "2026-08-04T08:11:26Z",
+    "version": "v0.5.0.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized StealthCore input injection variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 6498 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "scan latency reduced by 8%"
+      }
+    ]
   }
 ]
