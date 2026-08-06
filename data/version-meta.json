@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.5.0.2b",
-  "buildNumber": 2877,
-  "lastPatchBump": "2026-08-04T08:11:26Z",
+  "currentVersion": "v0.5.0.3b",
+  "buildNumber": 2878,
+  "lastPatchBump": "2026-08-06T08:08:35Z",
   "lastMinorBump": "2026-07-26T16:00:00Z",
   "lastFeatureBump": "2026-07-26T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.5.0.3b",
+      "date": "2026-08-06T08:08:35Z",
+      "summary": "Ban API error handling improvements"
+    },
     {
       "version": "v0.5.0.2b",
       "date": "2026-08-04T08:11:26Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.4.11b",
       "date": "2026-07-17T07:46:51Z",
       "summary": "SDK initialization performance improvements"
-    },
-    {
-      "version": "v0.4.4.10b",
-      "date": "2026-07-15T07:44:17Z",
-      "summary": "False positive corrections and signature updates"
     }
   ]
 }

@@ -2030,5 +2030,29 @@
         "text": "player appeal rate reduced by 18%"
       }
     ]
+  },
+  {
+    "date": "2026-08-06",
+    "timestamp": "2026-08-06T08:08:35Z",
+    "version": "v0.5.0.2b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized SilentByte anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 6555 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
   }
 ]
