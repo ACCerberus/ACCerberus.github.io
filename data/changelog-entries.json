@@ -2054,5 +2054,29 @@
         "text": "webhook delivery success rate up to 99.98%"
       }
     ]
+  },
+  {
+    "date": "2026-08-07",
+    "timestamp": "2026-08-07T06:55:10Z",
+    "version": "v0.5.0.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized GhostWare kernel exploit variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 6565 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on RGB Fusion 2.0 service"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
   }
 ]
