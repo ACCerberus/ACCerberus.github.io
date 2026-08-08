@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.5.0.3b",
-  "buildNumber": 2878,
-  "lastPatchBump": "2026-08-06T08:08:35Z",
+  "currentVersion": "v0.5.0.4b",
+  "buildNumber": 2879,
+  "lastPatchBump": "2026-08-08T06:27:36Z",
   "lastMinorBump": "2026-07-26T16:00:00Z",
   "lastFeatureBump": "2026-07-26T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.5.0.4b",
+      "date": "2026-08-08T06:27:36Z",
+      "summary": "SDK initialization performance improvements"
+    },
     {
       "version": "v0.5.0.3b",
       "date": "2026-08-06T08:08:35Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.5.0b",
       "date": "2026-07-18T07:21:12Z",
       "summary": "Multi-region optimization and new detection vectors"
-    },
-    {
-      "version": "v0.4.4.11b",
-      "date": "2026-07-17T07:46:51Z",
-      "summary": "SDK initialization performance improvements"
     }
   ]
 }
