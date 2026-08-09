@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260808-8303",
+      "title": "Dashboard metrics reporting lag",
+      "startedAt": "2026-08-08T14:33:46Z",
+      "resolvedAt": "2026-08-08T22:31:48Z",
+      "duration": "7h 58m",
+      "impactPct": 1.2,
+      "rootCause": "Third-party CDN provider rate limiting during peak",
+      "timeline": [
+        {
+          "time": "2026-08-08T14:33:46Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-08-08T22:31:48Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Document incident pattern for on-call training",
+        "Implement additional monitoring for affected subsystem"
+      ],
+      "lessonsLearned": [
+        "Capacity planning needs to account for burst traffic patterns"
+      ]
+    },
+    {
       "incidentId": "INC-20260721-0141",
       "title": "Memory scan false positive on accessibility software",
       "startedAt": "2026-07-21T13:58:59Z",
@@ -269,36 +297,6 @@
       ],
       "fixedInVersion": "v0.4.2.1b",
       "fixedInVersionDate": "2026-05-26"
-    },
-    {
-      "incidentId": "INC-20260521-5328",
-      "title": "Scan latency increase detected",
-      "startedAt": "2026-05-21T21:43:56Z",
-      "resolvedAt": "2026-05-22T10:54:17Z",
-      "duration": "13h 10m",
-      "impactPct": 2.8,
-      "rootCause": "Garbage collection pause in scan worker",
-      "timeline": [
-        {
-          "time": "2026-05-21T21:43:56Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-05-22T10:54:17Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
-      ],
-      "actionItems": [
-        "Implement feature flag for rapid rollback capability",
-        "Add synthetic monitoring probe for early detection"
-      ],
-      "lessonsLearned": [
-        "Configuration changes need staged rollout validation"
-      ],
-      "fixedInVersion": "v0.4.2.0b",
-      "fixedInVersionDate": "2026-05-23"
     }
   ]
 }

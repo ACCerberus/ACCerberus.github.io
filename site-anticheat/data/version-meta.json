@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.5.0.4b",
-  "buildNumber": 2879,
-  "lastPatchBump": "2026-08-08T06:27:36Z",
+  "currentVersion": "v0.5.0.5b",
+  "buildNumber": 2880,
+  "lastPatchBump": "2026-08-09T06:32:41Z",
   "lastMinorBump": "2026-07-26T16:00:00Z",
   "lastFeatureBump": "2026-07-26T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.5.0.5b",
+      "date": "2026-08-09T06:32:41Z",
+      "summary": "Regional latency optimization"
+    },
     {
       "version": "v0.5.0.4b",
       "date": "2026-08-08T06:27:36Z",
@@ -49,11 +54,6 @@
       "version": "v0.4.5.1b",
       "date": "2026-07-19T07:52:28Z",
       "summary": "Session lifecycle race condition fix"
-    },
-    {
-      "version": "v0.4.5.0b",
-      "date": "2026-07-18T07:21:12Z",
-      "summary": "Multi-region optimization and new detection vectors"
     }
   ]
 }
