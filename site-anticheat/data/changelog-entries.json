@@ -2138,5 +2138,41 @@
         "text": "AI inference batch throughput doubled"
       }
     ]
+  },
+  {
+    "date": "2026-08-10",
+    "timestamp": "2026-08-10T07:00:42Z",
+    "version": "v0.5.0.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule triggerbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+6 signatures — 6676 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Corsair iCUE driver"
+      },
+      {
+        "type": "improved",
+        "text": "player appeal rate reduced by 18%"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-10",
+    "timestamp": "2026-08-10T07:00:42Z",
+    "version": "v0.5.0.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "added",
+        "text": "SDK: Added Unreal Engine 5.5 plugin compatibility shim"
+      }
+    ]
   }
 ]
