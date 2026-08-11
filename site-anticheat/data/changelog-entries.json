@@ -2174,5 +2174,29 @@
         "text": "SDK: Added Unreal Engine 5.5 plugin compatibility shim"
       }
     ]
+  },
+  {
+    "date": "2026-08-11",
+    "timestamp": "2026-08-11T06:40:17Z",
+    "version": "v0.5.0.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidHook input injection variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+7 signatures — 6712 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Discord hook detection"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
   }
 ]
