@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260810-0269",
+      "title": "Signature DB sync delay",
+      "startedAt": "2026-08-10T13:14:32Z",
+      "resolvedAt": "2026-08-10T20:45:13Z",
+      "duration": "7h 30m",
+      "impactPct": 0.8,
+      "rootCause": "Certificate renewal race condition",
+      "timeline": [
+        {
+          "time": "2026-08-10T13:14:32Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-08-10T20:45:13Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement additional monitoring for affected subsystem",
+        "Update runbook with new escalation procedures"
+      ],
+      "lessonsLearned": [
+        "Communication during incidents needs faster escalation"
+      ]
+    },
+    {
       "incidentId": "INC-20260808-8303",
       "title": "Dashboard metrics reporting lag",
       "startedAt": "2026-08-08T14:33:46Z",
@@ -267,36 +295,6 @@
       ],
       "fixedInVersion": "v0.4.3.0b",
       "fixedInVersionDate": "2026-05-29"
-    },
-    {
-      "incidentId": "INC-20260525-1338",
-      "title": "Elevated DMA false positives",
-      "startedAt": "2026-05-25T15:15:47Z",
-      "resolvedAt": "2026-05-25T23:08:21Z",
-      "duration": "7h 52m",
-      "impactPct": 3.4,
-      "rootCause": "Model inference out-of-memory on GPU-constrained nodes",
-      "timeline": [
-        {
-          "time": "2026-05-25T15:15:47Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-05-25T23:08:21Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
-      ],
-      "actionItems": [
-        "Implement feature flag for rapid rollback capability",
-        "Add synthetic monitoring probe for early detection"
-      ],
-      "lessonsLearned": [
-        "Cross-region testing should include latency simulation"
-      ],
-      "fixedInVersion": "v0.4.2.1b",
-      "fixedInVersionDate": "2026-05-26"
     }
   ]
 }
