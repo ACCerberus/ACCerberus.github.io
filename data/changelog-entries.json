@@ -2222,5 +2222,29 @@
         "text": "false negative rate decreased by 0.8%"
       }
     ]
+  },
+  {
+    "date": "2026-08-13",
+    "timestamp": "2026-08-13T07:04:54Z",
+    "version": "v0.5.0.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized CipherLoad DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+3 signatures — 6775 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "signature matching throughput up 22%"
+      }
+    ]
   }
 ]
