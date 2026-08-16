@@ -2294,5 +2294,29 @@
         "text": "signature matching throughput up 22%"
       }
     ]
+  },
+  {
+    "date": "2026-08-16",
+    "timestamp": "2026-08-16T06:16:40Z",
+    "version": "v0.5.0.8b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized RingZero memory manipulation variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 6884 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Steam overlay compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "detection confidence increased by 1.3%"
+      }
+    ]
   }
 ]
