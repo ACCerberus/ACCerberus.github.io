@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.5.0.9b",
-  "buildNumber": 2884,
-  "lastPatchBump": "2026-08-16T06:16:40Z",
-  "lastMinorBump": "2026-07-26T16:00:00Z",
+  "currentVersion": "v0.5.1.0b",
+  "buildNumber": 2885,
+  "lastPatchBump": "2026-08-17T06:25:14Z",
+  "lastMinorBump": "2026-08-17T06:25:14Z",
   "lastFeatureBump": "2026-07-26T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.5.1.0b",
+      "date": "2026-08-17T06:25:14Z",
+      "summary": "Automated ban appeal triage system"
+    },
     {
       "version": "v0.5.0.9b",
       "date": "2026-08-16T06:16:40Z",
@@ -49,11 +54,6 @@
       "version": "v0.5.0.1b",
       "date": "2026-08-02T07:57:03Z",
       "summary": "DMA fingerprint database expansion"
-    },
-    {
-      "version": "v0.5.0.0b",
-      "date": "2026-07-26T16:00:00Z",
-      "summary": "Cross-Session Behavioral Graph general availability and replay sandbox refinements"
     }
   ]
 }

@@ -2318,5 +2318,29 @@
         "text": "detection confidence increased by 1.3%"
       }
     ]
+  },
+  {
+    "date": "2026-08-17",
+    "timestamp": "2026-08-17T06:25:13Z",
+    "version": "v0.5.0.9b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized NullDriver input injection variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 6918 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on MSI Afterburner overlay"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
   }
 ]
