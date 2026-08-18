@@ -222,5 +222,13 @@
     "title": "Driver Stability Report: Weekly Summary",
     "author": "jpark",
     "generated": true
+  },
+  {
+    "date": "2026-08-18",
+    "timestamp": "2026-08-18T06:18:49Z",
+    "type": "milestone",
+    "title": "Regional Expansion Update",
+    "author": "nvoronov",
+    "generated": true
   }
 ]
