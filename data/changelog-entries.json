@@ -2366,5 +2366,41 @@
         "text": "signature matching throughput up 22%"
       }
     ]
+  },
+  {
+    "date": "2026-08-19",
+    "timestamp": "2026-08-19T06:19:32Z",
+    "version": "v0.5.1.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized GhostWare DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 6983 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-19",
+    "timestamp": "2026-08-19T06:19:32Z",
+    "version": "v0.5.1.0b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "improved",
+        "text": "SDK: Improved cold-start initialization time by 18ms"
+      }
+    ]
   }
 ]
