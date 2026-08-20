@@ -2402,5 +2402,29 @@
         "text": "SDK: Improved cold-start initialization time by 18ms"
       }
     ]
+  },
+  {
+    "date": "2026-08-20",
+    "timestamp": "2026-08-20T06:20:43Z",
+    "version": "v0.5.1.1b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DarkModule memory manipulation variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 7021 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on ASUS Aura SDK"
+      },
+      {
+        "type": "improved",
+        "text": "ban accuracy improved by 2.1%"
+      }
+    ]
   }
 ]
