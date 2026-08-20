@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260819-2764",
+      "title": "Certificate pinning mismatch on SDK auth",
+      "startedAt": "2026-08-19T22:26:57Z",
+      "resolvedAt": "2026-08-20T04:39:42Z",
+      "duration": "6h 12m",
+      "impactPct": 1.2,
+      "rootCause": "Garbage collection pause in scan worker",
+      "timeline": [
+        {
+          "time": "2026-08-19T22:26:57Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-08-20T04:39:42Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Add pre-deployment configuration validation step",
+        "Create dedicated monitoring dashboard for this subsystem"
+      ],
+      "lessonsLearned": [
+        "Detection of this failure mode should be automated"
+      ]
+    },
+    {
       "incidentId": "INC-20260817-5859",
       "title": "PCIe enumeration failure on Intel Arc GPUs",
       "startedAt": "2026-08-17T07:00:32Z",
@@ -263,36 +291,6 @@
       ],
       "fixedInVersion": "v0.4.4.4b",
       "fixedInVersionDate": "2026-07-01"
-    },
-    {
-      "incidentId": "INC-20260528-3940",
-      "title": "Ban API rate limiter false triggers",
-      "startedAt": "2026-05-28T17:35:42Z",
-      "resolvedAt": "2026-05-29T03:58:31Z",
-      "duration": "10h 22m",
-      "impactPct": 1.7,
-      "rootCause": "Kernel module incompatibility with latest Windows Insider build",
-      "timeline": [
-        {
-          "time": "2026-05-28T17:35:42Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-05-29T03:58:31Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
-      ],
-      "actionItems": [
-        "Implement additional monitoring for affected subsystem",
-        "Update runbook with new escalation procedures"
-      ],
-      "lessonsLearned": [
-        "Observability gaps in this subsystem masked early warning signs"
-      ],
-      "fixedInVersion": "v0.4.3.0b",
-      "fixedInVersionDate": "2026-05-30"
     }
   ]
 }
