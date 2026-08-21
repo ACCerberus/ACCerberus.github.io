@@ -2426,5 +2426,29 @@
         "text": "ban accuracy improved by 2.1%"
       }
     ]
+  },
+  {
+    "date": "2026-08-21",
+    "timestamp": "2026-08-21T06:20:48Z",
+    "version": "v0.5.1.2b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge wallhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 7067 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "scan latency reduced by 8%"
+      }
+    ]
   }
 ]
