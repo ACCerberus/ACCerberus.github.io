@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260820-1933",
+      "title": "Session telemetry ingestion backlog",
+      "startedAt": "2026-08-20T20:30:50Z",
+      "resolvedAt": "2026-08-21T04:40:23Z",
+      "duration": "8h 9m",
+      "impactPct": 3.4,
+      "rootCause": "Garbage collection pause in scan worker",
+      "timeline": [
+        {
+          "time": "2026-08-20T20:30:50Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-08-21T04:40:23Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Add automated rollback trigger for similar conditions",
+        "Add pre-deployment configuration validation step"
+      ],
+      "lessonsLearned": [
+        "Configuration changes need staged rollout validation"
+      ]
+    },
+    {
       "incidentId": "INC-20260819-2764",
       "title": "Certificate pinning mismatch on SDK auth",
       "startedAt": "2026-08-19T22:26:57Z",
@@ -261,36 +289,6 @@
       ],
       "fixedInVersion": "v0.4.4.5b",
       "fixedInVersionDate": "2026-07-03"
-    },
-    {
-      "incidentId": "INC-20260629-9194",
-      "title": "Webhook delivery delays",
-      "startedAt": "2026-06-29T18:10:19Z",
-      "resolvedAt": "2026-06-30T03:57:01Z",
-      "duration": "9h 46m",
-      "impactPct": 1.7,
-      "rootCause": "Kernel module incompatibility with latest Windows Insider build",
-      "timeline": [
-        {
-          "time": "2026-06-29T18:10:19Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-06-30T03:57:01Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
-      ],
-      "actionItems": [
-        "Document incident pattern for on-call training",
-        "Implement additional monitoring for affected subsystem"
-      ],
-      "lessonsLearned": [
-        "Detection of this failure mode should be automated"
-      ],
-      "fixedInVersion": "v0.4.4.4b",
-      "fixedInVersionDate": "2026-07-01"
     }
   ]
 }

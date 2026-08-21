@@ -230,5 +230,13 @@
     "title": "Regional Expansion Update",
     "author": "nvoronov",
     "generated": true
+  },
+  {
+    "date": "2026-08-21",
+    "timestamp": "2026-08-21T06:20:48Z",
+    "type": "qa",
+    "title": "Compatibility Update: New GPU Drivers",
+    "author": "nvoronov",
+    "generated": true
   }
 ]

@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.5.1.2b",
-  "buildNumber": 2887,
-  "lastPatchBump": "2026-08-20T06:20:44Z",
+  "currentVersion": "v0.5.1.3b",
+  "buildNumber": 2888,
+  "lastPatchBump": "2026-08-21T06:20:48Z",
   "lastMinorBump": "2026-08-17T06:25:14Z",
   "lastFeatureBump": "2026-07-26T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.5.1.3b",
+      "date": "2026-08-21T06:20:48Z",
+      "summary": "PCIe enumeration edge case fixes"
+    },
     {
       "version": "v0.5.1.2b",
       "date": "2026-08-20T06:20:44Z",
@@ -49,11 +54,6 @@
       "version": "v0.5.0.4b",
       "date": "2026-08-08T06:27:36Z",
       "summary": "SDK initialization performance improvements"
-    },
-    {
-      "version": "v0.5.0.3b",
-      "date": "2026-08-06T08:08:35Z",
-      "summary": "Ban API error handling improvements"
     }
   ]
 }
