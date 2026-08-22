@@ -2450,5 +2450,29 @@
         "text": "scan latency reduced by 8%"
       }
     ]
+  },
+  {
+    "date": "2026-08-22",
+    "timestamp": "2026-08-22T06:15:59Z",
+    "version": "v0.5.1.3b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ApexHack silent aim variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 7097 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on MSI Afterburner overlay"
+      },
+      {
+        "type": "improved",
+        "text": "AI inference batch throughput doubled"
+      }
+    ]
   }
 ]
