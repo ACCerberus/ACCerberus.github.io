@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.5.1.3b",
-  "buildNumber": 2888,
-  "lastPatchBump": "2026-08-21T06:20:48Z",
+  "currentVersion": "v0.5.1.4b",
+  "buildNumber": 2889,
+  "lastPatchBump": "2026-08-23T06:17:26Z",
   "lastMinorBump": "2026-08-17T06:25:14Z",
   "lastFeatureBump": "2026-07-26T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.5.1.4b",
+      "date": "2026-08-23T06:17:26Z",
+      "summary": "Webhook delivery reliability improvements"
+    },
     {
       "version": "v0.5.1.3b",
       "date": "2026-08-21T06:20:48Z",
@@ -49,11 +54,6 @@
       "version": "v0.5.0.5b",
       "date": "2026-08-09T06:32:41Z",
       "summary": "Regional latency optimization"
-    },
-    {
-      "version": "v0.5.0.4b",
-      "date": "2026-08-08T06:27:36Z",
-      "summary": "SDK initialization performance improvements"
     }
   ]
 }
