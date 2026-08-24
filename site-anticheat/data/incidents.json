@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260823-4211",
+      "title": "Certificate pinning mismatch on SDK auth",
+      "startedAt": "2026-08-23T18:32:53Z",
+      "resolvedAt": "2026-08-24T03:05:35Z",
+      "duration": "8h 32m",
+      "impactPct": 2.1,
+      "rootCause": "Certificate renewal race condition",
+      "timeline": [
+        {
+          "time": "2026-08-23T18:32:53Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-08-24T03:05:35Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement gradual rollout for configuration changes",
+        "Add automated regression test for this failure mode"
+      ],
+      "lessonsLearned": [
+        "Post-deployment validation should include edge cases"
+      ]
+    },
+    {
       "incidentId": "INC-20260820-1933",
       "title": "Session telemetry ingestion backlog",
       "startedAt": "2026-08-20T20:30:50Z",
@@ -259,36 +287,6 @@
       ],
       "fixedInVersion": "v0.4.4.6b",
       "fixedInVersionDate": "2026-07-06"
-    },
-    {
-      "incidentId": "INC-20260701-0819",
-      "title": "Webhook delivery delays",
-      "startedAt": "2026-07-01T20:00:34Z",
-      "resolvedAt": "2026-07-02T07:35:18Z",
-      "duration": "11h 34m",
-      "impactPct": 2.8,
-      "rootCause": "TLS certificate pinning hash mismatch after CA rotation",
-      "timeline": [
-        {
-          "time": "2026-07-01T20:00:34Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-07-02T07:35:18Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
-      ],
-      "actionItems": [
-        "Increase load test coverage for affected code path",
-        "Implement gradual rollout for configuration changes"
-      ],
-      "lessonsLearned": [
-        "Detection of this failure mode should be automated"
-      ],
-      "fixedInVersion": "v0.4.4.5b",
-      "fixedInVersionDate": "2026-07-03"
     }
   ]
 }

@@ -2498,5 +2498,29 @@
         "text": "ban accuracy improved by 2.1%"
       }
     ]
+  },
+  {
+    "date": "2026-08-24",
+    "timestamp": "2026-08-24T06:29:04Z",
+    "version": "v0.5.1.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+3 signatures — 7158 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "memory footprint decreased by 12%"
+      }
+    ]
   }
 ]
