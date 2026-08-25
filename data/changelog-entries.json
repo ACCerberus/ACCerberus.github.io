@@ -2522,5 +2522,29 @@
         "text": "memory footprint decreased by 12%"
       }
     ]
+  },
+  {
+    "date": "2026-08-25",
+    "timestamp": "2026-08-25T06:20:57Z",
+    "version": "v0.5.1.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault driver spoof variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 7201 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Citrix virtual display driver"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.98%"
+      }
+    ]
   }
 ]
