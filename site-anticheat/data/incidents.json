@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260825-0476",
+      "title": "Session telemetry ingestion backlog",
+      "startedAt": "2026-08-25T08:45:45Z",
+      "resolvedAt": "2026-08-25T16:39:38Z",
+      "duration": "7h 53m",
+      "impactPct": 0.5,
+      "rootCause": "Hot-reload race condition in configuration management",
+      "timeline": [
+        {
+          "time": "2026-08-25T08:45:45Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-08-25T16:39:38Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Update runbook with new escalation procedures",
+        "Add automated rollback trigger for similar conditions"
+      ],
+      "lessonsLearned": [
+        "Monitoring gaps in this subsystem need to be addressed"
+      ]
+    },
+    {
       "incidentId": "INC-20260823-4211",
       "title": "Certificate pinning mismatch on SDK auth",
       "startedAt": "2026-08-23T18:32:53Z",
@@ -257,36 +285,6 @@
       ],
       "fixedInVersion": "v0.4.4.6b",
       "fixedInVersionDate": "2026-07-07"
-    },
-    {
-      "incidentId": "INC-20260704-6662",
-      "title": "Ban API rate limiter false triggers",
-      "startedAt": "2026-07-04T17:09:05Z",
-      "resolvedAt": "2026-07-05T03:44:32Z",
-      "duration": "10h 35m",
-      "impactPct": 0.8,
-      "rootCause": "Load balancer health check misconfiguration",
-      "timeline": [
-        {
-          "time": "2026-07-04T17:09:05Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-07-05T03:44:32Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
-      ],
-      "actionItems": [
-        "Deploy canary configuration validation",
-        "Increase load test coverage for affected code path"
-      ],
-      "lessonsLearned": [
-        "Capacity planning needs to account for burst traffic patterns"
-      ],
-      "fixedInVersion": "v0.4.4.6b",
-      "fixedInVersionDate": "2026-07-06"
     }
   ]
 }
