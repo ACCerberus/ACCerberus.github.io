@@ -2546,5 +2546,41 @@
         "text": "webhook delivery success rate up to 99.98%"
       }
     ]
+  },
+  {
+    "date": "2026-08-26",
+    "timestamp": "2026-08-26T06:22:50Z",
+    "version": "v0.5.1.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized SilentByte DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 7238 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Wallpaper Engine hook"
+      },
+      {
+        "type": "improved",
+        "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-26",
+    "timestamp": "2026-08-26T06:22:51Z",
+    "version": "v0.5.1.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "fixed",
+        "text": "API: Fixed 500 on malformed match_id in /v2/sessions/end"
+      }
+    ]
   }
 ]
