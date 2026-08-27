@@ -2582,5 +2582,29 @@
         "text": "API: Fixed 500 on malformed match_id in /v2/sessions/end"
       }
     ]
+  },
+  {
+    "date": "2026-08-27",
+    "timestamp": "2026-08-27T16:52:27Z",
+    "version": "v0.5.1.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized SilentByte silent aim variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+14 signatures — 7264 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
   }
 ]
