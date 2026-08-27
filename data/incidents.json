@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260826-7669",
+      "title": "Memory scan false positive on accessibility software",
+      "startedAt": "2026-08-26T04:41:56Z",
+      "resolvedAt": "2026-08-26T12:57:15Z",
+      "duration": "8h 15m",
+      "impactPct": 1.7,
+      "rootCause": "Memory pressure from concurrent scan operations",
+      "timeline": [
+        {
+          "time": "2026-08-26T04:41:56Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-08-26T12:57:15Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Add automated regression test for this failure mode",
+        "Implement feature flag for rapid rollback capability"
+      ],
+      "lessonsLearned": [
+        "Capacity planning needs to account for burst traffic patterns"
+      ]
+    },
+    {
       "incidentId": "INC-20260825-0476",
       "title": "Session telemetry ingestion backlog",
       "startedAt": "2026-08-25T08:45:45Z",
@@ -255,36 +283,6 @@
       ],
       "fixedInVersion": "v0.4.4.8b",
       "fixedInVersionDate": "2026-07-13"
-    },
-    {
-      "incidentId": "INC-20260705-9181",
-      "title": "Behavioral model confidence degradation",
-      "startedAt": "2026-07-05T23:03:36Z",
-      "resolvedAt": "2026-07-06T13:49:19Z",
-      "duration": "14h 45m",
-      "impactPct": 1.2,
-      "rootCause": "Misconfigured rate limiter on edge node",
-      "timeline": [
-        {
-          "time": "2026-07-05T23:03:36Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-07-06T13:49:19Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
-      ],
-      "actionItems": [
-        "Add automated rollback trigger for similar conditions",
-        "Add pre-deployment configuration validation step"
-      ],
-      "lessonsLearned": [
-        "Capacity planning needs to account for burst traffic patterns"
-      ],
-      "fixedInVersion": "v0.4.4.6b",
-      "fixedInVersionDate": "2026-07-07"
     }
   ]
 }
