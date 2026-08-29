@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.5.1.4b",
-  "buildNumber": 2889,
-  "lastPatchBump": "2026-08-23T06:17:26Z",
+  "currentVersion": "v0.5.1.5b",
+  "buildNumber": 2890,
+  "lastPatchBump": "2026-08-29T11:48:27Z",
   "lastMinorBump": "2026-08-17T06:25:14Z",
   "lastFeatureBump": "2026-07-26T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.5.1.5b",
+      "date": "2026-08-29T11:48:27Z",
+      "summary": "False positive corrections and signature updates"
+    },
     {
       "version": "v0.5.1.4b",
       "date": "2026-08-23T06:17:26Z",
@@ -49,11 +54,6 @@
       "version": "v0.5.0.6b",
       "date": "2026-08-10T07:00:42Z",
       "summary": "PCIe enumeration edge case fixes"
-    },
-    {
-      "version": "v0.5.0.5b",
-      "date": "2026-08-09T06:32:41Z",
-      "summary": "Regional latency optimization"
     }
   ]
 }

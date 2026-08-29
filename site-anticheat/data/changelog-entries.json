@@ -2630,5 +2630,41 @@
         "text": "session initialization time cut by 45ms"
       }
     ]
+  },
+  {
+    "date": "2026-08-29",
+    "timestamp": "2026-08-29T11:48:27Z",
+    "version": "v0.5.1.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized HexShield speedhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 7278 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on OBS capture layer"
+      },
+      {
+        "type": "improved",
+        "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-29",
+    "timestamp": "2026-08-29T11:48:27Z",
+    "version": "v0.5.1.4b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "fixed",
+        "text": "Docs: Fixed broken anchor links in integration guide"
+      }
+    ]
   }
 ]
