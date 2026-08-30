@@ -2666,5 +2666,41 @@
         "text": "Docs: Fixed broken anchor links in integration guide"
       }
     ]
+  },
+  {
+    "date": "2026-08-30",
+    "timestamp": "2026-08-30T10:45:04Z",
+    "version": "v0.5.1.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 7287 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "player appeal rate reduced by 18%"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-30",
+    "timestamp": "2026-08-30T10:45:04Z",
+    "version": "v0.5.1.5b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "fixed",
+        "text": "API: Fixed 500 on malformed match_id in /v2/sessions/end"
+      }
+    ]
   }
 ]
