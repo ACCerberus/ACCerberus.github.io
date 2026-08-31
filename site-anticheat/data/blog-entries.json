@@ -238,5 +238,13 @@
     "title": "Compatibility Update: New GPU Drivers",
     "author": "nvoronov",
     "generated": true
+  },
+  {
+    "date": "2026-08-31",
+    "timestamp": "2026-08-31T11:54:19Z",
+    "type": "advisory",
+    "title": "Advisory: SDK Authentication Hardening",
+    "author": "eriksson",
+    "generated": true
   }
 ]
