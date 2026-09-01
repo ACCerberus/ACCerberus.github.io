@@ -2726,5 +2726,29 @@
         "text": "false positive rate improved by 0.002%"
       }
     ]
+  },
+  {
+    "date": "2026-09-01",
+    "timestamp": "2026-09-01T10:33:59Z",
+    "version": "v0.5.1.6b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized CipherLoad aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+3 signatures — 7308 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Corsair iCUE driver"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
   }
 ]
