@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.5.1.6b",
-  "buildNumber": 2891,
-  "lastPatchBump": "2026-08-31T11:54:20Z",
+  "currentVersion": "v0.5.1.7b",
+  "buildNumber": 2892,
+  "lastPatchBump": "2026-09-02T09:59:29Z",
   "lastMinorBump": "2026-08-17T06:25:14Z",
   "lastFeatureBump": "2026-07-26T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.5.1.7b",
+      "date": "2026-09-02T09:59:29Z",
+      "summary": "Kernel module compatibility fixes"
+    },
     {
       "version": "v0.5.1.6b",
       "date": "2026-08-31T11:54:20Z",
@@ -49,11 +54,6 @@
       "version": "v0.5.0.8b",
       "date": "2026-08-15T06:15:03Z",
       "summary": "Webhook delivery reliability improvements"
-    },
-    {
-      "version": "v0.5.0.7b",
-      "date": "2026-08-13T07:04:54Z",
-      "summary": "Ban API error handling improvements"
     }
   ]
 }
