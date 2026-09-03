@@ -246,5 +246,13 @@
     "title": "Advisory: SDK Authentication Hardening",
     "author": "eriksson",
     "generated": true
+  },
+  {
+    "date": "2026-09-03",
+    "timestamp": "2026-09-03T10:09:45Z",
+    "type": "advisory",
+    "title": "Advisory: SDK Deprecation Notice",
+    "author": "mzhang",
+    "generated": true
   }
 ]
