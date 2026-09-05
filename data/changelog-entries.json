@@ -2822,5 +2822,29 @@
         "text": "signature lookup p99 latency down 12ms"
       }
     ]
+  },
+  {
+    "date": "2026-09-05",
+    "timestamp": "2026-09-05T09:29:54Z",
+    "version": "v0.5.1.8b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized KernelVault input injection variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 7370 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Citrix virtual display driver"
+      },
+      {
+        "type": "improved",
+        "text": "player appeal rate reduced by 18%"
+      }
+    ]
   }
 ]
