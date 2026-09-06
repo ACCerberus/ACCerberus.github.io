@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-06T09:43:46Z",
+  "lastUpdated": "2026-09-06T16:00:00Z",
   "items": {
     "short": [
       {
@@ -39,8 +39,8 @@
       {
         "id": "r-s3",
         "name": "Zero-Footprint Mode",
-        "desc": "Kernel module unloads completely between scan cycles — leaves zero memory residue, making Cerberus undetectable by cheat developers during reverse engineering",
-        "progress": 45.6,
+        "desc": "Kernel module unloads completely between scan cycles — leaves zero memory residue, making Cerberus undetectable by cheat developers during reverse engineering — opt-in preview shipped in v0.6.0.0a",
+        "progress": 60,
         "color": "var(--accent)",
         "added": "2026-01-20"
       },
@@ -160,6 +160,13 @@
       }
     ],
     "completed": [
+      {
+        "id": "r-c-k2",
+        "name": "Kernel Driver Generation 2",
+        "desc": "Ground-up ring-0 rewrite — hypervisor-assisted isolation, EPT shadow scanning, boot-chain attestation and runtime-updatable BYOVD blocklist",
+        "completedDate": "2026-09-06",
+        "shippedInVersion": "v0.6.0.0a"
+      },
       {
         "id": "r-c1",
         "name": "DMA Board Detection",

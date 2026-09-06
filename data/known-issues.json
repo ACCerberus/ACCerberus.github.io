@@ -1,18 +1,6 @@
 {
-  "lastUpdated": "2026-07-31T00:00:00Z",
+  "lastUpdated": "2026-09-06T16:00:00Z",
   "openIssues": [
-    {
-      "id": "KI-2026-014",
-      "title": "Elevated false-positive rate on ASUS ROG boards running Armoury Crate",
-      "status": "fix-in-progress",
-      "severity": "minor",
-      "component": "kernel",
-      "openedAt": "2026-07-24T09:12:00Z",
-      "affectedRate": "~2.1% of sessions on affected hardware",
-      "description": "Armoury Crate's AsIO3.sys driver registers a kernel callback pattern that occasionally trips our instrumentation-callback heuristic. Not a security issue — purely a detection tuning problem.",
-      "workaround": "Partners can temporarily exclude AsIO3.sys via the kernel-scan allowlist in the partner dashboard (Settings → Detection Tuning → Driver Allowlist).",
-      "targetFix": "v0.5.1.0b"
-    },
     {
       "id": "KI-2026-015",
       "title": "Webhook retry backoff too aggressive under regional failover",
@@ -26,16 +14,40 @@
       "targetFix": "v0.5.0.2b"
     },
     {
-      "id": "KI-2026-016",
-      "title": "SDK Unity package occasionally double-fires OnSessionStart in Editor",
+      "id": "KI-2026-017",
+      "title": "Gen-2 driver falls back to legacy attestation on some AMD AGESA 1.2.0.3 boards",
+      "status": "fix-in-progress",
+      "severity": "minor",
+      "component": "kernel",
+      "openedAt": "2026-09-04T10:20:00Z",
+      "affectedRate": "~1.4% of alpha-channel sessions, all on X670/X870 boards with AGESA 1.2.0.3",
+      "description": "With VBS enabled, the boot-chain attestation reads an inconsistent PCR 7 value on these firmware revisions. The driver detects the mismatch and downgrades to the 0.5.x attestation path rather than failing the session — protection is unchanged, only the attestation report is marked \"legacy\".",
+      "workaround": "None required. Partners who need full attestation on these boards can keep the affected titles on the 0.5.x beta channel until the fix ships.",
+      "targetFix": "v0.6.0.1a"
+    },
+    {
+      "id": "KI-2026-018",
+      "title": "Zero-Footprint Mode preview delays the second scan cycle on hybrid CPUs",
+      "status": "confirmed",
+      "severity": "minor",
+      "component": "kernel",
+      "openedAt": "2026-09-05T08:05:00Z",
+      "affectedRate": "Opt-in preview only — up to 400 ms added to the second scan cycle on Intel hybrid parts",
+      "description": "Re-mapping the scan engine after the first unmap occasionally lands on an E-core and misses its timing budget once. Subsequent cycles are unaffected. This is why the mode ships as opt-in in the alpha.",
+      "workaround": "Leave Zero-Footprint Mode disabled (the default) for titles where the first minute of a session is latency-critical.",
+      "targetFix": "v0.6.0.2a"
+    },
+    {
+      "id": "KI-2026-019",
+      "title": "Thunderbolt DMA path check can flag eGPU enclosures as unattested devices",
       "status": "investigating",
       "severity": "minor",
-      "component": "sdk",
-      "openedAt": "2026-07-29T11:05:00Z",
-      "affectedRate": "Editor/Play-mode only — not observed in packaged builds",
-      "description": "Domain reload in the Unity Editor can occasionally re-fire the session-start callback before the prior session has fully torn down, producing duplicate telemetry rows in Editor testing.",
-      "workaround": "Ignore duplicate rows in Editor test data, or wrap OnSessionStart with a one-shot guard. Packaged builds are unaffected.",
-      "targetFix": "Under investigation — no ETA yet"
+      "component": "hardware",
+      "openedAt": "2026-09-06T09:30:00Z",
+      "affectedRate": "Laptops with an external GPU over Thunderbolt 4 / USB4 — flagged for review, never auto-banned",
+      "description": "The new external PCIe tunnel enumeration treats an eGPU enclosure whose firmware is not yet in the fingerprint database as an unknown DMA-capable device. Sessions are routed to manual review, not auto-ban, so no player has been banned by this.",
+      "workaround": "Partners can allowlist enclosure vendor IDs under Settings → Detection Tuning → PCIe Allowlist while enclosure firmware is added to the database.",
+      "targetFix": "Firmware database update — no driver release needed"
     }
   ]
 }

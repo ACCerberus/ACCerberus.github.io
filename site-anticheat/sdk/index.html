@@ -419,10 +419,11 @@
       <div class="release-hero-top">
         <div class="release-version-block">
           <div class="release-version-label">Current Release</div>
-          <div class="release-version-num">v0.5.0.0<span style="font-size:1.4rem;color:var(--accent);font-weight:600;">b</span></div>
+          <div class="release-version-num">v0.6.0.0<span style="font-size:1.4rem;color:var(--purple);font-weight:600;">a</span></div>
           <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-            <span class="release-tag">BETA</span>
-            <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-dim);">Released Jul 26, 2026</span>
+            <span class="release-tag" style="background:rgba(136,96,232,0.12);color:var(--purple);">ALPHA</span>
+            <span class="release-tag">KERNEL DRIVER GEN 2</span>
+            <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-dim);">Released Sep 6, 2026 &middot; stable beta channel: v0.5.1.9b</span>
           </div>
         </div>
         <div class="release-actions">
@@ -436,11 +437,11 @@
       <div class="release-stats">
         <div class="release-stat">
           <div class="release-stat-label">File Size</div>
-          <div class="release-stat-value">4.9 MB</div>
+          <div class="release-stat-value">5.6 MB</div>
         </div>
         <div class="release-stat">
           <div class="release-stat-label">Archive</div>
-          <div class="release-stat-value">cerberus-sdk-v0.5.0.0b-win64.zip</div>
+          <div class="release-stat-value">cerberus-sdk-v0.6.0.0a-win64.zip</div>
         </div>
         <div class="release-stat">
           <div class="release-stat-label">Platform</div>
@@ -449,7 +450,7 @@
         <div class="release-stat" style="flex-basis:100%;">
           <div class="release-stat-label">SHA-256 Checksum</div>
           <div class="release-stat-value checksum" id="checksumVal">
-            b6d4e91f6a2701b40f2c1de038f5c9a3e7b4021d986f75c3a9014e5c81f96a3
+            3e7c0a91d4b25f6e8c1a7d03f9b64e2c5a8d1f70b3c96e4a2d5f8b1c07e93a6d
             <button class="checksum-copy" onclick="copyChecksum()" id="checksumCopyBtn" title="Copy checksum">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               Copy
@@ -462,7 +463,7 @@
     <!-- SDK COMPONENTS -->
     <div class="section-header reveal">
       <div class="section-title">SDK Components</div>
-      <div class="section-subtitle">Everything included in the cerberus-sdk-v0.5.0.0b-win64.zip archive</div>
+      <div class="section-subtitle">Everything included in the cerberus-sdk-v0.6.0.0a-win64.zip archive</div>
     </div>
     <div class="components-grid" style="margin-bottom:40px;">
 
@@ -498,7 +499,7 @@
         <div class="component-desc">Step-by-step PDF covering build setup, API key provisioning, session lifecycle, and error handling.</div>
         <div class="component-meta">
           <span class="component-badge badge-pdf">PDF</span>
-          <span class="component-size">CerberusSDK-IntegrationGuide-v0.5.0.0b.pdf &middot; 1.2 MB</span>
+          <span class="component-size">CerberusSDK-IntegrationGuide-v0.6.0.0a.pdf &middot; 1.2 MB</span>
         </div>
       </div>
 
@@ -862,8 +863,8 @@
       var n = incrementDlCount();
       renderDlCount(n);
       var a = document.createElement('a');
-      a.href = '/downloads/cerberus-sdk-v0.5.0.0b.zip';
-      a.download = 'cerberus-sdk-v0.5.0.0b.zip';
+      a.href = '/downloads/cerberus-sdk-v0.6.0.0a.zip';
+      a.download = 'cerberus-sdk-v0.6.0.0a.zip';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -926,12 +927,21 @@
     // ===== VERSION HISTORY DATA =====
     var versions = [
       {
+        ver: 'v0.6.0.0a',
+        date: 'Sep 6, 2026',
+        size: '5.6 MB',
+        changes: 'Major: kernel driver generation 2 — ring-0 rewrite, hypervisor-assisted isolation, EPT shadow scan, boot-chain attestation, IOMMU enforcement, SDK 0.6 (async init, ABI v3, C#/Rust bindings), appeal pipeline.',
+        seed: 42643,
+        current: true,
+        milestone: true
+      },
+      {
         ver: 'v0.5.0.0b',
         date: 'Jul 26, 2026',
         size: '4.9 MB',
         changes: 'Cross-Session Behavioral Graph reaches general availability, automated replay triage queue, Adversarial Replay Sandbox refinements.',
         seed: 42601,
-        current: true
+        current: false
       },
       {
         ver: 'v0.4.2.0b',
@@ -1074,8 +1084,8 @@
       var g = incrementDlCount();
       renderDlCount(g);
       var a = document.createElement('a');
-      a.href = '/downloads/cerberus-sdk-v0.5.0.0b.zip';
-      a.download = 'cerberus-sdk-v0.5.0.0b.zip';
+      a.href = '/downloads/cerberus-sdk-v0.6.0.0a.zip';
+      a.download = 'cerberus-sdk-v0.6.0.0a.zip';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

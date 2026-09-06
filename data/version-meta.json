@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.5.1.9b",
-  "buildNumber": 2894,
-  "lastPatchBump": "2026-09-05T09:29:54Z",
-  "lastMinorBump": "2026-08-17T06:25:14Z",
-  "lastFeatureBump": "2026-07-26T16:00:00Z",
+  "currentVersion": "v0.6.0.0a",
+  "buildNumber": 3000,
+  "lastPatchBump": "2026-09-06T16:00:00Z",
+  "lastMinorBump": "2026-09-06T16:00:00Z",
+  "lastFeatureBump": "2026-09-06T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.6.0.0a",
+      "date": "2026-09-06T16:00:00Z",
+      "summary": "Kernel driver generation 2 — ring-0 rewrite, EPT shadow scan, boot-chain attestation, IOMMU enforcement"
+    },
     {
       "version": "v0.5.1.9b",
       "date": "2026-09-05T09:29:54Z",
@@ -49,11 +54,9 @@
       "version": "v0.5.1.1b",
       "date": "2026-08-19T06:19:32Z",
       "summary": "Kernel module compatibility fixes"
-    },
-    {
-      "version": "v0.5.1.0b",
-      "date": "2026-08-17T06:25:14Z",
-      "summary": "Automated ban appeal triage system"
     }
-  ]
+  ],
+  "channel": "alpha",
+  "stableChannelVersion": "v0.5.1.9b",
+  "codename": "Orthrus"
 }

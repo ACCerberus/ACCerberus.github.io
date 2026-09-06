@@ -238,10 +238,11 @@ jobs:
           if [ "$PATCH_AGE_H" -ge 24 ] && [ $((RANDOM % 2)) -eq 0 ]; then
             # Parse version: v0.5.0.0b -> increment last digit
             # Extract numeric parts
-            BASE=$(echo "$CUR_VERSION" | sed 's/^v//' | sed 's/b$//')
+            SUFFIX=$(echo "$CUR_VERSION" | sed -E 's/.*[0-9]([ab])$/\1/')
+            BASE=$(echo "$CUR_VERSION" | sed 's/^v//' | sed -E 's/[ab]$//')
             IFS='.' read -ra PARTS <<< "$BASE"
             LAST_PART=$((${PARTS[3]} + 1))
-            NEW_VERSION="v${PARTS[0]}.${PARTS[1]}.${PARTS[2]}.${LAST_PART}b"
+            NEW_VERSION="v${PARTS[0]}.${PARTS[1]}.${PARTS[2]}.${LAST_PART}${SUFFIX}"
             BUMPED="true"
             BUMP_TYPE="patch"
 
@@ -252,10 +253,11 @@ jobs:
 
           # MINOR every 14-28 days
           if [ "$MINOR_AGE_D" -ge 14 ] && [ $((RANDOM % 7)) -eq 0 ]; then
-            BASE=$(echo "$CUR_VERSION" | sed 's/^v//' | sed 's/b$//')
+            SUFFIX=$(echo "$CUR_VERSION" | sed -E 's/.*[0-9]([ab])$/\1/')
+            BASE=$(echo "$CUR_VERSION" | sed 's/^v//' | sed -E 's/[ab]$//')
             IFS='.' read -ra PARTS <<< "$BASE"
             MINOR_PART=$((${PARTS[2]} + 1))
-            NEW_VERSION="v${PARTS[0]}.${PARTS[1]}.${MINOR_PART}.0b"
+            NEW_VERSION="v${PARTS[0]}.${PARTS[1]}.${MINOR_PART}.0${SUFFIX}"
             BUMPED="true"
             BUMP_TYPE="minor"
 

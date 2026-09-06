@@ -2870,5 +2870,285 @@
         "text": "signature matching throughput up 22%"
       }
     ]
+  },
+  {
+    "version": "v0.6.0.0a",
+    "date": "2026-09-06T16:00:00Z",
+    "author": "nvoronov",
+    "codename": "Orthrus",
+    "channel": "alpha",
+    "tags": [
+      "ALPHA",
+      "MAJOR"
+    ],
+    "build": 3000,
+    "summary": "Kernel driver generation 2 — ground-up ring-0 rewrite with hypervisor-assisted isolation, EPT shadow scanning, boot-chain attestation, IOMMU enforcement and a new appeal pipeline. First release on the 0.6 alpha channel; 0.5.x remains the stable beta channel until 0.6 exits alpha.",
+    "sig": "+312 signatures shipped alongside the gen-2 driver. Covers: PhantomOverlay EPT-hooking loader, HydraDMA stealth firmware r4, SpecterRing hypervisor variants, CobaltEFI boot-chain implants. Total: 7,398.",
+    "entries": [
+      {
+        "type": "added",
+        "text": "Kernel driver generation 2 — ground-up ring-0 rewrite of cerberus_driver.sys on a modular architecture: attestation core, scan scheduler and IPC channel are now isolated components, each with its own integrity check"
+      },
+      {
+        "type": "added",
+        "text": "Hypervisor-assisted memory isolation — the Layer 1 scan engine runs inside a VBS/HVCI-protected enclave instead of asking players to disable virtualization-based security"
+      },
+      {
+        "type": "added",
+        "text": "EPT shadow-page scan — detects hypervisor-based cheats that hide code by remapping extended page tables, the primary evasion technique of the current kernel cheat generation"
+      },
+      {
+        "type": "added",
+        "text": "Driver stack attestation v2 — full boot-to-session chain: Secure Boot state, ELAM measurements and TPM 2.0 PCR 7/11 quotes are bound to the session token"
+      },
+      {
+        "type": "added",
+        "text": "PatchGuard-cooperative integrity verification — Cerberus no longer races Windows kernel patch protection; checks are scheduled around its cycles"
+      },
+      {
+        "type": "added",
+        "text": "Kernel object callback coverage — process, thread, image-load, registry and minifilter callback chains are all verified every scan cycle (previously process and thread only)"
+      },
+      {
+        "type": "added",
+        "text": "BYOVD blocklist v2 — 1,140 known-vulnerable drivers (up from 340), now updated over the signature channel at runtime without a driver release"
+      },
+      {
+        "type": "added",
+        "text": "Zero-Footprint Mode (preview, opt-in per title) — the scan engine unmaps itself from kernel memory between cycles, leaving no resident code for cheat developers to reverse"
+      },
+      {
+        "type": "added",
+        "text": "IOMMU / VT-d enforcement policy — partners can require DMA remapping on supported platforms; sessions on hosts with it disabled are flagged instead of silently trusted"
+      },
+      {
+        "type": "added",
+        "text": "PCIe TLP timing analyzer v2 — per-lane jitter profiling and completion-timeout fingerprinting catch DMA boards running current \"stealth\" firmware"
+      },
+      {
+        "type": "added",
+        "text": "Thunderbolt / USB4 DMA path coverage — external PCIe tunnels are enumerated and attested alongside internal slots"
+      },
+      {
+        "type": "added",
+        "text": "GPU shader tamper detection extended to Vulkan and DirectX 12 mesh-shader and work-graph pipelines"
+      },
+      {
+        "type": "added",
+        "text": "Behavioral model bm-3.2.0 — TCN v2 with 1000 Hz input sampling (up from 500 Hz), native gamepad support and cross-session drift tracking"
+      },
+      {
+        "type": "added",
+        "text": "Server-side movement validator (preview) — Network Sentinel replays movement server-side to flag impossible trajectories and collision bypasses"
+      },
+      {
+        "type": "added",
+        "text": "Cheat-ring detection v2 — cross-title account linkage with hardware and payment-pattern correlation"
+      },
+      {
+        "type": "added",
+        "text": "Ban appeal pipeline — every ban now issues a 20-character appeal reference (CB-XXXXX-XXXXX-XXXXX); players self-serve at cerberusac.dev/appeal and partners receive appeal.received and appeal.decided webhooks"
+      },
+      {
+        "type": "added",
+        "text": "API v2.5 — /v2/bans/{id}/appeal, /v2/attestation/{session_id}, and cursor pagination on every list endpoint"
+      },
+      {
+        "type": "added",
+        "text": "SDK 0.6 — async initialization, callback ABI v3, official C# and Rust bindings, Unreal Engine 5.5 plugin, Unity 6 package via UPM"
+      },
+      {
+        "type": "added",
+        "text": "Partner dashboard: driver channel selector (alpha / beta) per title with one-click rollback to the last 0.5.x driver"
+      },
+      {
+        "type": "added",
+        "text": "Session attestation report — a signed per-session integrity report (driver version, VBS state, IOMMU state, TPM quote result) is available from the dashboard and the API"
+      },
+      {
+        "type": "added",
+        "text": "Hybrid CPU awareness — separate P-core / E-core timing baselines for Intel 12th gen and newer and AMD Zen 5 heterogeneous parts"
+      },
+      {
+        "type": "added",
+        "text": "Unsupported-platform path — players on Linux/Proton, ARM64 or virtual machines get a clear message instead of a cryptic driver error, and the partner receives a telemetry event"
+      },
+      {
+        "type": "improved",
+        "text": "Kernel scan cycle p99 latency 2.9 ms → 1.7 ms on the reference rig (Ryzen 7 7800X3D / RTX 4070)"
+      },
+      {
+        "type": "improved",
+        "text": "Resident driver memory footprint 18.4 MB → 11.2 MB; session peak capped at 32 MB (was 45 MB)"
+      },
+      {
+        "type": "improved",
+        "text": "Driver load time 410 ms → 140 ms — no longer visible during the game splash screen"
+      },
+      {
+        "type": "improved",
+        "text": "Frame-time impact in beta partner titles measured at 0.3–0.9% (was 0.8–1.6%) across the 4K Ultra benchmark set"
+      },
+      {
+        "type": "improved",
+        "text": "Signature matching moved to a SIMD (AVX2 / AVX-512) path — 2.4× throughput on the 7,398-entry database"
+      },
+      {
+        "type": "improved",
+        "text": "Hardware fingerprint DB expanded to 3,100 verified firmware hashes; DMA board coverage 89 → 142 known devices"
+      },
+      {
+        "type": "improved",
+        "text": "Behavioral AI retrained on 3,900 new labeled samples — aimbot detection 89% → 91%, HWID spoof detection 58% → 64%"
+      },
+      {
+        "type": "improved",
+        "text": "Secondary verification before auto-ban now runs against the Adversarial Replay Sandbox in all three regions (was US-East only)"
+      },
+      {
+        "type": "improved",
+        "text": "Webhook delivery: signed payloads with replay protection, exponential backoff capped at 30 s, per-event delivery receipts in the dashboard"
+      },
+      {
+        "type": "improved",
+        "text": "Session start no longer waits for full hardware enumeration — attestation completes asynchronously within the first 5 seconds"
+      },
+      {
+        "type": "improved",
+        "text": "Overlay compatibility profiles for Discord, Steam, NVIDIA App, AMD Adrenalin, OBS, Medal and Xbox Game Bar — 27 known-good hook patterns allowlisted at the driver level"
+      },
+      {
+        "type": "improved",
+        "text": "Driver telemetry reduced to 11 fields, each documented on the privacy page; nothing leaves the session boundary without a detection event"
+      },
+      {
+        "type": "improved",
+        "text": "Regional signature sync propagation 90 s → 20 s across US-East, EU-West and AP-Southeast"
+      },
+      {
+        "type": "improved",
+        "text": "Unreal plugin builds cleanly on UE 5.3 through 5.5 with no engine-source modifications"
+      },
+      {
+        "type": "fixed",
+        "text": "BSOD (SYSTEM_SERVICE_EXCEPTION) on sleep/resume when a scan cycle was mid-flight during the S3 transition"
+      },
+      {
+        "type": "fixed",
+        "text": "PTE scan race with Windows 11 24H2 memory compression that produced roughly 0.3% of all false positives"
+      },
+      {
+        "type": "fixed",
+        "text": "Handle-table audit false positive on Windows 11 24H2/25H2 with Recall or Windows Studio Effects enabled"
+      },
+      {
+        "type": "fixed",
+        "text": "Large-page allocation edge case in memory permission auditing (titles using custom allocators with 2 MB pages)"
+      },
+      {
+        "type": "fixed",
+        "text": "IOMMU attestation crash on systems with VT-d disabled in firmware but reported as present by ACPI"
+      },
+      {
+        "type": "fixed",
+        "text": "False positives on Corsair iCUE, Razer Synapse, ASUS Armoury Crate (AsIO3.sys), Logitech G HUB and Nahimic drivers registering kernel callbacks — closes KI-2026-014"
+      },
+      {
+        "type": "fixed",
+        "text": "PCIe enumeration timeout on AMD X870E boards with more than four M.2 devices populated"
+      },
+      {
+        "type": "fixed",
+        "text": "CPUID timing check false positive on Ryzen 9000 X3D parts under aggressive PBO curves"
+      },
+      {
+        "type": "fixed",
+        "text": "Intel Arc and RTX 50-series driver overlays incorrectly classified as external overlay injection"
+      },
+      {
+        "type": "fixed",
+        "text": "Session token refresh failure after 6+ hours that forced a re-attestation mid-match"
+      },
+      {
+        "type": "fixed",
+        "text": "Memory leak in the IPC channel when the game process crashed before session teardown"
+      },
+      {
+        "type": "fixed",
+        "text": "Signature loader could apply a partially downloaded update during a regional failover"
+      },
+      {
+        "type": "fixed",
+        "text": "Unity Editor domain reload double-firing OnSessionStart — the callback is now one-shot per session (closes KI-2026-016)"
+      },
+      {
+        "type": "fixed",
+        "text": "C# binding marshaling fault on ARM64 Windows hosts"
+      },
+      {
+        "type": "fixed",
+        "text": "Webhook signature mismatch on payloads over 64 KB"
+      },
+      {
+        "type": "fixed",
+        "text": "Deadlock between the manual-review pipeline and the replay-sandbox verdict engine when both resolved within the same tick"
+      },
+      {
+        "type": "security",
+        "text": "IOCTL buffer-length validation bypass in the 0.5.x driver control device, found by the internal red team — no evidence of exploitation in the wild; CVE assignment pending"
+      },
+      {
+        "type": "security",
+        "text": "Privilege check added to the driver control device — only the attested game process can issue scan commands (previously any elevated process)"
+      },
+      {
+        "type": "security",
+        "text": "Signature loader verifies an Ed25519 signature on every update before mapping it, closing the partial-update TOCTOU"
+      },
+      {
+        "type": "security",
+        "text": "SDK authentication moved to short-lived session tokens bound to the driver attestation — a leaked API key can no longer start a session on its own"
+      },
+      {
+        "type": "security",
+        "text": "Driver-to-service channel is encrypted end to end with per-session keys derived from the TPM quote"
+      },
+      {
+        "type": "security",
+        "text": "Driver remains EV code-signed; the gen-2 build has been submitted for WHQL certification (pending)"
+      },
+      {
+        "type": "removed",
+        "text": "Legacy usermode-only scan mode (v0.1-era) — every session now requires the kernel driver"
+      },
+      {
+        "type": "removed",
+        "text": "32-bit process scanning path — no partner title has shipped a 32-bit binary since 2025"
+      },
+      {
+        "type": "removed",
+        "text": "v1 webhook payload format (deprecated since v0.4.0.0b)"
+      },
+      {
+        "type": "deprecated",
+        "text": "Windows 10 20H2 / 21H1 — the v0.6 driver requires Windows 10 21H2 or Windows 11; 0.5.x continues to receive signature updates for older builds until 2026-12-01"
+      },
+      {
+        "type": "deprecated",
+        "text": "SDK callback ABI v2 — still shipped for one release cycle, removed in v0.7"
+      },
+      {
+        "type": "breaking",
+        "text": "cerberus_init() is now asynchronous — call cerberus_init_async() and wait for CERBERUS_EVT_READY before starting a session"
+      },
+      {
+        "type": "breaking",
+        "text": "OnBan callbacks receive a CerberusBanInfo struct (including the appeal reference) instead of a bare ban ID string"
+      },
+      {
+        "type": "breaking",
+        "text": "Minimum supported SDK on the 0.6 driver channel is v0.5.0.0b — v0.4.x clients are rejected with CERBERUS_ERR_SDK_TOO_OLD"
+      }
+    ]
   }
 ]

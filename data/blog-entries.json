@@ -262,5 +262,43 @@
     "title": "QA Pass Rate Report: All Configurations",
     "author": "jpark",
     "generated": true
+  },
+  {
+    "date": "2026-09-06",
+    "timestamp": "2026-09-06T16:00:00Z",
+    "type": "milestone",
+    "title": "Cerberus v0.6.0.0a: Kernel Driver Generation 2 Enters Alpha",
+    "author": "nvoronov",
+    "readTime": 7,
+    "tags": [
+      "release",
+      "kernel",
+      "driver",
+      "v0.6"
+    ],
+    "sevBadge": {
+      "label": "ALPHA CHANNEL",
+      "cls": "sev-medium"
+    },
+    "statsBoxes": [
+      {
+        "value": "1.7 ms",
+        "label": "Scan p99 (was 2.9)"
+      },
+      {
+        "value": "11.2 MB",
+        "label": "Driver footprint (was 18.4)"
+      },
+      {
+        "value": "1,140",
+        "label": "BYOVD blocklist (was 340)"
+      },
+      {
+        "value": "66",
+        "label": "Release note entries"
+      }
+    ],
+    "summary": "Today we are shipping v0.6.0.0a, the first build of the second-generation Cerberus kernel driver. It is a ground-up ring-0 rewrite, it opens a new alpha channel alongside the 0.5.x beta, and it is the largest single release we have ever put in front of partners.",
+    "body": "Today we are shipping v0.6.0.0a, the first build of the second-generation Cerberus kernel driver. It is a ground-up ring-0 rewrite, it opens a new alpha channel alongside the 0.5.x beta, and it is the largest single release we have ever put in front of partners: 66 changelog entries across all four detection layers, the SDK, the API and the dashboard.\n\nWhy rewrite the driver? The 0.5.x driver was built around assumptions from 2025: that virtualization-based security would be off on most gaming PCs, that hypervisor-based cheats were a niche, and that a single monolithic driver was fine because we controlled every line of it. None of those held. VBS is on by default on every Windows 11 machine sold today, EPT-hooking loaders are now the mainstream kernel cheat technique, and a monolith meant that a bug in the PCIe enumerator could take down attestation with it.\n\nGen 2 splits the driver into three isolated components — the attestation core, the scan scheduler and the IPC channel — each with its own integrity check, and it runs the Layer 1 scan engine inside a VBS/HVCI-protected enclave. That is the change that lets us stop asking players to touch security settings. On top of it sit the headline detection features: EPT shadow-page scanning for hypervisor-hidden code, boot-to-session attestation that binds Secure Boot state, ELAM measurements and TPM 2.0 PCR quotes to the session token, and an IOMMU enforcement policy that partners can turn on per title so that DMA remapping being disabled is a flag rather than a blind spot.\n\nLayer 3 gets the second version of the PCIe TLP timing analyzer, which profiles per-lane jitter and completion timeouts to catch DMA boards running the current crop of \"stealth\" firmware, and it now enumerates Thunderbolt and USB4 tunnels alongside internal slots. Layer 2 moves to bm-3.2.0, a TCN v2 model sampling input at 1000 Hz with native gamepad support. Layer 4 gains a server-side movement validator in preview and the second version of cheat-ring detection.\n\nThe numbers we care most about moved the right way on our reference rig: scan cycle p99 latency from 2.9 ms to 1.7 ms, resident memory from 18.4 MB to 11.2 MB, driver load from 410 ms to 140 ms, and frame-time impact in partner titles from 0.8–1.6% down to 0.3–0.9%. The false positive rate stays at 0.14%; we deliberately did not tune for a lower number in an alpha where the hardware surface has grown.\n\nTwo things we want to be honest about. First, this is an alpha. Three known issues are open on day one, all minor and all documented on the status page, and we expect to find more as the alpha channel widens. Every partner title stays on the 0.5.x beta driver unless you opt into the alpha channel from the dashboard, and rollback is one click. Second, the internal red team found an IOCTL length-validation bypass in the 0.5.x control device during the rewrite. We have no evidence it was ever exploited, it is fixed in both channels, and a CVE is pending.\n\nThe SDK has breaking changes, and we are not going to pretend otherwise: initialization is now asynchronous, ban callbacks receive a struct that includes the new appeal reference instead of a bare ID, and the minimum SDK on the 0.6 channel is v0.5.0.0b. The migration guide in the docs walks through every change, and most partners we tested with were done in under an hour. Every ban now ships with a 20-character appeal reference that players can use at cerberusac.dev/appeal, and partners receive appeal.received and appeal.decided webhooks so support teams stop being the bottleneck.\n\nFull release notes are on the changelog. If you run a partner title and want in on the alpha, the channel selector is live in the dashboard today."
   }
 ]
