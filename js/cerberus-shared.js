@@ -221,6 +221,7 @@
       { name: 'Privacy Policy', desc: 'Data handling & privacy practices', url: '/privacy/' },
       { name: 'Terms of Service', desc: 'Terms & conditions of use', url: '/terms/' },
       { name: 'Partner Login', desc: 'Partner portal sign-in', url: '/login/' },
+      { name: 'Ban Appeal', desc: 'Submit or check a ban appeal by reference', url: '/appeal/' },
     ];
 
     var overlay = null;

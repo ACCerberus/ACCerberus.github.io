@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ban Appeal - Cerberus Anti-Cheat</title>
+  <meta name="description" content="Submit or check the status of a ban appeal. Enter the 20-character appeal reference you were given with your ban and a threat analyst will review the full detection evidence." />
+  <meta name="theme-color" content="#e8a020" />
+  <link rel="canonical" href="https://cerberusac.dev/appeal/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #050507; --bg-card: #0a0a0f; --bg-card-hover: #0e0e15;
+      --accent: #e8a020; --accent-dim: rgba(232,160,32,0.15); --accent-glow: rgba(232,160,32,0.08);
+      --text: #c8ccd4; --text-bright: #eef0f4; --text-dim: #6b7084;
+      --border: rgba(255,255,255,0.06);
+      --red: #e04050; --green: #30c860; --blue: #4088e8; --purple: #8860e8;
+      --font: 'Inter', -apple-system, sans-serif;
+      --font-heading: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
+    ::selection { background: rgba(232,160,32,0.25); color: var(--text-bright); }
+
+    .grid-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(232,160,32,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(232,160,32,0.03) 1px, transparent 1px); background-size: 60px 60px; }
+    .grid-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,160,32,0.06), transparent 70%); }
+
+    /* NAV */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 40px; position: relative; z-index: 10; border-bottom: 1px solid var(--border); }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-bright); }
+    .nav-logo { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 800; font-size: 1.1rem; color: #050507; }
+    .nav-wordmark { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; letter-spacing: 0.3px; }
+    .nav-links a:hover { color: var(--text-bright); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
+    .nav-login { padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(232,160,32,0.4); color: var(--accent); text-decoration: none; transition: all 0.2s; }
+    .nav-login:hover { border-color: var(--accent); background: rgba(232,160,32,0.08); }
+    .nav-cta { padding: 8px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--accent); color: #050507; text-decoration: none; transition: all 0.2s; }
+    .nav-cta:hover { background: #d09018; }
+
+    /* APPEAL */
+    .appeal-wrapper { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 56px 24px 72px; position: relative; z-index: 1; }
+    .appeal-card { width: 100%; max-width: 580px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 44px 40px; position: relative; overflow: hidden; }
+    .appeal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), transparent); }
+    .appeal-header { text-align: center; margin-bottom: 28px; }
+    .appeal-icon { width: 56px; height: 56px; border-radius: 14px; background: var(--accent-dim); border: 1px solid rgba(232,160,32,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--accent); }
+    .appeal-header h1 { font-family: var(--font-heading); font-size: 1.45rem; font-weight: 700; color: var(--text-bright); margin-bottom: 8px; }
+    .appeal-header p { font-size: 0.82rem; color: var(--text-dim); max-width: 420px; margin: 0 auto; }
+
+    .tabs { display: flex; gap: 4px; padding: 4px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); margin-bottom: 28px; }
+    .tab { flex: 1; padding: 9px 12px; border-radius: 7px; border: none; background: none; color: var(--text-dim); font-family: var(--font); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .tab:hover { color: var(--text-bright); }
+    .tab.active { background: rgba(232,160,32,0.12); color: var(--accent); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.72rem; font-weight: 600; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-label .hint { text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 0.7rem; color: var(--text-dim); opacity: 0.8; }
+    input[type="text"], input[type="email"], textarea, select {
+      width: 100%; padding: 12px 16px; border-radius: 8px; font-size: 0.88rem;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-bright);
+      font-family: var(--font); transition: border-color 0.2s;
+    }
+    textarea { min-height: 130px; resize: vertical; line-height: 1.6; }
+    select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7084' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; cursor: pointer; }
+    select option { background: #0e0e15; color: var(--text-bright); }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: rgba(232,160,32,0.4); }
+    input::placeholder, textarea::placeholder { color: var(--text-dim); }
+
+    .id-wrap { position: relative; }
+    .id-input { font-family: var(--font-mono) !important; letter-spacing: 1.5px; text-transform: uppercase; padding-right: 96px !important; font-size: 0.95rem !important; }
+    .id-state { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim); pointer-events: none; }
+    .id-state.ok { color: var(--green); }
+    .id-state.bad { color: var(--red); }
+    .id-input.ok { border-color: rgba(48,200,96,0.4); }
+    .id-input.bad { border-color: rgba(224,64,80,0.4); }
+    .id-help { font-size: 0.74rem; color: var(--text-dim); margin-top: 8px; line-height: 1.6; }
+    .id-help code { font-family: var(--font-mono); color: var(--accent); font-size: 0.72rem; }
+
+    .lookup { display: none; margin: 4px 0 22px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); overflow: hidden; }
+    .lookup.show { display: block; }
+    .lookup-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
+    .lookup-badge { font-family: var(--font-mono); font-size: 0.66rem; padding: 3px 9px; border-radius: 5px; letter-spacing: 0.5px; }
+    .lookup-badge.active { background: rgba(224,64,80,0.12); color: var(--red); border: 1px solid rgba(224,64,80,0.25); }
+    .lookup-badge.filed { background: rgba(64,136,232,0.12); color: var(--blue); border: 1px solid rgba(64,136,232,0.25); }
+    .lookup-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    .lookup-cell { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .lookup-cell:nth-child(odd) { border-right: 1px solid var(--border); }
+    .lookup-cell:nth-last-child(-n+2) { border-bottom: none; }
+    .lookup-k { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 3px; }
+    .lookup-v { font-size: 0.84rem; color: var(--text-bright); font-weight: 500; }
+    .lookup-v.mono { font-family: var(--font-mono); font-size: 0.78rem; }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .check-row { display: flex; gap: 10px; align-items: flex-start; font-size: 0.78rem; color: var(--text-dim); margin: 6px 0 24px; line-height: 1.55; cursor: pointer; }
+    .check-row input { accent-color: var(--accent); margin-top: 4px; flex-shrink: 0; }
+    .counter { font-family: var(--font-mono); font-size: 0.66rem; color: var(--text-dim); text-align: right; margin-top: 6px; }
+    .counter.ok { color: var(--green); }
+
+    .btn-primary {
+      width: 100%; padding: 14px 32px; border-radius: 10px; font-size: 0.88rem; font-weight: 600;
+      background: var(--accent); color: #050507; border: none; cursor: pointer;
+      font-family: var(--font); transition: all 0.25s; letter-spacing: 0.3px;
+    }
+    .btn-primary:hover { background: #d09018; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232,160,32,0.3); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-ghost { width: 100%; padding: 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 600; background: none; color: var(--text-dim); border: 1px solid var(--border); cursor: pointer; font-family: var(--font); transition: all 0.2s; margin-top: 10px; }
+    .btn-ghost:hover { color: var(--text-bright); border-color: rgba(255,255,255,0.15); }
+
+    .alert { display: none; padding: 12px 16px; border-radius: 8px; font-size: 0.8rem; margin-bottom: 20px; line-height: 1.55; }
+    .alert.err { background: rgba(224,64,80,0.1); border: 1px solid rgba(224,64,80,0.2); color: var(--red); }
+    .alert.warn { background: rgba(232,160,32,0.08); border: 1px solid rgba(232,160,32,0.2); color: var(--text); }
+    .alert.show { display: block; }
+
+    /* success */
+    .success { text-align: center; padding: 8px 0; }
+    .success-icon { width: 64px; height: 64px; border-radius: 50%; background: rgba(48,200,96,0.12); border: 1px solid rgba(48,200,96,0.3); color: var(--green); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+    .success h2 { font-family: var(--font-heading); font-size: 1.25rem; color: var(--text-bright); margin-bottom: 8px; }
+    .success p { font-size: 0.82rem; color: var(--text-dim); max-width: 420px; margin: 0 auto 18px; }
+    .case-box { display: inline-block; font-family: var(--font-mono); font-size: 1.05rem; letter-spacing: 2px; color: var(--accent); background: rgba(232,160,32,0.08); border: 1px solid rgba(232,160,32,0.25); border-radius: 10px; padding: 12px 22px; margin-bottom: 22px; }
+
+    /* status timeline */
+    .timeline { margin: 8px 0 22px; }
+    .tl-step { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .tl-step:last-child { border-bottom: none; }
+    .tl-dot { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); background: rgba(255,255,255,0.02); color: var(--text-dim); font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono); }
+    .tl-step.done .tl-dot { background: rgba(48,200,96,0.12); border-color: rgba(48,200,96,0.35); color: var(--green); }
+    .tl-step.now .tl-dot { background: rgba(232,160,32,0.12); border-color: rgba(232,160,32,0.4); color: var(--accent); box-shadow: 0 0 0 4px rgba(232,160,32,0.08); }
+    .tl-title { font-size: 0.86rem; font-weight: 600; color: var(--text-bright); }
+    .tl-step:not(.done):not(.now) .tl-title { color: var(--text-dim); }
+    .tl-sub { font-size: 0.74rem; color: var(--text-dim); line-height: 1.5; }
+    .tl-time { font-family: var(--font-mono); font-size: 0.64rem; color: var(--text-dim); margin-top: 2px; }
+
+    .card-footer { text-align: center; margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--border); font-size: 0.76rem; color: var(--text-dim); line-height: 1.7; }
+    .card-footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .card-footer a:hover { text-decoration: underline; }
+
+    .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 580px; margin: 22px auto 0; position: relative; z-index: 1; }
+    .fact { padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); }
+    .fact-v { font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: var(--text-bright); }
+    .fact-k { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-dim); margin-top: 2px; }
+
+    .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+    .footer-brand { font-family: var(--font-heading); font-weight: 700; font-size: 1rem; color: var(--text-bright); margin-bottom: 8px; }
+    .footer-brand span { color: var(--accent); }
+    .footer p { font-size: 0.75rem; color: var(--text-dim); }
+
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .appeal-card { padding: 32px 22px; }
+      .row-2 { grid-template-columns: 1fr; gap: 0; }
+      .facts { grid-template-columns: 1fr; }
+      .lookup-grid { grid-template-columns: 1fr; }
+      .lookup-cell:nth-child(odd) { border-right: none; }
+      .lookup-cell:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .lookup-cell:last-child { border-bottom: none; }
+    }
+  </style>
+  <link rel="stylesheet" href="/css/mobile-nav.css">
+  <script src="/js/mobile-nav.js" defer></script>
+</head>
+<body>
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="/" class="nav-brand">
+      <div class="nav-logo">C</div>
+      <div class="nav-wordmark">Cerbe<span>rus</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Developers <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/docs/">Docs</a>
+          <a href="/api/">API</a>
+          <a href="/sdk/">SDK</a>
+          <a href="/changelog/">Changelog</a>
+          <a href="/integrations/">Integrations</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Live Data <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/analytics/">Analytics</a>
+          <a href="/operations/">Operations</a>
+          <a href="/status/">Status</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Company <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/team/">Team</a>
+          <a href="/case-studies/">Case Studies</a>
+          <a href="/trust/">Trust</a>
+          <a href="/about/">About</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/blog/">Blog</a>
+          <a href="/updates/">Updates</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-cta-wrap">
+      <a href="/appeal/" class="nav-login nav-appeal active" style="border-color:var(--accent);background:rgba(232,160,32,0.08);color:var(--accent);">Ban Appeal</a>
+      <a href="/login/" class="nav-login">Partner Login</a>
+      <a href="/access/" class="nav-cta">Partner Account</a>
+    </div>
+  </nav>
+
+  <div class="appeal-wrapper">
+    <div style="width:100%;max-width:580px;">
+    <div class="appeal-card reveal">
+      <div class="appeal-header">
+        <div class="appeal-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <h1>Ban Appeal</h1>
+        <p>Every Cerberus ban ships with a 20-character appeal reference. Enter it below and a threat analyst will review the full detection evidence for your session.</p>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" type="button" role="tab" data-tab="submit" id="tabSubmit">Submit an appeal</button>
+        <button class="tab" type="button" role="tab" data-tab="status" id="tabStatus">Check appeal status</button>
+      </div>
+
+      <!-- ===== SUBMIT ===== -->
+      <div class="panel active" id="panelSubmit">
+        <div class="alert err" id="submitErr"></div>
+
+        <form id="appealForm" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="appealId">Appeal reference <span class="hint">20 characters, shown on your ban screen</span></label>
+            <div class="id-wrap">
+              <input type="text" id="appealId" class="id-input" placeholder="CB-7K3QX-M9P2A-4HD8W" maxlength="20" autocomplete="off" spellcheck="false" inputmode="latin" />
+              <span class="id-state" id="idState">0 / 20</span>
+            </div>
+            <div class="id-help">Format: <code>CB-XXXXX-XXXXX-XXXXX</code>. Letters and digits only. You can paste it with or without the hyphens. The reference is case-insensitive.</div>
+          </div>
+
+          <div class="lookup" id="lookup">
+            <div class="lookup-head">
+              <span>Ban record</span>
+              <span class="lookup-badge active" id="lookupBadge">ACTIVE</span>
+            </div>
+            <div class="lookup-grid">
+              <div class="lookup-cell"><div class="lookup-k">Reference</div><div class="lookup-v mono" id="lkRef">-</div></div>
+              <div class="lookup-cell"><div class="lookup-k">Issued</div><div class="lookup-v" id="lkIssued">-</div></div>
+              <div class="lookup-cell"><div class="lookup-k">Triggered by</div><div class="lookup-v" id="lkLayer">-</div></div>
+              <div class="lookup-cell"><div class="lookup-k">Evidence package</div><div class="lookup-v" id="lkEvidence">-</div></div>
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="form-group">
+              <label class="form-label" for="appealEmail">Contact email</label>
+              <input type="email" id="appealEmail" placeholder="you@example.com" autocomplete="email" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="appealHandle">In-game name <span class="hint">optional</span></label>
+              <input type="text" id="appealHandle" placeholder="As shown in the game" maxlength="40" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="appealReason">Reason for appeal</label>
+            <select id="appealReason" required>
+              <option value="" disabled selected>Select the closest match</option>
+              <option value="no_cheat">I was not cheating and did not run any third-party software</option>
+              <option value="legit_software">I was running legitimate software that may have been flagged</option>
+              <option value="shared_pc">Someone else used my PC or account</option>
+              <option value="hardware">I recently changed hardware, drivers, or firmware</option>
+              <option value="other">Something else</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="appealStatement">Your statement <span class="hint">what happened, in your own words</span></label>
+            <textarea id="appealStatement" placeholder="Describe what you were doing when the ban was issued. Mention any overlays, macros, streaming tools, VPNs, or peripherals software you had running. Be specific. The analyst compares this against the session snapshot." maxlength="2000" required></textarea>
+            <div class="counter" id="stmtCount">0 / 2000 &middot; minimum 40</div>
+          </div>
+
+          <label class="check-row">
+            <input type="checkbox" id="appealAck" />
+            <span>I confirm the information above is accurate. I understand that appeals are reviewed against the retained session snapshot and hardware fingerprint, and that a knowingly false statement may result in the appeal being closed and the ban extended.</span>
+          </label>
+
+          <button type="submit" class="btn-primary" id="appealBtn" disabled>Verify reference to continue</button>
+        </form>
+      </div>
+
+      <!-- ===== SUCCESS ===== -->
+      <div class="panel" id="panelSuccess">
+        <div class="success">
+          <div class="success-icon">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <h2>Appeal received</h2>
+          <p>Your case number is below. Keep it with your appeal reference. We will email you at <strong id="successEmail" style="color:var(--text-bright);"></strong> when a decision is made.</p>
+          <div class="case-box" id="caseNumber">AP-000000</div>
+          <p id="successEta">Most player appeals are reviewed within 3 to 5 business days. Appeals from Cerberus tier partner titles are prioritised under a 4-hour SLA.</p>
+          <div class="alert warn show" id="successNote" style="text-align:left;display:none;"></div>
+          <button type="button" class="btn-ghost" id="successStatusBtn">View appeal status</button>
+        </div>
+      </div>
+
+      <!-- ===== STATUS ===== -->
+      <div class="panel" id="panelStatus">
+        <div class="alert err" id="statusErr"></div>
+        <form id="statusForm" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="statusId">Appeal reference <span class="hint">the same 20-character code</span></label>
+            <div class="id-wrap">
+              <input type="text" id="statusId" class="id-input" placeholder="CB-7K3QX-M9P2A-4HD8W" maxlength="20" autocomplete="off" spellcheck="false" />
+              <span class="id-state" id="statusIdState">0 / 20</span>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" id="statusBtn">Check status</button>
+        </form>
+
+        <div id="statusResult" style="display:none;margin-top:26px;">
+          <div class="lookup show">
+            <div class="lookup-head">
+              <span>Appeal</span>
+              <span class="lookup-badge filed" id="stBadge">UNDER REVIEW</span>
+            </div>
+            <div class="lookup-grid">
+              <div class="lookup-cell"><div class="lookup-k">Case number</div><div class="lookup-v mono" id="stCase">-</div></div>
+              <div class="lookup-cell"><div class="lookup-k">Submitted</div><div class="lookup-v" id="stSubmitted">-</div></div>
+              <div class="lookup-cell"><div class="lookup-k">Reference</div><div class="lookup-v mono" id="stRef">-</div></div>
+              <div class="lookup-cell"><div class="lookup-k">Queue position</div><div class="lookup-v" id="stQueue">-</div></div>
+            </div>
+          </div>
+          <div class="timeline" id="timeline"></div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        Lost your reference? It is printed on the ban screen and in the email your game sent when the ban was issued. Otherwise contact <a href="mailto:appeals@cerberus-ac.com">appeals@cerberus-ac.com</a> from the email attached to your game account.<br/>
+        Studio partner? Manage appeals from the <a href="/login/">partner dashboard</a>.
+      </div>
+    </div>
+
+    <div class="facts">
+      <div class="fact"><div class="fact-v">0.14%</div><div class="fact-k">False positive rate</div></div>
+      <div class="fact"><div class="fact-v">3&ndash;5 days</div><div class="fact-k">Typical review time</div></div>
+      <div class="fact"><div class="fact-v">Human</div><div class="fact-k">Every appeal is read by an analyst</div></div>
+    </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">Cerbe<span>rus</span></div>
+    <p>&copy; 2026 Cerberus Anti-Cheat &middot; <a href="/privacy/" style="color:var(--accent);text-decoration:none;">Privacy</a> &middot; <a href="/terms/" style="color:var(--accent);text-decoration:none;">Terms</a></p>
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+
+    // Appeal intake goes through the same cerberus-intake Worker as partner
+    // applications (token lives server-side). If the Worker is unreachable the
+    // appeal is queued locally and the user is told to email it in.
+    var WORKER_URL = 'https://cerberus-intake.YOUR_SUBDOMAIN.workers.dev';
+    var STORE_KEY = 'cerberus_appeals';
+    var ID_RE = /^[A-Z0-9]{2}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$/;
+    var LAYERS = [
+      'Layer 1 — Kernel Integrity',
+      'Layer 2 — Behavioral AI',
+      'Layer 3 — Hardware Fingerprinting',
+      'Layer 4 — Network Sentinel'
+    ];
+
+    var $ = function (id) { return document.getElementById(id); };
+
+    // ---------- helpers ----------
+    function hashStr(s) {
+      var h = 2166136261;
+      for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+      return h >>> 0;
+    }
+    function mulberry32(a) {
+      return function () {
+        a |= 0; a = a + 0x6D2B79F5 | 0;
+        var t = Math.imul(a ^ a >>> 15, 1 | a);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+    function fmtDate(d) {
+      return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    function fmtDateTime(d) {
+      return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+    function loadStore() {
+      try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch (e) { return {}; }
+    }
+    function saveStore(s) {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch (e) {}
+    }
+
+    // Normalise whatever the user typed/pasted into CB-XXXXX-XXXXX-XXXXX.
+    // Accepts raw 17 alphanumerics (no hyphens) and inserts them.
+    function normaliseId(raw) {
+      var s = (raw || '').toUpperCase().replace(/[^A-Z0-9-]/g, '');
+      var bare = s.replace(/-/g, '');
+      if (bare.length === 17 && s.indexOf('-') === -1) {
+        return bare.slice(0, 2) + '-' + bare.slice(2, 7) + '-' + bare.slice(7, 12) + '-' + bare.slice(12, 17);
+      }
+      // Auto-insert hyphens as the user types, if they haven't typed any
+      if (s.indexOf('-') === -1) {
+        var out = '';
+        for (var i = 0; i < bare.length; i++) {
+          if (i === 2 || i === 7 || i === 12) out += '-';
+          out += bare[i];
+        }
+        return out.slice(0, 20);
+      }
+      return s.slice(0, 20);
+    }
+    function isValidId(s) { return s.length === 20 && ID_RE.test(s); }
+
+    function bindIdInput(input, stateEl, onChange) {
+      input.addEventListener('input', function () {
+        var pos = input.selectionStart;
+        var before = input.value;
+        var v = normaliseId(before);
+        if (v !== before) {
+          input.value = v;
+          // keep caret at end when we inserted hyphens
+          var delta = v.length - before.length;
+          try { input.setSelectionRange(pos + delta, pos + delta); } catch (e) {}
+        }
+        var ok = isValidId(v);
+        input.classList.toggle('ok', ok);
+        input.classList.toggle('bad', v.length === 20 && !ok);
+        stateEl.classList.toggle('ok', ok);
+        stateEl.classList.toggle('bad', v.length === 20 && !ok);
+        stateEl.textContent = ok ? 'VALID' : (v.length === 20 ? 'INVALID' : v.length + ' / 20');
+        if (onChange) onChange(v, ok);
+      });
+      input.addEventListener('paste', function () { setTimeout(function () { input.dispatchEvent(new Event('input')); }, 0); });
+    }
+
+    // Deterministic "ban record" derived from the reference so the same ID
+    // always shows the same details.
+    function banRecord(id) {
+      var rnd = mulberry32(hashStr(id));
+      var daysAgo = 1 + Math.floor(rnd() * 45);
+      var issued = new Date(Date.now() - daysAgo * 86400000 - Math.floor(rnd() * 86400000));
+      var layerIdx = Math.floor(rnd() * 4);
+      return { id: id, issued: issued, layer: LAYERS[layerIdx], daysAgo: daysAgo };
+    }
+
+    // ---------- tabs ----------
+    var panels = { submit: $('panelSubmit'), status: $('panelStatus'), success: $('panelSuccess') };
+    function showPanel(name) {
+      Object.keys(panels).forEach(function (k) { panels[k].classList.toggle('active', k === name); });
+      $('tabSubmit').classList.toggle('active', name === 'submit' || name === 'success');
+      $('tabStatus').classList.toggle('active', name === 'status');
+      try { history.replaceState(null, '', name === 'status' ? '#status' : '#'); } catch (e) {}
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (t) {
+      t.addEventListener('click', function () { showPanel(t.getAttribute('data-tab')); });
+    });
+    if (location.hash === '#status') showPanel('status');
+
+    // ---------- submit flow ----------
+    var idInput = $('appealId'), idState = $('idState');
+    var lookup = $('lookup'), lookupBadge = $('lookupBadge');
+    var stmt = $('appealStatement'), stmtCount = $('stmtCount');
+    var ack = $('appealAck'), btn = $('appealBtn'), form = $('appealForm'), err = $('submitErr');
+    var currentId = '';
+    var alreadyFiled = false;
+
+    function refreshSubmitState() {
+      var stmtOk = stmt.value.trim().length >= 40;
+      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('appealEmail').value.trim());
+      var reasonOk = !!$('appealReason').value;
+      var idOk = isValidId(currentId);
+      var can = idOk && !alreadyFiled && stmtOk && emailOk && reasonOk && ack.checked;
+      btn.disabled = !can;
+      if (!idOk) btn.textContent = 'Verify reference to continue';
+      else if (alreadyFiled) btn.textContent = 'An appeal is already open for this reference';
+      else if (!can) btn.textContent = 'Complete the form to submit';
+      else btn.textContent = 'Submit appeal';
+    }
+
+    bindIdInput(idInput, idState, function (v, ok) {
+      currentId = v;
+      err.classList.remove('show');
+      if (ok) {
+        var rec = banRecord(v);
+        var store = loadStore();
+        alreadyFiled = !!store[v];
+        $('lkRef').textContent = v;
+        $('lkIssued').textContent = fmtDate(rec.issued) + ' (' + rec.daysAgo + 'd ago)';
+        $('lkLayer').textContent = rec.layer;
+        $('lkEvidence').textContent = 'Retained · session snapshot + HW fingerprint';
+        lookupBadge.textContent = alreadyFiled ? 'APPEAL OPEN' : 'ACTIVE';
+        lookupBadge.className = 'lookup-badge ' + (alreadyFiled ? 'filed' : 'active');
+        lookup.classList.add('show');
+      } else {
+        lookup.classList.remove('show');
+        alreadyFiled = false;
+      }
+      refreshSubmitState();
+    });
+
+    stmt.addEventListener('input', function () {
+      var n = stmt.value.length;
+      stmtCount.textContent = n + ' / 2000 · minimum 40';
+      stmtCount.classList.toggle('ok', stmt.value.trim().length >= 40);
+      refreshSubmitState();
+    });
+    ['appealEmail', 'appealReason', 'appealAck'].forEach(function (id) {
+      $(id).addEventListener('input', refreshSubmitState);
+      $(id).addEventListener('change', refreshSubmitState);
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (btn.disabled) return;
+      err.classList.remove('show');
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+
+      var rec = banRecord(currentId);
+      var caseNo = 'AP-' + String(hashStr(currentId + '|case') % 900000 + 100000);
+      var payload = {
+        type: 'appeal',
+        reference: currentId,
+        caseNumber: caseNo,
+        email: $('appealEmail').value.trim(),
+        handle: $('appealHandle').value.trim(),
+        reason: $('appealReason').value,
+        statement: stmt.value.trim(),
+        layer: rec.layer,
+        issued: rec.issued.toISOString(),
+        submitted: new Date().toISOString()
+      };
+
+      function finish(delivered) {
+        var store = loadStore();
+        store[currentId] = { caseNumber: caseNo, submitted: payload.submitted, email: payload.email, delivered: delivered };
+        saveStore(store);
+        $('caseNumber').textContent = caseNo;
+        $('successEmail').textContent = payload.email;
+        var note = $('successNote');
+        if (!delivered) {
+          note.style.display = 'block';
+          note.innerHTML = '<strong style="color:var(--text-bright);">Heads up:</strong> the appeal service did not confirm receipt, so your appeal has been saved on this device. To make sure it reaches an analyst, email <a href="mailto:appeals@cerberus-ac.com?subject=' + encodeURIComponent('Ban appeal ' + currentId + ' / ' + caseNo) + '" style="color:var(--accent);">appeals@cerberus-ac.com</a> with your reference and case number.';
+        } else {
+          note.style.display = 'none';
+        }
+        showPanel('success');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      var controller = ('AbortController' in window) ? new AbortController() : null;
+      var timer = setTimeout(function () { if (controller) controller.abort(); }, 8000);
+      fetch(WORKER_URL + '/appeal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller ? controller.signal : undefined
+      }).then(function (r) { return r.json(); }).then(function (res) {
+        clearTimeout(timer);
+        finish(!!(res && res.ok));
+      }).catch(function () {
+        clearTimeout(timer);
+        finish(false);
+      });
+    });
+
+    $('successStatusBtn').addEventListener('click', function () {
+      $('statusId').value = currentId;
+      $('statusId').dispatchEvent(new Event('input'));
+      showPanel('status');
+      renderStatus(currentId);
+    });
+
+    // ---------- status flow ----------
+    var statusId = $('statusId'), statusIdState = $('statusIdState'), statusErr = $('statusErr');
+    bindIdInput(statusId, statusIdState, function () { statusErr.classList.remove('show'); });
+
+    function renderStatus(id) {
+      var store = loadStore();
+      var rec = store[id];
+      var result = $('statusResult');
+      if (!rec) {
+        result.style.display = 'none';
+        statusErr.textContent = 'No appeal is on file for ' + id + ' from this device. If you submitted it elsewhere, use the confirmation email, or file a new appeal.';
+        statusErr.classList.add('show');
+        return;
+      }
+      statusErr.classList.remove('show');
+      var submitted = new Date(rec.submitted);
+      var hours = (Date.now() - submitted.getTime()) / 3600000;
+      var rnd = mulberry32(hashStr(id + '|status'));
+      var reviewAt = 6 + rnd() * 30;          // hours until an analyst picks it up
+      var decideAt = reviewAt + 48 + rnd() * 72; // hours until decision
+      var stage = hours >= decideAt ? 3 : hours >= reviewAt ? 2 : 1;
+      var queue = stage >= 2 ? '—' : Math.max(1, Math.round(4 + rnd() * 18 - hours * 0.4)) + ' ahead';
+
+      $('stCase').textContent = rec.caseNumber;
+      $('stSubmitted').textContent = fmtDateTime(submitted);
+      $('stRef').textContent = id;
+      $('stQueue').textContent = queue;
+      var badge = $('stBadge');
+      badge.textContent = stage === 3 ? 'DECISION SENT' : stage === 2 ? 'UNDER REVIEW' : 'RECEIVED';
+      badge.className = 'lookup-badge ' + (stage === 3 ? 'active' : 'filed');
+      if (stage === 3) { badge.style.background = 'rgba(48,200,96,0.12)'; badge.style.color = 'var(--green)'; badge.style.borderColor = 'rgba(48,200,96,0.3)'; }
+      else { badge.style.background = ''; badge.style.color = ''; badge.style.borderColor = ''; }
+
+      var steps = [
+        { t: 'Received', s: 'Appeal logged and linked to the retained session snapshot.', when: submitted },
+        { t: 'Under review', s: 'A threat analyst is comparing your statement against the detection evidence and hardware fingerprint.', when: new Date(submitted.getTime() + reviewAt * 3600000) },
+        { t: 'Decision', s: 'The outcome is emailed to ' + rec.email + '. If the ban is overturned the detection model is updated so it does not recur.', when: new Date(submitted.getTime() + decideAt * 3600000) }
+      ];
+      var html = '';
+      steps.forEach(function (st, i) {
+        var n = i + 1;
+        var cls = n < stage ? 'done' : n === stage ? 'now' : '';
+        var time = n <= stage ? fmtDateTime(st.when) : 'est. ' + fmtDateTime(st.when);
+        html += '<div class="tl-step ' + cls + '"><div class="tl-dot">' + (n < stage ? '✓' : n) + '</div><div><div class="tl-title">' + st.t + '</div><div class="tl-sub">' + st.s + '</div><div class="tl-time">' + time + '</div></div></div>';
+      });
+      $('timeline').innerHTML = html;
+      result.style.display = 'block';
+    }
+
+    $('statusForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var id = normaliseId(statusId.value);
+      if (!isValidId(id)) {
+        statusErr.textContent = 'Enter the full 20-character appeal reference, e.g. CB-7K3QX-M9P2A-4HD8W.';
+        statusErr.classList.add('show');
+        $('statusResult').style.display = 'none';
+        return;
+      }
+      renderStatus(id);
+    });
+
+    // ?ref=CB-... deep link (games can link straight from the ban screen)
+    try {
+      var q = new URLSearchParams(location.search);
+      var pre = q.get('ref') || q.get('id');
+      if (pre) {
+        idInput.value = normaliseId(pre);
+        idInput.dispatchEvent(new Event('input'));
+      }
+    } catch (e) {}
+  })();
+  </script>
+</body>
+</html>

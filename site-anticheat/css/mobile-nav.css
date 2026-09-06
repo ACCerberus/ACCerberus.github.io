@@ -172,3 +172,34 @@ nav.nav-scrolled {
   opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0);
 }
 .back-to-top svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* ===== BAN APPEAL NAV BUTTON =====
+   Third action in .nav-cta-wrap on every page (next to Partner Login /
+   Partner Account). Neutral outline so it reads as a player-facing utility
+   rather than a partner CTA. */
+.nav-cta-wrap .nav-appeal {
+  border-color: rgba(255,255,255,0.12);
+  color: var(--text-dim, #6b7084);
+}
+.nav-cta-wrap .nav-appeal:hover {
+  border-color: rgba(255,255,255,0.3);
+  color: var(--text-bright, #eef0f4);
+  background: rgba(255,255,255,0.04);
+}
+@media (max-width: 1080px) {
+  .nav-cta-wrap .nav-appeal { padding-left: 12px; padding-right: 12px; }
+}
+
+/* Compact nav at laptop widths: with three actions on the right the
+   default 32px link gap + 16-20px button padding overflows around 1100px. */
+@media (max-width: 1180px) {
+  nav .nav-links { gap: 20px; }
+  nav .nav-dropdown-trigger, nav .nav-links > a { white-space: nowrap; }
+  .nav-cta-wrap { gap: 8px; }
+  .nav-cta-wrap .nav-login, .nav-cta-wrap .nav-cta { padding: 7px 12px; font-size: 0.76rem; white-space: nowrap; }
+}
+/* On phones the hamburger panel already lists these under "Account",
+   so the inline buttons only overflow the bar. */
+@media (max-width: 900px) {
+  nav .nav-cta-wrap { display: none; }
+}
