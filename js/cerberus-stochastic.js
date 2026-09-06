@@ -118,7 +118,7 @@
   // Generate behavioral model version string (v3.x series, consistent with engine)
   CS.behavioralModelVersion = function() {
     if (window.CerberusEngine) return CerberusEngine.CONFIG.behavioralModel;
-    return 'bm-3.1.4';
+    return 'bm-3.2.0';
   };
 
   // Generate PCIe firmware DB size (growing counter)

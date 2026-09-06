@@ -2,8 +2,8 @@
   "lastUpdate": "2026-09-06T20:09:51Z",
   "signatureDb": 7398,
   "totalBans": 7315,
-  "engineVersion": "v0.5.1.9b",
-  "buildNumber": 2894,
+  "engineVersion": "v0.6.0.0a",
+  "buildNumber": 3000,
   "uptimePercent": 97.8,
   "lastIncident": "2026-05-14T08:22:00Z",
   "activeSessions": 1543,
@@ -16,13 +16,13 @@
   "pendingReviews": 1,
   "signatureQueue": 2,
   "threatLevel": "ELEVATED",
-  "npuUtilization": 31.0,
+  "npuUtilization": 31,
   "mlConfidence": 98.94,
   "dmaAnomalies": 7,
   "hypervisorHeartbeat": "2026-09-06T20:09:51Z",
-  "obfuscationIntegrity": 99.90,
-  "behavioralModelVersion": "bm-3.1.4",
-  "pcieFirmwareDbSize": 2550,
+  "obfuscationIntegrity": 99.9,
+  "behavioralModelVersion": "bm-3.2.0",
+  "pcieFirmwareDbSize": 3100,
   "networkSentinelStatus": "ACTIVE",
   "packetIntegrityRate": 97.3,
   "cheatRingsDetected": 2,
@@ -91,7 +91,7 @@
       "resolvedAt": "2026-08-21T04:40:23Z"
     }
   ],
-  "lastPatchTimestamp": "2026-07-26T16:00:00Z",
+  "lastPatchTimestamp": "2026-09-06T16:00:00Z",
   "nextScheduledMaint": null,
   "notes": []
 }

@@ -107,6 +107,7 @@
     .tag-detection { background: rgba(48,200,96,0.1); color: var(--green); }
     .tag-major { background: rgba(64,136,232,0.1); color: var(--blue); }
 
+    .release-summary { font-size: 0.86rem; color: var(--text-dim); line-height: 1.7; margin: 10px 0 14px; padding: 12px 16px; border-left: 2px solid var(--accent); background: rgba(232,160,32,0.04); border-radius: 0 8px 8px 0; }
     .release-changes { list-style: none; }
     .release-changes li { font-size: 0.85rem; color: var(--text); padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; }
     .change-type { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600; padding: 2px 6px; border-radius: 3px; flex-shrink: 0; margin-top: 3px; }
@@ -364,6 +365,17 @@
     // Phase 6: Server-Side Verification (v0.5.x) — Jul 2026 - Present
 
     var majorReleases = [
+      // === PHASE 7: Kernel Driver Generation 2 ===
+      { phase: 'Phase 7 — Kernel Driver Generation 2 (v0.6.x)', ver: 'v0.6.0.0a', date: 'Sep 6, 2026', dateSeed: dateToDaySeed(2026,9,6), tags: ['ALPHA','MAJOR'], changes: [
+        {t:'ADDED',c:'Kernel driver generation 2 — ground-up ring-0 rewrite: isolated attestation core, scan scheduler and IPC channel, running inside a VBS/HVCI-protected enclave'},
+        {t:'ADDED',c:'EPT shadow-page scan for hypervisor-hidden cheat code; boot-to-session attestation with TPM 2.0 PCR quotes; IOMMU / VT-d enforcement policy'},
+        {t:'ADDED',c:'PCIe TLP timing analyzer v2, Thunderbolt / USB4 DMA coverage, BYOVD blocklist v2 (1,140 drivers, runtime-updatable), Zero-Footprint Mode preview'},
+        {t:'ADDED',c:'Behavioral model bm-3.2.0 (1000 Hz, gamepad-aware), server-side movement validator preview, cheat-ring detection v2, player ban appeal pipeline'},
+        {t:'IMPROVED',c:'Scan p99 2.9 ms \u2192 1.7 ms, driver footprint 18.4 MB \u2192 11.2 MB, load time 410 ms \u2192 140 ms, frame-time impact 0.3\u20130.9%'},
+        {t:'SECURITY',c:'IOCTL length-validation bypass in the 0.5.x control device fixed (internal red team, CVE pending); driver control device now requires the attested game process'},
+        {t:'BREAKING',c:'SDK 0.6: async init, callback ABI v3, CerberusBanInfo in OnBan; minimum SDK v0.5.0.0b; Windows 10 21H2+ required'},
+      ], sig: '+312 new signatures. Covers: PhantomOverlay EPT loader, HydraDMA stealth firmware r4, SpecterRing hypervisor variants. Total: 7,398.' },
+
       // === PHASE 6: Server-Side Verification ===
       { phase: 'Phase 6 — Server-Side Verification (v0.5.x)', ver: 'v0.5.0.0b', date: 'Jul 26, 2026', dateSeed: dateToDaySeed(2026,7,26), tags: ['BETA','MAJOR'], changes: [
         {t:'ADDED',c:'Cross-Session Behavioral Graph reaches general availability — graph neural network links repeat offenders across new accounts and hardware, graduating from early access'},
@@ -658,13 +670,13 @@
     }
 
     // Generate daily updates between last major release (Jul 26 2026) and today
-    var lastMajorSeed = dateToDaySeed(2026, 7, 26);
-    var dailyUpdates = generateDailyUpdates(lastMajorSeed + 1, today, 'v0.5.0.0b', 6413);
+    var lastMajorSeed = dateToDaySeed(2026, 9, 6);
+    var dailyUpdates = generateDailyUpdates(lastMajorSeed + 1, today, 'v0.6.0.0a', 7398);
 
     // ===== RENDER =====
     var timeline = document.getElementById('changelogTimeline');
     var tagClasses = { 'ALPHA':'tag-alpha', 'BETA':'tag-beta', 'MAJOR':'tag-major', 'DETECTION UPDATE':'tag-detection', 'SECURITY':'tag-security', 'SIG UPDATE':'tag-detection', 'LATEST':'tag-beta', 'INITIAL':'tag-major' };
-    var changeClasses = { 'ADDED':'type-added', 'FIXED':'type-fixed', 'IMPROVED':'type-improved', 'REMOVED':'type-removed', 'SECURITY':'type-security', 'TEST':'type-test' };
+    var changeClasses = { 'ADDED':'type-added', 'FIXED':'type-fixed', 'IMPROVED':'type-improved', 'REMOVED':'type-removed', 'SECURITY':'type-security', 'TEST':'type-test', 'DEPRECATED':'type-removed', 'BREAKING':'type-security', 'PERFORMANCE':'type-improved' };
 
     function renderRelease(rel, isFirst) {
       var html = '<div class="release' + (isFirst ? ' latest' : '') + (rel.isDaily ? ' daily' : '') + '"' + (rel.ver ? ' id="' + rel.ver + '"' : '') + '>';
@@ -673,6 +685,7 @@
         html += ' <span class="release-tag ' + (tagClasses[t]||'tag-beta') + '">' + t + '</span>';
       });
       html += ' <span class="release-date">' + rel.date + '</span></div>';
+      if (rel.summary) html += '<p class="release-summary">' + rel.summary + '</p>';
       html += '<ul class="release-changes">';
       rel.changes.forEach(function(c) {
         html += '<li><span class="change-type ' + (changeClasses[c.t]||'type-added') + '">' + c.t + '</span> <span>' + c.c +
@@ -698,13 +711,15 @@
           var rel = {
             ver: entry.version,
             date: entry.date,
-            tags: entry.author ? ['BETA', 'MAJOR'] : ['SIG UPDATE'],
+            tags: entry.tags || (entry.author ? ['BETA', 'MAJOR'] : ['SIG UPDATE']),
+            sig: entry.sig || null,
+            summary: entry.summary || null,
             changes: rawChanges.map(function(c) {
               var mapped = { t: c.type.toUpperCase(), c: c.text };
               if (c.relatedIncident) mapped.relatedIncident = c.relatedIncident;
               return mapped;
             }),
-            isDaily: true,
+            isDaily: !entry.author,
             isLatest: idx === 0
           };
           html += renderRelease(rel, idx === 0);

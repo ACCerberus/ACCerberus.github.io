@@ -1084,7 +1084,7 @@
       { name: 'DEV-INTERNAL-01', code: 'CRB-0001', genre: 'Sandbox', engine: 'UE5.4', region: 'US-East' },
       { name: 'DEV-INTERNAL-02', code: 'CRB-0002', genre: 'Test Harness', engine: 'Custom', region: 'US-West' },
     ];
-    var buildVersions = ['v0.5.0.0b-b2875', 'v0.5.0.0b-b2877', 'v0.4.5.4b-b2874', 'v0.4.5.4b-b2876', 'v0.4.5.3b-b2871'];
+    var buildVersions = ['v0.6.0.0a-b3000', 'v0.6.0.0a-b3002', 'v0.5.1.9b-b2894', 'v0.5.1.9b-b2893', 'v0.5.1.8b-b2891'];
 
     // Seed initial active instances (5-8 on load)
     var initialCount = 8 + Math.floor(seeded(daySeed * 701) * 6);
@@ -2070,7 +2070,27 @@
       var vhEl = document.getElementById('versionHistory');
       var versions = [
         {
-          ver: 'v0.5.0.0b', date: 'Jul 26, 2026', tag: 'CURRENT', tagClass: 'vh-tag-active',
+          ver: 'v0.6.0.0a', date: 'Sep 6, 2026', tag: 'CURRENT', tagClass: 'vh-tag-active',
+          stats: { totalBans: 7315, totalDetections: 10412, falsePositives: 3, avgLatency: '1.7ms', sigCount: 7398, pentests: 512 },
+          findings: [
+            'Kernel driver generation 2 runs inside a VBS/HVCI-protected enclave — first build that does not ask players to change virtualization settings',
+            'EPT shadow-page scan caught 3 hypervisor-hooking loaders in the internal pentest set that the 0.5.x driver missed entirely',
+            'Boot-chain attestation completed on 91% of alpha-channel sessions; the rest fell back to driver-only attestation (AGESA 1.2.0.3 boards, see KI-2026-017)',
+            'Scan cycle p99 dropped from 2.9 ms to 1.7 ms with the SIMD signature path and the async attestation start',
+          ],
+          learnings: [
+            'Splitting the driver into isolated components paid off immediately — a PCIe enumerator bug in week one no longer took attestation down with it',
+            'Zero-Footprint Mode re-mapping is sensitive to E-core scheduling on hybrid CPUs — shipped as opt-in preview rather than default',
+            'Thunderbolt DMA enumeration needs an eGPU enclosure firmware database before it can be strict — currently routes to manual review, never auto-ban',
+          ],
+          improvements: [
+            'Driver memory footprint 18.4 MB → 11.2 MB, load time 410 ms → 140 ms',
+            'BYOVD blocklist 340 → 1,140 drivers, now updatable over the signature channel without a driver release',
+            'Every ban now carries a 20-character appeal reference; appeal webhooks feed the partner dashboard',
+          ]
+        },
+        {
+          ver: 'v0.5.0.0b', date: 'Jul 26, 2026', tag: 'PREVIOUS', tagClass: 'vh-tag-prev',
           stats: { totalBans: 5697, totalDetections: 8146, falsePositives: 8, avgLatency: '2.6ms', sigCount: 6413, pentests: 486 },
           findings: [
             'Cross-Session Behavioral Graph reaches general availability, linking repeat offenders across new accounts with 88% precision',

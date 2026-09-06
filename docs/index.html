@@ -218,6 +218,7 @@
         <a href="#quickstart" class="active">Quick Start</a>
         <a href="#requirements">Requirements</a>
         <a href="#installation">Installation</a>
+        <a href="#migrate-06">Migrating to v0.6 <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--purple);margin-left:4px;">NEW</span></a>
       </div>
       <div class="sidebar-section">
         <div class="sidebar-label">SDK Reference</div>
@@ -420,9 +421,9 @@ PublicDependencyModuleNames.Add(<span class="str">"CerberusSDK"</span>);
       <h3>Player / End-User Requirements</h3>
       <p>Players running games protected by Cerberus need:</p>
       <ul>
-        <li><strong>OS:</strong> Windows 10 20H2+ or Windows 11 (x64 only)</li>
+        <li><strong>OS:</strong> Windows 10 21H2+ or Windows 11 (x64 only). The v0.6 driver requires 21H2; titles on the 0.5.x beta channel still support 20H2 until 2026-12-01</li>
         <li><strong>BIOS — Secure Boot:</strong> Must be <strong>enabled</strong>. Required for hardware verification (Layer 3). Check: <code>msinfo32</code> → "Secure Boot State" should show "On"</li>
-        <li><strong>BIOS — TPM 2.0:</strong> Recommended (enables firmware attestation in v0.6+). Most modern systems have this enabled by default</li>
+        <li><strong>BIOS — TPM 2.0:</strong> Recommended — enables boot-chain attestation (Secure Boot state, ELAM measurements, PCR 7/11 quotes) on the v0.6 driver; sessions without it fall back to driver-only attestation. Most modern systems have this enabled by default</li>
         <li><strong>Windows Update:</strong> System must be on a supported Windows build. Outdated builds may fail driver signature verification</li>
         <li><strong>GPU Drivers:</strong> Up to date. Outdated GPU drivers can trigger false positives on overlay detection</li>
         <li><strong>No unsigned drivers:</strong> Systems with test-signing mode enabled (<code>bcdedit /set testsigning on</code>) will be flagged</li>
@@ -432,13 +433,13 @@ PublicDependencyModuleNames.Add(<span class="str">"CerberusSDK"</span>);
       <div class="callout callout-warn">Players do NOT need to change any BIOS settings beyond enabling Secure Boot. No manual TPM configuration, no VT-x/AMD-V changes, no special setup. If Secure Boot is already on (default on most PCs sold after 2016), the player is ready.</div>
 
       <h3>Platform Coverage</h3>
-      <p>Cerberus is Windows PC only today (Windows 10 20H2+ / Windows 11, x64). We don't have a console (PlayStation, Xbox, Switch) or mobile SDK yet — if your title ships cross-platform, Cerberus currently only covers the PC player base, not console/mobile lobbies. Console support is on our long-term roadmap but has no committed timeline in closed beta; if that's a blocker for your integration, <a href="mailto:cerberus@arsenalrx.dev">reach out</a> and we'll talk through options.</p>
+      <p>Cerberus is Windows PC only today (Windows 10 21H2+ / Windows 11, x64). We don't have a console (PlayStation, Xbox, Switch) or mobile SDK yet — if your title ships cross-platform, Cerberus currently only covers the PC player base, not console/mobile lobbies. Console support is on our long-term roadmap but has no committed timeline in closed beta; if that's a blocker for your integration, <a href="mailto:cerberus@arsenalrx.dev">reach out</a> and we'll talk through options.</p>
 
       <h2 id="installation" class="reveal">Installation</h2>
       <p>Add the SDK to your project:</p>
       <div class="code-header"><span class="code-lang">Shell</span></div>
       <div class="code-block"><span class="cmt"># Download the SDK package (provided via partner dashboard)</span>
-cerberus-sdk-v0.5.0.0b-win64.zip
+cerberus-sdk-v0.6.0.0a-win64.zip
 
 <span class="cmt"># Contents:</span>
 ├── include/
@@ -451,6 +452,51 @@ cerberus-sdk-v0.5.0.0b-win64.zip
 └── docs/
     └── integration_guide.pdf</div>
 
+      <h2 id="migrate-06" class="reveal">Migrating to v0.6</h2>
+      <p>v0.6.0.0a ships the second-generation kernel driver on a new <strong>alpha channel</strong>. Nothing changes for your title until you switch its driver channel in the partner dashboard (Settings &rarr; Driver Channel). The 0.5.x beta driver keeps receiving signature updates, and rollback is one click. When you do move, these are the changes that will break a 0.5.x integration:</p>
+      <div class="callout callout-warn"><strong>Breaking:</strong> initialization is asynchronous, ban callbacks receive a struct, and the minimum SDK on the 0.6 channel is v0.5.0.0b. Players need Windows 10 21H2 or Windows 11. Most partners we tested with finished the migration in under an hour.</div>
+      <h3>1. Asynchronous initialization</h3>
+      <p><code>cerberus_init()</code> used to block for up to 400 ms while the driver loaded. The gen-2 driver loads in ~140 ms but attestation now completes asynchronously, so initialization returns immediately and you wait for <code>CERBERUS_EVT_READY</code> before starting a session.</p>
+      <div class="code-header"><span class="code-lang">C++</span></div>
+      <div class="code-block"><span class="cmt">// v0.5.x</span>
+CerberusResult r = cerberus_init(&amp;config);
+if (r == CERBERUS_OK) cerberus_session_start(&amp;session);
+
+<span class="cmt">// v0.6.x</span>
+cerberus_init_async(&amp;config, [](CerberusEvent ev) {
+  if (ev.type == CERBERUS_EVT_READY) cerberus_session_start(&amp;session);
+  if (ev.type == CERBERUS_EVT_ATTEST_FAILED) log_attestation(ev.attest);  <span class="cmt">// legacy fallback, session still allowed</span>
+});</div>
+      <h3>2. Ban callback signature</h3>
+      <p><code>OnBan</code> now receives a <code>CerberusBanInfo</code> struct instead of a bare ban ID. The struct carries the 20-character <strong>appeal reference</strong> that you should surface on your ban screen so players can self-serve at <a href="/appeal/">cerberusac.dev/appeal</a>.</p>
+      <div class="code-header"><span class="code-lang">C++</span></div>
+      <div class="code-block"><span class="cmt">// v0.5.x</span>
+void OnBan(const char* banId);
+
+<span class="cmt">// v0.6.x</span>
+void OnBan(const CerberusBanInfo&amp; ban);
+<span class="cmt">// ban.id               "ban_9f2c..."</span>
+<span class="cmt">// ban.appealReference  "CB-7K3QX-M9P2A-4HD8W"</span>
+<span class="cmt">// ban.layer            CERBERUS_LAYER_KERNEL | BEHAVIORAL | HARDWARE | NETWORK</span>
+<span class="cmt">// ban.confidence       0.0 - 1.0</span>
+<span class="cmt">// ban.attestation      signed per-session integrity report</span></div>
+      <h3>3. Callback ABI v3</h3>
+      <p>All callbacks are registered through <code>cerberus_set_callbacks(&amp;CerberusCallbacksV3)</code>. The v2 table still works for this release and logs a deprecation warning; it is removed in v0.7. C# and Rust bindings ship with the v3 table only.</p>
+      <h3>4. New optional policies</h3>
+      <ul>
+      <li><code>config.requireIommu = true</code> — flag sessions where DMA remapping is disabled instead of trusting them. Off by default in the alpha.</li>
+      <li><code>config.zeroFootprint = true</code> — opt into the Zero-Footprint Mode preview. See <a href="/status/#known-issues">KI-2026-018</a> before enabling on latency-critical titles.</li>
+      <li><code>config.attestationReport = true</code> — attach the signed per-session attestation report to session.end webhooks.</li>
+      </ul>
+      <h3>5. Webhooks</h3>
+      <p>Two new events, <code>appeal.received</code> and <code>appeal.decided</code>, fire for the appeal pipeline. The v1 payload format has been removed; every payload is signed and carries a replay nonce. If you verify signatures manually, read the nonce from <code>X-Cerberus-Nonce</code> and reject repeats.</p>
+      <h3>6. Removed</h3>
+      <ul>
+      <li>Usermode-only scan mode. Every session requires the kernel driver.</li>
+      <li>32-bit process scanning. 64-bit game binaries only.</li>
+      <li>Windows 10 20H2 / 21H1 on the 0.6 channel.</li>
+      </ul>
+      
       <h2 id="init" class="reveal">Initialization</h2>
       <h3>CerberusConfig</h3>
       <table class="param-table">

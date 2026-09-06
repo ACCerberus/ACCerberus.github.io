@@ -1024,7 +1024,7 @@
 
         var typeMap = { 'threat': 0, 'advisory': 1, 'engineering': 2, 'milestone': 3, 'casestudy': 4, 'qa': 5, 'infra': 6 };
 
-        entries.slice().reverse().forEach(function(entry) {
+        entries.slice().forEach(function(entry) { // oldest first + unshift = newest ends up on top
           // Skip hidden entries
           if (hiddenTitles.indexOf(entry.title) !== -1) return;
 
