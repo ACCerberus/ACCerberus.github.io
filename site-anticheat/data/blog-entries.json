@@ -254,5 +254,13 @@
     "title": "Advisory: SDK Deprecation Notice",
     "author": "mzhang",
     "generated": true
+  },
+  {
+    "date": "2026-09-06",
+    "timestamp": "2026-09-06T09:43:46Z",
+    "type": "qa",
+    "title": "QA Pass Rate Report: All Configurations",
+    "author": "jpark",
+    "generated": true
   }
 ]

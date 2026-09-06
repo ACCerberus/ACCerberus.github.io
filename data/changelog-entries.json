@@ -2846,5 +2846,29 @@
         "text": "player appeal rate reduced by 18%"
       }
     ]
+  },
+  {
+    "date": "2026-09-06",
+    "timestamp": "2026-09-06T09:43:46Z",
+    "version": "v0.5.1.9b",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PhantomOverlay DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 7388 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Citrix virtual display driver"
+      },
+      {
+        "type": "improved",
+        "text": "signature matching throughput up 22%"
+      }
+    ]
   }
 ]
