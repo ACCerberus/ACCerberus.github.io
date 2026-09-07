@@ -3150,5 +3150,29 @@
         "text": "Minimum supported SDK on the 0.6 driver channel is v0.5.0.0b — v0.4.x clients are rejected with CERBERUS_ERR_SDK_TOO_OLD"
       }
     ]
+  },
+  {
+    "date": "2026-09-07",
+    "timestamp": "2026-09-07T10:47:11Z",
+    "version": "v0.6.0.0a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized StealthCore speedhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 7407 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Nahimic audio service"
+      },
+      {
+        "type": "improved",
+        "text": "player appeal rate reduced by 18%"
+      }
+    ]
   }
 ]
