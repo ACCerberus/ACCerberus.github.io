@@ -3198,5 +3198,29 @@
         "text": "regional detection variance reduced by 4.2%"
       }
     ]
+  },
+  {
+    "date": "2026-09-09",
+    "timestamp": "2026-09-09T10:09:59Z",
+    "version": "v0.6.0.0a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized DeepRoot DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 7442 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Nahimic audio service"
+      },
+      {
+        "type": "improved",
+        "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
   }
 ]
