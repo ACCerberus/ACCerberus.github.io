@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260907-1871",
+      "title": "Elevated DMA false positives",
+      "startedAt": "2026-09-07T22:37:25Z",
+      "resolvedAt": "2026-09-08T14:14:15Z",
+      "duration": "15h 36m",
+      "impactPct": 1.7,
+      "rootCause": "Redis cluster split-brain during network partition",
+      "timeline": [
+        {
+          "time": "2026-09-07T22:37:25Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-09-08T14:14:15Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Add synthetic monitoring probe for early detection",
+        "Add circuit breaker to prevent cascade failures"
+      ],
+      "lessonsLearned": [
+        "Rollback procedures should be tested quarterly"
+      ]
+    },
+    {
       "incidentId": "INC-20260903-4162",
       "title": "Memory scan false positive on accessibility software",
       "startedAt": "2026-09-03T14:13:54Z",
@@ -251,36 +279,6 @@
       "lessonsLearned": [
         "Capacity planning needs to account for burst traffic patterns"
       ]
-    },
-    {
-      "incidentId": "INC-20260721-0141",
-      "title": "Memory scan false positive on accessibility software",
-      "startedAt": "2026-07-21T13:58:59Z",
-      "resolvedAt": "2026-07-21T21:13:02Z",
-      "duration": "7h 14m",
-      "impactPct": 0.5,
-      "rootCause": "Cache invalidation storm after signature push",
-      "timeline": [
-        {
-          "time": "2026-07-21T13:58:59Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-07-21T21:13:02Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
-      ],
-      "actionItems": [
-        "Deploy canary configuration validation",
-        "Increase load test coverage for affected code path"
-      ],
-      "lessonsLearned": [
-        "Observability gaps in this subsystem masked early warning signs"
-      ],
-      "fixedInVersion": "v0.4.5.2b",
-      "fixedInVersionDate": "2026-07-22"
     }
   ]
 }

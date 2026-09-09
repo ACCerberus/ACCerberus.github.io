@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.6.0.0a",
-  "buildNumber": 3000,
-  "lastPatchBump": "2026-09-06T16:00:00Z",
+  "currentVersion": "v0.6.0.1a",
+  "buildNumber": 3001,
+  "lastPatchBump": "2026-09-09T10:09:59Z",
   "lastMinorBump": "2026-09-06T16:00:00Z",
   "lastFeatureBump": "2026-09-06T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.6.0.1a",
+      "date": "2026-09-09T10:09:59Z",
+      "summary": "Detection threshold calibration"
+    },
     {
       "version": "v0.6.0.0a",
       "date": "2026-09-06T16:00:00Z",
@@ -48,11 +53,6 @@
     {
       "version": "v0.5.1.2b",
       "date": "2026-08-20T06:20:44Z",
-      "summary": "Kernel module compatibility fixes"
-    },
-    {
-      "version": "v0.5.1.1b",
-      "date": "2026-08-19T06:19:32Z",
       "summary": "Kernel module compatibility fixes"
     }
   ],
