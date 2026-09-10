@@ -317,8 +317,10 @@
     return s;
   }
 
+  /* `reason` is an alias of `message` — the /readiness/ decode widget reads
+   * res.reason, the build tooling reads res.message. Keep both. */
   function fail(error, message) {
-    return { ok: false, valid: false, error: error, message: message };
+    return { ok: false, valid: false, error: error, message: message, reason: message };
   }
 
   function decode(code) {
@@ -409,6 +411,15 @@
         osClass: osClass,
         osClassText: OS_CLASSES[osClass] || 'unknown'
       },
+
+      /* Flat aliases for the /readiness/ decode widget's system-summary chips.
+       * Same values as `system` above, one level up. */
+      ramLabel: RAM_BUCKETS[ramBucket] || 'unknown',
+      diskLabel: DISK_BUCKETS[diskBucket] || 'unknown',
+      tpmLabel: TPM_LABELS[tpm] || 'none or unknown',
+      osLabel: OS_CLASSES[osClass] || 'unknown',
+      driverCount: driverCount,
+
       reserved: reserved
     };
   }
