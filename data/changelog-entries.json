@@ -3222,5 +3222,29 @@
         "text": "regional detection variance reduced by 4.2%"
       }
     ]
+  },
+  {
+    "date": "2026-09-10",
+    "timestamp": "2026-09-10T10:05:38Z",
+    "version": "v0.6.0.1a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized ByteForge silent aim variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 7459 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "AI inference batch throughput doubled"
+      }
+    ]
   }
 ]
