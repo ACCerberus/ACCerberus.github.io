@@ -124,8 +124,14 @@
     banWaveMax: 15,
     autoBanRatio: 0.65,
     behavioralModel: 'bm-3.2.0',
-    engineVersion: 'v0.6.0.0a',
+    engineVersion: 'v0.6.0.1a',
     versionReleaseDate: new Date('2026-09-06').getTime(),
+    // Availability targets — fractions (0.97 = 97%). Public pages quote 97–98%, never 99.9+.
+    uptimeTarget: 0.97,
+    uptimeBand: [0.972, 0.984],
+    // Partner footprint
+    studios: 12,
+    publicCaseStudies: 5,
     signatureDbBase: 4200,
     signatureDbGrowthPerDay: 3.5,
     signatureDbEpoch: new Date('2025-10-01').getTime(),
@@ -1041,10 +1047,50 @@
   }
 
   // ─── 1K: EXTENDED SNAPSHOT ───
+  // ─── AGGREGATE UPTIME (site-wide availability figures) ───
+  // All three return a PERCENTAGE number rounded to one decimal, e.g. 97.6
+  // (not a fraction). Values live inside CONFIG.uptimeBand so every page
+  // that quotes availability agrees with /sla/ and /status/.
+
+  // Calendar-month availability. monthOffset 0 = current month, 1 = last month, …
+  function monthlyUptime(monthOffset, now) {
+    now = now || new Date();
+    monthOffset = monthOffset || 0;
+    var d = new Date(now.getFullYear(), now.getMonth() - monthOffset, 1);
+    var lo = CONFIG.uptimeBand[0], hi = CONFIG.uptimeBand[1];
+    var r = seeded((d.getFullYear() * 12 + d.getMonth()) * 43);
+    var v = lo + r * (hi - lo);
+    return Math.round(v * 1000) / 10;
+  }
+
+  // Single-day availability. dayOffset 0 = today, 1 = yesterday, …
+  // Slightly wider jitter than the monthly figure (individual bad days exist), floored at 96.5%.
+  function dailyUptime(dayOffset, now) {
+    now = now || new Date();
+    dayOffset = dayOffset || 0;
+    var d = new Date(now.getTime() - dayOffset * 86400000);
+    var lo = CONFIG.uptimeBand[0], hi = CONFIG.uptimeBand[1];
+    var pad = (hi - lo) * 0.5;
+    var r = seeded(daySeed(d) * 47 + 11);
+    var v = (lo - pad) + r * ((hi + pad) - (lo - pad));
+    v = Math.max(0.965, Math.min(0.999, v));
+    return Math.round(v * 1000) / 10;
+  }
+
+  // Mean of dailyUptime over the trailing window (default 30 days), as a percentage.
+  function trailingUptime(days, now) {
+    days = Math.max(1, Math.floor(days || 30));
+    var sum = 0;
+    for (var i = 0; i < days; i++) sum += dailyUptime(i, now);
+    return Math.round((sum / days) * 10) / 10;
+  }
+
   function snapshot(now) {
     now = now || new Date();
     var arc = armsRaceEvent(now);
     return {
+      uptimeTarget: CONFIG.uptimeTarget * 100,
+      monthlyUptime: monthlyUptime(0, now),
       activeSessions: activeSessions(now),
       dailyDetections: dailyDetections(now),
       dailyBans: dailyBans(now),
@@ -1123,6 +1169,9 @@
     labProgress: labProgress,
     labLastUpdate: labLastUpdate,
     regionUptime: regionUptime,
+    monthlyUptime: monthlyUptime,
+    dailyUptime: dailyUptime,
+    trailingUptime: trailingUptime,
     providerEcosystem: providerEcosystem,
     performanceMetrics: performanceMetrics,
     dailyIncidents: dailyIncidents,

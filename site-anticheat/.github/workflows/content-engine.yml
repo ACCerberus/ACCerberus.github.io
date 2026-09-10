@@ -31,7 +31,7 @@ jobs:
           VERSION=$(jq -r '.engineVersion' data/state.json)
 
           # Provider pool
-          PROVIDERS=("PhantomOverlay" "RingZero" "KernelVault" "GhostWare" "ShadowPatcher" "VoidHook" "NullDriver" "ByteForge" "StealthCore" "DarkModule" "HexShield" "CipherLoad" "DeepRoot" "SilentByte" "ApexHack")
+          PROVIDERS=("PhantomOverlay" "GhostWare" "VoidEngine" "NexusCheat" "PrismHack" "CobaltEFI" "HydraDMA" "SpecterRing")
           PROV_IDX=$((RANDOM % ${#PROVIDERS[@]}))
           PROVIDER="${PROVIDERS[$PROV_IDX]}"
 
@@ -46,7 +46,7 @@ jobs:
           FIX_TARGET="${FIX_TARGETS[$FIX_IDX]}"
 
           # Improvement metrics
-          METRICS=("scan latency reduced by 8%" "memory footprint decreased by 12%" "false positive rate improved by 0.002%" "detection confidence increased by 1.3%" "kernel callback response time reduced by 15ms" "signature matching throughput up 22%" "ban accuracy improved by 2.1%" "player appeal rate reduced by 18%" "session initialization time cut by 45ms" "webhook delivery success rate up to 99.98%" "regional detection variance reduced by 4.2%" "AI inference batch throughput doubled" "false negative rate decreased by 0.8%" "signature lookup p99 latency down 12ms")
+          METRICS=("scan latency reduced by 8%" "memory footprint decreased by 12%" "false positive rate improved by 0.002%" "detection confidence increased by 1.3%" "kernel callback response time reduced by 15ms" "signature matching throughput up 22%" "ban accuracy improved by 2.1%" "player appeal rate reduced by 18%" "session initialization time cut by 45ms" "webhook delivery success rate up to 99.6%" "regional detection variance reduced by 4.2%" "AI inference batch throughput doubled" "false negative rate decreased by 0.8%" "signature lookup p99 latency down 12ms")
           MET_IDX=$((RANDOM % ${#METRICS[@]}))
           METRIC="${METRICS[$MET_IDX]}"
 
@@ -116,13 +116,13 @@ jobs:
                 TITLES=("Security Advisory: Detection Engine Update" "Advisory: Signature Database Integrity" "Security Notice: False Positive Correction" "Advisory: SDK Authentication Hardening" "Advisory: Kernel Module Compatibility Update" "Security Notice: Driver Signing Certificate Rotation" "Advisory: Behavioral Model Retraining Notice" "Security Advisory: PCIe Enumeration Hardening" "Advisory: Ban API Rate Limit Policy Change" "Advisory: SDK Deprecation Notice")
                 ;;
               "engineering")
-                TITLES=("Engineering Deep Dive: Scan Pipeline Optimization" "Building Low-Latency Detection at Scale" "Neural Network Architecture for Behavioral Analysis" "Zero-Copy Memory Scanning Techniques" "Scaling Behavioral AI to 500K Concurrent Sessions" "Inside Our Signature Database Architecture" "How We Reduced False Positives by 34%" "Building a Real-Time Threat Intelligence Pipeline" "Hardware Fingerprinting: Lessons from Production" "Our Approach to Kernel-Level Security")
+                TITLES=("Engineering Deep Dive: Scan Pipeline Optimization" "Building Low-Latency Detection at Scale" "Neural Network Architecture for Behavioral Analysis" "Zero-Copy Memory Scanning Techniques" "Scaling Behavioral AI Past 1,000 Concurrent Sessions" "Inside Our Signature Database Architecture" "How We Reduced False Positives by 34%" "Building a Real-Time Threat Intelligence Pipeline" "Hardware Fingerprinting: Lessons from Production" "Our Approach to Kernel-Level Security")
                 ;;
               "milestone")
-                TITLES=("Signature Database Crosses ${SIGS} Entries" "Detection Engine Performance Milestone" "Regional Expansion Update" "Partner Integration Milestone" "Total Bans Exceed 100,000 Milestone" "New Region Deployment: Asia-Pacific" "Partner Integration Count Milestone" "One Year of Kernel-Level Protection" "Community Trust Report")
+                TITLES=("Signature Database Crosses ${SIGS} Entries" "Detection Engine Performance Milestone" "Regional Capacity Update" "Partner Integration Milestone" "Total Bans Pass ${BANS} in Closed Beta" "AP-Southeast: Six Months of Regional Data" "Closed Beta: Adding Partner Studios One at a Time" "One Year of Kernel-Level Protection" "Community Trust Report")
                 ;;
               "casestudy")
-                TITLES=("Partner Spotlight: Competitive FPS Integration" "Case Study: MMO Anti-Cheat Deployment" "Battle Royale Protection at Scale" "Esports Tournament Protection Results" "How Studio X Eliminated DMA Cheating" "Tactical Shooter: 99.2% Detection Rate" "MMO Launch Day Anti-Cheat Results" "Cross-Platform Protection Case Study" "Esports League Partnership Results" "Free-to-Play Title Cheat Reduction Study")
+                TITLES=("Partner Spotlight: Competitive FPS Integration" "Case Study: MMO Anti-Cheat Deployment" "Battle Royale Protection at Scale" "Esports Tournament Protection Results" "How One Studio Cut DMA Cheating in Half" "Tactical Shooter: Aimbot Detection Reaches 89% in Beta" "MMO Launch Day Anti-Cheat Results" "Two-Title Studio Rollout Case Study" "Esports League Partnership Results" "Free-to-Play Title Cheat Reduction Study")
                 ;;
               "qa")
                 TITLES=("Hardware Compatibility Report: AMD Zen 5" "False Positive Investigation: Discord Overlay" "Regression Suite Results: Latest Build" "Driver Stability Report: Weekly Summary" "Performance Benchmark: 4K Ultra Preset" "Soak Test Summary: 72-Hour Run" "QA Pass Rate Report: All Configurations" "Compatibility Update: New GPU Drivers" "FP Regression Baseline Update" "Hardware Lab Testing: DDR5 Modules")
@@ -139,13 +139,51 @@ jobs:
             AUTH_IDX=$((RANDOM % ${#AUTHORS[@]}))
             AUTHOR="${AUTHORS[$AUTH_IDX]}"
 
+            # Provider / region names used by the summary templates
+            B_PROVIDERS=("PhantomOverlay" "GhostWare" "VoidEngine" "NexusCheat" "PrismHack" "CobaltEFI" "HydraDMA" "SpecterRing")
+            B_PROV_IDX=$((RANDOM % ${#B_PROVIDERS[@]}))
+            B_PROVIDER="${B_PROVIDERS[$B_PROV_IDX]}"
+
+            B_REGIONS=("US-East" "EU-West" "AP-Southeast")
+            B_REG_IDX=$((RANDOM % ${#B_REGIONS[@]}))
+            B_REGION="${B_REGIONS[$B_REG_IDX]}"
+
+            # One modest summary template per post type
+            case "$POST_TYPE" in
+              "threat")
+                SUMMARY="What changed in the ${B_PROVIDER} family since the last report, and how the signature set responded. Drawn from closed-beta telemetry only, so the sample is small and the numbers move week to week."
+                ;;
+              "advisory")
+                SUMMARY="What partners should check after this change, and what happens if they do nothing. No integration work is required for most titles."
+                ;;
+              "engineering")
+                SUMMARY="Notes from the team on how this part of the engine is built and what we got wrong along the way. Figures come from the closed beta at roughly ${SIGS} signatures."
+                ;;
+              "milestone")
+                SUMMARY="Where the closed beta stands: ${SIGS} signatures in the database and ${BANS} enforcement actions since the first partner build. Modest numbers, but measured ones."
+                ;;
+              "casestudy")
+                SUMMARY="How one partner studio rolled Cerberus out on a live title, what the first weeks looked like, and which detection layers did most of the work."
+                ;;
+              "qa")
+                SUMMARY="Results from this round of hardware and regression testing, including the configurations that still fail. Anything unresolved stays on the known-issues list."
+                ;;
+              "infra")
+                SUMMARY="A short operational note on the ${B_REGION} deployment and the pipeline behind it. Mostly relevant to partners watching latency in that region."
+                ;;
+              *)
+                SUMMARY="A short update from the Cerberus team on the current closed-beta build."
+                ;;
+            esac
+
             BLOG_ENTRY=$(jq -n \
               --arg date "$TODAY" \
               --arg ts "$NOW" \
               --arg type "$POST_TYPE" \
               --arg title "$TITLE" \
               --arg author "$AUTHOR" \
-              '{date: $date, timestamp: $ts, type: $type, title: $title, author: $author, generated: true}')
+              --arg summary "$SUMMARY" \
+              '{date: $date, timestamp: $ts, type: $type, title: $title, author: $author, summary: $summary, generated: true}')
 
             jq --argjson entry "$BLOG_ENTRY" '. + [$entry]' data/blog-entries.json > data/be_tmp.json && mv data/be_tmp.json data/blog-entries.json
 
@@ -171,12 +209,12 @@ jobs:
                 LABEL="SDK"
                 NOTES_ADDED=("Added async session-init overload for Unity 6" "Added retry-with-backoff config option to webhook client" "Added Unreal Engine 5.5 plugin compatibility shim" "Added optional debug symbol package for crash triage")
                 NOTES_IMPROVED=("Reduced SDK static library size by 6%" "Improved error messages on malformed API key" "Improved cold-start initialization time by 18ms")
-                NOTES_FIXED=("Fixed memory leak in session teardown on early exit" "Fixed C# binding marshaling issue on ARM64" "Fixed crash when ban callback fired during scene unload")
+                NOTES_FIXED=("Fixed memory leak in session teardown on early exit" "Fixed C# binding marshaling issue on .NET 8" "Fixed crash when ban callback fired during scene unload")
                 ;;
               "api")
                 LABEL="API"
                 NOTES_ADDED=("Added cursor-based pagination to /v2/bans" "Added player_id filter to /v2/sessions" "Added bulk webhook resend endpoint")
-                NOTES_IMPROVED=("Reduced p99 latency on /v2/detections by 15%" "Improved rate-limit error payload with retry-after hints" "Improved webhook delivery success rate to 99.97%")
+                NOTES_IMPROVED=("Reduced p99 latency on /v2/detections by 15%" "Improved rate-limit error payload with retry-after hints" "Improved webhook delivery success rate to 99.6%")
                 NOTES_FIXED=("Fixed 500 on malformed match_id in /v2/sessions/end" "Fixed stale cache on /v2/status during failover" "Fixed webhook signature mismatch on payloads over 64KB")
                 ;;
               "docs")
@@ -238,10 +276,11 @@ jobs:
           if [ "$PATCH_AGE_H" -ge 24 ] && [ $((RANDOM % 2)) -eq 0 ]; then
             # Parse version: v0.5.0.0b -> increment last digit
             # Extract numeric parts
-            BASE=$(echo "$CUR_VERSION" | sed 's/^v//' | sed 's/b$//')
+            SUFFIX=$(echo "$CUR_VERSION" | sed -E 's/.*[0-9]([ab])$/\1/')
+            BASE=$(echo "$CUR_VERSION" | sed 's/^v//' | sed -E 's/[ab]$//')
             IFS='.' read -ra PARTS <<< "$BASE"
             LAST_PART=$((${PARTS[3]} + 1))
-            NEW_VERSION="v${PARTS[0]}.${PARTS[1]}.${PARTS[2]}.${LAST_PART}b"
+            NEW_VERSION="v${PARTS[0]}.${PARTS[1]}.${PARTS[2]}.${LAST_PART}${SUFFIX}"
             BUMPED="true"
             BUMP_TYPE="patch"
 
@@ -252,14 +291,15 @@ jobs:
 
           # MINOR every 14-28 days
           if [ "$MINOR_AGE_D" -ge 14 ] && [ $((RANDOM % 7)) -eq 0 ]; then
-            BASE=$(echo "$CUR_VERSION" | sed 's/^v//' | sed 's/b$//')
+            SUFFIX=$(echo "$CUR_VERSION" | sed -E 's/.*[0-9]([ab])$/\1/')
+            BASE=$(echo "$CUR_VERSION" | sed 's/^v//' | sed -E 's/[ab]$//')
             IFS='.' read -ra PARTS <<< "$BASE"
             MINOR_PART=$((${PARTS[2]} + 1))
-            NEW_VERSION="v${PARTS[0]}.${PARTS[1]}.${MINOR_PART}.0b"
+            NEW_VERSION="v${PARTS[0]}.${PARTS[1]}.${MINOR_PART}.0${SUFFIX}"
             BUMPED="true"
             BUMP_TYPE="minor"
 
-            SUMMARIES=("New behavioral detection models and API enhancements" "Expanded hardware fingerprinting and SDK improvements" "Multi-region optimization and new detection vectors" "AI model upgrade and performance overhaul" "Console SDK preview and cross-platform detection" "Real-time threat intelligence pipeline" "Enhanced hardware attestation framework" "Partner dashboard redesign with live analytics" "Automated ban appeal triage system" "Advanced DMA detection and response")
+            SUMMARIES=("New behavioral detection models and API enhancements" "Expanded hardware fingerprinting and SDK improvements" "Multi-region optimization and new detection vectors" "AI model upgrade and performance overhaul" "Attestation report v2 and SDK ergonomics" "Real-time threat intelligence pipeline" "Enhanced hardware attestation framework" "Partner dashboard: appeal triage and live analytics" "Automated ban appeal triage system" "Advanced DMA detection and response")
             SUM_IDX=$((RANDOM % ${#SUMMARIES[@]}))
             BUMP_SUMMARY="${SUMMARIES[$SUM_IDX]}"
           fi
@@ -448,6 +488,19 @@ jobs:
             fi
           fi
 
+      - name: Bump sitemap lastmod for generated pages
+        run: |
+          TODAY=$(date -u +"%Y-%m-%d")
+
+          if [ -f sitemap.xml ]; then
+            # Only rewrite the <lastmod> that immediately follows the /changelog/
+            # and /blog/ <loc> lines — every other entry is left untouched.
+            TODAY="$TODAY" perl -0pi -e 's{(<loc>https://cerberusac\.dev/(?:changelog|blog)/</loc>\s*<lastmod>)[^<]*(</lastmod>)}{$1 . $ENV{TODAY} . $2}ge' sitemap.xml
+            echo "Bumped sitemap lastmod to $TODAY for /changelog/ and /blog/"
+          else
+            echo "sitemap.xml not found — skipping"
+          fi
+
       - name: Commit and push
         run: |
           git config user.name "cerberus-bot"
@@ -459,6 +512,10 @@ jobs:
           if [ -d site-anticheat/data ]; then
             cp -f data/*.json site-anticheat/data/ 2>/dev/null || true
             git add site-anticheat/data/
+          fi
+          if [ -f sitemap.xml ] && [ -d site-anticheat ]; then
+            cp -f sitemap.xml site-anticheat/sitemap.xml
+            git add sitemap.xml site-anticheat/sitemap.xml
           fi
           git add data/
 

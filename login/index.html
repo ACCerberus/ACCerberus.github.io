@@ -67,7 +67,7 @@
     .remember-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
     .remember-row label { font-size: 0.78rem; color: var(--text-dim); display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .remember-row input[type="checkbox"] { accent-color: var(--accent); }
-    .forgot-link { font-size: 0.78rem; color: var(--accent); text-decoration: none; }
+    .forgot-link { font-size: 0.78rem; color: var(--accent); text-decoration: none; background: none; border: none; padding: 0; font-family: inherit; cursor: pointer; }
     .forgot-link:hover { text-decoration: underline; }
 
     .btn-login {
@@ -143,6 +143,9 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/plans/">Plans</a>
+          <a href="/downloads/">Downloads</a>
+          <a href="/readiness/">Readiness Check</a>
           <a href="/blog/">Blog</a>
           <a href="/updates/">Updates</a>
         </div>
@@ -179,7 +182,7 @@
         </div>
         <div class="remember-row">
           <label for="rememberMe"><input type="checkbox" id="rememberMe" /> Remember me</label>
-          <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
+          <button type="button" class="forgot-link" id="forgotLink">Forgot password?</button>
         </div>
         <div id="forgotNote" style="display:none;margin-top:-6px;margin-bottom:16px;font-size:0.76rem;color:var(--text-dim);line-height:1.6;padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid var(--border);">
           Password resets are handled by our partner success team — email <a href="mailto:security@cerberus-ac.com" style="color:var(--accent);">security@cerberus-ac.com</a> from your registered studio address.
@@ -191,8 +194,12 @@
         <p>Don't have an account? <a href="/access/">Request Access</a></p>
       </div>
 
-      <div style="margin-top:20px;padding:14px 16px;border-radius:10px;background:rgba(232,160,32,0.06);border:1px solid rgba(232,160,32,0.15);font-size:0.75rem;color:var(--text-dim);line-height:1.6;">
-        <strong style="color:var(--text-bright);">Demo access:</strong> <code style="color:var(--accent);">demo@cerberus-ac.dev</code> / <code style="color:var(--accent);">CerberusDemo2026!</code>
+      <div style="margin-top:20px;padding:16px;border-radius:10px;background:rgba(232,160,32,0.06);border:1px solid rgba(232,160,32,0.15);font-size:0.75rem;color:var(--text-dim);line-height:1.6;">
+        <div style="color:var(--text-bright);font-weight:600;margin-bottom:10px;">Sandbox partner account (read-only)</div>
+        <button type="button" id="sandboxBtn" style="width:100%;padding:10px 14px;border-radius:8px;border:1px solid rgba(232,160,32,0.35);background:rgba(232,160,32,0.12);color:var(--accent);font-family:inherit;font-size:0.8rem;font-weight:600;cursor:pointer;">Open sandbox dashboard</button>
+        <div style="margin-top:10px;">
+          or sign in with the shared sandbox credentials <code style="color:var(--accent);">demo@cerberus-ac.dev</code> / <code style="color:var(--accent);">CerberusDemo2026!</code> &mdash; mirrors a partner dashboard with synthetic data; production partners receive individual credentials after review.
+        </div>
       </div>
     </div>
   </div>
@@ -202,6 +209,8 @@
     <p>&copy; 2026 Cerberus Anti-Cheat &middot; <a href="/privacy/" style="color:var(--accent);text-decoration:none;">Privacy</a> &middot; <a href="/terms/" style="color:var(--accent);text-decoration:none;">Terms</a></p>
   </footer>
 
+  <script src="/js/cerberus-engine.js"></script>
+  <script src="/js/cerberus-shared.js"></script>
   <script>
     // SHA-256 hash
     async function sha256(str) {
@@ -302,7 +311,8 @@
           region: 'US-East',
           apiKey: account.apiKey || 'crbs_live_' + email.replace(/[^a-z0-9]/g, '').substring(0, 12),
           joined: account.joined || new Date().toISOString().split('T')[0],
-          approved: true
+          approved: true,
+          demo: !!account.demo
         };
         var storage = document.getElementById('rememberMe').checked ? localStorage : sessionStorage;
         storage.setItem('cerberus_partner', JSON.stringify(partner));
@@ -327,6 +337,21 @@
       var note = document.getElementById('forgotNote');
       note.style.display = note.style.display === 'none' ? 'block' : 'none';
     });
+
+    // One-click sandbox: writes the demo partner session and jumps to the dashboard.
+    (function() {
+      var btn = document.getElementById('sandboxBtn');
+      if (!btn) return;
+      btn.addEventListener('click', function() {
+        if (window.CERBERUS && typeof CERBERUS.openSandbox === 'function') {
+          CERBERUS.openSandbox();
+        } else {
+          document.getElementById('loginEmail').value = 'demo@cerberus-ac.dev';
+          document.getElementById('loginPassword').value = 'CerberusDemo2026!';
+          document.getElementById('loginForm').dispatchEvent(new Event('submit', { cancelable: true }));
+        }
+      });
+    })();
   </script>
 </body>
 </html>

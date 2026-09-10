@@ -1,0 +1,12 @@
+Cerberus Evaluation SDK 0.6.0
+Third-party notices
+
+None.
+
+The evaluation SDK has no third-party dependencies. It is a single C++ source
+file and a single public header, and links only against the C and C++ standard
+libraries provided by your toolchain.
+
+The partner runtime package ships its own THIRD_PARTY_NOTICES.txt covering the
+components used by the signed driver and the production libraries. Those are not
+included here.

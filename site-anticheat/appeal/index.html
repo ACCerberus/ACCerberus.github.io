@@ -209,6 +209,9 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/plans/">Plans</a>
+          <a href="/downloads/">Downloads</a>
+          <a href="/readiness/">Readiness Check</a>
           <a href="/blog/">Blog</a>
           <a href="/updates/">Updates</a>
         </div>
@@ -371,10 +374,10 @@
   (function () {
     'use strict';
 
-    // Appeal intake goes through the same cerberus-intake Worker as partner
-    // applications (token lives server-side). If the Worker is unreachable the
-    // appeal is queued locally and the user is told to email it in.
-    var WORKER_URL = 'https://cerberus-intake.YOUR_SUBDOMAIN.workers.dev';
+    // Appeal intake posts to the same form endpoint the rest of the site uses,
+    // so submissions actually reach us. If it is unreachable the appeal is
+    // queued locally and the player is told to email it in instead.
+    var INTAKE_URL = 'https://formspree.io/f/xpwdgvjk';
     var STORE_KEY = 'cerberus_appeals';
     var ID_RE = /^[A-Z0-9]{2}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$/;
     var LAYERS = [
@@ -573,14 +576,18 @@
 
       var controller = ('AbortController' in window) ? new AbortController() : null;
       var timer = setTimeout(function () { if (controller) controller.abort(); }, 8000);
-      fetch(WORKER_URL + '/appeal', {
+      fetch(INTAKE_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          _subject: '[Cerberus] Ban appeal ' + (payload && payload.banId ? payload.banId : ''),
+          form_type: 'ban-appeal',
+          appeal: payload
+        }),
         signal: controller ? controller.signal : undefined
-      }).then(function (r) { return r.json(); }).then(function (res) {
+      }).then(function (r) {
         clearTimeout(timer);
-        finish(!!(res && res.ok));
+        finish(r.ok);
       }).catch(function () {
         clearTimeout(timer);
         finish(false);

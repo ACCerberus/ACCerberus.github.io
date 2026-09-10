@@ -1,0 +1,176 @@
+{
+  "$comment": "Input to tools/build-releases.js. Bumping a package version is a deliberate two-place edit: change the package's own package.json AND expectVersion here, or the build refuses to run.",
+
+  "releasedAt": "2026-09-09",
+  "generator": "tools/build-releases.js",
+  "downloadsDir": "downloads",
+  "manifestPath": "data/releases.json",
+  "readinessLib": "js/cerberus-readiness.js",
+
+  "signing": {
+    "algorithm": "Ed25519",
+    "keyId": "crb-rel-2026-09",
+    "keyPath": "~/.cerberus-release-key.pem",
+    "publicKeyFile": "cerberus-release-signing-key.pub",
+    "sumsFile": "SHA256SUMS.txt",
+    "signatureFile": "SHA256SUMS.txt.sig",
+    "publicKeyUrl": "/downloads/cerberus-release-signing-key.pub",
+    "sumsUrl": "/downloads/SHA256SUMS.txt",
+    "signatureUrl": "/downloads/SHA256SUMS.txt.sig"
+  },
+
+  "policy": {
+    "sdkVersioning": "The SDK version tracks the engine minor version (0.6.x). Engine builds ship to players through the runtime updater; the SDK is not re-cut per build. An integration built against 0.6.0 links against any 0.6.x runtime.",
+    "supportWindow": "The current SDK minor and the one before it are supported. Older minors are archived and receive no fixes; partners on an archived minor should contact partner support before upgrading.",
+    "channels": {
+      "eval": "Public. No account, no key, no driver. Compiles and runs, simulates detections, protects nothing.",
+      "partner": "Delivered through the partner portal after key issuance. Contains the signed driver and the production libraries. Never published on this site.",
+      "alpha": "Engine builds under active development, currently v0.6.x. Partner titles in closed beta run these through the runtime updater.",
+      "beta": "The last stable engine line, v0.5.1.x. Still receiving signature updates while partners migrate."
+    }
+  },
+
+  "legacyZips": [
+    "cerberus-sdk-v0.4.2.0b.zip",
+    "cerberus-sdk-v0.6.0.0a.zip"
+  ],
+
+  "packages": [
+    {
+      "id": "readiness-check",
+      "slug": "cerberus-readiness-check",
+      "kind": "tool",
+      "name": "Cerberus Readiness Check",
+      "source": "tools/packages/readiness-check",
+      "expectVersion": "1.0.0",
+      "public": true,
+      "requiresAccount": false,
+      "status": "current",
+      "minOs": "Windows 10 21H2 (build 19044) or Windows 11, x64",
+      "docsUrl": "/readiness/",
+      "notesUrl": "/docs/#requirements",
+      "summary": "A single PowerShell script that runs 14 local checks and tells a player whether their PC can run a Cerberus-protected title, with OEM-generic fix-it steps for anything that fails. Offline: no network access, no telemetry, no installer.",
+      "runtime": "Windows PowerShell 5.1 (built into Windows) — nothing to install",
+      "versionAssertions": [
+        {
+          "file": "Cerberus-ReadinessCheck.ps1",
+          "pattern": "\\$ToolVersion\\s*=\\s*'([^']+)'",
+          "label": "$ToolVersion"
+        }
+      ],
+      "zeroNetworkGate": [".ps1", ".cmd", ".bat"],
+      "readmeTestVector": {
+        "file": "README.md",
+        "openMarker": "<!-- test-vector -->",
+        "closeMarker": "<!-- /test-vector -->",
+        "fields": {
+          "statuses": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "ramBucket": 7,
+          "diskBucket": 5,
+          "driverCount": 3,
+          "tpm": 2,
+          "osClass": 5
+        }
+      },
+      "contents": [
+        "Cerberus-ReadinessCheck.ps1 — the check itself, 14 checks, plain text and readable",
+        "Run-ReadinessCheck.cmd — double-click launcher",
+        "README.md — what each check means, how to verify the script is offline, exit codes",
+        "LICENSE.txt",
+        "SHA256SUMS.txt — checksums for every file in this archive"
+      ]
+    },
+    {
+      "id": "sdk-eval",
+      "slug": "cerberus-sdk-eval",
+      "kind": "sdk",
+      "name": "Cerberus Evaluation SDK",
+      "source": "tools/packages/sdk-eval",
+      "expectVersion": "0.6.0",
+      "public": true,
+      "requiresAccount": false,
+      "status": "current",
+      "minOs": "Windows 10 21H2 (build 19044) or Windows 11, x64",
+      "docsUrl": "/sdk/",
+      "notesUrl": "/docs/",
+      "callbackAbi": 3,
+      "compatibleEngine": "v0.6.x",
+      "summary": "The complete public SDK header with a local implementation you can compile, run and integrate against without an account. No driver, no key, no network, no detection — the API surface and behaviour are identical to the partner runtime, so nothing in your integration changes when the runtime is swapped in.",
+      "runtime": "CMake 3.16+, MSVC 2019 16.11+ or Clang 13+; optional .NET 8 for the C# binding",
+      "versionAssertions": [
+        {
+          "file": "include/cerberus_sdk.h",
+          "pattern": "#define\\s+CERBERUS_SDK_VERSION_STRING\\s+\"([^\"]+)\"",
+          "label": "CERBERUS_SDK_VERSION_STRING"
+        }
+      ],
+      "contents": [
+        "include/cerberus_sdk.h — the complete public API, compiles as C99 and C++17",
+        "src/cerberus_eval_stub.cpp — the evaluation implementation (simulated detections)",
+        "CMakeLists.txt — cerberus_eval static library, optional cerberus_sdk shared library, both examples",
+        "examples/cpp/minimal.cpp, examples/cpp/session_loop.cpp — buildable, runnable",
+        "examples/unreal/, examples/unity/ — illustrative engine integrations",
+        "bindings/csharp/Cerberus.cs — .NET 8 / Unity P/Invoke binding",
+        "CHANGELOG.md, EVALUATION-LICENSE.txt, THIRD_PARTY_NOTICES.txt",
+        "SHA256SUMS.txt — checksums for every file in this archive"
+      ],
+      "notIncluded": [
+        "The signed kernel driver — Layer 1 does not load",
+        "Production libraries with detection in them",
+        "An API key, or any connectivity to a region",
+        "Hardware attestation — CerberusAttestation is returned zeroed"
+      ]
+    }
+  ],
+
+  "extraArtifacts": [
+    {
+      "id": "sdk-partner-runtime",
+      "kind": "runtime",
+      "name": "Cerberus Partner Runtime",
+      "version": "0.6.0",
+      "status": "current",
+      "public": false,
+      "requiresAccount": true,
+      "file": null,
+      "fileName": null,
+      "sizeBytes": null,
+      "sha256": null,
+      "releasedAt": "2026-09-06",
+      "minOs": "Windows 10 21H2 (build 19044) or Windows 11, x64",
+      "callbackAbi": 3,
+      "compatibleEngine": "v0.6.x",
+      "docsUrl": "/sdk/",
+      "notesUrl": "/access/",
+      "deliveredVia": "Partner portal, after key issuance and a signed agreement. The signed driver and the production libraries are never published on this site — there is no public URL to fetch them from, gated or otherwise.",
+      "summary": "The shipping package: the EV code-signed kernel driver (WHQL certification pending), the production static and import libraries, the engine integration plugins, and an issued API key scoped to your title.",
+      "contents": [
+        "cerberus.sys — EV code-signed kernel driver (WHQL certification pending)",
+        "cerberus_sdk.lib / cerberus_sdk.dll — production libraries",
+        "The same cerberus_sdk.h you evaluated against",
+        "Unreal plugin and Unity package, with binaries",
+        "Your issued API key and title identifier"
+      ]
+    },
+    {
+      "id": "sdk-0.5.1-eval",
+      "kind": "sdk",
+      "name": "Cerberus Evaluation SDK",
+      "version": "0.5.1",
+      "status": "archived",
+      "public": false,
+      "requiresAccount": false,
+      "file": null,
+      "fileName": null,
+      "sizeBytes": null,
+      "sha256": null,
+      "releasedAt": "2026-07-14",
+      "minOs": "Windows 10 21H2 (build 19044) or Windows 11, x64",
+      "callbackAbi": 2,
+      "compatibleEngine": "v0.5.1.x",
+      "docsUrl": "/sdk/",
+      "notesUrl": "/changelog/",
+      "summary": "Superseded by 0.6.0 and no longer published. 0.5.x source compiles against 0.6.0 unchanged; see the SDK changelog for what was added. Partners still on 0.5.1 should contact partner support before upgrading."
+    }
+  ]
+}

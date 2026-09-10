@@ -1,0 +1,13 @@
+[package]
+name = "cerberus_sdk"
+version = "0.6.0"
+edition = "2021"
+description = "Rust bindings for the Cerberus anti-cheat SDK (evaluation build)"
+license = "LicenseRef-Cerberus-Evaluation"
+publish = false
+
+[lib]
+name = "cerberus_sdk"
+path = "src/lib.rs"
+
+[build-dependencies]

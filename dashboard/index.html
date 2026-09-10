@@ -166,6 +166,22 @@
     .setup-banner-btn { padding: 8px 20px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; background: var(--accent); color: #050507; border: none; cursor: pointer; font-family: var(--font); }
     .setup-banner-btn:hover { background: #d09018; }
 
+    /* SIMULATION BANNER */
+    .sim-banner { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; background: rgba(136,96,232,0.08); border: 1px solid rgba(136,96,232,0.35); border-radius: 14px; padding: 14px 20px; margin-bottom: 24px; }
+    .sim-tag { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--purple); background: rgba(136,96,232,0.14); border: 1px solid rgba(136,96,232,0.3); border-radius: 5px; padding: 4px 10px; flex-shrink: 0; }
+    .sim-text { flex: 1; min-width: 240px; font-size: 0.78rem; color: var(--text); line-height: 1.55; }
+    .sim-text b { color: var(--text-bright); font-weight: 600; }
+    .sim-clock { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); white-space: nowrap; }
+    .sim-clock strong { color: var(--text-bright); font-weight: 600; }
+    .sim-btn { padding: 6px 14px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; font-family: var(--font); cursor: pointer; background: rgba(136,96,232,0.14); color: var(--purple); border: 1px solid rgba(136,96,232,0.3); }
+    .sim-btn:hover { background: rgba(136,96,232,0.24); }
+    .sim-btn.ghost { background: none; color: var(--text-dim); border-color: var(--border); }
+    .sim-btn.ghost:hover { color: var(--text-bright); border-color: rgba(255,255,255,0.16); }
+    .sim-offer { background: var(--bg-card); border: 1px dashed rgba(136,96,232,0.35); border-radius: 14px; padding: 18px 22px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .sim-offer-text { font-size: 0.8rem; color: var(--text-dim); max-width: 620px; }
+    .sim-offer-text b { color: var(--text-bright); font-weight: 600; display: block; margin-bottom: 3px; font-size: 0.86rem; }
+    .dl-btn-disabled { padding: 10px 24px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; background: rgba(255,255,255,0.04); color: var(--text-dim); border: 1px solid var(--border); cursor: not-allowed; font-family: var(--font); white-space: nowrap; }
+
     /* BAN ACTION BUTTONS */
     .ban-btn { padding: 4px 10px; border-radius: 4px; font-size: 0.68rem; font-weight: 600; border: none; cursor: pointer; font-family: var(--font); transition: all 0.15s; }
     .ban-btn-unban { background: rgba(48,200,96,0.15); color: var(--green); border: 1px solid rgba(48,200,96,0.2); }
@@ -239,6 +255,9 @@
     <!-- MAIN CONTENT -->
     <div class="main">
 
+      <!-- SIMULATION BANNER / PREVIEW OFFER (persistent across tabs) -->
+      <div id="simBanner"></div>
+
       <!-- OVERVIEW -->
       <div class="panel active" id="panel-overview">
         <div class="main-header">
@@ -294,7 +313,7 @@
         <div class="table-wrap">
           <div class="table-header"><div class="table-title">Recent Detections</div></div>
           <table>
-            <thead><tr><th>Time</th><th>Type</th><th>Layer</th><th>Confidence</th><th>Action</th></tr></thead>
+            <thead><tr><th>Time</th><th>Player / Type</th><th>Layer</th><th>Confidence</th><th>Verdict</th></tr></thead>
             <tbody id="detTable"></tbody>
           </table>
         </div>
@@ -314,7 +333,7 @@
         <div class="table-wrap">
           <div class="table-header"><div class="table-title">Active Sessions</div></div>
           <table>
-            <thead><tr><th>Session ID</th><th>Region</th><th>Duration</th><th>Scans</th><th>Status</th></tr></thead>
+            <thead><tr><th>Player</th><th>Region</th><th>Duration</th><th>Scan Latency</th><th>Status</th></tr></thead>
             <tbody id="sessTable"></tbody>
           </table>
         </div>
@@ -360,7 +379,7 @@
         <div class="table-wrap">
           <div class="table-header"><div class="table-title">Recent Bans</div></div>
           <table>
-            <thead><tr><th>Time</th><th>Account</th><th>Reason</th><th>Confidence</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>Time</th><th>Player</th><th>Reason</th><th>Confidence</th><th>Status</th><th>Action</th></tr></thead>
             <tbody id="banTable"></tbody>
           </table>
         </div>
@@ -425,15 +444,22 @@
 
         <div class="info-card reveal" style="margin-top:24px;margin-bottom:24px;">
           <h3>SDK Download</h3>
-          <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;">
+          <div data-artifact="sdk-eval" style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;">
             <div style="flex:1;">
-              <div style="font-size:0.88rem;font-weight:600;color:var(--text-bright);">cerberus-sdk-v0.6.0.0a-win64.zip</div>
-              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">5.6 MB &middot; C++ static library &middot; Windows x64</div>
+              <div style="font-size:0.88rem;font-weight:600;color:var(--text-bright);" data-rel="fileName">cerberus-sdk-eval.zip</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;"><span data-rel="size">—</span> &middot; Evaluation SDK &middot; headers, examples, static stub &middot; Windows x64</div>
             </div>
-            <a href="/downloads/cerberus-sdk-v0.6.0.0a.zip" download="cerberus-sdk-v0.6.0.0a.zip" style="padding:10px 24px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--accent);color:#050507;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:8px;text-decoration:none;">
+            <a data-rel="href" download style="padding:10px 24px;border-radius:8px;font-size:0.82rem;font-weight:600;background:var(--accent);color:#050507;border:none;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:8px;text-decoration:none;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Download SDK
             </a>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;margin-top:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;">
+            <div style="flex:1;">
+              <div style="font-size:0.88rem;font-weight:600;color:var(--text-bright);">Partner runtime — signed driver + production static library</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">Provisioning pending manual review for this account.</div>
+            </div>
+            <button type="button" class="dl-btn-disabled" disabled aria-disabled="true">Provisioning pending</button>
           </div>
         </div>
 
@@ -479,7 +505,7 @@
             <div>
               <label style="display:block;font-size:0.72rem;font-weight:600;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Primary Region</label>
               <select id="setupRegion" style="width:100%;padding:10px 14px;border-radius:8px;font-size:0.85rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text-bright);font-family:var(--font);">
-                <option value="US-East">US-East</option><option value="US-West">US-West</option><option value="US-Central">US-Central</option><option value="EU-West">EU-West</option><option value="EU-Central">EU-Central</option><option value="EU-North">EU-North</option><option value="AP-Southeast">AP-Southeast</option>
+                <option value="US-East">US-East</option><option value="EU-West">EU-West</option><option value="AP-Southeast">AP-Southeast</option>
               </select>
             </div>
             <div>
@@ -558,54 +584,343 @@
     </div>
   </div>
 
+  <script src="/js/cerberus-engine.js"></script>
+  <script src="/js/cerberus-releases.js"></script>
   <script>
     // ═══════════════════════════════════════
     // AUTH CHECK
     // ═══════════════════════════════════════
-    var partner = JSON.parse(localStorage.getItem('cerberus_partner') || sessionStorage.getItem('cerberus_partner') || 'null');
-    if (!partner) { window.location.href = '/login/'; }
+    var partner = null;
+    try {
+      partner = JSON.parse(localStorage.getItem('cerberus_partner') || sessionStorage.getItem('cerberus_partner') || 'null');
+    } catch (e) { partner = null; }
+
+    var E = window.CerberusEngine || null;
+    var CFG = (E && E.CONFIG) ? E.CONFIG : null;
+    var needsSetup = false;
+    var SIM = false;
+    var simPaused = false;
+    var simTimer = null;
+    var clockTimer = null;
+    var lastUpdate = new Date();
 
     // ═══════════════════════════════════════
-    // HELPERS (must be before use)
+    // HELPERS
     // ═══════════════════════════════════════
     function statCard(label, value, change, dir, color) {
       return '<div class="stat-card ' + color + '"><div class="stat-label">' + label + '</div><div class="stat-value">' + value + '</div><div class="stat-change ' + dir + '">' + change + '</div></div>';
     }
 
+    function esc(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function hashStr(s) {
+      var h = 2166136261;
+      s = String(s || 'untitled');
+      for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+      return (h >>> 0) % 100000;
+    }
+
+    function dayAt(offset) { return new Date(Date.now() - offset * 86400000); }
+
+    function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+    function clockStr(d) { return pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + ':' + pad2(d.getSeconds()); }
+
+    function relTime(hoursAgo) {
+      if (hoursAgo < 1) return Math.max(1, Math.round(hoursAgo * 60)) + 'm ago';
+      if (hoursAgo < 24) return Math.round(hoursAgo) + 'h ago';
+      var d = Math.round(hoursAgo / 24);
+      return d + (d === 1 ? ' day ago' : ' days ago');
+    }
+
+    function num(n) { return Number(n).toLocaleString('en-US'); }
+
+    // Deterministic 0..1 from the engine PRNG, with a safe fallback.
+    function rnd(seed) {
+      if (E && typeof E.seeded === 'function') return E.seeded(seed | 0);
+      var x = Math.sin((seed | 0) * 12.9898) * 43758.5453;
+      return x - Math.floor(x);
+    }
+    function rndInt(seed, min, max) { return min + Math.floor(rnd(seed) * (max - min + 1)); }
+    function dseed(offset) {
+      var d = dayAt(offset || 0);
+      if (E && typeof E.daySeed === 'function') return E.daySeed(d);
+      return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+    }
+
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
     // ═══════════════════════════════════════
-    // INIT UI
+    // SIMULATION MODEL — one title's slice of the engine
     // ═══════════════════════════════════════
-    var needsSetup = !partner.game || partner.game === 'Untitled Project' || partner.game === '';
+    var TITLE_SEED = 0;
+    var SHARE = 1 / 18;
+    var LAYER_SHORT = ['L1 Kernel', 'L2 Behavioral AI', 'L3 Hardware FP', 'L4 Network Sentinel'];
+    var LAYER_BASE = [38, 31, 19, 12];
+    var LAYER_COLORS = ['var(--accent)', 'var(--purple)', 'var(--blue)', 'var(--green)'];
+    var REGIONS = [
+      { name: 'US-East', weight: 0.40 },
+      { name: 'EU-West', weight: 0.35 },
+      { name: 'AP-Southeast', weight: 0.25 }
+    ];
 
-    if (partner) {
-      document.getElementById('navUser').textContent = partner.name || 'Partner';
-      document.getElementById('navStudio').textContent = partner.studio || 'Studio';
-      document.getElementById('sgName').textContent = partner.game || 'Your Game';
-      document.getElementById('sgMeta').textContent = (partner.genre || 'FPS') + ' · ' + (partner.tier || 'Argus') + ' plan';
-
-      // Settings
-      document.getElementById('setEmail').textContent = partner.email || '-';
-      document.getElementById('setName').textContent = partner.name || '-';
-      document.getElementById('setStudio').textContent = partner.studio || '-';
-      document.getElementById('setTier').textContent = partner.tier || '-';
-      document.getElementById('setJoined').textContent = partner.joined || '-';
-      document.getElementById('setGame').textContent = partner.game || '-';
-      document.getElementById('setGenre').textContent = partner.genre || '-';
-      document.getElementById('setRegion').textContent = partner.region || '-';
-
-      // Setup banner if game not configured
-      if (needsSetup) {
-        document.getElementById('setupBanner').innerHTML = '<div class="setup-banner"><div><div class="setup-banner-text">Complete your setup to get started</div><div class="setup-banner-sub">Configure your game title, genre, engine, and detection layers.</div></div><button class="setup-banner-btn" onclick="switchTab(\'setup\',document.querySelector(\'[onclick*=setup]\'))">Go to Setup</button></div>';
+    function initSimModel() {
+      TITLE_SEED = hashStr(partner && partner.game);
+      var games = (CFG && CFG.games) ? CFG.games : 18;
+      SHARE = (1 / games) * (0.8 + 0.6 * rnd(TITLE_SEED * 7 + 13));
+      if (CFG && CFG.regions && CFG.regions.length === 3) {
+        REGIONS = CFG.regions.map(function (r) { return { name: r.name, weight: r.weight }; });
       }
     }
 
+    // Concurrent sessions for this title (40–90), shaped by the site-wide curve.
+    function simSessions(offset) {
+      offset = offset || 0;
+      var d = dayAt(offset);
+      var peak = (CFG && CFG.peakCCU) ? CFG.peakCCU : 1440;
+      var ratio = 0.7;
+      if (E && typeof E.activeSessions === 'function') {
+        ratio = clamp(E.activeSessions(d) / 540, 0.15, 1);
+      }
+      var v = Math.round(peak * SHARE * (0.55 + 0.45 * ratio));
+      return clamp(v, 40, 90);
+    }
+
+    // Detections for this title on a given day (0–4).
+    function simDetections(offset) {
+      offset = offset || 0;
+      var d = dayAt(offset);
+      var site = 18;
+      if (E && typeof E.dailyDetections === 'function') site = E.dailyDetections(d);
+      var raw = site * SHARE;
+      var base = Math.floor(raw);
+      if (rnd(dseed(offset) * 7919 + TITLE_SEED) < (raw - base)) base++;
+      return clamp(base, 0, 4);
+    }
+
+    // Bans for this title on a given day (0–2, never above that day's detections).
+    function simBans(offset) {
+      offset = offset || 0;
+      var d = dayAt(offset);
+      var site = 12;
+      if (E && typeof E.dailyBans === 'function') site = E.dailyBans(d);
+      var raw = site * SHARE;
+      var base = Math.floor(raw);
+      if (rnd(dseed(offset) * 6151 + TITLE_SEED) < (raw - base)) base++;
+      return clamp(Math.min(base, simDetections(offset)), 0, 2);
+    }
+
+    // Blended detection rate with a small seeded drift — stays inside 58–92%.
+    function simDetectionRate(offset) {
+      var base = (CFG && CFG.blendedDetectionRate ? CFG.blendedDetectionRate : 0.78) * 100;
+      var drift = (rnd(dseed(offset || 0) * 331 + TITLE_SEED) - 0.5) * 6;
+      return clamp(Math.round((base + drift) * 10) / 10, 58, 92);
+    }
+
+    function simScanLatency(offset) {
+      var d = dayAt(offset || 0);
+      if (E && typeof E.performanceMetrics === 'function') {
+        var pm = E.performanceMetrics(d);
+        if (pm && pm.scanLatency) return pm.scanLatency;
+      }
+      return 2.2;
+    }
+
+    function simApiResponse() {
+      if (E && typeof E.performanceMetrics === 'function') {
+        var pm = E.performanceMetrics();
+        if (pm && pm.apiResponse) return pm.apiResponse;
+      }
+      return 45;
+    }
+
+    function simLayerWeights(offset) {
+      var ds = dseed(offset || 0);
+      var raw = LAYER_BASE.map(function (b, i) {
+        return Math.max(4, b + (rnd(ds * 97 + i * 13 + TITLE_SEED) - 0.5) * 5);
+      });
+      var sum = raw.reduce(function (a, b) { return a + b; }, 0);
+      return raw.map(function (v) { return Math.round(v / sum * 1000) / 10; });
+    }
+
+    function simRegionSessions(offset) {
+      var total = simSessions(offset);
+      var out = [];
+      var acc = 0;
+      for (var i = 0; i < REGIONS.length; i++) {
+        var v = (i === REGIONS.length - 1) ? (total - acc) : Math.round(total * REGIONS[i].weight);
+        acc += v;
+        out.push(Math.max(0, v));
+      }
+      return out;
+    }
+
+    function simRegionLatency(i, offset) {
+      return rndInt(dseed(offset || 0) * 577 + i * 89 + TITLE_SEED, 18, 45);
+    }
+
+    function simRegionStatus(svcIdx, regIdx) {
+      if (E && typeof E.regionUptime === 'function') {
+        try { return E.regionUptime(svcIdx, regIdx, 0); } catch (e) { /* fall through */ }
+      }
+      return 'operational';
+    }
+
+    function simMonthlyUptime() {
+      if (E && typeof E.monthlyUptime === 'function') {
+        var v = E.monthlyUptime(0);
+        if (typeof v === 'number' && isFinite(v) && v > 90 && v < 100) return v;
+      }
+      return 97.6;
+    }
+
+    function playerId(seed) {
+      var hex = '';
+      for (var i = 0; i < 8; i++) hex += '0123456789abcdef'.charAt(rndInt(seed * 31 + i * 7 + 1, 0, 15));
+      return 'plr_' + hex;
+    }
+
+    function verdictFor(conf) {
+      if (conf >= 95) return { label: 'Auto-ban', cls: 'badge-red' };
+      if (conf >= 80) return { label: 'Review', cls: 'badge-accent' };
+      return { label: 'Monitor', cls: 'badge-blue' };
+    }
+
+    function categoryName(i) {
+      var cats = (CFG && CFG.detectionCategories) ? CFG.detectionCategories : null;
+      if (cats && cats.length) return cats[i % cats.length].name;
+      return ['Aimbot / Aim Assist', 'Wallhack / ESP', 'DMA External', 'Kernel Driver', 'Speed / Teleport', 'HWID Spoof'][i % 6];
+    }
+
+    // Seeded-per-day detection events across the last `days` days.
+    function simDetectionEvents(days) {
+      var out = [];
+      var nowHour = new Date().getHours();
+      for (var off = 0; off < days; off++) {
+        var n = simDetections(off);
+        var lw = simLayerWeights(off);
+        for (var k = 0; k < n; k++) {
+          var s = dseed(off) * 1201 + k * 37 + TITLE_SEED;
+          var hour = rndInt(s + 3, 0, off === 0 ? Math.max(1, nowHour) : 23);
+          var hoursAgo = off === 0 ? Math.max(0.2, nowHour - hour + rnd(s + 9) * 0.9)
+                                   : (off - 1) * 24 + (24 - hour) + nowHour;
+          var layer = 0;
+          var roll = rnd(s + 11) * 100, acc2 = 0;
+          for (var li = 0; li < 4; li++) { acc2 += lw[li]; if (roll <= acc2) { layer = li; break; } }
+          var conf = Math.round((72 + rnd(s + 13) * 27) * 10) / 10;
+          out.push({
+            id: playerId(s),
+            cat: categoryName(rndInt(s + 17, 0, 5)),
+            layer: layer,
+            conf: conf,
+            hoursAgo: Math.max(0.05, hoursAgo)
+          });
+        }
+      }
+      out.sort(function (a, b) { return a.hoursAgo - b.hoursAgo; });
+      return out;
+    }
+
+    function simBanEvents(days) {
+      var out = [];
+      var nowHour = new Date().getHours();
+      for (var off = 0; off < days; off++) {
+        var n = simBans(off);
+        for (var k = 0; k < n; k++) {
+          var s = dseed(off) * 1783 + k * 53 + TITLE_SEED;
+          var hour = rndInt(s + 3, 0, off === 0 ? Math.max(1, nowHour) : 23);
+          var hoursAgo = off === 0 ? Math.max(0.3, nowHour - hour + 0.4)
+                                   : (off - 1) * 24 + (24 - hour) + nowHour;
+          var r = rnd(s + 19);
+          var status = r < 0.72 ? 'Enforced' : (r < 0.9 ? 'Appealed' : 'Under review');
+          out.push({
+            id: playerId(s),
+            reason: categoryName(rndInt(s + 23, 0, 5)),
+            layer: rndInt(s + 29, 0, 3),
+            conf: Math.round((88 + rnd(s + 31) * 11) * 10) / 10,
+            hoursAgo: Math.max(0.1, hoursAgo),
+            status: status
+          });
+        }
+      }
+      out.sort(function (a, b) { return a.hoursAgo - b.hoursAgo; });
+      return out;
+    }
+
+    function simSessionRows(limit) {
+      var total = simSessions(0);
+      var perRegion = simRegionSessions(0);
+      var rows = [];
+      var n = Math.min(limit, total);
+      for (var i = 0; i < n; i++) {
+        var s = dseed(0) * 2113 + i * 61 + TITLE_SEED;
+        var regionIdx = 0, roll = rnd(s + 3) * total, acc = 0;
+        for (var r = 0; r < perRegion.length; r++) { acc += perRegion[r]; if (roll <= acc) { regionIdx = r; break; } }
+        var mins = rndInt(s + 5, 4, 186);
+        var lat = Math.round((simScanLatency(0) * (0.7 + rnd(s + 7) * 0.7)) * 100) / 100;
+        var st = rnd(s + 11);
+        rows.push({
+          id: playerId(s),
+          region: REGIONS[regionIdx] ? REGIONS[regionIdx].name : REGIONS[0].name,
+          mins: mins,
+          latency: lat,
+          status: st < 0.94 ? 'Clean' : (st < 0.985 ? 'Flagged' : 'Under review')
+        });
+      }
+      return rows;
+    }
+
     // ═══════════════════════════════════════
-    // TAB SWITCHING
+    // CHARTS
+    // ═══════════════════════════════════════
+    var DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+    function buildBarChart(containerId, values, colorClass, fmt) {
+      var el = document.getElementById(containerId);
+      if (!el) return;
+      var max = 1;
+      for (var i = 0; i < values.length; i++) if (values[i] > max) max = values[i];
+      var html = '';
+      for (var j = 0; j < values.length; j++) {
+        var d = dayAt(values.length - 1 - j);
+        var h = Math.max(3, Math.round(values[j] / max * 100));
+        html += '<div class="bar-col"><div class="bar-value">' + (fmt ? fmt(values[j]) : values[j]) +
+          '</div><div class="bar ' + colorClass + '" style="height:' + h + '%;"></div>' +
+          '<div class="bar-label">' + DOW[d.getDay()] + '</div></div>';
+      }
+      el.innerHTML = html;
+    }
+
+    function buildEmptyBarChart(containerId, colorClass) {
+      buildBarChart(containerId, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], colorClass, null);
+    }
+
+    function series(fn) {
+      var out = [];
+      for (var off = 13; off >= 0; off--) out.push(fn(off));
+      return out;
+    }
+
+    function shareBars(rows, width) {
+      var html = '<div style="display:grid;gap:10px;">';
+      rows.forEach(function (r) {
+        html += '<div style="display:flex;align-items:center;gap:12px;"><span style="width:' + width + 'px;font-size:0.78rem;color:var(--text-dim);">' + esc(r.label) + '</span>' +
+          '<div style="flex:1;height:20px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + Math.max(0, Math.min(100, r.pct)) + '%;background:' + r.color + ';border-radius:4px;"></div></div>' +
+          '<span style="width:46px;text-align:right;font-size:0.78rem;font-weight:600;color:var(--text-bright);">' + r.pct + '%</span></div>';
+      });
+      return html + '</div>';
+    }
+
+    // ═══════════════════════════════════════
+    // TAB SWITCHING / LOGOUT
     // ═══════════════════════════════════════
     function switchTab(tab, el) {
-      document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
-      document.querySelectorAll('.sidebar-item').forEach(function(s) { s.classList.remove('active'); });
-      document.getElementById('panel-' + tab).classList.add('active');
+      document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
+      document.querySelectorAll('.sidebar-item').forEach(function (s) { s.classList.remove('active'); });
+      var panel = document.getElementById('panel-' + tab);
+      if (panel) panel.classList.add('active');
       if (el) el.classList.add('active');
     }
 
@@ -614,86 +929,9 @@
       localStorage.removeItem('cerberus_session');
       sessionStorage.removeItem('cerberus_partner');
       sessionStorage.removeItem('cerberus_session');
+      try { sessionStorage.removeItem('cerberus_sim'); } catch (e) {}
       window.location.href = '/';
     }
-
-    // ═══════════════════════════════════════
-    // DASHBOARD DATA — all zeros until real data
-    // ═══════════════════════════════════════
-    document.getElementById('overviewStats').innerHTML =
-      statCard('Active Sessions', '0', 'No sessions yet', 'neutral', 'accent') +
-      statCard('Detections Today', '0', 'No detections', 'neutral', 'blue') +
-      statCard('Bans Issued', '0', 'Last 24h', 'neutral', 'red') +
-      statCard('Detection Rate', '--', 'No data yet', 'neutral', 'green');
-
-    document.getElementById('detStats').innerHTML =
-      statCard('Signature Matches', '0', 'no detections', 'neutral', 'accent') +
-      statCard('Behavioral AI', '0', 'no detections', 'neutral', 'purple') +
-      statCard('Hardware Flags', '0', 'no detections', 'neutral', 'blue') +
-      statCard('Network Sentinel', '0', 'no detections', 'neutral', 'green');
-
-    var emptyTypeHtml = '<div style="display:grid;gap:10px;">';
-    ['Aimbot','ESP/Wallhack','Kernel Driver','DMA Reader','HWID Spoofer','Other'].forEach(function(t) {
-      emptyTypeHtml += '<div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:0.78rem;color:var(--text-dim);">' + t + '</span>' +
-        '<div style="flex:1;height:20px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:0%;background:var(--accent);border-radius:4px;"></div></div>' +
-        '<span style="width:40px;text-align:right;font-size:0.78rem;font-weight:600;color:var(--text-bright);">0%</span></div>';
-    });
-    emptyTypeHtml += '</div>';
-    document.getElementById('detTypeChart').innerHTML = emptyTypeHtml;
-
-    var emptyLayerHtml = '<div style="display:grid;gap:10px;">';
-    var layerNames = ['L1: Kernel Integrity','L2: Behavioral AI','L3: Hardware FP','L4: Network Sentinel'];
-    var layerColors = ['var(--accent)', 'var(--purple)', 'var(--blue)', 'var(--green)'];
-    layerNames.forEach(function(l, i) {
-      emptyLayerHtml += '<div style="display:flex;align-items:center;gap:12px;"><span style="width:140px;font-size:0.78rem;color:var(--text-dim);">' + l + '</span>' +
-        '<div style="flex:1;height:20px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:0%;background:' + layerColors[i] + ';border-radius:4px;"></div></div>' +
-        '<span style="width:40px;text-align:right;font-size:0.78rem;font-weight:600;color:var(--text-bright);">0%</span></div>';
-    });
-    emptyLayerHtml += '</div>';
-    document.getElementById('detLayerChart').innerHTML = emptyLayerHtml;
-
-    document.getElementById('sessStats').innerHTML =
-      statCard('Active Now', '0', 'no sessions', 'neutral', 'accent') +
-      statCard('Today Total', '0', 'no data yet', 'neutral', 'green') +
-      statCard('Avg Duration', '--', 'no sessions', 'neutral', 'blue') +
-      statCard('Scan Latency', '--', 'no data yet', 'neutral', 'purple');
-
-    document.getElementById('banStats').innerHTML =
-      statCard('Total Bans', '0', 'last 24 hours', 'neutral', 'red') +
-      statCard('Auto-Banned', '0', 'no bans', 'neutral', 'accent') +
-      statCard('Manual Review', '0', 'pending: 0', 'neutral', 'blue') +
-      statCard('Appeals', '0', 'none', 'neutral', 'purple');
-
-    document.getElementById('srvStats').innerHTML =
-      statCard('Uptime', '--', 'awaiting data', 'neutral', 'green') +
-      statCard('Avg Latency', '--', 'awaiting data', 'neutral', 'blue') +
-      statCard('Regions', '3 / 3', 'standby', 'neutral', 'accent') +
-      statCard('API Uptime', '--', 'awaiting data', 'neutral', 'purple');
-
-    // ═══════════════════════════════════════
-    // BAR CHARTS — all zeros
-    // ═══════════════════════════════════════
-    function buildEmptyBarChart(containerId, colorClass) {
-      var days = ['S','M','T','W','T','F','S','S','M','T','W','T','F','S'];
-      var html = '';
-      for (var d = 13; d >= 0; d--) {
-        html += '<div class="bar-col"><div class="bar-value">0</div><div class="bar ' + colorClass + '" style="height:3%;"></div><div class="bar-label">' + days[13 - d] + '</div></div>';
-      }
-      document.getElementById(containerId).innerHTML = html;
-    }
-
-    buildEmptyBarChart('detChart', '');
-    buildEmptyBarChart('sessChart', 'blue');
-    buildEmptyBarChart('banChart', 'red');
-    buildEmptyBarChart('latencyChart', 'green');
-    buildEmptyBarChart('apiReqChart', 'blue');
-
-    // ═══════════════════════════════════════
-    // TABLES — empty states
-    // ═══════════════════════════════════════
-    document.getElementById('detTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:32px;">No detections recorded yet. Data will appear once the SDK is integrated and sessions are active.</td></tr>';
-    document.getElementById('sessTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:32px;">No active sessions. Connect your game via the SDK to start monitoring.</td></tr>';
-    document.getElementById('banTable').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:32px;">No bans issued yet. Bans will appear here when detections trigger enforcement actions.</td></tr>';
 
     // ═══════════════════════════════════════
     // BAN ACTIONS
@@ -702,14 +940,14 @@
       var id = document.getElementById('manualBanId').value.trim();
       if (!id) { showBanResult('Enter a player account ID.', 'red'); return; }
       var reason = document.getElementById('manualBanReason').value;
-      showBanResult('Player ' + id + ' has been banned. Reason: ' + reason, 'green');
+      showBanResult('Player ' + id + ' has been banned. Reason: ' + reason + (SIM ? ' (simulation — no real account was affected)' : ''), 'green');
       document.getElementById('manualBanId').value = '';
     }
 
     function manualUnban() {
       var id = document.getElementById('manualBanId').value.trim();
       if (!id) { showBanResult('Enter a player account ID.', 'red'); return; }
-      showBanResult('Player ' + id + ' has been unbanned.', 'green');
+      showBanResult('Player ' + id + ' has been unbanned.' + (SIM ? ' (simulation — no real account was affected)' : ''), 'green');
       document.getElementById('manualBanId').value = '';
     }
 
@@ -720,7 +958,7 @@
       el.style.background = color === 'green' ? 'rgba(48,200,96,0.1)' : 'rgba(224,64,80,0.1)';
       el.style.color = color === 'green' ? 'var(--green)' : 'var(--red)';
       el.style.border = '1px solid ' + (color === 'green' ? 'rgba(48,200,96,0.2)' : 'rgba(224,64,80,0.2)');
-      setTimeout(function() { el.style.display = 'none'; }, 5000);
+      setTimeout(function () { el.style.display = 'none'; }, 5000);
     }
 
     function unbanPlayer(acct, btn) {
@@ -742,62 +980,18 @@
     }
 
     // ═══════════════════════════════════════
-    // REGIONS — empty standby
-    // ═══════════════════════════════════════
-    var ALL_REGIONS = ['US-East','US-West','US-Central','EU-West','EU-Central','EU-North','AP-Southeast'];
-    var regionHtml = '';
-    ALL_REGIONS.forEach(function(r) {
-      regionHtml += '<div class="region-card"><div class="region-name">' + r + '</div>' +
-        '<div class="region-status" style="color:var(--text-dim);">Standby</div>' +
-        '<div class="region-latency">--</div>' +
-        '<div class="region-detail">0 sessions &middot; No data</div></div>';
-    });
-    document.getElementById('regionCards').innerHTML = regionHtml;
-
-    var srvHtml = '';
-    ALL_REGIONS.forEach(function(r) {
-      srvHtml += '<div class="region-card"><div class="region-name">' + r + '</div>' +
-        '<div class="region-status" style="color:var(--text-dim);">Standby</div>' +
-        '<div class="region-latency">--</div>' +
-        '<div class="region-detail">Load: -- &middot; Uptime: --</div></div>';
-    });
-    document.getElementById('srvRegions').innerHTML = srvHtml;
-
-    // ═══════════════════════════════════════
-    // ACTIVITY FEED — empty
-    // ═══════════════════════════════════════
-    document.getElementById('activityFeed').innerHTML = '<div style="text-align:center;color:var(--text-dim);padding:32px;font-size:0.82rem;">No activity yet. Events will appear here once the SDK is integrated and sessions begin.</div>';
-
-    // ═══════════════════════════════════════
-    // API PANEL
+    // API KEY
     // ═══════════════════════════════════════
     var apiKeyRevealed = false;
     function toggleApiKey(e) {
       apiKeyRevealed = !apiKeyRevealed;
-      document.getElementById('apiKeyDisplay').textContent = apiKeyRevealed ? (partner ? partner.apiKey : 'crbs_live_000000000000') : 'crbs_live_••••••••••••';
+      document.getElementById('apiKeyDisplay').textContent = apiKeyRevealed ? ((partner && partner.apiKey) || 'crbs_live_000000000000') : 'crbs_live_••••••••••••';
       e.target.textContent = apiKeyRevealed ? 'Hide' : 'Reveal';
     }
-
-    document.getElementById('apiTotal').textContent = '0';
-    document.getElementById('apiSessInit').textContent = '0';
-    document.getElementById('apiVerdicts').textContent = '0';
-    document.getElementById('apiWebhooks').textContent = '0';
-    document.getElementById('apiAvgResp').textContent = '--';
-    document.getElementById('apiErrRate').textContent = '--';
 
     // ═══════════════════════════════════════
     // SETUP
     // ═══════════════════════════════════════
-    if (partner) {
-      document.getElementById('setupGame').value = partner.game || '';
-      document.getElementById('setupGenre').value = partner.genre || 'FPS';
-      document.getElementById('setupRegion').value = partner.region || 'US-East';
-      if (partner.maxCCU) document.getElementById('setupMaxCCU').value = partner.maxCCU;
-      if (partner.platform) document.getElementById('setupPlatform').value = partner.platform;
-      if (partner.stage) document.getElementById('setupStage').value = partner.stage;
-      if (partner.engine) document.getElementById('setupEngine').value = partner.engine;
-    }
-
     function saveSetup() {
       if (!partner) return;
       partner.game = document.getElementById('setupGame').value.trim() || partner.game;
@@ -810,44 +1004,520 @@
       var storage = localStorage.getItem('cerberus_partner') ? localStorage : sessionStorage;
       storage.setItem('cerberus_partner', JSON.stringify(partner));
       document.getElementById('sgName').textContent = partner.game;
-      document.getElementById('sgMeta').textContent = partner.genre + ' · ' + partner.tier + ' plan';
+      document.getElementById('sgMeta').textContent = partner.genre + ' · ' + (partner.tier || 'Argus') + ' plan';
       document.getElementById('setGame').textContent = partner.game;
       document.getElementById('setGenre').textContent = partner.genre;
       document.getElementById('setRegion').textContent = partner.region;
       document.getElementById('cfgEngine').textContent = partner.engine;
-      // Hide setup banner
       document.getElementById('setupBanner').innerHTML = '';
+      if (SIM) { initSimModel(); renderSimulation(); }
       alert('Configuration saved.');
+    }
+
+    // ═══════════════════════════════════════
+    // SIMULATION CONTROLS
+    // ═══════════════════════════════════════
+    function simEnablePreview() {
+      try { sessionStorage.setItem('cerberus_sim', '1'); } catch (e) {}
+      window.location.reload();
+    }
+
+    function simExitPreview() {
+      try { sessionStorage.removeItem('cerberus_sim'); } catch (e) {}
+      window.location.reload();
+    }
+
+    function simTogglePause() {
+      simPaused = !simPaused;
+      var b = document.getElementById('simPauseBtn');
+      if (b) b.textContent = simPaused ? 'Resume' : 'Pause';
+      var s = document.getElementById('simState');
+      if (s) s.textContent = simPaused ? 'paused' : 'running';
+    }
+
+    function renderSimBanner() {
+      var host = document.getElementById('simBanner');
+      if (!host) return;
+      if (SIM) {
+        host.innerHTML =
+          '<div class="sim-banner">' +
+            '<span class="sim-tag">Simulation</span>' +
+            '<div class="sim-text"><b>Sandbox telemetry generated locally to show what a live dashboard looks like.</b> Not real player data — there are no players, sessions or bans behind these numbers.</div>' +
+            '<div class="sim-clock">Last update <strong id="simClock">' + clockStr(lastUpdate) + '</strong> &middot; <span id="simState">running</span></div>' +
+            '<button class="sim-btn" id="simPauseBtn" type="button" onclick="simTogglePause()">Pause</button>' +
+            ((partner && partner.demo === true) ? '' : '<button class="sim-btn ghost" type="button" onclick="simExitPreview()">Exit preview</button>') +
+          '</div>';
+      } else {
+        host.innerHTML =
+          '<div class="sim-offer">' +
+            '<div class="sim-offer-text"><b>No telemetry yet</b>This account has no sessions, detections or bans recorded. Preview the dashboard with sandbox telemetry generated locally in your browser to see what it looks like once your title is live. Nothing is written to your account.</div>' +
+            '<button class="sim-btn" type="button" onclick="simEnablePreview()">Preview with simulated data</button>' +
+          '</div>';
+      }
+    }
+
+    // ═══════════════════════════════════════
+    // ACTIVITY FEED
+    // ═══════════════════════════════════════
+    var feedEntries = [];
+
+    function feedRender() {
+      var el = document.getElementById('activityFeed');
+      if (!el) return;
+      if (!feedEntries.length) {
+        el.innerHTML = '<div style="text-align:center;color:var(--text-dim);padding:32px;font-size:0.82rem;">No activity yet. Events will appear here once the SDK is integrated and sessions begin.</div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < feedEntries.length; i++) {
+        var f = feedEntries[i];
+        html += '<div class="feed-item"><div class="feed-dot ' + f.dot + '"></div><div><div class="feed-text">' + f.text + '</div><div class="feed-time">' + f.time + '</div></div></div>';
+      }
+      el.innerHTML = html;
+    }
+
+    var SIG_VERSIONS = [];
+    function loadSigVersions() {
+      SIG_VERSIONS = [];
+      if (E && typeof E.dailyDeployments === 'function') {
+        try {
+          var deps = E.dailyDeployments() || [];
+          for (var i = 0; i < deps.length; i++) {
+            if (deps[i] && deps[i].type === 'signature' && deps[i].version) SIG_VERSIONS.push(deps[i].version);
+          }
+        } catch (e) { /* ignore */ }
+      }
+      if (!SIG_VERSIONS.length) SIG_VERSIONS = ['sig-' + dseed(0) + '-1'];
+    }
+
+    function makeFeedEvent(seed) {
+      var region = REGIONS[rndInt(seed * 13 + 3, 0, REGIONS.length - 1)].name;
+      var pid = playerId(seed);
+      var mono = 'font-family:var(--font-mono);';
+      var kinds = [
+        function () { return { dot: 'green', text: 'Session started &middot; <span style="' + mono + '">' + pid + '</span> &middot; ' + esc(region) }; },
+        function () { return { dot: 'blue', text: 'Session ended &middot; <span style="' + mono + '">' + pid + '</span> &middot; ' + rndInt(seed + 5, 6, 140) + ' min' }; },
+        function () { return { dot: 'accent', text: LAYER_SHORT[rndInt(seed + 7, 0, 3)] + ' scan complete &middot; ' + rndInt(seed + 9, 8, 64) + ' sessions &middot; ' + (Math.round(simScanLatency(0) * 100) / 100) + ' ms median' }; },
+        function () { return { dot: 'accent', text: 'Flag routed to review &middot; <span style="' + mono + '">' + pid + '</span> &middot; ' + LAYER_SHORT[rndInt(seed + 11, 0, 3)] + ' &middot; ' + (Math.round((80 + rnd(seed + 13) * 14) * 10) / 10) + '% confidence' }; },
+        function () { return { dot: 'red', text: 'Ban enforced &middot; <span style="' + mono + '">' + pid + '</span> &middot; ' + esc(categoryName(rndInt(seed + 15, 0, 5))) }; },
+        function () { return { dot: 'green', text: 'Webhook delivered &middot; ban-events endpoint &middot; HTTP 200 &middot; ' + rndInt(seed + 17, 40, 180) + ' ms' }; },
+        function () { return { dot: 'blue', text: 'Signature push &middot; ' + esc(SIG_VERSIONS[rndInt(seed + 19, 0, SIG_VERSIONS.length - 1)]) + ' &middot; ' + esc(region) }; }
+      ];
+      // Weight the mundane events far above enforcement.
+      var roll = rnd(seed * 3 + 1);
+      var idx;
+      if (roll < 0.26) idx = 0;
+      else if (roll < 0.48) idx = 1;
+      else if (roll < 0.68) idx = 2;
+      else if (roll < 0.80) idx = 3;
+      else if (roll < 0.84) idx = 4;
+      else if (roll < 0.94) idx = 5;
+      else idx = 6;
+      return kinds[idx]();
+    }
+
+    function feedSeed() {
+      feedEntries = [];
+      var now = Date.now();
+      var acc = 0;
+      for (var i = 0; i < 8; i++) {
+        acc += rndInt(dseed(0) + i * 17 + TITLE_SEED, 20, 90);
+        var ev = makeFeedEvent(dseed(0) * 41 + i * 97 + TITLE_SEED);
+        ev.time = clockStr(new Date(now - acc * 1000));
+        feedEntries.push(ev);
+      }
+      feedRender();
+    }
+
+    function feedTick() {
+      if (simPaused || document.hidden) { scheduleFeed(); return; }
+      var ev = makeFeedEvent(((Date.now() / 1000) | 0) + TITLE_SEED);
+      ev.time = clockStr(new Date());
+      feedEntries.unshift(ev);
+      if (feedEntries.length > 40) feedEntries.length = 40;
+      feedRender();
+      lastUpdate = new Date();
+      scheduleFeed();
+    }
+
+    function scheduleFeed() {
+      if (simTimer) clearTimeout(simTimer);
+      simTimer = setTimeout(feedTick, 4000 + Math.random() * 8000);
+    }
+
+    function startClock() {
+      if (clockTimer) clearInterval(clockTimer);
+      clockTimer = setInterval(function () {
+        var c = document.getElementById('simClock');
+        if (c) c.textContent = clockStr(lastUpdate);
+      }, 1000);
+    }
+
+    // ═══════════════════════════════════════
+    // RENDER — SIMULATION
+    // ═══════════════════════════════════════
+    function delta(today, yesterday, unit) {
+      var d = today - yesterday;
+      var u = unit || '';
+      if (Math.abs(d) < 0.05) return { text: 'unchanged vs yesterday', dir: 'neutral' };
+      var r = Math.round(d * 10) / 10;
+      return { text: (d > 0 ? '+' : '') + r + u + ' vs yesterday', dir: d > 0 ? 'up' : 'down' };
+    }
+
+    function renderSimulation() {
+      var sessNow = simSessions(0);
+      var sessYd = simSessions(1);
+      var detToday = simDetections(0);
+      var detYd = simDetections(1);
+      var banToday = simBans(0);
+      var banYd = simBans(1);
+      var rateToday = simDetectionRate(0);
+      var rateYd = simDetectionRate(1);
+
+      var dS = delta(sessNow, sessYd), dD = delta(detToday, detYd), dB = delta(banToday, banYd), dR = delta(rateToday, rateYd, ' pts');
+
+      // ── Overview stats ──
+      document.getElementById('overviewStats').innerHTML =
+        statCard('Active Sessions', num(sessNow), dS.text, dS.dir, 'accent') +
+        statCard('Detections Today', detToday, dD.text, dD.dir, 'blue') +
+        statCard('Bans Issued', banToday, dB.text, dB.dir, 'red') +
+        statCard('Detection Rate', rateToday.toFixed(1) + '%', dR.text, dR.dir, 'green');
+
+      // ── 14-day charts ──
+      var detSeries = series(simDetections);
+      var sessSeries = series(simSessions);
+      var banSeries = series(simBans);
+      var latSeries = series(function (o) { return Math.round(simScanLatency(o) * 100) / 100; });
+      var apiSeries = sessSeries.map(function (s, i) {
+        return Math.round(s * 6 * (0.9 + rnd(dseed(13 - i) * 811 + TITLE_SEED) * 0.25));
+      });
+
+      buildBarChart('detChart', detSeries, '', null);
+      buildBarChart('sessChart', sessSeries, 'blue', null);
+      buildBarChart('banChart', banSeries, 'red', null);
+      buildBarChart('latencyChart', latSeries, 'green', function (v) { return v.toFixed(1); });
+      buildBarChart('apiReqChart', apiSeries, 'blue', function (v) { return v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v; });
+
+      // ── Detections panel ──
+      var det30 = 0;
+      for (var o = 0; o < 30; o++) det30 += simDetections(o);
+      var lw = simLayerWeights(0);
+      var perLayer = lw.map(function (w) { return Math.round(det30 * w / 100); });
+      document.getElementById('detStats').innerHTML =
+        statCard('Kernel Integrity', perLayer[0], 'Layer 1 · last 30 days', 'neutral', 'accent') +
+        statCard('Behavioral AI', perLayer[1], 'Layer 2 · last 30 days', 'neutral', 'purple') +
+        statCard('Hardware Flags', perLayer[2], 'Layer 3 · last 30 days', 'neutral', 'blue') +
+        statCard('Network Sentinel', perLayer[3], 'Layer 4 · last 30 days', 'neutral', 'green');
+
+      var rates = (E && typeof E.detectionRates === 'function') ? E.detectionRates() : null;
+      if (!rates || !rates.length) {
+        rates = [{ name: 'Aimbot / Aim Assist', rate: 89 }, { name: 'Wallhack / ESP', rate: 84 }, { name: 'DMA External', rate: 72 },
+                 { name: 'Kernel Driver', rate: 78 }, { name: 'Speed / Teleport', rate: 65 }, { name: 'HWID Spoof', rate: 58 }];
+      }
+      document.getElementById('detTypeChart').innerHTML = shareBars(rates.map(function (r) {
+        return { label: r.name, pct: Math.round(r.rate * 10) / 10, color: 'var(--accent)' };
+      }), 128);
+
+      document.getElementById('detLayerChart').innerHTML = shareBars(lw.map(function (w, i) {
+        return { label: LAYER_SHORT[i], pct: w, color: LAYER_COLORS[i] };
+      }), 140);
+
+      var dets = simDetectionEvents(7).slice(0, 10);
+      if (!dets.length) {
+        document.getElementById('detTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:32px;">No detections in the last 7 days.</td></tr>';
+      } else {
+        var dh = '';
+        dets.forEach(function (d) {
+          var v = verdictFor(d.conf);
+          dh += '<tr><td style="color:var(--text-dim);">' + relTime(d.hoursAgo) + '</td>' +
+            '<td><span style="font-family:var(--font-mono);font-size:0.76rem;">' + esc(d.id) + '</span><div style="font-size:0.72rem;color:var(--text-dim);">' + esc(d.cat) + '</div></td>' +
+            '<td>' + esc(LAYER_SHORT[d.layer]) + '</td>' +
+            '<td style="font-family:var(--font-mono);">' + d.conf.toFixed(1) + '%</td>' +
+            '<td><span class="badge ' + v.cls + '">' + v.label + '</span></td></tr>';
+        });
+        document.getElementById('detTable').innerHTML = dh;
+      }
+
+      // ── Sessions panel ──
+      var totalToday = Math.round(sessNow * (2.6 + rnd(dseed(0) * 907 + TITLE_SEED) * 1.2));
+      var avgDur = rndInt(dseed(0) * 1097 + TITLE_SEED, 28, 62);
+      document.getElementById('sessStats').innerHTML =
+        statCard('Active Now', num(sessNow), dS.text, dS.dir, 'accent') +
+        statCard('Today Total', num(totalToday), 'unique sessions', 'neutral', 'green') +
+        statCard('Avg Duration', avgDur + 'm', 'per session', 'neutral', 'blue') +
+        statCard('Scan Latency', (Math.round(simScanLatency(0) * 100) / 100) + 'ms', 'p50 client-side', 'neutral', 'purple');
+
+      var perRegion = simRegionSessions(0);
+      var regHtml = '';
+      REGIONS.forEach(function (r, i) {
+        var ok = simRegionStatus(0, i) === 'operational';
+        regHtml += '<div class="region-card"><div class="region-name">' + esc(r.name) + '</div>' +
+          '<div class="region-status" style="color:' + (ok ? 'var(--green)' : 'var(--accent)') + ';">' + (ok ? 'Operational' : 'Degraded') + '</div>' +
+          '<div class="region-latency">' + simRegionLatency(i, 0) + 'ms</div>' +
+          '<div class="region-detail">' + perRegion[i] + ' sessions &middot; ' + Math.round(r.weight * 100) + '% of traffic</div></div>';
+      });
+      document.getElementById('regionCards').innerHTML = regHtml;
+
+      var srows = simSessionRows(12);
+      var sh = '';
+      srows.forEach(function (s) {
+        var badge = s.status === 'Clean' ? 'badge-green' : (s.status === 'Flagged' ? 'badge-accent' : 'badge-blue');
+        sh += '<tr><td style="font-family:var(--font-mono);font-size:0.76rem;">' + esc(s.id) + '</td>' +
+          '<td>' + esc(s.region) + '</td><td>' + s.mins + 'm</td>' +
+          '<td style="font-family:var(--font-mono);">' + s.latency.toFixed(2) + 'ms</td>' +
+          '<td><span class="badge ' + badge + '">' + s.status + '</span></td></tr>';
+      });
+      document.getElementById('sessTable').innerHTML = sh || '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:32px;">No active sessions.</td></tr>';
+
+      // ── Bans panel ──
+      var bans = simBanEvents(14);
+      var bans24 = bans.filter(function (b) { return b.hoursAgo <= 24; });
+      var appeals = bans.filter(function (b) { return b.status === 'Appealed'; }).length;
+      var review = bans.filter(function (b) { return b.status === 'Under review'; }).length;
+      document.getElementById('banStats').innerHTML =
+        statCard('Total Bans', bans24.length, 'last 24 hours', 'neutral', 'red') +
+        statCard('Auto-Banned', bans.filter(function (b) { return b.conf >= 95; }).length, 'last 14 days', 'neutral', 'accent') +
+        statCard('Manual Review', review, 'pending: ' + review, 'neutral', 'blue') +
+        statCard('Appeals', appeals, appeals === 1 ? '1 open appeal' : appeals + ' open appeals', 'neutral', 'purple');
+
+      var bh = '';
+      bans.slice(0, 10).forEach(function (b) {
+        var badge = b.status === 'Enforced' ? 'badge-red' : (b.status === 'Appealed' ? 'badge-purple' : 'badge-accent');
+        var action;
+        if (b.status === 'Under review') {
+          action = '<button class="ban-btn ban-btn-ban" onclick="confirmBan(\'' + b.id + '\',this)">Confirm</button> ' +
+                   '<button class="ban-btn ban-btn-unban" onclick="dismissBan(\'' + b.id + '\',this)">Dismiss</button>';
+        } else {
+          action = '<button class="ban-btn ban-btn-unban" onclick="unbanPlayer(\'' + b.id + '\',this)">Unban</button>';
+        }
+        bh += '<tr><td style="color:var(--text-dim);">' + relTime(b.hoursAgo) + '</td>' +
+          '<td style="font-family:var(--font-mono);font-size:0.76rem;">' + esc(b.id) + '</td>' +
+          '<td>' + esc(b.reason) + '<div style="font-size:0.72rem;color:var(--text-dim);">' + esc(LAYER_SHORT[b.layer]) + '</div></td>' +
+          '<td style="font-family:var(--font-mono);">' + b.conf.toFixed(1) + '%</td>' +
+          '<td><span class="badge ' + badge + '">' + b.status + '</span></td>' +
+          '<td>' + action + '</td></tr>';
+      });
+      document.getElementById('banTable').innerHTML = bh || '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:32px;">No bans in the last 14 days.</td></tr>';
+
+      // ── Servers panel ──
+      var up = simMonthlyUptime();
+      var latSum = 0;
+      for (var li2 = 0; li2 < REGIONS.length; li2++) latSum += simRegionLatency(li2, 0);
+      var avgLat = Math.round(latSum / REGIONS.length);
+      var apiUp = Math.round((97 + rnd(dseed(0) * 1231) * 0.9) * 10) / 10;
+      document.getElementById('srvStats').innerHTML =
+        statCard('Uptime', up.toFixed(1) + '%', 'this month · target 97%', 'neutral', 'green') +
+        statCard('Avg Latency', avgLat + 'ms', 'edge round-trip', 'neutral', 'blue') +
+        statCard('Regions', '3 / 3', 'all reporting', 'neutral', 'accent') +
+        statCard('API Uptime', apiUp.toFixed(1) + '%', 'rolling 30 days', 'neutral', 'purple');
+
+      var srvHtml = '';
+      REGIONS.forEach(function (r, i) {
+        var ok = simRegionStatus(1, i) === 'operational';
+        var load = rndInt(dseed(0) * 1399 + i * 71 + TITLE_SEED, 20, 65);
+        var rup = Math.round((97 + rnd(dseed(0) * 1451 + i * 37) * 1.2) * 10) / 10;
+        srvHtml += '<div class="region-card"><div class="region-name">' + esc(r.name) + '</div>' +
+          '<div class="region-status" style="color:' + (ok ? 'var(--green)' : 'var(--accent)') + ';">' + (ok ? 'Operational' : 'Degraded') + '</div>' +
+          '<div class="region-latency">' + simRegionLatency(i, 0) + 'ms</div>' +
+          '<div class="region-detail">Load: ' + load + '% &middot; Uptime: ' + rup.toFixed(1) + '%</div></div>';
+      });
+      document.getElementById('srvRegions').innerHTML = srvHtml;
+
+      // ── API panel (this month) ──
+      var daysIn = new Date().getDate();
+      var apiTotal = 0;
+      for (var k = 0; k < daysIn; k++) apiTotal += Math.round(simSessions(k) * 6);
+      var sessInit = Math.round(apiTotal * 0.34);
+      var verdicts = Math.round(apiTotal * 0.48);
+      var webhooks = 0;
+      for (var w = 0; w < daysIn; w++) webhooks += simDetections(w) + simBans(w) + 1;
+      var errRate = Math.round((0.2 + rnd(dseed(0) * 1523 + TITLE_SEED) * 0.4) * 100) / 100;
+      document.getElementById('apiTotal').textContent = num(apiTotal);
+      document.getElementById('apiSessInit').textContent = num(sessInit);
+      document.getElementById('apiVerdicts').textContent = num(verdicts);
+      document.getElementById('apiWebhooks').textContent = num(webhooks);
+      document.getElementById('apiAvgResp').textContent = Math.round(simApiResponse()) + 'ms';
+      document.getElementById('apiErrRate').textContent = errRate.toFixed(2) + '%';
+
+      lastUpdate = new Date();
+      var c = document.getElementById('simClock');
+      if (c) c.textContent = clockStr(lastUpdate);
+    }
+
+    // ═══════════════════════════════════════
+    // RENDER — HONEST ZERO STATE
+    // ═══════════════════════════════════════
+    function renderZeroState() {
+      document.getElementById('overviewStats').innerHTML =
+        statCard('Active Sessions', '0', 'No sessions yet', 'neutral', 'accent') +
+        statCard('Detections Today', '0', 'No detections', 'neutral', 'blue') +
+        statCard('Bans Issued', '0', 'Last 24h', 'neutral', 'red') +
+        statCard('Detection Rate', '--', 'No data yet', 'neutral', 'green');
+
+      document.getElementById('detStats').innerHTML =
+        statCard('Kernel Integrity', '0', 'no detections', 'neutral', 'accent') +
+        statCard('Behavioral AI', '0', 'no detections', 'neutral', 'purple') +
+        statCard('Hardware Flags', '0', 'no detections', 'neutral', 'blue') +
+        statCard('Network Sentinel', '0', 'no detections', 'neutral', 'green');
+
+      document.getElementById('detTypeChart').innerHTML = shareBars(
+        ['Aimbot / Aim Assist', 'Wallhack / ESP', 'Kernel Driver', 'DMA External', 'HWID Spoof', 'Speed / Teleport'].map(function (t) {
+          return { label: t, pct: 0, color: 'var(--accent)' };
+        }), 128);
+
+      document.getElementById('detLayerChart').innerHTML = shareBars(LAYER_SHORT.map(function (l, i) {
+        return { label: l, pct: 0, color: LAYER_COLORS[i] };
+      }), 140);
+
+      document.getElementById('sessStats').innerHTML =
+        statCard('Active Now', '0', 'no sessions', 'neutral', 'accent') +
+        statCard('Today Total', '0', 'no data yet', 'neutral', 'green') +
+        statCard('Avg Duration', '--', 'no sessions', 'neutral', 'blue') +
+        statCard('Scan Latency', '--', 'no data yet', 'neutral', 'purple');
+
+      document.getElementById('banStats').innerHTML =
+        statCard('Total Bans', '0', 'last 24 hours', 'neutral', 'red') +
+        statCard('Auto-Banned', '0', 'no bans', 'neutral', 'accent') +
+        statCard('Manual Review', '0', 'pending: 0', 'neutral', 'blue') +
+        statCard('Appeals', '0', 'none', 'neutral', 'purple');
+
+      document.getElementById('srvStats').innerHTML =
+        statCard('Uptime', '--', 'awaiting data', 'neutral', 'green') +
+        statCard('Avg Latency', '--', 'awaiting data', 'neutral', 'blue') +
+        statCard('Regions', '3 / 3', 'standby', 'neutral', 'accent') +
+        statCard('API Uptime', '--', 'awaiting data', 'neutral', 'purple');
+
+      buildEmptyBarChart('detChart', '');
+      buildEmptyBarChart('sessChart', 'blue');
+      buildEmptyBarChart('banChart', 'red');
+      buildEmptyBarChart('latencyChart', 'green');
+      buildEmptyBarChart('apiReqChart', 'blue');
+
+      document.getElementById('detTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:32px;">No detections recorded yet. Data will appear once the SDK is integrated and sessions are active.</td></tr>';
+      document.getElementById('sessTable').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:32px;">No active sessions. Connect your game via the SDK to start monitoring.</td></tr>';
+      document.getElementById('banTable').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:32px;">No bans issued yet. Bans will appear here when detections trigger enforcement actions.</td></tr>';
+
+      var regHtml = '';
+      REGIONS.forEach(function (r) {
+        regHtml += '<div class="region-card"><div class="region-name">' + esc(r.name) + '</div>' +
+          '<div class="region-status" style="color:var(--text-dim);">Standby</div>' +
+          '<div class="region-latency">--</div>' +
+          '<div class="region-detail">0 sessions &middot; No data</div></div>';
+      });
+      document.getElementById('regionCards').innerHTML = regHtml;
+
+      var srvHtml = '';
+      REGIONS.forEach(function (r) {
+        srvHtml += '<div class="region-card"><div class="region-name">' + esc(r.name) + '</div>' +
+          '<div class="region-status" style="color:var(--text-dim);">Standby</div>' +
+          '<div class="region-latency">--</div>' +
+          '<div class="region-detail">Load: -- &middot; Uptime: --</div></div>';
+      });
+      document.getElementById('srvRegions').innerHTML = srvHtml;
+
+      feedEntries = [];
+      feedRender();
+
+      document.getElementById('apiTotal').textContent = '0';
+      document.getElementById('apiSessInit').textContent = '0';
+      document.getElementById('apiVerdicts').textContent = '0';
+      document.getElementById('apiWebhooks').textContent = '0';
+      document.getElementById('apiAvgResp').textContent = '--';
+      document.getElementById('apiErrRate').textContent = '--';
     }
 
     // ═══════════════════════════════════════
     // TIER-GATED DETECTION LAYERS
     // ═══════════════════════════════════════
     var LAYERS = [
-      { id: 'kernel', name: 'Layer 1: Kernel Integrity', desc: 'Ring-0 memory isolation, syscall tamper detection, BYOVD blocking', tiers: ['Argus','Aegis','Cerberus','Olympus'] },
-      { id: 'ai', name: 'Layer 2: Behavioral AI', desc: 'TCN-based aim analysis, micro-movement entropy, humanization bypass', tiers: ['Aegis','Cerberus','Olympus'] },
-      { id: 'hardware', name: 'Layer 3: Hardware Fingerprinting', desc: 'PCIe topology mapping, DMA timing analysis, TPM 2.0 attestation', tiers: ['Cerberus','Olympus'] },
-      { id: 'network', name: 'Layer 4: Network Sentinel', desc: 'Packet integrity, cross-player correlation, cheat-ring detection', tiers: ['Cerberus','Olympus'] },
-      { id: 'custom', name: 'Layer 5: Custom Rules Engine', desc: 'Studio-defined detection rules, custom telemetry hooks, priority tuning', tiers: ['Olympus'] }
+      { id: 'kernel', name: 'Layer 1: Kernel Integrity', desc: 'Ring-0 memory isolation, syscall tamper detection, BYOVD blocking', tiers: ['Argus', 'Aegis', 'Cerberus', 'Olympus'] },
+      { id: 'ai', name: 'Layer 2: Behavioral AI', desc: 'TCN-based aim analysis, micro-movement entropy, humanization bypass', tiers: ['Aegis', 'Cerberus', 'Olympus'] },
+      { id: 'hardware', name: 'Layer 3: Hardware Fingerprinting', desc: 'PCIe topology mapping, DMA timing analysis, TPM 2.0 attestation', tiers: ['Cerberus', 'Olympus'] },
+      { id: 'network', name: 'Layer 4: Network Sentinel', desc: 'Packet integrity, cross-player correlation, cheat-ring detection', tiers: ['Cerberus', 'Olympus'] },
+      { id: 'custom', name: 'Custom Rules Engine (Olympus add-on)', desc: 'Studio-defined detection rules, custom telemetry hooks, priority tuning', tiers: ['Olympus'] }
     ];
-    var tier = partner ? (partner.tier || 'Argus') : 'Argus';
-    var layersHtml = '';
-    var activeCount = 0;
-    LAYERS.forEach(function(l) {
-      var available = l.tiers.indexOf(tier) !== -1;
-      if (available) activeCount++;
-      layersHtml += '<label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;' + (available ? 'cursor:pointer;' : 'opacity:0.4;cursor:not-allowed;') + 'font-size:0.82rem;color:var(--text-bright);">' +
-        '<input type="checkbox"' + (available ? ' checked' : ' disabled') + ' style="accent-color:var(--accent);" /> ' + l.name +
-        (available ? '<span style="margin-left:auto;font-size:0.7rem;color:var(--green);font-weight:600;">ACTIVE</span>' :
-          '<span style="margin-left:auto;font-size:0.68rem;color:var(--text-dim);font-style:italic;">Requires ' + l.tiers[0] + '+ plan</span>') +
-        '</label>';
-    });
-    document.getElementById('detectionLayersList').innerHTML = layersHtml;
-    document.getElementById('setLayers').textContent = activeCount + ' of ' + LAYERS.length + ' Active';
 
-    // Auto-redirect to setup on first login
-    if (needsSetup) {
-      switchTab('setup', document.querySelector('[onclick*=setup]'));
+    function renderLayers() {
+      var tier = (partner && partner.tier) || 'Argus';
+      var layersHtml = '';
+      var activeCount = 0;
+      LAYERS.forEach(function (l) {
+        var available = l.tiers.indexOf(tier) !== -1;
+        if (available) activeCount++;
+        layersHtml += '<label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;' + (available ? 'cursor:pointer;' : 'opacity:0.4;cursor:not-allowed;') + 'font-size:0.82rem;color:var(--text-bright);">' +
+          '<input type="checkbox"' + (available ? ' checked' : ' disabled') + ' style="accent-color:var(--accent);" /> ' + l.name +
+          (available ? '<span style="margin-left:auto;font-size:0.7rem;color:var(--green);font-weight:600;">ACTIVE</span>' :
+            '<span style="margin-left:auto;font-size:0.68rem;color:var(--text-dim);font-style:italic;">Requires ' + l.tiers[0] + '+ plan</span>') +
+          '</label>';
+      });
+      document.getElementById('detectionLayersList').innerHTML = layersHtml;
+      document.getElementById('setLayers').textContent = activeCount + ' of ' + LAYERS.length + ' Active';
+    }
+
+    // ═══════════════════════════════════════
+    // BOOT
+    // ═══════════════════════════════════════
+    function boot() {
+      needsSetup = !partner.game || partner.game === 'Untitled Project' || partner.game === '';
+
+      document.getElementById('navUser').textContent = partner.name || 'Partner';
+      document.getElementById('navStudio').textContent = partner.studio || 'Studio';
+      document.getElementById('sgName').textContent = partner.game || 'Your Game';
+      document.getElementById('sgMeta').textContent = (partner.genre || 'FPS') + ' · ' + (partner.tier || 'Argus') + ' plan';
+
+      document.getElementById('setEmail').textContent = partner.email || '-';
+      document.getElementById('setName').textContent = partner.name || '-';
+      document.getElementById('setStudio').textContent = partner.studio || '-';
+      document.getElementById('setTier').textContent = partner.tier || '-';
+      document.getElementById('setJoined').textContent = partner.joined || '-';
+      document.getElementById('setGame').textContent = partner.game || '-';
+      document.getElementById('setGenre').textContent = partner.genre || '-';
+      document.getElementById('setRegion').textContent = partner.region || '-';
+
+      document.getElementById('setupGame').value = partner.game || '';
+      document.getElementById('setupGenre').value = partner.genre || 'FPS';
+      document.getElementById('setupRegion').value = partner.region || 'US-East';
+      if (partner.maxCCU) document.getElementById('setupMaxCCU').value = partner.maxCCU;
+      if (partner.platform) document.getElementById('setupPlatform').value = partner.platform;
+      if (partner.stage) document.getElementById('setupStage').value = partner.stage;
+      if (partner.engine) {
+        document.getElementById('setupEngine').value = partner.engine;
+        document.getElementById('cfgEngine').textContent = partner.engine;
+      }
+
+      if (needsSetup) {
+        document.getElementById('setupBanner').innerHTML = '<div class="setup-banner"><div><div class="setup-banner-text">Complete your setup to get started</div><div class="setup-banner-sub">Configure your game title, genre, engine, and detection layers.</div></div><button class="setup-banner-btn" onclick="switchTab(\'setup\',document.querySelector(\'[onclick*=setup]\'))">Go to Setup</button></div>';
+      }
+
+      renderLayers();
+
+      var wantsPreview = false;
+      try { wantsPreview = sessionStorage.getItem('cerberus_sim') === '1'; } catch (e) {}
+      SIM = !!(E && (partner.demo === true || wantsPreview));
+
+      initSimModel();
+      renderSimBanner();
+
+      if (SIM) {
+        loadSigVersions();
+        renderSimulation();
+        feedSeed();
+        scheduleFeed();
+        startClock();
+        document.addEventListener('visibilitychange', function () {
+          if (!document.hidden && !simPaused) lastUpdate = new Date();
+        });
+      } else {
+        renderZeroState();
+      }
+
+      if (needsSetup) switchTab('setup', document.querySelector('[onclick*=setup]'));
+    }
+
+    if (!partner) {
+      window.location.replace('/login/');
+    } else {
+      boot();
     }
   </script>
 </body>

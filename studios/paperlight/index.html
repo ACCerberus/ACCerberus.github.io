@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paperlight Games</title>
+<meta name="description" content="Paperlight Games is a 29-person studio in Lisbon, Portugal, making bright, paper-craft games — including the battle royale Skybreak Royale and the cosy kite game Pocket Kite Club.">
+<meta name="theme-color" content="#faf7f0">
+<meta property="og:title" content="Paperlight Games">
+<meta property="og:description" content="A small Lisbon studio making bright, paper-craft games. Makers of Skybreak Royale and Pocket Kite Club.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://paperlightgames.com/">
+<link rel="canonical" href="https://paperlightgames.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23faf7f0'/%3E%3Cpath d='M8 5H19L25 11V27H8Z' fill='none' stroke='%232c3038' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M19 5V11H25' fill='none' stroke='%232c3038' stroke-width='2.4' stroke-linejoin='round'/%3E%3Ccircle cx='15' cy='19' r='3.4' fill='%233aa0d8'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="./" aria-label="Paperlight Games — home">
+      <svg viewBox="0 0 240 36" role="img" aria-label="Paperlight Games" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 4 H18 L27 13 V31 H5 Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+        <path d="M18 4 V13 H27" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+        <circle cx="15" cy="21" r="3.6" fill="currentColor"/>
+        <text x="40" y="25" fill="currentColor" font-family="'Baloo 2', 'Trebuchet MS', 'Segoe UI', sans-serif" font-size="21" font-weight="700" letter-spacing="0.2">Paperlight</text>
+      </svg>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="games/">Games</a></li>
+        <li><a href="about/">About</a></li>
+        <li><a href="careers/">Careers</a></li>
+        <li><a href="press/">Press</a></li>
+        <li><a href="contact/">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <div class="hero">
+    <svg class="hero-art" viewBox="0 0 1200 470" role="img" aria-label="A cut-paper sky scene: layered clouds, rolling hills and a folded glider trailing a dotted line" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#dff0fa"/>
+          <stop offset="55%" stop-color="#eef7fc"/>
+          <stop offset="100%" stop-color="#faf7f0"/>
+        </linearGradient>
+        <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#bfe0c9"/>
+          <stop offset="100%" stop-color="#a9d5b7"/>
+        </linearGradient>
+        <linearGradient id="hillMid" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#8fcda6"/>
+          <stop offset="100%" stop-color="#5fb87e"/>
+        </linearGradient>
+        <linearGradient id="hillNear" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5fb87e"/>
+          <stop offset="100%" stop-color="#3d8759"/>
+        </linearGradient>
+        <linearGradient id="cloudGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#f1ece0"/>
+        </linearGradient>
+        <linearGradient id="gliderA" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f7c948"/>
+          <stop offset="100%" stop-color="#f2705a"/>
+        </linearGradient>
+        <filter id="paperGrain" x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" seed="7" result="noise"/>
+          <feColorMatrix in="noise" type="saturate" values="0" result="grain"/>
+          <feComponentTransfer in="grain" result="grainSoft">
+            <feFuncA type="linear" slope="0.10"/>
+          </feComponentTransfer>
+          <feComposite in="grainSoft" in2="SourceGraphic" operator="in" result="grainClipped"/>
+          <feBlend in="SourceGraphic" in2="grainClipped" mode="multiply"/>
+        </filter>
+        <filter id="paperLift" x="-30%" y="-30%" width="170%" height="180%">
+          <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#2c3038" flood-opacity="0.20"/>
+        </filter>
+        <filter id="paperLiftSmall" x="-40%" y="-40%" width="190%" height="200%">
+          <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#2c3038" flood-opacity="0.18"/>
+        </filter>
+      </defs>
+
+      <rect width="1200" height="470" fill="url(#skyGrad)"/>
+
+      <g filter="url(#paperGrain)">
+        <!-- sun, a cut paper disc -->
+        <circle cx="1010" cy="108" r="58" fill="#f7c948" opacity="0.85"/>
+        <circle cx="1010" cy="108" r="58" fill="none" stroke="#e0b02f" stroke-width="2"/>
+
+        <!-- far clouds -->
+        <g filter="url(#paperLiftSmall)" opacity="0.95">
+          <path d="M120 96 q16-30 46-24 q12-30 46-22 q30-6 36 26 q28 4 22 28 z" fill="url(#cloudGrad)"/>
+          <path d="M700 74 q14-26 40-21 q11-26 40-19 q26-5 31 22 q24 4 19 24 z" fill="url(#cloudGrad)"/>
+        </g>
+
+        <!-- mid clouds -->
+        <g filter="url(#paperLift)">
+          <path d="M300 190 q22-40 62-32 q16-40 62-30 q40-8 48 34 q38 6 30 38 z" fill="url(#cloudGrad)"/>
+          <path d="M860 214 q18-34 52-27 q13-34 52-25 q34-7 40 29 q32 5 25 32 z" fill="url(#cloudGrad)"/>
+        </g>
+
+        <!-- dotted flight trail -->
+        <path d="M110 300 C 300 210, 430 330, 590 250 S 830 120, 980 178"
+              fill="none" stroke="#3aa0d8" stroke-width="4" stroke-linecap="round"
+              stroke-dasharray="2 18" opacity="0.6"/>
+
+        <!-- folded glider -->
+        <g filter="url(#paperLift)" transform="translate(548 196) rotate(-13)">
+          <path d="M0 0 L128 34 L38 60 Z" fill="url(#gliderA)"/>
+          <path d="M0 0 L38 60 L14 86 Z" fill="#e05a45"/>
+          <path d="M0 0 L128 34" stroke="#fffdf8" stroke-width="2.2" stroke-linecap="round" opacity="0.75"/>
+        </g>
+
+        <!-- small paper plane -->
+        <g filter="url(#paperLiftSmall)" transform="translate(232 268) rotate(9)">
+          <path d="M0 0 L62 17 L18 29 Z" fill="#ffffff"/>
+          <path d="M0 0 L18 29 L6 42 Z" fill="#e6ddc9"/>
+        </g>
+
+        <!-- kite on a string -->
+        <g filter="url(#paperLiftSmall)" transform="translate(940 236)">
+          <path d="M22 0 L44 30 L22 66 L0 30 Z" fill="#3aa0d8"/>
+          <path d="M22 0 L22 66" stroke="#fffdf8" stroke-width="2" opacity="0.7"/>
+          <path d="M0 30 L44 30" stroke="#fffdf8" stroke-width="2" opacity="0.7"/>
+          <path d="M22 66 q12 22 -4 36 q-14 14 2 34" fill="none" stroke="#2c3038" stroke-width="2" opacity="0.55" stroke-linecap="round"/>
+        </g>
+
+        <!-- hills -->
+        <path d="M0 470 V352 q140-64 288-30 q150 34 268-16 q126-54 268-8 q184 60 376 12 V470 Z" fill="url(#hillFar)"/>
+        <path d="M0 470 V396 q168-56 322-16 q144 38 262-6 q140-52 318 4 q166 52 298 22 V470 Z" fill="url(#hillMid)"/>
+        <path d="M0 470 V440 q206-44 396-8 q192 36 386-8 q210-48 418 0 V470 Z" fill="url(#hillNear)"/>
+      </g>
+    </svg>
+  </div>
+
+  <section class="hero-copy" aria-labelledby="home-title">
+    <div class="wrap">
+      <p class="eyebrow">Lisbon, Portugal · since 2019</p>
+      <h1 id="home-title">We make bright games out of folded paper.</h1>
+      <p class="lede">Paperlight Games is a 29-person studio building games that feel like a craft table: cut-paper skies, soft edges, and rules you can learn in a minute. We shipped a cosy kite game, then a 60-player battle royale that kept the same colours — and we have stayed small on purpose.</p>
+      <p class="btn-row">
+        <a class="btn" href="games/">See our games</a>
+        <a class="btn btn-alt" href="about/">Meet the studio</a>
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="what-title">
+    <div class="wrap">
+      <h2 id="what-title">What we make</h2>
+      <div class="grid grid-3">
+        <div class="card folded">
+          <h3>Bright competitive play</h3>
+          <p>Battle royale without the grime. Readable silhouettes, no gore, and a colour palette you would happily print on a lunchbox.</p>
+        </div>
+        <div class="card folded">
+          <h3>Movement you can feel</h3>
+          <p>Gliders, updrafts and kites. Traversal is the toy — most of our design time goes into how it feels to catch the wind.</p>
+        </div>
+        <div class="card folded">
+          <h3>Games that stay finished</h3>
+          <p>Two titles, both still playable and patched. We would rather keep a small catalogue in good shape than start something new every year.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="flagship-title">
+    <div class="wrap">
+      <h2 id="flagship-title">Our flagship</h2>
+      <div class="card">
+        <p class="eyebrow">2023 · PC (Steam) · Free-to-play</p>
+        <h3>Skybreak Royale</h3>
+        <p>Sixty players, one paper island, and a glider that never leaves your back. Skybreak Royale is a seasonal battle royale built in Unity, running in three regions and now in its sixth season. It is loud, quick and stubbornly cheerful.</p>
+        <p><a href="games/">Specs and system requirements</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="news-title">
+    <div class="wrap">
+      <h2 id="news-title">Latest news</h2>
+      <ul class="news-list">
+        <li>
+          <time class="stamp" datetime="2026-08-11">11 August 2026</time>
+          <h3><a href="press/">Skybreak Royale — Season 6: Paper Tide brings a new island and a reworked glider</a></h3>
+        </li>
+        <li>
+          <time class="stamp" datetime="2026-05-28">28 May 2026</time>
+          <h3><a href="press/#cerberus">Paperlight Games brings Cerberus anti-cheat to Skybreak Royale across all three regions</a></h3>
+        </li>
+      </ul>
+      <p style="margin-top:18px"><a href="press/">All press releases and the press kit</a></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-left">
+      <span class="foot-name">Paperlight Games</span>
+      <span>&copy; 2026 Paperlight Games</span>
+      <a href="legal/">Legal &amp; privacy</a>
+    </div>
+    <a class="foot-badge" href="https://cerberusac.dev/" target="_blank" rel="noopener">Anti-cheat by Cerberus</a>
+  </div>
+</footer>
+
+</body>
+</html>

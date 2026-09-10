@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 36" width="240" height="36" role="img" aria-label="Vantage Point Games" fill="none">
+  <title>Vantage Point Games</title>
+  <path d="M15 5 L27 27 H3 Z" stroke="#3f4733" stroke-width="2.4" stroke-linejoin="round"/>
+  <circle cx="15" cy="19" r="3" fill="#3f4733"/>
+  <text x="40" y="25" fill="#3f4733" font-family="'Barlow Condensed', 'Arial Narrow', Arial, sans-serif" font-size="21" font-weight="700" letter-spacing="2.4">VANTAGE POINT</text>
+</svg>

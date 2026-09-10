@@ -57,6 +57,7 @@
     .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text-bright); }
     .nav-links a.active { color: var(--accent); }
+    .nav-cta-wrap { display: flex; gap: 10px; align-items: center; }
     .nav-login { border: 1px solid var(--border); padding: 6px 16px; border-radius: 8px; }
     .nav-cta { background: var(--accent) !important; color: #050507 !important; padding: 6px 16px; border-radius: 8px; font-weight: 600 !important; }
 
@@ -224,12 +225,15 @@
       <div class="nav-dropdown current">
         <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/plans/">Plans</a>
+          <a href="/downloads/">Downloads</a>
+          <a href="/readiness/">Readiness Check</a>
           <a href="/blog/">Blog</a>
           <a href="/updates/" class="active">Updates</a>
         </div>
       </div>
     </div>
-    <div class="nav-links">
+    <div class="nav-cta-wrap">
       <a href="/appeal/" class="nav-login nav-appeal">Ban Appeal</a>
       <a href="/login/" class="nav-login">Partner Login</a>
       <a href="/access/" class="nav-cta">Partner Account</a>
@@ -327,28 +331,28 @@
               <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(48,200,96,0.1);color:var(--green);padding:3px 8px;border-radius:4px;">Signature</span></td>
               <td style="color:var(--green);">None</td>
               <td>None — signatures sync silently</td>
-              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
+              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">None observed</span></td>
             </tr>
             <tr>
               <td style="color:var(--text-bright);font-weight:500;">Improved aim analysis model</td>
               <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(160,100,255,0.1);color:var(--purple);padding:3px 8px;border-radius:4px;">AI Model</span></td>
               <td style="color:var(--green);">None</td>
               <td>~5ms latency spike during swap</td>
-              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
+              <td><span style="color:var(--accent);font-weight:600;background:rgba(232,160,32,0.08);padding:3px 10px;border-radius:4px;">Brief (&lt;5&nbsp;ms)</span></td>
             </tr>
             <tr>
               <td style="color:var(--text-bright);font-weight:500;">New hardware fingerprinting capability</td>
               <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(64,136,232,0.1);color:var(--blue);padding:3px 8px;border-radius:4px;">Driver + SDK</span></td>
               <td style="color:var(--blue);">Pull new SDK, ship in next patch</td>
               <td>Included in your regular game update</td>
-              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
+              <td><span style="color:var(--blue);font-weight:600;background:rgba(64,136,232,0.08);padding:3px 10px;border-radius:4px;">Game patch</span></td>
             </tr>
             <tr>
               <td style="color:var(--text-bright);font-weight:500;">False positive spike on a game overlay</td>
               <td><span style="font-family:var(--font-mono);font-size:0.68rem;background:rgba(232,64,64,0.1);color:var(--red);padding:3px 8px;border-radius:4px;">Hotfix (Sig)</span></td>
               <td style="color:var(--green);">None — whitelist pushed automatically</td>
               <td>Affected sessions released from hold</td>
-              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">Zero</span></td>
+              <td><span style="color:var(--green);font-weight:600;background:rgba(48,200,96,0.08);padding:3px 10px;border-radius:4px;">None observed</span></td>
             </tr>
             <tr>
               <td style="color:var(--text-bright);font-weight:500;">Critical kernel vulnerability patched</td>
@@ -380,7 +384,7 @@
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;">
           <div>
             <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Current SDK</div>
-            <div style="font-family:var(--font-mono);font-size:0.9rem;color:var(--accent);font-weight:600;" id="udSdkCurrent">--</div>
+            <div style="font-family:var(--font-mono);font-size:0.9rem;color:var(--accent);font-weight:600;" id="udSdkCurrent" data-engine-version>v0.6.0.1a</div>
           </div>
           <div>
             <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;">Minimum Supported</div>
@@ -521,7 +525,7 @@
 
       // SDK version
       var sdkEl = document.getElementById('udSdkCurrent');
-      if (sdkEl) sdkEl.textContent = (E && E.CONFIG) ? E.CONFIG.engineVersion : 'v0.6.0.0a';
+      if (sdkEl && E && E.CONFIG && E.CONFIG.engineVersion) sdkEl.textContent = E.CONFIG.engineVersion;
     })();
 
     // ===== WEBHOOK DELIVERY METRICS =====

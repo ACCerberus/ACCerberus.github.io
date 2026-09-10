@@ -137,5 +137,42 @@
       "findings": "Initial research phase. Literature review in progress."
     }
   ],
-  "templatePool": []
+  "templatePool": [
+    {
+      "title": "Hardware Performance Counter Anomaly Detection",
+      "desc": "Testing whether CPU performance counters (branch mispredicts, cache-miss ratios) shift measurably while an external overlay hooks the render path. Early interest is in whether the signal survives across CPU generations."
+    },
+    {
+      "title": "Deterministic Replay for False Positive Triage",
+      "desc": "Recording enough scan-time context to replay a flagged session offline and reproduce the exact decision path. Goal is faster false positive triage without shipping more telemetry."
+    },
+    {
+      "title": "Federated Learning Across Partner Titles",
+      "desc": "Exploring whether behavioral models can be improved from partner-side gradients without moving raw player input off the studio's own infrastructure. Privacy and cost trade-offs are both still open."
+    },
+    {
+      "title": "WebAssembly Sandboxing for Custom Rule Execution",
+      "desc": "Evaluating a Wasm runtime for partner-authored detection rules so custom logic runs isolated from the scan engine. Chiefly interested in the per-tick cost budget."
+    },
+    {
+      "title": "PCIe Link Training Telemetry for Passive DMA Detection",
+      "desc": "Looking at whether link training and retrain events recorded at enumeration time distinguish DMA capture cards from ordinary add-in boards. Sample size is currently too small to be conclusive."
+    },
+    {
+      "title": "Input Device Firmware Fingerprinting",
+      "desc": "Building a statistical baseline of report timing and descriptor layout for common mice and controllers, to spot firmware-level macro injection. Vendor variance is the main obstacle."
+    },
+    {
+      "title": "Sequence Models for Cross-Session Identity Drift",
+      "desc": "Trying sequence models on aggregated per-session behavioral summaries to see whether a banned player returning on new hardware is identifiable. Held to a deliberately conservative false positive budget."
+    },
+    {
+      "title": "Kernel Callback Latency Budgeting Under High CCU",
+      "desc": "Measuring how ring-0 callback latency degrades as concurrent sessions rise on a single host, and whether a fixed per-callback budget avoids the tail. Relevant to the scan timeout issue seen in beta."
+    },
+    {
+      "title": "Signature Cache Warm-Up on Cold Boot",
+      "desc": "Investigating whether pre-warming the signature cache during driver load shortens the window between game launch and full scan coverage. Trade-off is boot-time I/O on slower drives."
+    }
+  ]
 }

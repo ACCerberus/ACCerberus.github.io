@@ -1,11 +1,13 @@
 /**
  * Cerberus Anti-Cheat — Shared Module
  * Loaded on every page. Provides:
- *  - State feed-through from data/state.json (TODO #1)
- *  - Dynamic threat level banner (TODO #10)
- *  - Smart favicon (QOL #10)
- *  - Cross-page event propagation (TODO #25)
- *  - Page transition animations (QOL #6)
+ *  - State feed-through from data/state.json
+ *  - Dynamic threat level banner
+ *  - Smart favicon
+ *  - Cross-page event propagation
+ *  - Page transition animations
+ *  - Version fill-in ([data-engine-version] / [data-stable-version])
+ *  - Sandbox dashboard entry (CERBERUS.openSandbox)
  */
 
 (function () {
@@ -25,6 +27,12 @@
     if (window.CerberusEngine) return CerberusEngine.seeded(seed);
     var x = Math.sin(seed) * 43758.5453;
     return x - Math.floor(x);
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   // ─── 1. STATE FEED-THROUGH ───
@@ -68,7 +76,7 @@
           activeSessions: snap ? snap.activeSessions : 482,
           dailyDetections: snap ? snap.dailyDetections : 18,
           falsePositiveRate: snap ? snap.falsePositiveRate : 0.14,
-          avgScanLatency: 2.4
+          avgScanLatency: (snap && snap.performance && typeof snap.performance.scanLatency === 'number') ? snap.performance.scanLatency : 2.4
         };
         CERBERUS._resolveState(CERBERUS.state);
         applyThreatBanner('MODERATE');
@@ -124,7 +132,7 @@
     }
   }
 
-  // ─── QOL #10: SMART FAVICON ───
+  // ─── SMART FAVICON ───
   function applySmartFavicon(level) {
     level = level || 'MODERATE';
     var colors = { LOW: '#30c860', MODERATE: '#e8a020', ELEVATED: '#e88c28', HIGH: '#e04050' };
@@ -150,7 +158,7 @@
     }
   }
 
-  // ─── TODO #25: CROSS-PAGE EVENT PROPAGATION ───
+  // ─── CROSS-PAGE EVENT PROPAGATION ───
   // Write events to localStorage, other pages react
   CERBERUS.publishEvent = function (type, data) {
     var event = { type: type, data: data, timestamp: Date.now(), page: location.pathname };
@@ -169,7 +177,7 @@
     }
   });
 
-  // ─── QOL #6: PAGE TRANSITION ANIMATIONS ───
+  // ─── PAGE TRANSITION ANIMATIONS ───
   function initPageTransitions() {
     // Fade in on load
     document.body.style.opacity = '0';
@@ -181,12 +189,17 @@
     });
 
     // Intercept nav clicks for smooth transitions
+    var FILE_LINK_RE = /\.(zip|txt|sig|pub|json|pdf|ps1|cmd)(\?.*)?$/i;
     document.addEventListener('click', function (e) {
+      // Modifier clicks / non-primary buttons: let the browser open tabs/windows/save-as itself
+      if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return;
       var link = e.target.closest('a[href]');
       if (!link) return;
       var href = link.getAttribute('href');
       // Only intercept internal page navigations (not anchors, not external)
-      if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:') || link.target === '_blank') return;
+      if (!href || href === '#' || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto:') || link.target === '_blank') return;
+      // File downloads must reach the browser untouched (a fade + delayed location change would navigate away instead of saving)
+      if (link.hasAttribute('download') || href.startsWith('/downloads/') || FILE_LINK_RE.test(href)) return;
       // Must be a site-internal link
       if (href.startsWith('/') || href.startsWith('./') || href.startsWith('../') || (!href.includes('://'))) {
         e.preventDefault();
@@ -196,7 +209,7 @@
     });
   }
 
-  // ─── QOL #2: COMMAND PALETTE (Ctrl+K) ───
+  // ─── COMMAND PALETTE (Ctrl+K) ───
   function initCommandPalette() {
     var pages = [
       { name: 'Home', desc: 'Main landing page', url: '/' },
@@ -207,6 +220,8 @@
       { name: 'Documentation', desc: 'SDK integration guides', url: '/docs/' },
       { name: 'API Reference', desc: 'REST API endpoints', url: '/api/' },
       { name: 'SDK Download', desc: 'Download SDK package', url: '/sdk/' },
+      { name: 'Downloads', desc: 'Public packages, checksums & signing key', url: '/downloads/' },
+      { name: 'Readiness Check', desc: 'Test your PC for Cerberus — no account needed', url: '/readiness/' },
       { name: 'Blog', desc: 'Threat reports & engineering', url: '/blog/' },
       { name: 'Team', desc: 'Engineering team', url: '/team/' },
       { name: 'Request Access', desc: 'Early access application form', url: '/access/' },
@@ -215,6 +230,7 @@
       { name: 'About', desc: 'Company story and mission', url: '/about/' },
       { name: 'Integrations', desc: 'Engines, platforms & API ecosystem', url: '/integrations/' },
       { name: 'Compare', desc: 'How Cerberus compares to legacy AC', url: '/compare/' },
+      { name: 'Plans', desc: 'Tiers and what each includes', url: '/plans/' },
       { name: 'SLA', desc: 'Service level agreement', url: '/sla/' },
       { name: 'DPA', desc: 'Data processing agreement', url: '/dpa/' },
       { name: 'Updates', desc: 'How update delivery works', url: '/updates/' },
@@ -308,6 +324,21 @@
     container.className = 'toast-container';
     container.id = 'toastContainer';
     document.body.appendChild(container);
+
+    // Programmatic toast for other modules (text is treated as plain text)
+    CERBERUS.toast = function (text, icon) {
+      icon = icon === 'block' || icon === 'ok' ? icon : 'info';
+      var toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = '<div class="toast-icon toast-icon-' + icon + '">' +
+        (icon === 'block' ? 'X' : icon === 'ok' ? '✓' : '!') +
+        '</div><div class="toast-text">' + escapeHtml(text) +
+        '<div class="toast-time">' + new Date().toLocaleTimeString() + '</div></div>';
+      container.appendChild(toast);
+      setTimeout(function () { toast.classList.add('out'); }, 5000);
+      setTimeout(function () { if (toast.parentNode) toast.remove(); }, 5300);
+      while (container.children.length > 3) container.removeChild(container.firstChild);
+    };
 
     var baseMsgs = [
       { icon: 'ok', text: '<strong>Signature DB synced</strong> \u2014 US-East + EU-West up to date' },
@@ -424,7 +455,10 @@
   // ─── NAV AUTH STATE ───
   function initNavAuth() {
     if (location.pathname.startsWith('/dashboard/')) return;
-    var raw = localStorage.getItem('cerberus_partner');
+    var raw = null;
+    try {
+      raw = localStorage.getItem('cerberus_partner') || sessionStorage.getItem('cerberus_partner');
+    } catch (e) { return; }
     if (!raw) return;
     try { var p = JSON.parse(raw); } catch (e) { return; }
     if (!p || !p.name) return;
@@ -432,12 +466,106 @@
     var wrap = document.querySelector('.nav-cta-wrap');
     if (!wrap) return;
 
-    var tierShort = (p.tier || 'Argus').split(' ')[0];
+    var tierShort = String(p.tier || 'Argus').split(' ')[0];
+    var sandboxPill = p.demo === true
+      ? '<span title="Sandbox partner account — simulated telemetry, read-only" style="font-size:0.58rem;font-weight:700;letter-spacing:0.8px;padding:2px 6px;border-radius:4px;margin-left:6px;background:rgba(232,160,32,0.14);color:var(--accent);border:1px solid rgba(232,160,32,0.35);font-family:\'JetBrains Mono\',monospace;">SANDBOX</span>'
+      : '';
     wrap.innerHTML =
-      '<span style="font-size:0.75rem;color:var(--text-dim);margin-right:4px;">' + tierShort + '</span>' +
-      '<span style="font-size:0.82rem;font-weight:600;color:var(--text-bright);">' + p.name + '</span>' +
+      '<span style="font-size:0.75rem;color:var(--text-dim);margin-right:4px;">' + escapeHtml(tierShort) + '</span>' +
+      '<span style="font-size:0.82rem;font-weight:600;color:var(--text-bright);">' + escapeHtml(p.name) + '</span>' +
+      sandboxPill +
       '<a href="/dashboard/" style="padding:8px 16px;border-radius:8px;font-size:0.8rem;font-weight:600;background:var(--accent);color:#050507;text-decoration:none;transition:all 0.2s;letter-spacing:0.3px;margin-left:8px;">Dashboard</a>';
   }
+
+  // ─── VERSION META + [data-*-version] FILL-IN ───
+  // Pages keep their literal version text as fallback; we only overwrite when a value is known.
+  var versionMetaPromise = null;
+  CERBERUS.versionMeta = function () {
+    if (versionMetaPromise) return versionMetaPromise;
+    var cacheBust = '?t=' + Math.floor(Date.now() / 60000);
+    versionMetaPromise = fetch('/data/version-meta.json' + cacheBust)
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .catch(function () { return null; });
+    return versionMetaPromise;
+  };
+
+  function setAllText(selector, value) {
+    if (!value) return;
+    var nodes = document.querySelectorAll(selector);
+    for (var i = 0; i < nodes.length; i++) nodes[i].textContent = value;
+  }
+
+  function fillVersions() {
+    CERBERUS.stateReady.then(function (state) {
+      if (state && state.engineVersion) setAllText('[data-engine-version]', state.engineVersion);
+    });
+    CERBERUS.versionMeta().then(function (meta) {
+      if (meta && meta.stableChannelVersion) setAllText('[data-stable-version]', meta.stableChannelVersion);
+    });
+  }
+  CERBERUS.fillVersions = fillVersions;
+
+  // ─── SANDBOX DASHBOARD ENTRY ───
+  // Loads the demo partner record from the obfuscated accounts file (same encoding the login page
+  // reads: reversed base64) and starts a sessionStorage-only session, then opens /dashboard/.
+  function obfDecode(encoded) {
+    var reversed = encoded.split('').reverse().join('');
+    return atob(reversed);
+  }
+
+  function notifyError(text) {
+    if (typeof CERBERUS.toast === 'function') CERBERUS.toast(text, 'block');
+    else alert(text);
+  }
+
+  CERBERUS.openSandbox = function () {
+    return fetch('/data/x9f3k7.json?' + Date.now())
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then(function (raw) {
+        var accounts = JSON.parse(obfDecode(raw.trim()));
+        if (!Array.isArray(accounts)) throw new Error('bad accounts payload');
+        var account = null;
+        for (var i = 0; i < accounts.length; i++) {
+          if (accounts[i] && accounts[i].demo === true) { account = accounts[i]; break; }
+        }
+        if (!account) {
+          for (var j = 0; j < accounts.length; j++) {
+            if (accounts[j] && accounts[j].email === 'demo@cerberus-ac.dev') { account = accounts[j]; break; }
+          }
+        }
+        if (!account) throw new Error('no sandbox account');
+
+        var email = String(account.email || 'demo@cerberus-ac.dev');
+        // Same shape login/index.html builds, plus demo:true and any extra record fields (never the hash)
+        var partner = {
+          email: email,
+          name: account.name || email.split('@')[0],
+          studio: account.studio || 'Partner Studio',
+          game: account.game || 'Untitled Project',
+          genre: account.genre || 'FPS',
+          tier: account.tier || 'Argus',
+          region: 'US-East',
+          apiKey: account.apiKey || 'crbs_live_' + email.replace(/[^a-z0-9]/g, '').substring(0, 12),
+          joined: account.joined || new Date().toISOString().split('T')[0],
+          approved: true,
+          demo: true
+        };
+        for (var k in account) {
+          if (!Object.prototype.hasOwnProperty.call(account, k)) continue;
+          if (k === 'passwordHash' || Object.prototype.hasOwnProperty.call(partner, k)) continue;
+          partner[k] = account[k];
+        }
+
+        sessionStorage.setItem('cerberus_partner', JSON.stringify(partner));
+        sessionStorage.setItem('cerberus_session', Date.now().toString());
+        window.location.href = '/dashboard/';
+        return partner;
+      })
+      .catch(function (err) {
+        notifyError('Sandbox unavailable right now — try again in a moment.');
+        throw err;
+      });
+  };
 
 
   // ─── INIT ───
@@ -448,6 +576,7 @@
       initToasts();
       initCommandPalette();
       initNavAuth();
+      fillVersions();
     });
   } else {
     fetchState();
@@ -455,6 +584,7 @@
     initToasts();
     initCommandPalette();
     initNavAuth();
+    fillVersions();
   }
 
 })();

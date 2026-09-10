@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Molten Anvil Interactive</title>
+<meta name="description" content="Molten Anvil Interactive is a 44-person studio in Krakow, Poland building squad-based competitive shooters. Makers of Ironclad Siege and Anvilborn.">
+<meta name="theme-color" content="#0d0b0a">
+<meta property="og:title" content="Molten Anvil Interactive">
+<meta property="og:description" content="A 44-person studio in Krakow, Poland building squad-based competitive shooters. Makers of Ironclad Siege and Anvilborn.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://moltenanvil.com/">
+<link rel="canonical" href="https://moltenanvil.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 36'%3E%3Crect width='32' height='36' fill='%230d0b0a'/%3E%3Cpath d='M5 7 H27 V13 H19 V19 H24 L27 29 H5 L8 19 H13 V13 H10 Z' fill='%23f2601a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="./" aria-label="Molten Anvil Interactive — home">
+      <svg viewBox="0 0 240 36" role="img" aria-label="Molten Anvil Interactive" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 7 H27 V13 H19 V19 H24 L27 29 H5 L8 19 H13 V13 H10 Z" fill="currentColor"/>
+        <text x="40" y="25" fill="currentColor" font-family="'Oswald', 'Arial Narrow', Arial, sans-serif" font-size="20" font-weight="600" letter-spacing="1.4">MOLTEN ANVIL</text>
+      </svg>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="games/">Games</a></li>
+        <li><a href="about/">About</a></li>
+        <li><a href="careers/">Careers</a></li>
+        <li><a href="press/">Press</a></li>
+        <li><a href="contact/">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <div class="hero">
+    <svg class="hero-art" viewBox="0 0 1200 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="heat" cx="50%" cy="82%" r="62%">
+          <stop offset="0%"   stop-color="#ffb347" stop-opacity=".70"/>
+          <stop offset="26%"  stop-color="#f2601a" stop-opacity=".42"/>
+          <stop offset="58%"  stop-color="#8a2f08" stop-opacity=".20"/>
+          <stop offset="100%" stop-color="#0a0807" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="plateA" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#241f1c"/>
+          <stop offset="100%" stop-color="#0d0b0a"/>
+        </linearGradient>
+        <linearGradient id="plateB" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#191614"/>
+          <stop offset="100%" stop-color="#0a0807"/>
+        </linearGradient>
+        <linearGradient id="horizon" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#f2601a" stop-opacity="0"/>
+          <stop offset="22%"  stop-color="#f2601a" stop-opacity=".85"/>
+          <stop offset="50%"  stop-color="#ffb347" stop-opacity="1"/>
+          <stop offset="78%"  stop-color="#f2601a" stop-opacity=".85"/>
+          <stop offset="100%" stop-color="#f2601a" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="anvilFace" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#3a3330"/>
+          <stop offset="45%"  stop-color="#1c1917"/>
+          <stop offset="100%" stop-color="#100d0c"/>
+        </linearGradient>
+        <linearGradient id="scan" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#0a0807" stop-opacity=".92"/>
+          <stop offset="55%"  stop-color="#0a0807" stop-opacity=".45"/>
+          <stop offset="100%" stop-color="#0a0807" stop-opacity=".05"/>
+        </linearGradient>
+      </defs>
+
+      <rect width="1200" height="560" fill="#0a0807"/>
+      <rect width="1200" height="560" fill="url(#heat)"/>
+
+      <!-- layered dark plates -->
+      <path d="M0 372 L340 330 L700 366 L1200 322 V560 H0 Z" fill="url(#plateA)"/>
+      <path d="M0 430 L260 404 L620 438 L980 408 L1200 432 V560 H0 Z" fill="url(#plateB)"/>
+
+      <!-- glowing horizon line -->
+      <rect x="0" y="368" width="1200" height="2.5" fill="url(#horizon)"/>
+      <rect x="0" y="366" width="1200" height="7" fill="url(#horizon)" opacity=".18"/>
+
+      <!-- abstract anvil silhouette -->
+      <g transform="translate(830 118) scale(1.9)">
+        <path d="M6 12 H124 L118 34 H86 V52 H104 L118 96 H12 L26 52 H44 V34 H12 Z" fill="url(#anvilFace)"/>
+        <path d="M6 12 H124 L121 23 H9 Z" fill="#4a4341" opacity=".55"/>
+        <rect x="12" y="90" width="106" height="6" fill="#f2601a" opacity=".45"/>
+        <path d="M44 34 H86 V52 H44 Z" fill="#f2601a" opacity=".10"/>
+      </g>
+
+      <!-- sparks -->
+      <g fill="#ffb347">
+        <rect x="742" y="196" width="3" height="9" opacity=".9" transform="rotate(24 742 196)"/>
+        <rect x="800" y="152" width="2" height="7" opacity=".7" transform="rotate(-18 800 152)"/>
+        <rect x="694" y="252" width="3" height="11" opacity=".8" transform="rotate(38 694 252)"/>
+        <rect x="880" y="96"  width="2" height="8"  opacity=".55" transform="rotate(12 880 96)"/>
+        <rect x="640" y="308" width="2" height="7"  opacity=".6"  transform="rotate(46 640 308)"/>
+        <rect x="770" y="286" width="3" height="10" opacity=".75" transform="rotate(-30 770 286)"/>
+        <circle cx="716" cy="224" r="2.4" opacity=".85"/>
+        <circle cx="852" cy="176" r="1.8" opacity=".6"/>
+        <circle cx="662" cy="286" r="1.6" opacity=".5"/>
+        <circle cx="906" cy="248" r="2.1" opacity=".55"/>
+        <circle cx="600" cy="344" r="1.4" opacity=".45"/>
+      </g>
+      <g fill="#f2601a">
+        <circle cx="784" cy="330" r="1.6" opacity=".5"/>
+        <circle cx="948" cy="316" r="1.3" opacity=".4"/>
+        <circle cx="700" cy="140" r="1.5" opacity=".35"/>
+      </g>
+
+      <!-- readability wash over the copy side -->
+      <rect x="0" y="0" width="720" height="560" fill="url(#scan)"/>
+    </svg>
+
+    <div class="wrap">
+      <div class="hero-inner">
+        <p class="hero-sub">Krak&oacute;w, Poland &middot; Founded 2014</p>
+        <h1>We build shooters<br>that hold up under <span class="glow">pressure</span></h1>
+        <div class="rule-glow"></div>
+        <p class="lede">Forty-four people making squad-based competitive shooters. We care about hitreg, tick budgets and the thousandth hour of play more than we care about launch week.</p>
+        <p style="margin-top:1.8rem"><a class="btn solid" href="games/">Our games</a> <a class="btn" href="careers/" style="margin-left:6px">We're hiring</a></p>
+      </div>
+    </div>
+  </div>
+
+  <section class="first">
+    <div class="wrap">
+      <p class="eyebrow">The studio</p>
+      <h2>Small enough to argue, big enough to ship</h2>
+      <p class="lede">Molten Anvil Interactive started in 2014 as a group of contractors in Krak&oacute;w who got tired of building other people's games. Two shipped titles later we are still independent, still self-funded, and still spending most of our week on the unglamorous parts &mdash; netcode, hit registration, live operations and the patch after the patch.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">How we work</p>
+      <div class="grid grid-3">
+        <div class="panel">
+          <span class="num">01</span>
+          <h3>Iterate in the build</h3>
+          <p>Design documents lose to playable builds. Every feature goes into a playtest within a sprint, and most of them die there. The ones that survive get rebuilt at least once.</p>
+        </div>
+        <div class="panel">
+          <span class="num">02</span>
+          <h3>Hitreg is the product</h3>
+          <p>Competitive shooters live or die on whether a shot feels honest. We instrument rollback, tick rate and server reconciliation continuously and treat a regression there as a stop-ship bug.</p>
+        </div>
+        <div class="panel">
+          <span class="num">03</span>
+          <h3>Ship, then keep shipping</h3>
+          <p>Launch is the first week of a long job. Live operations sit with the team that built the systems, not in a separate room, so fixes land in days rather than quarters.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">Flagship title</p>
+      <div class="card">
+        <div class="game-head">
+          <h2 style="margin-bottom:.3rem">Ironclad Siege</h2>
+          <span class="tagline">2022 &middot; PC (Steam) &middot; Unreal Engine 5</span>
+        </div>
+        <p>Five-versus-five attack and defend, fought over objectives inside buildings that come apart as you fight through them. Destructible cover means no angle stays safe for a whole round, and every wall you break is a wall the other squad can use next.</p>
+        <p><a class="btn" href="games/">Specs and system requirements</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">Latest news</p>
+      <h2>From the press room</h2>
+      <ul class="news">
+        <li>
+          <time datetime="2026-08-19">19 Aug 2026</time>
+          <a href="press/">Ironclad Siege &mdash; Operation Cinderfall brings a new map and a destructibility pass</a>
+        </li>
+        <li>
+          <time datetime="2026-06-02">02 Jun 2026</time>
+          <a href="press/#cerberus">Molten Anvil Interactive moves Ironclad Siege anti-cheat to Cerberus closed beta</a>
+        </li>
+      </ul>
+      <p style="margin-top:1.6rem"><a href="press/">All press releases and the press kit</a></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="foot-name">Molten Anvil Interactive</span>
+    <span class="foot-legal">&copy; 2026 Molten Anvil Interactive &middot; <a href="legal/">Legal &amp; privacy</a></span>
+    <a class="foot-badge" href="https://cerberusac.dev/" target="_blank" rel="noopener">Anti-cheat by Cerberus</a>
+  </div>
+</footer>
+
+</body>
+</html>

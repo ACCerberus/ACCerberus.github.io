@@ -297,6 +297,9 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/plans/">Plans</a>
+          <a href="/downloads/">Downloads</a>
+          <a href="/readiness/">Readiness Check</a>
           <a href="/blog/">Blog</a>
           <a href="/updates/">Updates</a>
         </div>
@@ -568,7 +571,7 @@
       <span class="key">"player_id"</span>:       <span class="s">"steam_76561198012345678"</span>,
       <span class="key">"reason"</span>:          <span class="s">"AIMBOT"</span>,
       <span class="key">"confidence"</span>:      <span class="n">0.994</span>,
-      <span class="key">"detection_head"</span>:  <span class="s">"AI"</span>,
+      <span class="key">"detection_layer"</span>: <span class="s">"AI"</span>,
       <span class="key">"hardware_id"</span>:     <span class="s">"hw_a1b2c3d4e5f6"</span>,
       <span class="key">"session_id"</span>:      <span class="s">"ses_7a6b5c4d3e2f"</span>,
       <span class="key">"banned_at"</span>:       <span class="s">"2026-05-19T08:32:01Z"</span>,
@@ -687,7 +690,7 @@
       <!-- ══ Detections ══ -->
       <a class="section-anchor" id="detections-section"></a>
       <div class="section-title">Detections</div>
-      <p class="section-desc">Raw detection events from all four Cerberus heads. Each detection includes a confidence score, the triggering head, and structured evidence metadata.</p>
+      <p class="section-desc">Raw detection events from all four detection layers. Each detection includes a confidence score, the triggering layer, and structured evidence metadata.</p>
 
       <a class="section-anchor" id="ep-detections"></a>
       <div class="endpoint-card reveal" id="card-detections">
@@ -702,7 +705,7 @@
           <table class="param-table">
             <tr><th>Query parameter</th><th>Type</th><th>Description</th></tr>
             <tr><td>limit <span class="opt-badge">optional</span></td><td>integer</td><td>Max results. Default: 50, Max: 200.</td></tr>
-            <tr><td>head <span class="opt-badge">optional</span></td><td>string</td><td>Filter by detection layer: <code style="font-family:var(--font-mono);font-size:0.85em">KERNEL</code>, <code style="font-family:var(--font-mono);font-size:0.85em">AI</code>, <code style="font-family:var(--font-mono);font-size:0.85em">HW</code>, <code style="font-family:var(--font-mono);font-size:0.85em">NET</code>.</td></tr>
+            <tr><td>layer <span class="opt-badge">optional</span></td><td>string</td><td>Filter by detection layer: <code style="font-family:var(--font-mono);font-size:0.85em">KERNEL</code>, <code style="font-family:var(--font-mono);font-size:0.85em">AI</code>, <code style="font-family:var(--font-mono);font-size:0.85em">HW</code>, <code style="font-family:var(--font-mono);font-size:0.85em">NET</code>.</td></tr>
             <tr><td>min_confidence <span class="opt-badge">optional</span></td><td>float</td><td>Minimum confidence threshold (0.0–1.0). Default: 0.30.</td></tr>
           </table>
           <div class="code-area">
@@ -715,7 +718,7 @@
       <span class="key">"id"</span>:            <span class="s">"det_f1e2d3c4b5a6"</span>,
       <span class="key">"player_id"</span>:     <span class="s">"steam_76561198012345678"</span>,
       <span class="key">"session_id"</span>:    <span class="s">"ses_7a6b5c4d3e2f"</span>,
-      <span class="key">"head"</span>:          <span class="s">"AI"</span>,
+      <span class="key">"layer"</span>:         <span class="s">"AI"</span>,
       <span class="key">"category"</span>:      <span class="s">"AIMBOT"</span>,
       <span class="key">"confidence"</span>:    <span class="n">0.994</span>,
       <span class="key">"resulted_in_ban"</span>: <span class="k">true</span>,
@@ -731,7 +734,7 @@
       <span class="key">"id"</span>:            <span class="s">"det_a9b8c7d6e5f4"</span>,
       <span class="key">"player_id"</span>:     <span class="s">"steam_76561198055443322"</span>,
       <span class="key">"session_id"</span>:    <span class="s">"ses_1a2b3c4d5e6f"</span>,
-      <span class="key">"head"</span>:          <span class="s">"KERNEL"</span>,
+      <span class="key">"layer"</span>:         <span class="s">"KERNEL"</span>,
       <span class="key">"category"</span>:      <span class="s">"UNSIGNED_DRIVER"</span>,
       <span class="key">"confidence"</span>:    <span class="n">0.881</span>,
       <span class="key">"resulted_in_ban"</span>: <span class="k">false</span>,
@@ -1034,17 +1037,17 @@
 
       'bans-list': () => {
         const reasons = ['AIMBOT','DMA_EXTERNAL_READ','INJECTION','WALLHACK','SPEED_HACK','UNSIGNED_DRIVER'];
-        const heads   = ['AI','KERNEL','HW','NET'];
+        const layers  = ['AI','KERNEL','HW','NET'];
         const bans = Array.from({length: rndInt(3, 5)}, (_, i) => {
           const r = rndChoice(reasons);
-          const h = rndChoice(heads);
+          const h = rndChoice(layers);
           const conf = parseFloat((0.88 + rng() * 0.115).toFixed(3));
           return {
             id: shortId('ban', 12),
             player_id: steamId(),
             reason: r,
             confidence: conf,
-            detection_head: h,
+            detection_layer: h,
             hardware_id: shortId('hw', 12),
             session_id: shortId('ses', 12),
             banned_at: isoNow(-rndInt(5, 180)),
@@ -1082,12 +1085,12 @@
 
       'detections': () => {
         const cats = [
-          {cat:'AIMBOT',head:'AI',evidKey:'aim_correction_ms',evidVal:()=>parseFloat(rnd(2,6).toFixed(1))},
-          {cat:'DMA_EXTERNAL_READ',head:'KERNEL',evidKey:'scan_address',evidVal:()=>'0xfffff800`'+Math.floor(rng()*0xffffffff).toString(16).padStart(8,'0')},
-          {cat:'UNSIGNED_DRIVER',head:'KERNEL',evidKey:'driver_name',evidVal:()=>rndChoice(['mhyprot3.sys','ntkrpamp.sys','kdmapper.sys','WinIo64.sys'])},
-          {cat:'WALLHACK',head:'AI',evidKey:'esp_confidence',evidVal:()=>parseFloat(rnd(0.82,0.99).toFixed(3))},
-          {cat:'HW_SPOOF',head:'HW',evidKey:'spoof_method',evidVal:()=>rndChoice(['SERIAL_PATCH','HWID_CLONE','VIRT_DISK'])},
-          {cat:'VM_DETECTED',head:'HW',evidKey:'hypervisor',evidVal:()=>rndChoice(['VirtualBox','VMware','Hyper-V','KVM'])}
+          {cat:'AIMBOT',layer:'AI',evidKey:'aim_correction_ms',evidVal:()=>parseFloat(rnd(2,6).toFixed(1))},
+          {cat:'DMA_EXTERNAL_READ',layer:'KERNEL',evidKey:'scan_address',evidVal:()=>'0xfffff800`'+Math.floor(rng()*0xffffffff).toString(16).padStart(8,'0')},
+          {cat:'UNSIGNED_DRIVER',layer:'KERNEL',evidKey:'driver_name',evidVal:()=>rndChoice(['mhyprot3.sys','ntkrpamp.sys','kdmapper.sys','WinIo64.sys'])},
+          {cat:'WALLHACK',layer:'AI',evidKey:'esp_confidence',evidVal:()=>parseFloat(rnd(0.82,0.99).toFixed(3))},
+          {cat:'HW_SPOOF',layer:'HW',evidKey:'spoof_method',evidVal:()=>rndChoice(['SERIAL_PATCH','HWID_CLONE','VIRT_DISK'])},
+          {cat:'VM_DETECTED',layer:'HW',evidKey:'hypervisor',evidVal:()=>rndChoice(['VirtualBox','VMware','Hyper-V','KVM'])}
         ];
         const detections = Array.from({length: rndInt(4, 7)}, () => {
           const pick = rndChoice(cats);
@@ -1095,7 +1098,7 @@
           const resulted = conf >= 0.95;
           const ev = {};
           ev[pick.evidKey] = pick.evidVal();
-          if (pick.head === 'AI') {
+          if (pick.layer === 'AI') {
             ev.headshot_rate = parseFloat(rnd(0.6, 0.98).toFixed(2));
             ev.baseline_deviation = parseFloat(rnd(2.1, 6.8).toFixed(2));
           }
@@ -1103,7 +1106,7 @@
             id: shortId('det', 12),
             player_id: steamId(),
             session_id: shortId('ses', 12),
-            head: pick.head,
+            layer: pick.layer,
             category: pick.cat,
             confidence: conf,
             resulted_in_ban: resulted,
@@ -1156,7 +1159,7 @@
       })
     };
 
-    // ── TODO #13: API Rate Limit Simulation ──
+    // ── API rate-limit simulation (per-minute window for the try-it panels) ──
     var apiRateLimit = { max: 50, remaining: 50, resetAt: Date.now() + 60000 };
     setInterval(function() {
       if (Date.now() >= apiRateLimit.resetAt) {
