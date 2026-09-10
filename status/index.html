@@ -308,6 +308,9 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/plans/">Plans</a>
+          <a href="/downloads/">Downloads</a>
+          <a href="/readiness/">Readiness Check</a>
           <a href="/blog/">Blog</a>
           <a href="/updates/">Updates</a>
         </div>
@@ -342,7 +345,7 @@
     <div class="subscribe-section" id="statusJsonSection" style="flex-direction: column; align-items: flex-start; gap: 8px;">
       <label>Need machine-readable status?</label>
       <p style="margin: 0; font-size: 0.78rem; color: var(--text-dim); line-height: 1.6;">
-        See our example <a href="/status.json" style="color: var(--accent);">status.json</a> format for piping uptime into PagerDuty, an internal dashboard, or any other monitor. This build is static (no backend), so <code style="font-family: var(--font-mono); font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; border-radius: 4px;">/status.json</code> is a hand-authored example snapshot rather than a live-updating endpoint &mdash; but it documents the shape a real feed would take: an overall <code style="font-family: var(--font-mono); font-size: 0.72rem;">status</code> field, a per-region <code style="font-family: var(--font-mono); font-size: 0.72rem;">regions[]</code> array, a per-service <code style="font-family: var(--font-mono); font-size: 0.72rem;">services[]</code> array (each with its own per-region breakdown), a current <code style="font-family: var(--font-mono); font-size: 0.72rem;">incidents[]</code> array (empty on quiet days, the common case &mdash; populated only during an active incident), and historical <code style="font-family: var(--font-mono); font-size: 0.72rem;">recentResolvedIncidents[]</code>. A production deployment would regenerate this from the same engine that drives the dashboard above, on every status change.
+        Point your monitor at <a href="/status.json" style="color: var(--accent);">status.json</a> to pipe uptime into PagerDuty, an internal dashboard, or anything else. This feed is regenerated every two hours by the same job that updates the dashboard &mdash; the <code style="font-family: var(--font-mono); font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; border-radius: 4px;">generatedAt</code> field tells you the snapshot time. It carries an overall <code style="font-family: var(--font-mono); font-size: 0.72rem;">status</code> field, a per-region <code style="font-family: var(--font-mono); font-size: 0.72rem;">regions[]</code> array, a per-service <code style="font-family: var(--font-mono); font-size: 0.72rem;">services[]</code> array (each with its own per-region breakdown), a current <code style="font-family: var(--font-mono); font-size: 0.72rem;">incidents[]</code> array (empty on quiet days, the common case &mdash; populated only during an active incident), and historical <code style="font-family: var(--font-mono); font-size: 0.72rem;">recentResolvedIncidents[]</code>.
       </p>
     </div>
 
@@ -503,6 +506,16 @@
 
     // ===== UPTIME BARS (date-seeded, per-region) =====
     var E = window.CerberusEngine;
+
+    // Colour thresholds are anchored to the SLA target rather than a hardcoded 99%:
+    // green above 98%, amber down to the committed target, red below it.
+    function uptimeTargetPct() {
+      return (E && E.CONFIG && typeof E.CONFIG.uptimeTarget === 'number') ? E.CONFIG.uptimeTarget * 100 : 97;
+    }
+    function uptimeColor(pct) {
+      if (pct >= 98) return 'var(--green)';
+      return pct >= uptimeTargetPct() ? 'var(--accent)' : 'var(--red)';
+    }
     var serviceNames = ['Detection Engine', 'API & Dashboard', 'Data Pipeline'];
     var regionNames;
     try { regionNames = (E && E.CONFIG) ? E.CONFIG.regions.map(function(r) { return r.name; }) : ['US-East', 'EU-West', 'AP-Southeast']; } catch(e) { regionNames = ['US-East', 'EU-West', 'AP-Southeast']; }
@@ -537,7 +550,7 @@
       // S3: initial response time per service
       var initLatency = Math.floor(38 + seeded(today * 41 + svc.id * 13) * 28);
 
-      uptimeHTML += '<div class="uptime-row"><span class="uptime-name">' + svc.name + '</span><div class="uptime-bar" id="bar' + svc.id + '"></div><span class="uptime-pct" style="color:' + (parseFloat(pct) >= 99.5 ? 'var(--green)' : 'var(--accent)') + ';">' + pct + '%</span><span class="uptime-latency" data-svc-id="' + svc.id + '">' + initLatency + 'ms</span></div>';
+      uptimeHTML += '<div class="uptime-row"><span class="uptime-name">' + svc.name + '</span><div class="uptime-bar" id="bar' + svc.id + '"></div><span class="uptime-pct" style="color:' + uptimeColor(parseFloat(pct)) + ';">' + pct + '%</span><span class="uptime-latency" data-svc-id="' + svc.id + '">' + initLatency + 'ms</span></div>';
       svc.degraded = degradedDays;
     });
     document.getElementById('uptimeRows').innerHTML = uptimeHTML;
@@ -989,16 +1002,16 @@
         var d = new Date(now.getFullYear(), now.getMonth() - m, 1);
         var monthName = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
         var seed = d.getFullYear() * 12 + d.getMonth();
-        var uptime = (96.5 + seeded(seed * 43) * 2.5).toFixed(2);
+        var uptime = ((E && E.monthlyUptime) ? E.monthlyUptime(m) : (96.5 + seeded(seed * 43) * 2.5)).toFixed(2);
         var incidents = Math.floor(seeded(seed * 47) * 4);
         var avgRes = incidents > 0 ? Math.floor(8 + seeded(seed * 53) * 40) : 0;
-        var color = parseFloat(uptime) >= 99 ? 'var(--green)' : parseFloat(uptime) >= 97 ? 'var(--accent)' : 'var(--red)';
+        var color = uptimeColor(parseFloat(uptime));
         html += '<tr><td>' + monthName + '</td><td><span class="monthly-pct" style="color:' + color + ';">' + uptime + '%</span><div class="monthly-bar-wrap"><div class="monthly-bar-fill" style="width:' + uptime + '%;background:' + color + ';"></div></div></td><td style="font-family:var(--font-mono);font-size:0.75rem;">' + incidents + '</td><td style="font-family:var(--font-mono);font-size:0.75rem;">' + (avgRes > 0 ? avgRes + 'm' : '\u2014') + '</td></tr>';
       }
       body.innerHTML = html;
     })();
 
-    // ===== 90-DAY UPTIME HISTORY GRAPH (reuses the same seeded-random formula as the monthly table above, at daily granularity) =====
+    // ===== 90-DAY UPTIME HISTORY GRAPH (engine dailyUptime, same source as the monthly table above) =====
     (function() {
       var graph = document.getElementById('dailyUptimeGraph');
       if (!graph) return;
@@ -1006,10 +1019,10 @@
       for (var i = 89; i >= 0; i--) {
         var d = daysAgo(i);
         var seed = Math.floor(d.getTime() / 86400000);
-        var uptime = (96.5 + seeded(seed * 43) * 2.5).toFixed(2);
+        var uptime = ((E && E.dailyUptime) ? E.dailyUptime(i) : (96.5 + seeded(seed * 43) * 2.5)).toFixed(2);
         var incidents = Math.floor(seeded(seed * 47) * 4);
         var pct = parseFloat(uptime);
-        var cls = pct >= 99 ? '' : pct >= 97 ? 'amber' : 'red';
+        var cls = pct >= 98 ? '' : pct >= uptimeTargetPct() ? 'amber' : 'red';
         var tip = fmtDate(d) + ' — ' + uptime + '% uptime · ' + incidents + ' incident' + (incidents === 1 ? '' : 's');
         html += '<div class="daily-bar' + (cls ? ' ' + cls : '') + '" title="' + tip + '"></div>';
       }

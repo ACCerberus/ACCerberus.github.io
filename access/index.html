@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Request Access - Cerberus Anti-Cheat</title>
-  <meta name="description" content="Create a Cerberus partner account to access the SDK, API dashboard, and integration tools. Applications reviewed within 48 hours." />
+  <meta name="description" content="Create a Cerberus partner account to access the SDK, API dashboard, and integration tools. Applications are reviewed manually, typically within 2-5 business days." />
   <meta name="theme-color" content="#e8a020" />
   <link rel="canonical" href="https://cerberusac.dev/access/" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F6E1;</text></svg>" />
@@ -16,7 +16,7 @@
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Request Access - Cerberus Anti-Cheat",
-    "description": "Create a Cerberus partner account to access the SDK, API dashboard, and integration tools. Applications reviewed within 48 hours.",
+    "description": "Create a Cerberus partner account to access the SDK, API dashboard, and integration tools. Applications are reviewed manually, typically within 2-5 business days.",
     "url": "https://cerberusac.dev/access/"
   }
   </script>
@@ -352,6 +352,9 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/plans/">Plans</a>
+          <a href="/downloads/">Downloads</a>
+          <a href="/readiness/">Readiness Check</a>
           <a href="/blog/">Blog</a>
           <a href="/updates/">Updates</a>
         </div>
@@ -368,13 +371,16 @@
   <div class="page-header reveal">
     <div class="page-header-label">Partner Program</div>
     <h1>Request Access</h1>
-    <p>Set up your studio account to access the SDK, API dashboard, and integration tools. All accounts are reviewed within 48 hours.</p>
+    <p>Set up your studio account to access the SDK, API dashboard, and integration tools. Applications are reviewed manually, typically within 2&ndash;5 business days; credentials are issued on approval.</p>
   </div>
 
   <!-- LOW-FRICTION ALTERNATIVE -->
   <div class="reveal" style="max-width: 700px; margin: 0 auto 32px; padding: 0 24px; text-align: center;">
     <div style="display: inline-block; padding: 10px 20px; border: 1px dashed var(--border); border-radius: 10px; font-size: 0.8rem; color: var(--text-dim);">
       Not ready to create an account? <a href="/#demo" style="color: var(--accent); text-decoration: none; font-weight: 600;">See the live detection demo</a> on our homepage first &mdash; no signup required.
+    </div>
+    <div style="margin-top: 12px;">
+      <button type="button" id="sandboxBtn" style="padding:10px 20px;border-radius:10px;border:1px solid rgba(232,160,32,0.35);background:rgba(232,160,32,0.1);color:var(--accent);font-family:inherit;font-size:0.8rem;font-weight:600;cursor:pointer;">See the dashboard first &mdash; no application needed</button>
     </div>
   </div>
 
@@ -397,7 +403,9 @@
   <!-- FORM -->
   <div class="form-wrapper">
     <div class="form-card reveal" id="formCard">
-      <form id="accessForm" method="POST">
+      <form id="accessForm" method="POST" action="https://formspree.io/f/xpwdgvjk">
+        <input type="hidden" name="_subject" value="[Cerberus] Partner access application" />
+        <input type="hidden" name="form_type" value="partner-application" />
 
         <!-- Section 0: Account Credentials -->
         <div class="form-section reveal">
@@ -412,24 +420,7 @@
               <input type="text" name="display_name" id="regDisplayName" placeholder="e.g. Alex Carter" required />
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="regPw">Password</label>
-              <div style="position:relative;">
-                <input type="password" name="password" id="regPw" placeholder="Min. 12 characters" required minlength="12" oninput="checkPwMatch()" />
-                <button type="button" onclick="togglePwVis('regPw',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.75rem;padding:4px;">Show</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="regPwC">Confirm Password</label>
-              <div style="position:relative;">
-                <input type="password" name="password_confirm" id="regPwC" placeholder="Re-enter password" required minlength="12" oninput="checkPwMatch()" />
-                <button type="button" onclick="togglePwVis('regPwC',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.75rem;padding:4px;">Show</button>
-              </div>
-              <div id="pwMismatch" style="display:none;color:#e04050;font-size:0.75rem;margin-top:4px;font-weight:600;">Passwords do not match</div>
-            </div>
-          </div>
-          <div style="font-size:0.7rem;color:var(--text);margin-top:8px;">Your account will be provisioned after manual review. You'll receive an API key and dashboard access via email.</div>
+          <div style="font-size:0.7rem;color:var(--text);margin-top:8px;">Your account will be provisioned after manual review. You'll receive an API key, dashboard access and a first-login link via email &mdash; we never ask you to choose a password on this form.</div>
         </div>
 
         <!-- Section 1: Studio Information -->
@@ -575,48 +566,47 @@
             <legend class="form-label">Desired Tier</legend>
             <div class="radio-group">
               <label class="radio-item radio-item-tier">
-                <input type="radio" name="tier" value="Argus (Free)" />
+                <input type="radio" name="tier" value="Argus (&#8804;2,500 peak CCU)" />
                 <div class="radio-indicator"></div>
-                <span>Argus (Free)</span>
-                <span class="tier-tooltip">Kernel-level memory scanning
+                <span>Argus (&#8804;2,500 peak CCU)</span>
+                <span class="tier-tooltip">Layer 1 kernel integrity
 Signature database access
-Up to 10K CCU
+Up to 2,500 peak CCU
 Community support
 Basic webhook events</span>
               </label>
               <label class="radio-item radio-item-tier">
-                <input type="radio" name="tier" value="Aegis (Professional)" />
+                <input type="radio" name="tier" value="Aegis (&#8804;25K)" />
                 <div class="radio-indicator"></div>
-                <span>Aegis (Professional)</span>
+                <span>Aegis (&#8804;25K)</span>
                 <span class="tier-tooltip">Everything in Argus, plus:
-Behavioral AI detection
-Up to 100K CCU
-Priority support (24h SLA)
+Layer 2 behavioral AI detection
+Up to 25,000 peak CCU
+Partner dashboard
 Full webhook &amp; API access
-Partner dashboard</span>
+12h email SLA</span>
               </label>
               <label class="radio-item radio-item-tier">
-                <input type="radio" name="tier" value="Cerberus (Complete)" />
+                <input type="radio" name="tier" value="Cerberus (&#8804;100K)" />
                 <div class="radio-indicator"></div>
-                <span>Cerberus (Complete)</span>
+                <span>Cerberus (&#8804;100K)</span>
                 <span class="tier-tooltip">Everything in Aegis, plus:
-Hardware fingerprinting (DMA/PCIe)
-Up to 500K CCU
-Dedicated support (4h SLA)
-Custom detection rules
+Layers 3 &amp; 4 - hardware and network
+Up to 100,000 peak CCU
+Assigned threat analyst
+4h support SLA
 Real-time threat intel feed</span>
               </label>
               <label class="radio-item radio-item-tier">
-                <input type="radio" name="tier" value="Olympus (Enterprise)" />
+                <input type="radio" name="tier" value="Olympus (custom)" />
                 <div class="radio-indicator"></div>
-                <span>Olympus (Enterprise)</span>
+                <span>Olympus (custom)</span>
                 <span class="tier-tooltip">Everything in Cerberus, plus:
-Unlimited CCU
+No CCU cap
+Custom Rules Engine add-on
 On-premise deployment option
-Custom model training
-Dedicated engineer
-SLA-backed uptime guarantee
-White-label SDK</span>
+Named engineer
+SLA-backed uptime commitment</span>
               </label>
             </div>
           </fieldset>
@@ -667,7 +657,7 @@ White-label SDK</span>
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
       </div>
       <h2>Account Submitted for Review</h2>
-      <p>Your partner account has been created and is pending manual review. Our team will verify your studio and provision API access within 48 hours. Check your inbox for a confirmation email.</p>
+      <p>Your application has been received and is pending manual review. Applications are reviewed manually, typically within 2&ndash;5 business days; credentials are issued on approval.</p>
       <p id="redirectMsg" style="font-size:0.8rem;color:var(--text-dim);margin-top:12px;"></p>
       <div class="success-id-label">Partner Account ID</div>
       <div class="success-id" id="appId"></div>
@@ -700,20 +690,6 @@ White-label SDK</span>
     <p style="margin-top: 16px;">&copy; <span id="year"></span> Cerberus Team. All rights reserved.</p>
   </footer>
 
-  <script>
-    function togglePwVis(id, btn) {
-      var el = document.getElementById(id);
-      if (el.type === 'password') { el.type = 'text'; btn.textContent = 'Hide'; }
-      else { el.type = 'password'; btn.textContent = 'Show'; }
-    }
-    function checkPwMatch() {
-      var pw = document.getElementById('regPw').value;
-      var pwc = document.getElementById('regPwC').value;
-      var msg = document.getElementById('pwMismatch');
-      if (pwc.length > 0 && pw !== pwc) { msg.style.display = 'block'; }
-      else { msg.style.display = 'none'; }
-    }
-  </script>
   <script src="/js/cerberus-engine.js"></script>
   <script src="/js/cerberus-shared.js"></script>
   <script>
@@ -723,98 +699,59 @@ White-label SDK</span>
       var successCard = document.getElementById('successCard');
       var appIdEl = document.getElementById('appId');
 
+      // Escape hatch: jump straight into the simulated partner dashboard.
+      var sandboxBtn = document.getElementById('sandboxBtn');
+      if (sandboxBtn) {
+        sandboxBtn.addEventListener('click', function() {
+          if (window.CERBERUS && typeof CERBERUS.openSandbox === 'function') CERBERUS.openSandbox();
+          else window.location.href = '/login/';
+        });
+      }
+
       if (!form || !successCard) return;
 
+      function showSuccess(appId) {
+        if (appIdEl) appIdEl.textContent = appId || 'pending';
+        formCard.style.display = 'none';
+        successCard.style.display = 'block';
+        var secs = 5;
+        var msgEl = document.getElementById('redirectMsg');
+        if (!msgEl) return;
+        msgEl.textContent = 'Redirecting to home in ' + secs + 's...';
+        var countdown = setInterval(function() {
+          secs--;
+          if (secs <= 0) { clearInterval(countdown); window.location.href = '/'; }
+          else { msgEl.textContent = 'Redirecting to home in ' + secs + 's...'; }
+        }, 1000);
+      }
+
+      // Applications post straight to Formspree. Nothing is hashed, stored or
+      // provisioned in the browser - credentials are issued by a human on approval.
       form.addEventListener('submit', function(e) {
         e.preventDefault();
-        var pw = form.querySelector('input[name="password"]').value;
-        var pwc = form.querySelector('input[name="password_confirm"]').value;
-        if (pw !== pwc) {
-          alert('Passwords do not match.');
-          return;
-        }
-        if (pw.length < 12) {
-          alert('Password must be at least 12 characters.');
-          return;
-        }
         var btn = form.querySelector('button[type="submit"]');
-        btn.textContent = 'Submitting request...';
-        btn.disabled = true;
+        if (btn) { btn.textContent = 'Submitting request...'; btn.disabled = true; }
 
-        // Hash password and store registration data in localStorage
-        var email = (form.querySelector('input[name="email"]').value || '').trim().toLowerCase();
-        var displayName = (form.querySelector('input[name="display_name"]').value || '').trim();
-        var studioName = (form.querySelector('input[name="studio_name"]').value || '').trim();
-        var gameTitleVal = (form.querySelector('input[name="game_title"]').value || '').trim();
-        var engineVal = (form.querySelector('select[name="engine"]').value || '');
-        var genreVal = (form.querySelector('select[name="genre"]').value || '');
-        var tierRadio = form.querySelector('input[name="tier"]:checked');
-        var tierVal = tierRadio ? tierRadio.value.split(' ')[0] : 'Argus';
-        var tierPrefix = tierVal.toLowerCase();
+        var emailField = form.querySelector('input[name="email"]');
+        var email = ((emailField && emailField.value) || '').trim().toLowerCase();
+        var appId = 'CRB-' + new Date().getFullYear() + '-' +
+          Math.abs(email.split('').reduce(function(a, c) { return ((a << 5) - a + c.charCodeAt(0)) | 0; }, 7))
+            .toString(36).toUpperCase().slice(0, 6);
 
-        // SHA-256 hash the password
-        var pwBuf = new TextEncoder().encode(pw);
-        crypto.subtle.digest('SHA-256', pwBuf).then(function(hashBuf) {
-          var passwordHash = Array.from(new Uint8Array(hashBuf)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
-
-          // Save to localStorage so login page can verify
-          var regData = {
-            email: email,
-            passwordHash: passwordHash,
-            name: displayName,
-            studio: studioName,
-            game: gameTitleVal,
-            engine: engineVal,
-            genre: genreVal,
-            registered: new Date().toISOString()
-          };
-          localStorage.setItem('cerberus_reg_' + email, JSON.stringify(regData));
-
-          // Submitted to the cerberus-intake Worker, which holds the GitHub token
-          // server-side and appends the application to data/x9f3k7.json. Replaces the
-          // old design where a GitHub token was hardcoded directly in this page's JS.
-          var WORKER_URL = 'https://cerberus-intake.YOUR_SUBDOMAIN.workers.dev';
-
-          fetch(WORKER_URL + '/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email: email,
-              passwordHash: passwordHash,
-              name: displayName,
-              studio: studioName,
-              game: gameTitleVal,
-              engine: engineVal,
-              genre: genreVal,
-              tier: tierVal
-            })
-          }).then(function(r) { return r.json(); }).then(function(res) {
-            if (res && res.ok) {
-              showSuccess(res.appId);
-            } else {
-              btn.textContent = 'Submit Application';
-              btn.disabled = false;
-              alert((res && res.error) || 'Could not submit your application. Please try again.');
-            }
-          }).catch(function() {
-            btn.textContent = 'Submit Application';
-            btn.disabled = false;
-            alert('Could not reach the application service. Please try again later.');
-          });
-
-          function showSuccess(appId) {
-            appIdEl.textContent = appId || 'pending';
-            formCard.style.display = 'none';
-            successCard.style.display = 'block';
-            var secs = 5;
-            var msgEl = document.getElementById('redirectMsg');
-            msgEl.textContent = 'Redirecting to home in ' + secs + 's...';
-            var countdown = setInterval(function() {
-              secs--;
-              if (secs <= 0) { clearInterval(countdown); window.location.href = '/'; }
-              else { msgEl.textContent = 'Redirecting to home in ' + secs + 's...'; }
-            }, 1000);
+        fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' }
+        }).then(function(r) {
+          if (r.ok) {
+            showSuccess(appId);
+          } else {
+            if (btn) { btn.textContent = 'Submit Application'; btn.disabled = false; }
+            alert('Could not submit your application. Please try again.');
           }
+        }).catch(function() {
+          if (btn) { btn.textContent = 'Submit Application'; btn.disabled = false; }
+          alert('Could not reach the application service. Please try again later.');
         });
       });
     })();

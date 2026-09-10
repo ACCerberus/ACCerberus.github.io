@@ -5,7 +5,7 @@
   "engineVersion": "v0.6.0.1a",
   "buildNumber": 3001,
   "uptimePercent": 97.8,
-  "lastIncident": "2026-05-14T08:22:00Z",
+  "lastIncident": "2026-09-08T14:14:15Z",
   "activeSessions": 1361,
   "regionsOnline": 3,
   "providersCovered": 3,
@@ -43,7 +43,7 @@
       "updatedAt": "2026-09-08T14:14:15Z",
       "rootCause": "Redis cluster split-brain during network partition",
       "severity": "minor",
-      "impactPct": 2.5,
+      "impactPct": 0.9,
       "resolvedAt": "2026-09-08T14:14:15Z"
     },
     {
@@ -54,18 +54,18 @@
       "updatedAt": "2026-09-04T03:37:13Z",
       "rootCause": "Redis cluster split-brain during network partition",
       "severity": "minor",
-      "impactPct": 2.5,
+      "impactPct": 1.7,
       "resolvedAt": "2026-09-04T03:37:13Z"
     },
     {
       "id": "INC-20260826-7669",
-      "title": "Memory scan false positive on accessibility software",
+      "title": "Detection pipeline queue saturation",
       "status": "RESOLVED",
       "startedAt": "2026-08-26T04:41:56Z",
       "updatedAt": "2026-08-26T12:57:15Z",
       "rootCause": "Memory pressure from concurrent scan operations",
       "severity": "minor",
-      "impactPct": 2.5,
+      "impactPct": 2.1,
       "resolvedAt": "2026-08-26T12:57:15Z"
     },
     {
@@ -76,7 +76,7 @@
       "updatedAt": "2026-08-25T16:39:38Z",
       "rootCause": "Hot-reload race condition in configuration management",
       "severity": "minor",
-      "impactPct": 2.5,
+      "impactPct": 0.6,
       "resolvedAt": "2026-08-25T16:39:38Z"
     },
     {
@@ -87,7 +87,7 @@
       "updatedAt": "2026-08-24T03:05:35Z",
       "rootCause": "Certificate renewal race condition",
       "severity": "minor",
-      "impactPct": 2.5,
+      "impactPct": 1.2,
       "resolvedAt": "2026-08-24T03:05:35Z"
     }
   ],

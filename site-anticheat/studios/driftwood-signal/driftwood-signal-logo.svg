@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 36" width="240" height="36" fill="none" role="img" aria-labelledby="dsLogoTitle">
+  <title id="dsLogoTitle">Driftwood Signal</title>
+  <path d="M4 26 q5.5 -5 11 0 t11 0" stroke="#4fa8a0" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M9 17 a8.5 8.5 0 0 1 12 0" stroke="#4fa8a0" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M4.5 11 a14.5 14.5 0 0 1 21 0" stroke="#4fa8a0" stroke-width="2.4" stroke-linecap="round" opacity="0.55"/>
+  <text x="40" y="25" fill="#4fa8a0" font-family="'Bitter', Georgia, 'Times New Roman', serif" font-size="19" font-weight="600" letter-spacing="0.8">DRIFTWOOD SIGNAL</text>
+</svg>

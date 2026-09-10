@@ -1,0 +1,68 @@
+CERBERUS ANTI-CHEAT SDK - EVALUATION LICENCE
+Version 0.6.0, September 2026
+
+Copyright (c) 2026 Cerberus Anti-Cheat. All rights reserved.
+
+1. GRANT
+
+   Cerberus Anti-Cheat grants you a non-exclusive, non-transferable,
+   royalty-free licence to download, install and use this Evaluation SDK for
+   the sole purpose of evaluating the Cerberus anti-cheat engine and preparing
+   an integration with it.
+
+   You may build the included libraries and examples, link them into your own
+   builds, modify the examples, and share the results of your evaluation
+   internally within your organisation.
+
+2. WHAT THIS PACKAGE IS NOT
+
+   This package contains no detection capability. It does not include the
+   Cerberus kernel driver, the production static or import libraries, any
+   detection signature, any model, or any credential. It performs no
+   detection and provides no protection of any kind.
+
+   Software built against this package MUST NOT be distributed to end users or
+   used in a production, public-beta or live-service environment. Call
+   cerberus_is_evaluation_build() to gate anything that must not ship.
+
+3. RESTRICTIONS
+
+   You may not:
+   (a) use this package, or anything derived from it, to protect a shipped
+       title or any build available to the public;
+   (b) redistribute this package, in whole or in part, outside your
+       organisation, except as unmodified copies of the original archive;
+   (c) reverse engineer, decompile or disassemble any binary component, except
+       to the extent that applicable law expressly permits despite this
+       limitation;
+   (d) remove or alter any copyright, trademark or licence notice.
+
+   The Cerberus name, logo and product names are trademarks of Cerberus
+   Anti-Cheat and are not licensed under this agreement.
+
+4. PARTNER RUNTIME
+
+   The partner runtime - the signed kernel driver, the production libraries and
+   an issued API key - is delivered under a separate written agreement after a
+   key is issued. Nothing in this licence entitles you to it.
+
+5. TERM
+
+   This licence continues until you stop using the Evaluation SDK, or until it
+   is superseded by a written partner agreement covering the same subject
+   matter. It terminates automatically if you breach section 3.
+
+6. NO WARRANTY
+
+   THE EVALUATION SDK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+
+7. LIMITATION OF LIABILITY
+
+   TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL
+   CERBERUS ANTI-CHEAT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
+   EXEMPLARY OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR IN CONNECTION WITH THIS
+   LICENCE OR THE EVALUATION SDK.
+
+Questions: legal@cerberusac.dev

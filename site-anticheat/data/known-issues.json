@@ -11,7 +11,7 @@
       "affectedRate": "Delivery delay up to 90s during failover windows only",
       "description": "When a region fails health checks and traffic reroutes, queued webhook retries back off further than necessary before the new region is confirmed healthy, adding avoidable delivery latency.",
       "workaround": "None needed for most integrations — events still deliver, just later than normal during failover. Partners polling the Ban API directly are unaffected.",
-      "targetFix": "v0.5.0.2b"
+      "targetFix": "v0.5.2.0b"
     },
     {
       "id": "KI-2026-017",

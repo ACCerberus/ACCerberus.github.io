@@ -107,8 +107,7 @@
     .activity-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
     .activity-title { font-family: var(--font-heading); font-size: 0.85rem; font-weight: 700; color: var(--text-bright); }
     .activity-live { display: flex; align-items: center; gap: 6px; font-size: 0.65rem; color: var(--green); font-family: var(--font-mono); font-weight: 600; }
-    .activity-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: actPulse 2s ease-in-out infinite; }
-    @keyframes actPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(48,200,96,0.3); } 50% { box-shadow: 0 0 0 4px rgba(48,200,96,0); } }
+    .activity-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
     .activity-feed { max-height: 200px; overflow-y: auto; }
     .activity-feed::-webkit-scrollbar { width: 3px; }
     .activity-feed::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
@@ -119,6 +118,7 @@
     .activity-icon { font-size: 0.7rem; margin-right: 2px; flex-shrink: 0; margin-top: 2px; }
     .activity-text { color: var(--text-dim); line-height: 1.5; }
     .activity-text strong { color: var(--text); font-weight: 600; }
+    .act-nick { color: var(--text-dim); font-family: var(--font-mono); font-size: 0.65rem; opacity: 0.85; }
     .activity-text .act-file { color: var(--accent); font-family: var(--font-mono); font-size: 0.68rem; }
     .activity-time { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-dim); margin-left: auto; white-space: nowrap; flex-shrink: 0; padding-top: 2px; }
 
@@ -127,124 +127,52 @@
     .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
     .section-title { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; color: var(--text-bright); letter-spacing: -0.5px; margin-bottom: 40px; }
 
-    .lead-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 80px; }
-    /* Center last row (2 cards) */
-    .lead-grid > .lead-card:nth-child(4) { grid-column: 1 / 2; margin-left: auto; margin-right: 0; }
-    .lead-grid-last-row { display: flex; justify-content: center; gap: 24px; margin-top: -56px; margin-bottom: 80px; }
+    .lead-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-bottom: 72px; }
     .lead-card {
-      background: linear-gradient(135deg, rgba(10,10,15,0.95), rgba(15,15,22,0.9));
-      border: 1px solid rgba(255,255,255,0.08); border-radius: 16px;
-      padding: 32px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-      position: relative; overflow: hidden; cursor: pointer;
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: 16px;
+      padding: 26px 26px 22px;
+      transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+      position: relative; cursor: pointer;
     }
-    .lead-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(
-        105deg,
-        transparent 40%,
-        rgba(232,160,32,0.03) 45%,
-        rgba(136,96,232,0.04) 50%,
-        rgba(64,136,232,0.03) 55%,
-        transparent 60%
-      );
-      background-size: 200% 200%;
-      animation: holoShimmer 6s ease-in-out infinite;
-      pointer-events: none; z-index: 0; border-radius: 16px;
-    }
-    @keyframes holoShimmer {
-      0% { background-position: 200% 50%; }
-      50% { background-position: -200% 50%; }
-      100% { background-position: 200% 50%; }
-    }
-    .lead-card:hover { transform: translateY(-6px) scale(1.015); }
-    .lead-card:hover::before {
-      background: linear-gradient(
-        105deg,
-        transparent 30%,
-        rgba(232,160,32,0.06) 38%,
-        rgba(48,200,96,0.06) 42%,
-        rgba(136,96,232,0.08) 48%,
-        rgba(64,136,232,0.06) 55%,
-        rgba(232,80,80,0.04) 60%,
-        transparent 70%
-      );
-      background-size: 200% 200%;
-      animation: holoShimmerHover 3s ease-in-out infinite;
-    }
-    @keyframes holoShimmerHover {
-      0% { background-position: 200% 50%; }
-      50% { background-position: -200% 50%; }
-      100% { background-position: 200% 50%; }
-    }
-    .lead-card[data-dept="kernel"]:hover {
-      border-color: rgba(64,136,232,0.3);
-      box-shadow: 0 8px 40px rgba(64,136,232,0.08), 0 0 60px rgba(64,136,232,0.03), inset 0 1px 0 rgba(64,136,232,0.1);
-    }
-    .lead-card[data-dept="ai"]:hover {
-      border-color: rgba(136,96,232,0.3);
-      box-shadow: 0 8px 40px rgba(136,96,232,0.08), 0 0 60px rgba(136,96,232,0.03), inset 0 1px 0 rgba(136,96,232,0.1);
-    }
-    .lead-card[data-dept="sdk"]:hover {
-      border-color: rgba(48,200,96,0.3);
-      box-shadow: 0 8px 40px rgba(48,200,96,0.08), 0 0 60px rgba(48,200,96,0.03), inset 0 1px 0 rgba(48,200,96,0.1);
-    }
-    .lead-card::after {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), rgba(136,96,232,0.6), rgba(64,136,232,0.4), transparent);
-      opacity: 0; transition: opacity 0.4s; z-index: 1;
-    }
-    .lead-card:hover::after { opacity: 1; }
-    /* Holographic foil edge glow */
-    .lead-card .holo-edge {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(232,160,32,0.2), rgba(136,96,232,0.2), rgba(48,200,96,0.2), transparent);
-      opacity: 0; transition: opacity 0.4s;
-    }
-    .lead-card:hover .holo-edge { opacity: 1; }
+    .lead-card:hover { border-color: rgba(255,255,255,0.13); background: var(--bg-card-hover); transform: translateY(-2px); }
+    .lead-card[data-dept="kernel"] { border-top: 2px solid rgba(64,136,232,0.28); }
+    .lead-card[data-dept="ai"] { border-top: 2px solid rgba(136,96,232,0.28); }
+    .lead-card[data-dept="sdk"] { border-top: 2px solid rgba(48,200,96,0.28); }
+    .lead-card[data-dept="qa"] { border-top: 2px solid rgba(32,178,170,0.28); }
+    .lead-card[data-dept="infra"] { border-top: 2px solid rgba(232,120,48,0.28); }
     /* Real name styling */
     .lead-real-name {
-      font-size: 0.68rem; color: var(--text-dim); font-weight: 400; margin-top: 1px;
-      font-family: var(--font); letter-spacing: 0.3px;
+      font-size: 0.72rem; color: var(--text-dim); font-weight: 400; margin-top: 3px;
+      font-family: var(--font);
     }
     /* Expanded bio */
     .lead-expanded {
-      max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, margin 0.3s;
+      max-height: 0; overflow: hidden; transition: max-height 0.45s ease, opacity 0.3s ease, margin 0.3s ease;
       opacity: 0; margin-top: 0;
     }
     .lead-card.expanded .lead-expanded {
-      max-height: 400px; opacity: 1; margin-top: 14px;
+      max-height: 720px; opacity: 1; margin-top: 14px;
     }
     .lead-expanded-content {
-      font-size: 0.75rem; color: var(--text-dim); line-height: 1.8;
-      padding: 14px 16px; border-radius: 10px;
-      background: rgba(255,255,255,0.015); border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
+      font-size: 0.78rem; color: var(--text-dim); line-height: 1.75;
+      padding-top: 14px; border-top: 1px solid var(--border);
     }
     .lead-expand-hint {
-      font-family: var(--font-mono); font-size: 0.55rem; color: var(--text-dim);
-      opacity: 0.4; text-align: center; margin-top: 8px; transition: opacity 0.3s;
-      letter-spacing: 0.5px;
+      font-size: 0.7rem; color: var(--text-dim); margin-top: 14px;
+      transition: color 0.2s;
     }
-    .lead-card:hover .lead-expand-hint { opacity: 0.7; }
+    .lead-card:hover .lead-expand-hint { color: var(--accent); }
     .lead-card.expanded .lead-expand-hint { display: none; }
-    .lead-card-top { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+    .lead-card-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
     .lead-avatar {
-      width: 52px; height: 52px; border-radius: 14px;
+      width: 46px; height: 46px; border-radius: 12px;
       background: var(--accent-dim); display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-heading); font-weight: 800; font-size: 1rem; color: var(--accent); flex-shrink: 0;
-      position: relative;
+      font-family: var(--font-heading); font-weight: 700; font-size: 0.9rem; color: var(--accent); flex-shrink: 0;
     }
-    .lead-status {
-      position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px;
-      border-radius: 50%; border: 2px solid var(--bg-card);
-    }
-    .lead-status-online { background: var(--green); box-shadow: 0 0 6px rgba(48,200,96,0.5); }
-    .lead-status-busy { background: var(--accent); box-shadow: 0 0 6px rgba(232,160,32,0.4); }
-    .lead-status-away { background: var(--text-dim); opacity: 0.6; }
-    .lead-status-offline { background: #333; }
     .lead-info { flex: 1; min-width: 0; }
-    .lead-name { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); display: flex; align-items: center; gap: 8px; }
+    .lead-name { font-family: var(--font-heading); font-size: 0.98rem; font-weight: 700; color: var(--text-bright); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .lead-nick { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500; color: var(--text-dim); letter-spacing: 0.2px; }
     .lead-dept-badge {
       font-size: 0.55rem; font-weight: 700; padding: 1px 7px; border-radius: 8px;
       text-transform: uppercase; letter-spacing: 0.5px;
@@ -252,43 +180,41 @@
     .lead-dept-badge-kernel { background: rgba(64,136,232,0.12); color: var(--dept-kernel); }
     .lead-dept-badge-ai { background: rgba(136,96,232,0.12); color: var(--dept-ai); }
     .lead-dept-badge-sdk { background: rgba(48,200,96,0.12); color: var(--dept-sdk); }
+    .lead-dept-badge-qa { background: rgba(32,178,170,0.12); color: var(--dept-qa); }
     .lead-dept-badge-infra { background: rgba(232,120,48,0.12); color: var(--dept-infra); }
-    .lead-role { font-size: 0.75rem; color: var(--accent); font-weight: 600; margin-top: 2px; }
-    .lead-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.68rem; color: var(--text-dim); }
-    .lead-meta-item { display: flex; align-items: center; gap: 4px; }
-    .lead-prior { font-size: 0.72rem; color: var(--text-dim); font-style: italic; margin-bottom: 10px; }
-    .lead-bio { font-size: 0.8rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 14px; }
+    .lead-role { font-size: 0.78rem; color: var(--text); font-weight: 600; margin-top: 4px; }
+    .lead-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 14px; font-size: 0.7rem; color: var(--text-dim); }
+    .lead-meta-item { display: flex; align-items: center; gap: 5px; }
+    .lead-prior { font-size: 0.72rem; color: var(--text-dim); margin-bottom: 12px; }
+    .lead-bio { font-size: 0.82rem; color: var(--text); line-height: 1.75; margin-bottom: 16px; }
     .lead-focus {
-      font-size: 0.68rem; color: var(--text-dim); padding: 10px 14px; border-radius: 8px;
-      background: rgba(255,255,255,0.015); border: 1px solid var(--border);
-      border-left: 3px solid var(--accent); margin-bottom: 14px; position: relative;
+      font-size: 0.72rem; color: var(--text-dim); line-height: 1.6;
+      padding-left: 12px; border-left: 2px solid rgba(232,160,32,0.35);
+      margin-bottom: 16px;
     }
     .lead-focus strong { color: var(--text); font-weight: 600; }
-    .lead-focus-active {
-      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-      width: 6px; height: 6px; border-radius: 50%; background: var(--green);
-      animation: focusPulse 2.5s ease-in-out infinite;
-    }
     @keyframes focusPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
     .lead-activity {
-      font-family: var(--font-mono); font-size: 0.62rem; color: var(--accent);
-      padding: 6px 0 2px; opacity: 0.85; letter-spacing: 0.2px;
+      font-size: 0.7rem; color: var(--text-dim); margin: 6px 0 0;
     }
-    .lead-activity::before {
-      content: '\25B6'; margin-right: 5px; font-size: 0.5rem; vertical-align: middle;
-    }
-    .lead-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .lead-activity strong { color: var(--text); font-weight: 600; }
+    .lead-tags { display: flex; flex-wrap: wrap; gap: 6px; }
     .lead-tag {
-      padding: 2px 8px; border-radius: 10px; font-size: 0.62rem; font-weight: 500;
-      background: rgba(255,255,255,0.02); color: var(--text-dim); border: 1px solid var(--border);
+      padding: 3px 9px; border-radius: 6px; font-size: 0.65rem; font-weight: 500;
+      background: rgba(255,255,255,0.025); color: var(--text-dim); border: 1px solid var(--border);
     }
-    .lead-commits-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+    .lead-commits-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);
+    }
     .lead-commits-count { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); white-space: nowrap; }
-    .lead-last-seen { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-dim); margin-left: auto; }
 
-    /* GitHub-style heatmap */
-    .lead-heatmap { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(7, 1fr); gap: 2px; flex: 1; }
-    .hm-cell { width: 100%; aspect-ratio: 1; border-radius: 2px; }
+    /* Commit heatmap (small, secondary) */
+    .lead-heatmap {
+      display: grid; grid-template-columns: repeat(12, 6px); grid-template-rows: repeat(7, 6px);
+      gap: 2px; flex: 0 0 auto; opacity: 0.75;
+    }
+    .hm-cell { width: 6px; height: 6px; border-radius: 1px; }
     .hm-0 { background: rgba(255,255,255,0.03); }
     .hm-1 { background: rgba(48,200,96,0.15); }
     .hm-2 { background: rgba(48,200,96,0.30); }
@@ -296,21 +222,21 @@
     .hm-4 { background: rgba(48,200,96,0.75); }
 
     /* DEPARTMENT GRID */
-    .dept-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 80px; }
+    .dept-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 72px; }
     .dept-card {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 28px 32px; transition: all 0.3s; position: relative;
+      padding: 26px 26px 22px; transition: border-color 0.25s ease, background 0.25s ease; position: relative;
     }
-    .dept-card:hover { border-color: rgba(232,160,32,0.1); }
-    .dept-card[data-dept="kernel"] { border-top: 2px solid rgba(64,136,232,0.2); }
-    .dept-card[data-dept="ai"] { border-top: 2px solid rgba(136,96,232,0.2); }
-    .dept-card[data-dept="sdk"] { border-top: 2px solid rgba(48,200,96,0.2); }
-    .dept-card[data-dept="qa"] { border-top: 2px solid rgba(32,178,170,0.2); }
-    .dept-card[data-dept="infra"] { border-top: 2px solid rgba(232,120,48,0.2); }
+    .dept-card:hover { border-color: rgba(255,255,255,0.13); background: var(--bg-card-hover); }
+    .dept-card[data-dept="kernel"] { border-top: 2px solid rgba(64,136,232,0.28); }
+    .dept-card[data-dept="ai"] { border-top: 2px solid rgba(136,96,232,0.28); }
+    .dept-card[data-dept="sdk"] { border-top: 2px solid rgba(48,200,96,0.28); }
+    .dept-card[data-dept="qa"] { border-top: 2px solid rgba(32,178,170,0.28); }
+    .dept-card[data-dept="infra"] { border-top: 2px solid rgba(232,120,48,0.28); }
     .dept-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
     .dept-icon {
-      width: 40px; height: 40px; border-radius: 10px; display: flex;
-      align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+      width: 38px; height: 38px; border-radius: 10px; display: flex;
+      align-items: center; justify-content: center; font-size: 1.05rem; flex-shrink: 0;
     }
     .dept-icon-kernel { background: rgba(64,136,232,0.1); }
     .dept-icon-ai { background: rgba(136,96,232,0.1); }
@@ -319,30 +245,55 @@
     .dept-icon-infra { background: rgba(232,120,48,0.1); }
     .dept-name { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text-bright); }
     .dept-count { font-size: 0.72rem; color: var(--text-dim); }
-    .dept-desc { font-size: 0.82rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 10px; }
-    .dept-stats { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); margin-bottom: 10px; padding: 8px 12px; background: rgba(255,255,255,0.015); border-radius: 6px; border: 1px solid var(--border); }
+    .dept-desc { font-size: 0.82rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 12px; }
+    .dept-stats { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); margin-bottom: 12px; padding-left: 12px; border-left: 2px solid var(--border); line-height: 1.7; }
     .dept-active-project {
-      font-size: 0.68rem; color: var(--text); margin-bottom: 14px; padding: 6px 10px;
-      border-radius: 6px; background: rgba(255,255,255,0.02); display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.7rem; color: var(--text-dim); margin-bottom: 18px;
+      display: inline-flex; align-items: center; gap: 7px;
     }
-    .dept-active-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: focusPulse 2.5s ease-in-out infinite; }
-    .dept-members { display: flex; flex-wrap: wrap; gap: 8px; }
+    .dept-active-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); opacity: 0.7; flex-shrink: 0; }
+    .dept-members { display: flex; flex-wrap: wrap; gap: 6px; }
     .dept-member {
-      display: flex; align-items: center; gap: 8px; padding: 6px 12px;
-      border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border);
-      position: relative;
+      display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+      border-radius: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      position: relative; cursor: pointer; text-align: left;
+      transition: border-color 0.2s, background 0.2s;
     }
+    .dept-member:hover, .dept-member:focus-visible {
+      border-color: rgba(232,160,32,0.3); background: rgba(255,255,255,0.045);
+      outline: none;
+    }
+    .dept-member:focus-visible { box-shadow: 0 0 0 2px rgba(232,160,32,0.3); }
     .dept-member-avatar {
-      width: 24px; height: 24px; border-radius: 6px;
+      width: 24px; height: 24px; border-radius: 7px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.6rem; font-weight: 700; position: relative;
+      font-size: 0.6rem; font-weight: 700; flex-shrink: 0;
     }
-    .dept-member-status {
-      position: absolute; bottom: -1px; right: -1px; width: 8px; height: 8px;
-      border-radius: 50%; border: 1.5px solid var(--bg-card);
+    .dept-member-name { font-size: 0.74rem; color: var(--text); font-weight: 500; }
+    .dept-member-nick { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-dim); font-weight: 400; margin-left: 4px; }
+    .dept-member-title { font-size: 0.64rem; color: var(--text-dim); }
+
+    /* PROFILE MODAL (reuses the lead-card layout) */
+    .profile-overlay {
+      position: fixed; inset: 0; z-index: 300; display: flex; align-items: center; justify-content: center;
+      padding: 24px; background: rgba(5,5,7,0.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      animation: profileFade 0.2s ease;
     }
-    .dept-member-name { font-size: 0.75rem; color: var(--text); font-weight: 500; }
-    .dept-member-title { font-size: 0.65rem; color: var(--text-dim); }
+    .profile-overlay[hidden] { display: none; }
+    @keyframes profileFade { from { opacity: 0; } to { opacity: 1; } }
+    .profile-modal { width: 100%; max-width: 540px; max-height: calc(100vh - 48px); overflow-y: auto; position: relative; }
+    .profile-modal::-webkit-scrollbar { width: 4px; }
+    .profile-modal::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+    .profile-modal .lead-card { cursor: default; animation: profileRise 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.1); }
+    .profile-modal .lead-card:hover { transform: none; }
+    @keyframes profileRise { from { opacity: 0; transform: translateY(12px) scale(0.98); } to { opacity: 1; transform: none; } }
+    .profile-close {
+      position: absolute; top: 14px; right: 14px; z-index: 2; width: 30px; height: 30px; border-radius: 8px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text-dim);
+      font-size: 1rem; line-height: 1; cursor: pointer; transition: all 0.2s; font-family: var(--font);
+    }
+    .profile-close:hover, .profile-close:focus-visible { color: var(--text-bright); border-color: rgba(232,160,32,0.4); outline: none; }
+    .profile-modal .lead-card-top { padding-right: 32px; }
 
     /* TIMEZONE MAP */
     .tz-section { max-width: 1100px; margin: 0 auto 60px; padding: 0 24px; position: relative; z-index: 1; }
@@ -361,7 +312,8 @@
     .tz-time { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; }
     .tz-people { font-size: 0.62rem; color: var(--text-dim); margin-top: 4px; }
     .tz-bar { display: flex; gap: 3px; justify-content: center; margin-top: 6px; }
-    .tz-dot { width: 6px; height: 6px; border-radius: 50%; transition: background 0.3s; }
+    .tz-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+    .tz-group.tz-work .tz-dot { background: rgba(48,200,96,0.35); }
 
     /* HIRING BANNER */
     .hiring-banner {
@@ -398,13 +350,27 @@
 
     @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
+    @media (max-width: 1040px) {
+      .lead-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    }
     @media (max-width: 900px) {
       .lead-grid { grid-template-columns: 1fr; }
       .dept-grid { grid-template-columns: 1fr; }
-      .stats-bar { flex-wrap: wrap; gap: 24px; }
+      .stats-bar { flex-wrap: wrap; gap: 24px 40px; }
       .nav-links { display: none; }
+      .page-header { padding: 130px 24px 60px; }
+      .section { padding: 48px 24px; }
     }
-    @media (max-width: 600px) { .nav { padding: 12px 20px; } }
+    @media (max-width: 600px) {
+      .nav { padding: 12px 20px; }
+      .stats-bar { gap: 20px 32px; padding: 24px 20px; }
+      .stat-value { font-size: 1.35rem; }
+      .lead-card, .dept-card { padding: 22px 20px 18px; }
+      .tz-card, .activity-card { padding: 20px 18px; }
+      .hiring-banner { padding: 32px 22px; }
+      .lead-commits-row { flex-wrap: wrap; gap: 10px; }
+      .profile-overlay { padding: 12px; }
+    }
   </style>
   <link rel="stylesheet" href="/css/mobile-nav.css">
   <script src="/js/mobile-nav.js" defer></script>
@@ -451,6 +417,9 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/plans/">Plans</a>
+          <a href="/downloads/">Downloads</a>
+          <a href="/readiness/">Readiness Check</a>
           <a href="/blog/">Blog</a>
           <a href="/updates/">Updates</a>
         </div>
@@ -481,11 +450,11 @@
       <div class="stat-label">Departments</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value">12</div>
+      <div class="stat-value">21</div>
       <div class="stat-label">Countries</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value">128</div>
+      <div class="stat-value">200+</div>
       <div class="stat-label">Combined Years</div>
     </div>
   </div>
@@ -506,7 +475,7 @@
     <div class="tz-card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
         <div class="section-label" style="margin-bottom:0;">Across Time Zones</div>
-        <div style="font-size:0.65rem;color:var(--text-dim);font-family:var(--font-mono);" id="onlineCount">32 engineers</div>
+        <div style="font-size:0.65rem;color:var(--text-dim);font-family:var(--font-mono);" id="onlineCount">32 engineers &middot; 12 time zones</div>
       </div>
       <div class="tz-strip" id="tzStrip"></div>
     </div>
@@ -574,31 +543,31 @@
 
     // ===== TEAM DATA =====
     var team = [
-      { id: 'nvoronov', initials: 'NV', name: 'nvoronov', realName: 'Nikolai Voronov', role: 'Lead Developer & System Architect', dept: 'kernel',
+      { id: 'nvoronov', initials: 'NV', name: 'nvoronov', nick: 'Voron', realName: 'Nikolai Voronov', role: 'Lead Developer & System Architect', dept: 'kernel',
         prior: 'Ex-CrowdStrike, ex-Kaspersky', loc: 'Moscow', tz: 3, joined: 'Oct 2024',
         bio: 'Designed the four-layer detection architecture and oversees all cross-team integration. 12 years in systems programming with prior work on kernel-mode EDR products and rootkit analysis frameworks.',
         expandedBio: 'Started in cybersecurity at 19 as a junior malware analyst at Kaspersky Lab in Moscow, spending 4 years dissecting nation-state rootkits and bootkit families. Moved to CrowdStrike\'s Falcon team in 2018 where he architected kernel-mode sensor components for the EDR platform, handling millions of endpoint telemetry events per second. Left in 2023 to pursue independent research on hypervisor-based game integrity, publishing two papers on VT-x assisted memory isolation for anti-tamper. Founded the Cerberus project in late 2024 after recognizing fundamental gaps in existing anti-cheat approaches. Holds a M.Sc. in Computer Science from MSU with a thesis on ring-0 rootkit detection heuristics.',
         focus: 'Driver signing pipeline for WHQL certification',
         tags: ['Architecture', 'Systems Design', 'C/C++', 'Rust'] },
-      { id: 'dkrasov', initials: 'DK', name: 'dkrasov', realName: 'Dmitri Krasov', role: 'Head of Kernel Engineering', dept: 'kernel',
+      { id: 'dkrasov', initials: 'DK', name: 'dkrasov', nick: 'Kras', realName: 'Dmitri Krasov', role: 'Head of Kernel Engineering', dept: 'kernel',
         prior: 'Ex-ESET (driver team)', loc: 'Prague', tz: 2, joined: 'Oct 2024',
         bio: 'Ring-0 specialist with 8 years of WDM/WDF driver development. Built the integrity monitoring subsystem and manages the code-signing pipeline. Previously worked on HIPS drivers at a major AV vendor.',
         expandedBio: 'Grew up in Brno, Czech Republic, and began writing Windows drivers at 16 after getting fascinated by kernel debugging on early Windows 7 builds. Studied systems engineering at Czech Technical University before joining ESET\'s core driver team in 2016. Spent 7 years building HIPS (Host-based Intrusion Prevention) kernel modules, becoming the youngest senior engineer on their Windows kernel team. Specialized in minifilter filesystem drivers, callback-based process monitoring, and ELAM (Early Launch Anti-Malware) integration. Recruited by Nikolai after presenting at Recon Brussels 2024 on novel PTE manipulation techniques used by game cheats to bypass kernel-mode AC drivers. Known internally for his meticulous code review standards — his drivers maintain a 0.002% BSOD rate across 400K+ test hours.',
         focus: 'PTE manipulation detection for VT-d bypass attempts',
         tags: ['Ring-0', 'WDM/WDF', 'C++', 'Hypervisors'] },
-      { id: 's.nakamura', initials: 'SN', name: 's.nakamura', realName: 'Shiori Nakamura', role: 'Head of AI & Behavioral Analysis', dept: 'ai',
+      { id: 's.nakamura', initials: 'SN', name: 's.nakamura', nick: 'Shio', realName: 'Shiori Nakamura', role: 'Head of AI & Behavioral Analysis', dept: 'ai',
         prior: 'PhD Tokyo Tech, ex-LINE Corp', loc: 'Tokyo', tz: 9, joined: 'Nov 2024',
         bio: 'ML researcher focused on real-time anomaly detection in adversarial environments. Designed the behavioral inference pipeline with sub-2ms latency using quantized TCN models on ONNX Runtime. Background in competitive FPS telemetry analysis.',
         expandedBio: 'Completed her PhD at Tokyo Institute of Technology in 2020 with a dissertation on temporal convolutional networks for real-time sequence anomaly detection. Joined LINE Corporation\'s AI Platform division where she built fraud detection models processing 2M+ transactions daily, achieving a 94% detection rate with a 0.08% false positive rate. Her key insight — that cheating behavior in games follows similar adversarial drift patterns as financial fraud — led her to the anti-cheat space. Joined Cerberus in November 2024 and designed the behavioral inference pipeline from scratch, pioneering the use of micro-movement entropy analysis and trigger-timing spectral decomposition to detect humanization-layer bypasses. Published 6 papers in IEEE and ACM conferences on adversarial ML. Competitive gamer in her spare time (Global Elite in CS2, Radiant in Valorant).',
         focus: 'Retraining v3.2 model on 1,200 new Cronus Zen macro samples',
         tags: ['PyTorch', 'ONNX Runtime', 'Anomaly Detection', 'Python'] },
-      { id: 'ArsenalRX', initials: 'AX', name: 'Evan', realName: 'Evan', role: 'Head of Threat Research & Hardware Security', dept: 'kernel',
+      { id: 'ArsenalRX', initials: 'AX', name: 'Evan', nick: 'RX', realName: 'Evan', role: 'Co-founder &amp; Head of Threat Research', dept: 'kernel',
         prior: 'Self-taught, independent security research', loc: 'USA', tz: -4, joined: 'Oct 2024',
-        bio: 'Co-founder. Leads threat research, red teaming, and DMA hardware security.',
-        expandedBio: 'Co-founder. Leads threat research, red teaming, and DMA hardware security.',
-        focus: 'Reverse engineering new KMBox firmware variant',
-        tags: ['C/C++', 'Python', 'Ring-0', 'DMA Research', 'Firmware RE', 'PCIe', 'Threat Intel'] },
-      { id: 'lweber', initials: 'LW', name: 'lweber', realName: 'Lukas Weber', role: 'Head of SDK & Integration', dept: 'sdk',
+        bio: 'Co-founder. Leads threat research and the hypervisor-level side of Layer 1 — EPT shadow-page scanning for code hidden behind a rogue hypervisor, and keeping our checks honest under VBS and HVCI. Also runs the supply-side work: watching what cheat sellers actually ship, and turning that into test cases.',
+        expandedBio: 'Self-taught, and never went the degree route — started by taking apart game cheats to understand why they worked, then spent years on the research side of that problem before there was a company around it. Co-founded Cerberus with Nikolai in late 2024 and took the threat research side: figuring out what the other half is building, then working backwards to what would catch it. Most of that work now sits at the hypervisor layer, since the generation-2 driver shipped in v0.6 — EPT shadow-page scanning to find code that a thin rogue hypervisor keeps out of the guest view, and making sure our own checks behave correctly on machines running VBS and HVCI rather than fighting them. The second strand is supply-side intelligence: tracking what is actually being sold, which loaders are current, and how long a given bypass survives after a signature push. Prefers a written repro and a bench any engineer here can rerun over a claim that only works on one machine.',
+        focus: 'EPT shadow-page scanning for hypervisor-hidden cheat code',
+        tags: ['Hypervisors', 'EPT/VT-x', 'Ring-0', 'Reverse Engineering', 'Threat Intel', 'C/C++', 'Python'] },
+      { id: 'lweber', initials: 'LW', name: 'lweber', nick: 'Weber', realName: 'Lukas Weber', role: 'Head of SDK & Integration', dept: 'sdk',
         prior: 'Ex-Epic Games (UE integrations)', loc: 'Berlin', tz: 2, joined: 'Jan 2025',
         bio: 'Owns the developer experience end to end. Built the C/C++ SDK, C# bindings, Unreal plugin, and Unity package. Previously worked on engine integration tooling at a major game engine company.',
         expandedBio: 'German software engineer with a background in game engine tooling. Studied computer science at TU Berlin, then joined Epic Games\' Berlin office in 2019 where he worked on Unreal Engine marketplace plugin certification and third-party SDK integration frameworks. Spent 5 years becoming intimately familiar with UE\'s build system, Slate UI, and module architecture. Left Epic in late 2024 to join Cerberus, drawn by the challenge of building a developer-friendly anti-cheat SDK that doesn\'t impose heavy integration burdens. Designed the "under 2 hours" integration philosophy — the SDK auto-detects engine type, injects hooks via a single header include, and provides a real-time dashboard widget for studio QA teams. Also built the C# bindings for Unity, the Godot GDExtension, and the REST API client libraries. Strong advocate for documentation-first development — wrote 90% of the current SDK docs himself.',
@@ -607,63 +576,152 @@
     ];
 
     var allMembers = [
-      { id: 'atorres', initials: 'AT', name: 'atorres', title: 'Driver Dev', dept: 'kernel', loc: 'Madrid', tz: 2, joined: 'Dec 2024' },
-      { id: 'vpetrov', initials: 'VP', name: 'vpetrov', title: 'Kernel Security', dept: 'kernel', loc: 'Sofia', tz: 3, joined: 'Jan 2025' },
-      { id: 'mradzinski', initials: 'MR', name: 'mradzinski', title: 'Firmware RE', dept: 'kernel', loc: 'Warsaw', tz: 2, joined: 'Feb 2025' },
-      { id: 'tkuznetsov', initials: 'TK', name: 'tkuznetsov', title: 'Hypervisor Eng.', dept: 'kernel', loc: 'St. Petersburg', tz: 3, joined: 'Mar 2025' },
-      { id: 'rhuang', initials: 'RH', name: 'rhuang', title: 'ML Engineer', dept: 'ai', loc: 'Shanghai', tz: 8, joined: 'Dec 2024' },
-      { id: 'elindqvist', initials: 'EL', name: 'elindqvist', title: 'Data Scientist', dept: 'ai', loc: 'Stockholm', tz: 2, joined: 'Jan 2025' },
-      { id: 'mcheng', initials: 'MC', name: 'mcheng', title: 'Inference Eng.', dept: 'ai', loc: 'Taipei', tz: 8, joined: 'Feb 2025' },
-      { id: 'jcastillo', initials: 'JC', name: 'jcastillo', title: 'Threat Analyst', dept: 'ai', loc: 'Los Angeles, USA', tz: -7, joined: 'Mar 2025' },
-      { id: 'cpark', initials: 'CP', name: 'cpark', title: 'Unreal Plugin', dept: 'sdk', loc: 'Seoul', tz: 9, joined: 'Feb 2025' },
-      { id: 'dandrade', initials: 'DA', name: 'dandrade', title: 'Unity Integration', dept: 'sdk', loc: 'Lisbon', tz: 1, joined: 'Feb 2025' },
-      { id: 'sthomas', initials: 'ST', name: 'sthomas', title: 'API & Infra', dept: 'sdk', loc: 'Austin, USA', tz: -5, joined: 'Mar 2025' },
-      { id: 'tmoretti', initials: 'TM', name: 'tmoretti', title: 'Lead', dept: 'qa', loc: 'Milan', tz: 2, joined: 'Jan 2025' },
-      { id: 'bjensen', initials: 'BJ', name: 'bjensen', title: 'Test Automation', dept: 'qa', loc: 'Copenhagen', tz: 2, joined: 'Feb 2025' },
-      { id: 'azhao', initials: 'AZ', name: 'azhao', title: 'Perf Analyst', dept: 'qa', loc: 'Shenzhen', tz: 8, joined: 'Mar 2025' },
-      { id: 'pschmidt', initials: 'PS', name: 'pschmidt', title: 'HW Compat.', dept: 'qa', loc: 'Munich', tz: 2, joined: 'Apr 2025' },
+      { id: 'atorres', initials: 'AT', name: 'atorres', nick: 'Alej', realName: 'Alejandro Torres', title: 'Driver Dev', role: 'Windows Driver Engineer', dept: 'kernel', loc: 'Madrid', tz: 2, joined: 'Dec 2024',
+        prior: 'Ex-Panda Security, endpoint driver team',
+        bio: 'Works on the Layer 1 driver alongside Dmitri, mostly the minifilter and process-callback paths. Spent six years on endpoint agents before games and still reaches for a kernel debugger before a profiler. Handles most of the crash-dump triage coming back from closed beta.',
+        focus: 'Triaging closed-beta crash dumps from the 0.6 driver',
+        tags: ['Ring-0', 'WDM', 'C', 'WinDbg'] },
+      { id: 'vpetrov', initials: 'VP', name: 'vpetrov', nick: 'Vik', realName: 'Viktor Petrov', title: 'Kernel Security', role: 'Kernel Security Engineer', dept: 'kernel', loc: 'Sofia', tz: 3, joined: 'Jan 2025',
+        prior: 'Ex-Telerik platform team; Sofia University',
+        bio: 'Audits the driver IOCTL surface and the syscall tamper checks in Layer 1. Came from application security and moved down the stack after a year of writing kernel fuzzing harnesses in his spare time. Keeps the internal threat model document current.',
+        focus: 'Fuzzing the IOCTL surface ahead of WHQL submission',
+        tags: ['Kernel Security', 'Fuzzing', 'C++', 'Threat Modelling'] },
+      { id: 'mradzinski', initials: 'MR', name: 'mradzinski', nick: 'Radz', realName: 'Marek Radzinski', title: 'Firmware RE', role: 'Firmware Reverse Engineer', dept: 'kernel', loc: 'Warsaw', tz: 2, joined: 'Feb 2025',
+        prior: 'Ex-Comarch embedded systems group',
+        bio: 'Pulls apart DMA board and input-device firmware so Layer 3 knows what to look for, and now owns that strand end to end. Maintains the firmware signature database and the PCIe bench rig it is validated on. Seven years in embedded before this, most of it on hardware nobody documents.',
+        focus: 'Rebuilding the DMA board and KMBox firmware database',
+        tags: ['Firmware RE', 'DMA Research', 'PCIe', 'Ghidra', 'Embedded'] },
+      { id: 'tkuznetsov', initials: 'TK', name: 'tkuznetsov', nick: 'Kuz', realName: 'Timur Kuznetsov', title: 'Hypervisor Eng.', role: 'Hypervisor Engineer', dept: 'kernel', loc: 'St. Petersburg', tz: 3, joined: 'Mar 2025',
+        prior: 'Ex-Acronis virtualisation team',
+        bio: 'Works on the hypervisor-assisted memory isolation Layer 1 relies on, mainly EPT bookkeeping and the shadow-scan path. Joined from a backup and virtualisation vendor where he maintained a type-2 hypervisor for six years. Writes the internal notes on every CPU erratum that touches our page-table assumptions.',
+        focus: 'EPT shadow scan overhead on Zen 5 test benches',
+        tags: ['Hypervisors', 'VT-x', 'EPT', 'C++'] },
       // 2026 hires — Kernel & Hardware
-      { id: 'dvolkov', initials: 'DV', name: 'dvolkov', title: 'Hypervisor Security', dept: 'kernel', loc: 'Kyiv', tz: 3, joined: 'Mar 2026' },
+      { id: 'dvolkov', initials: 'DV', name: 'dvolkov', nick: 'Volk', realName: 'Danylo Volkov', title: 'Hypervisor Security', role: 'Hypervisor Security Engineer', dept: 'kernel', loc: 'Kyiv', tz: 3, joined: 'Mar 2026',
+        prior: 'Ex-MacPaw; KPI Kyiv',
+        bio: 'Newest of the kernel group, focused on spotting nested and rogue hypervisors from inside Layer 1. Spent his first months building the timing harness that separates real hardware from virtual machines. Prefers to publish a reproducible bench before proposing a detection.',
+        focus: 'Timing-based nested hypervisor detection harness',
+        tags: ['Hypervisors', 'Timing Analysis', 'Rust', 'C'] },
+      { id: 'rhuang', initials: 'RH', name: 'rhuang', nick: 'Rui', realName: 'Ruixi Huang', title: 'ML Engineer', role: 'Machine Learning Engineer', dept: 'ai', loc: 'Shanghai', tz: 8, joined: 'Dec 2024',
+        prior: 'Fudan University; ex-Hillstone Networks',
+        bio: 'Trains and evaluates the v3.x behavioural models with Shiori, mostly aim trajectory and micro-movement features. Came from network anomaly detection, where the labels were cleaner and the adversaries slower. Owns the labelling pipeline for new cheat samples.',
+        focus: 'Labelling pipeline for the v3.2 macro sample set',
+        tags: ['PyTorch', 'Feature Engineering', 'Python', 'Anomaly Detection'] },
+      { id: 'elindqvist', initials: 'EL', name: 'elindqvist', nick: 'Lin', realName: 'Elin Lindqvist', title: 'Data Scientist', role: 'Detection Data Scientist', dept: 'ai', loc: 'Stockholm', tz: 2, joined: 'Jan 2025',
+        prior: 'Ex-Tink fraud analytics; KTH',
+        bio: 'Measures whether a detection actually works: precision, drift, and the false-positive rate we publish. Built the review workflow every confirmed false positive passes through before a model is touched. Argues for smaller, better-understood models over larger ones.',
+        focus: 'Drift report against the 0.14% false-positive target',
+        tags: ['Statistics', 'Python', 'Evaluation', 'SQL'] },
+      { id: 'mcheng', initials: 'MC', name: 'mcheng', nick: 'Che', realName: 'Ming-Che Cheng', title: 'Inference Eng.', role: 'Inference Engineer', dept: 'ai', loc: 'Taipei', tz: 8, joined: 'Feb 2025',
+        prior: 'Ex-Realtek SoC software team',
+        bio: 'Keeps Layer 2 inference inside its latency budget on the ONNX Runtime path. Quantises the models the AI group hands over and profiles them across the QA hardware matrix. Four years of embedded DSP work before this, which shows in how carefully he counts cycles.',
+        focus: 'Quantising v3.2 to hold the sub-2 ms budget',
+        tags: ['ONNX Runtime', 'Quantisation', 'C++', 'Profiling'] },
+      { id: 'jcastillo', initials: 'JC', name: 'jcastillo', nick: 'Cas', realName: 'Javier Castillo', title: 'Threat Analyst', role: 'Threat Analyst, Behavioural Detection', dept: 'ai', loc: 'Los Angeles, USA', tz: -7, joined: 'Mar 2025',
+        prior: 'Ex-tournament admin, regional ESL circuits',
+        bio: 'Reviews flagged sessions and decides what becomes a labelled sample. Spent years as a tournament admin watching demos for a living, which is most of the job. Writes the weekly summary of what the cheat sellers are advertising.',
+        focus: 'Weekly review queue and cheat-vendor tracking',
+        tags: ['Threat Intel', 'Demo Review', 'Labelling', 'Reporting'] },
       // 2026 hires — AI & Detection
-      { id: 'kpatel', initials: 'KP', name: 'kpatel', title: 'ML Ops', dept: 'ai', loc: 'Bangalore', tz: 5, joined: 'Jan 2026' },
-      { id: 'akowalski', initials: 'AK', name: 'akowalski', title: 'Threat Classifier', dept: 'ai', loc: 'Krakow', tz: 2, joined: 'Feb 2026' },
+      { id: 'kpatel', initials: 'KP', name: 'kpatel', nick: 'KP', realName: 'Kiran Patel', title: 'ML Ops', role: 'MLOps Engineer', dept: 'ai', loc: 'Bangalore', tz: 5, joined: 'Jan 2026',
+        prior: 'Ex-Freshworks platform engineering',
+        bio: 'Runs the training and deployment pipeline for the behavioural models across our three regions. Made model rollouts boring: versioned artefacts, staged rollout, one-command rollback. Still the person paged when a retrain stalls.',
+        focus: 'Staged model rollout across the three regions',
+        tags: ['MLOps', 'Kubernetes', 'Python', 'CI/CD'] },
+      { id: 'akowalski', initials: 'AK', name: 'akowalski', nick: 'Ania', realName: 'Anna Kowalska', title: 'Threat Classifier', role: 'Threat Classification Engineer', dept: 'ai', loc: 'Krakow', tz: 2, joined: 'Feb 2026',
+        prior: 'Ex-Brainly data team; AGH Krakow',
+        bio: 'Works on the classifier that sorts a flag into a cheat category before a human sees it. Spent her first quarter rebuilding the category taxonomy so the dashboard and the appeal pipeline agree on names. Cautious about anything that could widen the false-positive rate.',
+        focus: 'Aligning the ban-reason taxonomy with the appeal pipeline',
+        tags: ['Classification', 'Python', 'Taxonomy', 'Evaluation'] },
+      { id: 'cpark', initials: 'CP', name: 'cpark', nick: 'Chan', realName: 'Chanwoo Park', title: 'Unreal Plugin', role: 'Unreal Plugin Engineer', dept: 'sdk', loc: 'Seoul', tz: 9, joined: 'Feb 2025',
+        prior: 'Ex-Pearl Abyss tools team',
+        bio: 'Maintains the Unreal plugin and the sample project partners actually build against. Six years of engine tools work means he has broken most build configurations at least once. Takes the majority of partner integration calls in Asia-Pacific hours.',
+        focus: 'Unreal 5.5 packaging pass for partner builds',
+        tags: ['Unreal', 'C++', 'Build Systems', 'Integration'] },
+      { id: 'dandrade', initials: 'DA', name: 'dandrade', nick: 'Dio', realName: 'Diogo Andrade', title: 'Unity Integration', role: 'Unity Integration Engineer', dept: 'sdk', loc: 'Lisbon', tz: 1, joined: 'Feb 2025',
+        prior: 'Ex-Fabamaq, Porto',
+        bio: 'Owns the Unity package and the C# side of the SDK. Rewrote initialisation to be asynchronous so a slow first scan cannot stall a loading screen. Tests every release against the last three Unity LTS versions before it ships.',
+        focus: 'Async init path for the Unity 6 package',
+        tags: ['Unity', 'C#', 'SDK Design', 'Testing'] },
+      { id: 'sthomas', initials: 'ST', name: 'sthomas', nick: 'Tee', realName: 'Sarah Thomas', title: 'API & Infra', role: 'API & Platform Engineer', dept: 'sdk', loc: 'Austin, USA', tz: -5, joined: 'Mar 2025',
+        prior: 'Ex-Bazaarvoice platform team',
+        bio: 'Builds the REST API and the webhook delivery path partners integrate against. Eight years on multi-tenant platforms before games left her with strong habits around rate limiting and idempotency. Writes the API changelog entries herself so they match reality.',
+        focus: 'Webhook v2 retry and idempotency semantics',
+        tags: ['TypeScript', 'REST APIs', 'Postgres', 'Webhooks'] },
       // 2026 hires — SDK & Platform
-      { id: 'msilva', initials: 'MS', name: 'msilva', title: 'Godot Plugin', dept: 'sdk', loc: 'Sao Paulo', tz: -3, joined: 'Jan 2026' },
-      { id: 'rnguyen', initials: 'RN', name: 'rnguyen', title: 'Dashboard Dev', dept: 'sdk', loc: 'Ho Chi Minh City', tz: 7, joined: 'Mar 2026' },
-      { id: 'jliu', initials: 'JL', name: 'jliu', title: 'DevRel & Docs', dept: 'sdk', loc: 'Vancouver', tz: -7, joined: 'Apr 2026' },
+      { id: 'msilva', initials: 'MS', name: 'msilva', nick: 'Mat', realName: 'Mateus Silva', title: 'Godot Plugin', role: 'Godot & Tooling Engineer', dept: 'sdk', loc: 'Sao Paulo', tz: -3, joined: 'Jan 2026',
+        prior: 'Ex-Aquiris Game Studio',
+        bio: 'Wrote the Godot GDExtension binding and keeps the smaller integration paths alive. Joined in early 2026 after several years of client-side gameplay work. Also maintains the sample projects shipped with the evaluation SDK.',
+        focus: 'GDExtension binding for the 0.6 SDK',
+        tags: ['Godot', 'C++', 'GDExtension', 'Samples'] },
+      { id: 'rnguyen', initials: 'RN', name: 'rnguyen', nick: 'Rin', realName: 'Rin Nguyen', title: 'Dashboard Dev', role: 'Dashboard Engineer', dept: 'sdk', loc: 'Ho Chi Minh City', tz: 7, joined: 'Mar 2026',
+        prior: 'Ex-VNG Corporation web team',
+        bio: 'Builds the partner dashboard, from detection tables to the ban and appeal tooling. Cares more about honest empty states than dense charts, which is why the sandbox says plainly when it has no data. Works closely with QA on the review flows.',
+        focus: 'Ban and appeal review flow in the dashboard',
+        tags: ['TypeScript', 'React', 'Data Viz', 'Accessibility'] },
+      { id: 'jliu', initials: 'JL', name: 'jliu', nick: 'Jas', realName: 'Jasmine Liu', title: 'DevRel & Docs', role: 'Developer Relations & Documentation', dept: 'sdk', loc: 'Vancouver', tz: -7, joined: 'Apr 2026',
+        prior: 'Ex-Hootsuite documentation team',
+        bio: 'Writes the docs, the SDK quick start, and most of what partners read before their first call. Runs the integration walkthroughs herself and files the bugs she trips over doing them. Rewrote the requirements page in her first month.',
+        focus: 'Rewriting the integration quick start for 0.6',
+        tags: ['Documentation', 'DevRel', 'Markdown', 'Support'] },
+      { id: 'tmoretti', initials: 'TM', name: 'tmoretti', nick: 'Mori', realName: 'Tommaso Moretti', title: 'Lead', role: 'QA & Stability Lead', dept: 'qa', loc: 'Milan', tz: 2, joined: 'Jan 2025',
+        prior: 'Ex-Milestone S.r.l. QA',
+        bio: 'Runs the QA group and owns the release gate: nothing reaches closed beta without a clean soak run. Nine years testing racing and sports titles taught him how much players notice a single dropped frame. Keeps the hardware compatibility matrix honest.',
+        focus: 'Release gate for the next alpha build',
+        tags: ['QA Leadership', 'Release Process', 'Test Planning'] },
+      { id: 'bjensen', initials: 'BJ', name: 'bjensen', nick: 'Bee', realName: 'Birgitte Jensen', title: 'Test Automation', role: 'Test Automation Engineer', dept: 'qa', loc: 'Copenhagen', tz: 2, joined: 'Feb 2025',
+        prior: 'Ex-SYBO Games QA',
+        bio: 'Automates the regression suite so the hardware lab is not doing by hand what a script can do overnight. Built the 48-hour driver soak harness and the report it sends out. Treats a flaky test as a real bug.',
+        focus: '48-hour soak harness reporting',
+        tags: ['Test Automation', 'Python', 'CI', 'Reporting'] },
+      { id: 'azhao', initials: 'AZ', name: 'azhao', nick: 'Anq', realName: 'Anqi Zhao', title: 'Perf Analyst', role: 'Performance Analyst', dept: 'qa', loc: 'Shenzhen', tz: 8, joined: 'Mar 2025',
+        prior: 'Ex-Seasun Games performance team',
+        bio: 'Measures frame-time impact and memory footprint on every build. Produces the numbers the public pages are allowed to quote, and pushes back when they drift. Runs the capture rig that records 1% lows across the full hardware matrix.',
+        focus: 'Frame-time impact captures for the 0.6 driver',
+        tags: ['Performance', 'ETW', 'Benchmarking', 'C++'] },
+      { id: 'pschmidt', initials: 'PS', name: 'pschmidt', nick: 'Pete', realName: 'Peter Schmidt', title: 'HW Compat.', role: 'Hardware Compatibility Engineer', dept: 'qa', loc: 'Munich', tz: 2, joined: 'Apr 2025',
+        prior: 'Ex-Rohde und Schwarz test lab',
+        bio: 'Owns the hardware compatibility matrix and the bring-up of every new board that lands in the lab. Seven years in an RF test lab means his test plans are longer than anyone here would like. Most known issues about a specific chipset started as one of his tickets.',
+        focus: 'Arrow Lake and Zen 5 bring-up in the compat matrix',
+        tags: ['Hardware', 'Compatibility', 'Lab Ops', 'Windows'] },
       // 2026 hires — QA & Stability
-      { id: 'omartin', initials: 'OM', name: 'omartin', title: 'Regression Testing', dept: 'qa', loc: 'Lyon', tz: 2, joined: 'Feb 2026' },
-      { id: 'tyamada', initials: 'TY', name: 'tyamada', title: 'Perf Benchmarking', dept: 'qa', loc: 'Tokyo', tz: 9, joined: 'Mar 2026' },
-      { id: 'kbrown', initials: 'KB', name: 'kbrown', title: 'HW Lab Manager', dept: 'qa', loc: 'Denver', tz: -6, joined: 'Apr 2026' },
+      { id: 'omartin', initials: 'OM', name: 'omartin', nick: 'Oce', realName: 'Oceane Martin', title: 'Regression Testing', role: 'Regression Test Engineer', dept: 'qa', loc: 'Lyon', tz: 2, joined: 'Feb 2026',
+        prior: 'Ex-Arkane Lyon QA',
+        bio: 'Maintains the regression baselines, including the false-positive corpus replayed before every release. Joined in early 2026 from a studio QA team and promptly doubled the size of the overlay whitelist suite. Reports in plain language, which the AI group appreciates.',
+        focus: 'Replaying the false-positive corpus against v3.2',
+        tags: ['Regression Testing', 'Automation', 'Python'] },
+      { id: 'tyamada', initials: 'TY', name: 'tyamada', nick: 'Taku', realName: 'Takumi Yamada', title: 'Perf Benchmarking', role: 'Performance Benchmarking Engineer', dept: 'qa', loc: 'Tokyo', tz: 9, joined: 'Mar 2026',
+        prior: 'Ex-Cygames client engineering',
+        bio: 'Benchmarks the client across the Asia-Pacific hardware set and cross-checks the Shenzhen numbers on different silicon. Five years of mobile and PC client optimisation before this. Keeps the benchmark methodology document we point partners at.',
+        focus: 'Benchmark methodology write-up for partners',
+        tags: ['Benchmarking', 'Profiling', 'C++', 'Methodology'] },
+      { id: 'kbrown', initials: 'KB', name: 'kbrown', nick: 'KayB', realName: 'Kayla Brown', title: 'HW Lab Manager', role: 'Hardware Lab Manager', dept: 'qa', loc: 'Denver', tz: -6, joined: 'Apr 2026',
+        prior: 'Ex-Arrow Electronics validation lab',
+        bio: 'Runs the physical lab: forty-odd benches, the DMA test boards, and the imaging pipeline that resets them. Eight years of validation lab work means everything is inventoried and nothing goes missing. If a test needs specific hardware, she is the reason it exists.',
+        focus: 'Imaging pipeline for the expanded bench set',
+        tags: ['Lab Management', 'Hardware', 'Automation', 'Inventory'] },
       // Infrastructure & DevOps
-      { id: 'gharris', initials: 'GH', name: 'gharris', title: 'Lead', dept: 'infra', loc: 'Portland, USA', tz: -7, joined: 'Nov 2025' },
-      { id: 'ilee', initials: 'IL', name: 'ilee', title: 'CI/CD Eng.', dept: 'infra', loc: 'Seoul', tz: 9, joined: 'Jan 2026' },
-      { id: 'fbianchi', initials: 'FB', name: 'fbianchi', title: 'SRE', dept: 'infra', loc: 'Rome', tz: 2, joined: 'Feb 2026' },
-      { id: 'swilson', initials: 'SW', name: 'swilson', title: 'Telemetry Eng.', dept: 'infra', loc: 'Toronto', tz: -4, joined: 'Mar 2026' },
+      { id: 'gharris', initials: 'GH', name: 'gharris', nick: 'Gray', realName: 'Grace Harris', title: 'Lead', role: 'Infrastructure & DevOps Lead', dept: 'infra', loc: 'Portland, USA', tz: -7, joined: 'Nov 2025',
+        prior: 'Ex-Puppet, site reliability',
+        bio: 'Leads infrastructure and owns the deployment path for the API and signature service across all three regions. Ten years of SRE work, most of it on systems where the on-call rotation was the real design constraint. Wrote the incident review template the status page reports against.',
+        focus: 'Regional failover drill for the signature service',
+        tags: ['SRE', 'Terraform', 'Observability', 'On-call'] },
+      { id: 'ilee', initials: 'IL', name: 'ilee', nick: 'Jun', realName: 'Injun Lee', title: 'CI/CD Eng.', role: 'CI/CD Engineer', dept: 'infra', loc: 'Seoul', tz: 9, joined: 'Jan 2026',
+        prior: 'Ex-Kakao Enterprise build engineering',
+        bio: 'Keeps the build farm fast and reproducible, including the signed driver build QA gates on. Cut a full clean build from over an hour to about twenty minutes by fixing cache keys. Also maintains the release scripts nobody else wants to touch.',
+        focus: 'Reproducible signed driver builds',
+        tags: ['CI/CD', 'Build Systems', 'Go', 'Caching'] },
+      { id: 'fbianchi', initials: 'FB', name: 'fbianchi', nick: 'Fede', realName: 'Federico Bianchi', title: 'SRE', role: 'Site Reliability Engineer', dept: 'infra', loc: 'Rome', tz: 2, joined: 'Feb 2026',
+        prior: 'Ex-Reply S.p.A. cloud practice',
+        bio: 'Runs monitoring and alerting for the API and data pipeline, and takes a share of the on-call rotation. Prefers a handful of alerts that mean something to dashboards nobody reads. Wrote most of the checks behind the public status page.',
+        focus: 'Trimming alert noise on the data pipeline',
+        tags: ['SRE', 'Prometheus', 'Alerting', 'Linux'] },
+      { id: 'swilson', initials: 'SW', name: 'swilson', nick: 'Sim', realName: 'Simone Wilson', title: 'Telemetry Eng.', role: 'Telemetry Engineer', dept: 'infra', loc: 'Toronto', tz: -4, joined: 'Mar 2026',
+        prior: 'Ex-ecobee data platform',
+        bio: 'Owns the telemetry ingest path from client to warehouse, including what we deliberately do not collect. Rebuilt ingest in 2026 so a regional outage buffers events instead of dropping them. Works with legal on the retention rules published on the privacy page.',
+        focus: 'Buffered ingest for regional outages',
+        tags: ['Data Pipelines', 'Go', 'Kafka', 'Privacy'] },
     ];
-
-    // ===== STATUS (deterministic per person per day) =====
-    function getStatus(tzOffset, personSeed) {
-      var utcHour = new Date().getUTCHours();
-      var localHour = ((utcHour + tzOffset) % 24 + 24) % 24;
-      var jitter = seeded(daySeed * 113 + (personSeed || 0));
-      if (localHour >= 9 && localHour < 18) return jitter < 0.7 ? 'online' : 'busy';
-      if (localHour >= 18 && localHour < 22) return jitter < 0.4 ? 'online' : 'away';
-      return 'offline';
-    }
-
-    function lastSeenText(tz, personSeed) {
-      var s = getStatus(tz, personSeed);
-      if (s === 'online') return 'Online now';
-      if (s === 'busy') return 'Busy';
-      var utcHour = new Date().getUTCHours();
-      var localHour = ((utcHour + tz) % 24 + 24) % 24;
-      if (localHour >= 22 || localHour < 6) {
-        var hoursOff = localHour >= 22 ? localHour - 18 : localHour + 6;
-        return 'Active ' + hoursOff + 'h ago';
-      }
-      return 'Active ' + seededInt(daySeed * 211 + (personSeed || 0), 1, 4) + 'h ago';
-    }
 
     // ===== HEATMAP (GitHub-style 12-week, 7 rows) =====
     function heatmapHTML(personSeed) {
@@ -684,40 +742,49 @@
       return seededInt(daySeed * 331 + personSeed, 4, 28);
     }
 
+    // ===== SHARED PROFILE MARKUP (leads + department members) =====
+    function deptLabelOf(dept) {
+      return dept === 'kernel' ? 'KERNEL' : dept === 'ai' ? 'AI' : dept === 'sdk' ? 'SDK' : dept === 'infra' ? 'INFRA' : 'QA';
+    }
+    function nickHTML(p) {
+      return p.nick ? ' <span class="lead-nick">&middot; &ldquo;' + p.nick + '&rdquo;</span>' : '';
+    }
+    function profileCardInner(p, seedIndex, opts) {
+      opts = opts || {};
+      var deptC = DEPT_COLORS[p.dept] || DEPT_COLORS.kernel;
+      var commits = weeklyCommits(seedIndex);
+      var html = '<div class="lead-card-top">' +
+        '<div class="lead-avatar" style="background:' + deptC.avatarBg + ';color:' + deptC.color + ';">' + p.initials + '</div>' +
+        '<div class="lead-info"><div class="lead-name">@' + p.id + nickHTML(p) +
+        ' <span class="lead-dept-badge lead-dept-badge-' + p.dept + '">' + deptLabelOf(p.dept) + '</span></div>' +
+        (p.realName ? '<div class="lead-real-name">' + p.realName + '</div>' : '') +
+        '<div class="lead-role">' + (p.role || p.title || '') + '</div></div></div>' +
+        '<div class="lead-meta">' +
+        '<div class="lead-meta-item"><span style="opacity:0.5;">&#x1F4CD;</span> ' + (p.loc || '') + '</div>' +
+        '<div class="lead-meta-item"><span style="opacity:0.5;">&#x1F4C5;</span> Joined ' + (p.joined || '') + '</div>' +
+        '</div>' +
+        (p.prior ? '<div class="lead-prior">' + p.prior + '</div>' : '') +
+        (p.bio ? '<div class="lead-bio">' + p.bio + '</div>' : '');
+      if (opts.includeExpanded && p.expandedBio) {
+        html += '<div class="lead-expanded"><div class="lead-expanded-content">' + p.expandedBio + '</div></div>';
+      }
+      if (p.focus) html += '<div class="lead-focus"><strong>Current focus:</strong> ' + p.focus + '</div>';
+      if (p.tags && p.tags.length) {
+        html += '<div class="lead-tags">' + p.tags.map(function(tag) { return '<span class="lead-tag">' + tag + '</span>'; }).join('') + '</div>';
+      }
+      html += '<div class="lead-commits-row">' +
+        '<div class="lead-commits-count">' + commits + ' commits this week</div>' +
+        heatmapHTML(daySeed + seedIndex * 137) +
+        '</div>';
+      if (opts.hint) html += '<div class="lead-expand-hint">Read full profile &rarr;</div>';
+      return html;
+    }
+
     // ===== RENDER LEAD CARDS =====
     var leadHTML = '';
     team.forEach(function(t, i) {
-      var status = getStatus(t.tz, i);
-      var deptC = DEPT_COLORS[t.dept] || DEPT_COLORS.kernel;
-      var deptLabel = t.dept === 'kernel' ? 'KERNEL' : t.dept === 'ai' ? 'AI' : t.dept === 'sdk' ? 'SDK' : t.dept === 'infra' ? 'INFRA' : 'QA';
-      var commits = weeklyCommits(i);
-      var seen = lastSeenText(t.tz, i);
-
-      leadHTML += '<div class="lead-card reveal" data-dept="' + t.dept + '" onclick="this.classList.toggle(\'expanded\')">' +
-        '<div class="lead-card-top">' +
-        '<div class="lead-avatar" style="background:' + deptC.avatarBg + ';color:' + deptC.color + ';">' + t.initials +
-        '<div class="lead-status lead-status-' + status + '"></div></div>' +
-        '<div class="lead-info"><div class="lead-name">' + t.name +
-        ' <span class="lead-dept-badge lead-dept-badge-' + t.dept + '">' + deptLabel + '</span></div>' +
-        (t.realName ? '<div class="lead-real-name">' + t.realName + '</div>' : '') +
-        '<div class="lead-role">' + t.role + '</div></div></div>' +
-        '<div class="lead-meta">' +
-        '<div class="lead-meta-item"><span style="opacity:0.5;">&#x1F4CD;</span> ' + t.loc + '</div>' +
-        '<div class="lead-meta-item"><span style="opacity:0.5;">&#x1F4C5;</span> Joined ' + t.joined + '</div>' +
-        '</div>' +
-        '<div class="lead-prior">' + t.prior + '</div>' +
-        '<div class="lead-bio">' + t.bio + '</div>' +
-        (t.expandedBio ? '<div class="lead-expanded"><div class="lead-expanded-content">' + t.expandedBio + '</div></div>' : '') +
-        '<div class="lead-focus"><strong>Current focus:</strong> ' + t.focus +
-        '<div class="lead-focus-active"></div></div>' +
-        '<div class="lead-tags">' + t.tags.map(function(tag) { return '<span class="lead-tag">' + tag + '</span>'; }).join('') + '</div>' +
-        '<div class="lead-commits-row">' +
-        heatmapHTML(daySeed + i * 137) +
-        '<div style="text-align:right;"><div class="lead-commits-count">' + commits + ' commits this week</div>' +
-        '<div class="lead-last-seen">' + seen + '</div></div>' +
-        '</div>' +
-        '<div class="lead-expand-hint">CLICK TO EXPAND</div>' +
-        '<div class="holo-edge"></div>' +
+      leadHTML += '<div class="lead-card reveal" data-dept="' + t.dept + '" data-id="' + t.id + '" onclick="this.classList.toggle(\'expanded\')">' +
+        profileCardInner(t, i, { includeExpanded: true, hint: !!t.expandedBio }) +
         '</div>';
     });
     document.getElementById('leadGrid').innerHTML = leadHTML;
@@ -737,21 +804,19 @@
         'nvoronov': isBanWaveDay ? 'Overseeing ban wave deployment' : 'Reviewing deployment pipeline',
         'dkrasov': fpStreak < 3 ? 'Investigating false positive report' : (isArmsRace ? 'Patching kernel signatures' : 'Driver stability testing'),
         's.nakamura': isArmsRace ? 'Retraining behavioral weights' : 'TCN model evaluation',
-        'ArsenalRX': isArmsRace ? 'Analyzing ' + provider + ' variant' : 'Monitoring cheat forums',
+        'ArsenalRX': isArmsRace ? 'Analyzing ' + provider + ' variant' : 'Reviewing EPT shadow-scan results',
         'lweber': 'SDK integration testing'
       };
 
-      var cards = document.querySelectorAll('.lead-card');
+      var cards = document.querySelectorAll('#leadGrid .lead-card');
       cards.forEach(function(card) {
-        var nameEl = card.querySelector('.lead-name');
-        if (!nameEl) return;
-        var name = nameEl.textContent.trim().split(' ')[0];
-        if (!activities[name]) return;
+        var id = card.getAttribute('data-id');
+        if (!id || !activities[id]) return;
         var roleEl = card.querySelector('.lead-role');
         if (!roleEl) return;
         var actDiv = document.createElement('div');
         actDiv.className = 'lead-activity';
-        actDiv.textContent = 'Active: ' + activities[name];
+        actDiv.textContent = 'This week: ' + activities[id];
         roleEl.parentNode.insertBefore(actDiv, roleEl.nextSibling);
       });
     })();
@@ -777,9 +842,9 @@
 
       if (degradedDepts.length === 0) return;
 
-      var alertHtml = '<div style="background:rgba(232,160,32,0.06);border:1px solid rgba(232,160,32,0.2);border-radius:12px;padding:20px 24px;margin-bottom:40px;">' +
+      var alertHtml = '<div style="background:rgba(232,160,32,0.05);border:1px solid rgba(232,160,32,0.18);border-radius:16px;padding:20px 24px;margin-bottom:40px;">' +
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">' +
-        '<div style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:focusPulse 2.5s ease-in-out infinite;"></div>' +
+        '<div style="width:7px;height:7px;border-radius:50%;background:var(--accent);opacity:0.8;"></div>' +
         '<span style="font-family:var(--font-heading);font-size:0.85rem;font-weight:700;color:var(--accent);">ACTIVE RESPONSE \u2014 Threat Level: ' + threatLevel + '</span></div>';
 
       degradedDepts.forEach(function(d) {
@@ -790,7 +855,8 @@
           '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">';
         d.members.forEach(function(mid) {
           var m = findMember(mid);
-          alertHtml += '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;background:' + deptC.bg + ';font-size:0.65rem;color:' + deptC.color + ';font-weight:600;">' + m.initials + ' ' + m.name + '</span>';
+          alertHtml += '<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;background:' + deptC.bg + ';font-size:0.65rem;color:' + deptC.color + ';font-weight:600;">' + m.initials + ' @' + m.id +
+            (m.nick ? '<span class="act-nick">&ldquo;' + m.nick + '&rdquo;</span>' : '') + '</span>';
         });
         alertHtml += '</div></div></div>';
       });
@@ -814,16 +880,17 @@
       },
       sdk: function() {
         return seededInt(daySeed * 421, 5, 12) + ' PRs merged \u00b7 ' +
-               seededInt(daySeed * 423, 1, 3) + ' plugin updates \u00b7 99.' +
-               seededInt(daySeed * 425, 2, 6) + '% API uptime';
+               seededInt(daySeed * 423, 1, 3) + ' plugin updates \u00b7 97.' +
+               seededInt(daySeed * 425, 2, 8) + '% API uptime';
       },
       qa: function() {
         return seededInt(daySeed * 431, 250, 420) + ' test runs \u00b7 ' +
-               seededInt(daySeed * 433, 38, 48) + ' HW configs \u00b7 0 regressions';
+               seededInt(daySeed * 433, 38, 48) + ' HW configs \u00b7 ' +
+               seededInt(daySeed * 435, 1, 3) + ' regressions caught';
       },
       infra: function() {
-        return seededInt(daySeed * 441, 15, 30) + ' deployments \u00b7 99.' +
-               seededInt(daySeed * 443, 6, 9) + '% uptime \u00b7 ' +
+        return seededInt(daySeed * 441, 15, 30) + ' deployments \u00b7 97.' +
+               seededInt(daySeed * 443, 2, 8) + '% uptime \u00b7 ' +
                seededInt(daySeed * 445, 2, 5) + ' incidents resolved';
       }
     };
@@ -855,11 +922,28 @@
         members: ['gharris', 'ilee', 'fbianchi', 'swilson'] },
     ];
 
+    // Returns the full profile object for leads and department members alike.
     function findMember(id) {
       var lead = team.find(function(t) { return t.id === id; });
-      if (lead) return { initials: lead.initials, name: lead.name, title: lead.role.split(' & ')[0], tz: lead.tz, dept: lead.dept, loc: lead.loc };
-      var m = allMembers.find(function(m) { return m.id === id; });
-      return m || { initials: '??', name: id, title: '', tz: 0, dept: 'kernel', loc: '' };
+      if (lead) {
+        return {
+          id: lead.id, initials: lead.initials, name: lead.name, nick: lead.nick,
+          realName: lead.realName, role: lead.role, title: lead.role,
+          dept: lead.dept, loc: lead.loc, tz: lead.tz, joined: lead.joined,
+          prior: lead.prior, bio: lead.bio, expandedBio: lead.expandedBio,
+          focus: lead.focus, tags: lead.tags, isLead: true
+        };
+      }
+      var m = allMembers.find(function(x) { return x.id === id; });
+      if (m) {
+        return {
+          id: m.id, initials: m.initials, name: m.name, nick: m.nick,
+          realName: m.realName, role: m.role, title: m.title,
+          dept: m.dept, loc: m.loc, tz: m.tz, joined: m.joined,
+          prior: m.prior, bio: m.bio, focus: m.focus, tags: m.tags, isLead: false
+        };
+      }
+      return { id: id, initials: '??', name: id, nick: '', realName: '', role: '', title: '', dept: 'kernel', loc: '', tz: 0, joined: '', prior: '', bio: '', focus: '', tags: [], isLead: false };
     }
 
     var deptHTML = '';
@@ -876,13 +960,14 @@
       d.members.forEach(function(mid, mi) {
         var m = findMember(mid);
         var isLead = mi === 0;
-        var status = getStatus(m.tz, di * 100 + mi);
         var avatarBg = deptC.avatarBg;
         var avatarColor = deptC.color;
-        deptHTML += '<div class="dept-member" title="' + m.name + ' \u00b7 ' + (m.loc || '') + '">' +
-          '<div class="dept-member-avatar" style="background:' + avatarBg + ';color:' + avatarColor + ';">' + m.initials +
-          '<div class="dept-member-status lead-status-' + status + '"></div></div>' +
-          '<div><div class="dept-member-name">' + m.name + '</div>' +
+        deptHTML += '<div class="dept-member" role="button" tabindex="0" data-id="' + m.id + '"' +
+          ' aria-label="Open profile for @' + m.id + (m.nick ? ', ' + m.nick : '') + '"' +
+          ' title="@' + m.id + (m.nick ? ' \u00b7 \u201c' + m.nick + '\u201d' : '') + ' \u00b7 ' + (m.loc || '') + '">' +
+          '<div class="dept-member-avatar" style="background:' + avatarBg + ';color:' + avatarColor + ';">' + m.initials + '</div>' +
+          '<div><div class="dept-member-name">@' + m.id +
+          (m.nick ? '<span class="dept-member-nick">&ldquo;' + m.nick + '&rdquo;</span>' : '') + '</div>' +
           '<div class="dept-member-title">' + (isLead ? 'Lead' : (m.title || '')) + '</div></div></div>';
       });
       deptHTML += '</div></div>';
@@ -908,7 +993,6 @@
 
       function renderTZ() {
         var html = '';
-        var totalOnline = 0;
         zones.forEach(function(z) {
           var utcH = new Date().getUTCHours();
           var utcM = new Date().getUTCMinutes();
@@ -919,13 +1003,11 @@
           var isEvening = localH >= 18 && localH < 22;
           var isHub = z.members.length >= 6;
 
+          // One neutral dot per engineer in this zone — headcount, not presence.
           var dotsHTML = '';
-          z.members.forEach(function(mid, mi) {
+          z.members.forEach(function(mid) {
             var m = findMember(mid);
-            var s = getStatus(m.tz, mi);
-            var dotColor = s === 'online' ? 'var(--green)' : s === 'busy' ? 'var(--accent)' : s === 'away' ? 'var(--text-dim)' : '#333';
-            if (s === 'online' || s === 'busy') totalOnline++;
-            dotsHTML += '<div class="tz-dot" style="background:' + dotColor + ';" title="' + m.name + ' (' + s + ')" aria-label="' + m.name + ' (' + s + ')" role="img"></div>';
+            dotsHTML += '<div class="tz-dot" title="' + m.name + '" aria-label="' + m.name + '" role="img"></div>';
           });
 
           var groupClass = 'tz-group' + (isWork ? ' tz-work' : '') + (isHub ? ' tz-hub' : '');
@@ -938,7 +1020,6 @@
             '<div class="tz-bar">' + dotsHTML + '</div></div>';
         });
         document.getElementById('tzStrip').innerHTML = html;
-        document.getElementById('onlineCount').textContent = totalOnline + ' online now';
       }
       renderTZ();
       setInterval(renderTZ, 1000);

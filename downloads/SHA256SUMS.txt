@@ -1,0 +1,2 @@
+e5e5b9329e9e6718da009aa650d48e8eda9ce583c9dfb5ebdd79ec4eb30aef90  cerberus-readiness-check-1.0.0.zip
+bcded5e49e168de74c0fc2cae883d6936e84b79a3ab48266f209156b24ef8ac3  cerberus-sdk-eval-0.6.0.zip

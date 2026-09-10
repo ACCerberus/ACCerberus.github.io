@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 36" width="240" height="36" role="img" aria-label="Cindercrest Studios" fill="none">
+  <title>Cindercrest Studios</title>
+  <defs>
+    <linearGradient id="cc-ember" x1="0" y1="0" x2="240" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e8317a"/>
+      <stop offset="0.55" stop-color="#ff7a2f"/>
+      <stop offset="1" stop-color="#ffc043"/>
+    </linearGradient>
+    <linearGradient id="cc-ember-crest" x1="3" y1="4" x2="27" y2="29" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e8317a"/>
+      <stop offset="1" stop-color="#ffc043"/>
+    </linearGradient>
+  </defs>
+  <path d="M15 4 L27 16 H21 L15 10 L9 16 H3 Z" fill="url(#cc-ember-crest)"/>
+  <path d="M15 17 L27 29 H21 L15 23 L9 29 H3 Z" fill="url(#cc-ember-crest)" opacity="0.62"/>
+  <text x="40" y="25" fill="url(#cc-ember)" font-family="'Outfit', 'Segoe UI', system-ui, sans-serif" font-size="20" font-weight="700" letter-spacing="0.6">CINDERCREST</text>
+</svg>

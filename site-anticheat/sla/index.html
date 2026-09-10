@@ -205,6 +205,9 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/plans/">Plans</a>
+          <a href="/downloads/">Downloads</a>
+          <a href="/readiness/">Readiness Check</a>
           <a href="/blog/">Blog</a>
           <a href="/updates/">Updates</a>
         </div>
@@ -231,8 +234,8 @@
     <div class="callout callout-warn reveal">Cerberus is in <strong>closed beta</strong>. This SLA reflects beta-appropriate commitments — we'd rather commit to numbers we consistently clear than promise enterprise-grade figures we can't back up yet. The free Argus tier is not covered by this SLA; see the <a href="/terms/">Terms of Service</a> for tier details.</div>
 
     <h2 class="reveal">Uptime commitment</h2>
-    <p>We commit to <strong>97% monthly uptime</strong> across the combined Detection Engine, API &amp; Dashboard, and Data Pipeline services, measured across all three of our operating regions (US-East, EU-West, AP-Southeast).</p>
-    <p>This number is set deliberately at or below what we already deliver. Our public <a href="/status/">Status page</a> shows actual trailing uptime in the 97–98% range — this SLA formalizes that as a commitment rather than promising a figure we haven't demonstrated.</p>
+    <p>We commit to <strong id="slaTarget">97%</strong> monthly uptime across the combined Detection Engine, API &amp; Dashboard, and Data Pipeline services, measured across all three of our operating regions (US-East, EU-West, AP-Southeast).</p>
+    <p>This number is set deliberately at or below what we already deliver. Our public <a href="/status/">Status page</a> shows actual trailing uptime in the <span id="slaBand">97–98%</span> range — this SLA formalizes that as a commitment rather than promising a figure we haven't demonstrated.</p>
     <p>Uptime is calculated per calendar month as:</p>
     <p><code>(total minutes in month − downtime minutes) / total minutes in month × 100</code></p>
     <p>Downtime means the covered services are unreachable or returning failure responses for the majority of requests in a given minute, as recorded by our monitoring and reflected on <a href="/status/">/status/</a>. Scheduled maintenance windows announced at least 48 hours in advance via the status page are excluded from downtime calculations, as are the exclusions listed below.</p>
@@ -292,7 +295,25 @@
 
   <script src="/js/cerberus-engine.js"></script>
   <script src="/js/cerberus-shared.js"></script>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Uptime commitment figures come from the engine so the SLA, the status page
+    // and the dashboard can never drift apart.
+    (function() {
+      var E = window.CerberusEngine;
+      if (!E || !E.CONFIG) return;
+      var targetEl = document.getElementById('slaTarget');
+      if (targetEl && typeof E.CONFIG.uptimeTarget === 'number') {
+        targetEl.textContent = (E.CONFIG.uptimeTarget * 100).toFixed(0) + '%';
+      }
+      var bandEl = document.getElementById('slaBand');
+      var band = E.CONFIG.uptimeBand;
+      if (bandEl && band && band.length === 2) {
+        bandEl.textContent = (band[0] * 100).toFixed(1) + '–' + (band[1] * 100).toFixed(1) + '%';
+      }
+    })();
+  </script>
 
 </body>
 </html>

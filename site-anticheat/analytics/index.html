@@ -294,7 +294,7 @@
       .nav { padding: 12px 20px; }
       .nav-links { display: none; }
     }
-    /* Skeleton loading animation (QOL #1) */
+    /* Skeleton loading animation */
     @keyframes skeletonShimmer {
       0% { background-position: -200px 0; }
       100% { background-position: calc(200px + 100%) 0; }
@@ -441,14 +441,13 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/plans/">Plans</a>
+          <a href="/downloads/">Downloads</a>
+          <a href="/readiness/">Readiness Check</a>
           <a href="/blog/">Blog</a>
           <a href="/updates/">Updates</a>
         </div>
       </div>
-    </div>
-    <div class="nav-status">
-      <div class="nav-status-dot"></div>
-      <div class="nav-status-text">SYSTEMS NOMINAL</div>
     </div>
     <div class="nav-cta-wrap">
       <a href="/appeal/" class="nav-login nav-appeal">Ban Appeal</a>
@@ -585,7 +584,7 @@
     </div>
   </div>
 
-  <!-- BAN WAVE COUNTDOWN (TODO #6) -->
+  <!-- BAN WAVE COUNTDOWN -->
   <div id="banWaveCountdown" class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
       <div style="display:flex;align-items:center;gap:12px;">
@@ -707,7 +706,7 @@
     </div>
   </div>
 
-  <!-- TODO #22: HARDWARE FINGERPRINT DB + TODO #4: REGION LATENCY + QOL #9: EXPORTS -->
+  <!-- HARDWARE FINGERPRINT DB + REGION LATENCY + DATA EXPORTS -->
   <div class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;display:flex;gap:16px;flex-wrap:wrap;">
     <div style="flex:1;min-width:200px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;">
       <div style="font-size:1.2rem;">&#x1F4BB;</div>
@@ -727,7 +726,7 @@
     <div></div>
   </div>
 
-  <!-- SESSION QUEUE + SIGNATURE SYNC (TODO #12 + #18) -->
+  <!-- SESSION QUEUE + SIGNATURE SYNC -->
   <div class="dash-grid-2 reveal">
     <div class="dash-card">
       <div class="dash-card-header">
@@ -828,7 +827,7 @@
     </div>
   </div>
 
-  <!-- TODO #21: FALSE POSITIVE TRACKER -->
+  <!-- FALSE POSITIVE TRACKER -->
   <div class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
       <div style="display:flex;align-items:center;gap:12px;">
@@ -855,7 +854,7 @@
     </div>
   </div>
 
-  <!-- TODO #20: WEBHOOK EVENT LOG -->
+  <!-- WEBHOOK EVENT LOG -->
   <div class="reveal" style="max-width:1300px;margin:0 auto 20px;padding:0 24px;position:relative;z-index:1;">
     <div class="dash-card">
       <div class="dash-card-header">
@@ -870,10 +869,10 @@
 
   <!-- REPORT BUG -->
   <div style="max-width:1300px;margin:0 auto 30px;padding:0 24px;position:relative;z-index:1;display:flex;justify-content:flex-end;">
-    <a href="#" class="report-btn" id="reportBugBtn">
+    <button type="button" class="report-btn" id="reportBugBtn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       Report Bug / Issue
-    </a>
+    </button>
   </div>
 
   </div><!-- end tab-live -->
@@ -910,7 +909,7 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // ===== SKELETON LOADING (QOL #1) =====
+    // ===== SKELETON LOADING =====
     // Add skeleton class to all stat cards, remove after data loads
     document.querySelectorAll('.stat-card-value').forEach(function(el) {
       el.classList.add('skeleton');
@@ -921,7 +920,7 @@
       if (el) el.classList.remove('skeleton');
     }
 
-    // ===== TIME (QOL #8: Timezone Selector) =====
+    // ===== TIME (timezone selector) =====
     var tzSelect = document.getElementById('tzSelect');
     function updateTime() {
       var d = new Date();
@@ -1706,7 +1705,7 @@
       }
     }
 
-    // QOL #5: Copy-to-clipboard for IDs
+    // Copy-to-clipboard for IDs
     function wrapCopyable(html) {
       return html.replace(/(BAN-[A-Z0-9]+|P-[A-Z0-9]+|CRB-[A-Z0-9-]+)/g, function(id) {
         return '<span class="copyable" title="Click to copy" onclick="(function(e){navigator.clipboard.writeText(\'' + id + '\');var t=e.target||e.srcElement;var orig=t.textContent;t.textContent=\'Copied!\';t.style.color=\'var(--green)\';setTimeout(function(){t.textContent=orig;t.style.color=\'\';},800);})(event)">' + id + '</span>';
@@ -1754,7 +1753,7 @@
         var batchSize = Math.floor(Math.random() * 3 * todMult) + 1;
         batchSize = Math.min(batchSize, 5);
 
-        // TODO #15: Geographic clustering — 15% chance to cluster events from same region
+        // Geographic clustering — 15% chance to cluster events from same region
         var clusterRegion = null;
         if (Math.random() < 0.15 && batchSize >= 3) {
           clusterRegion = feedRegions[Math.floor(Math.random() * feedRegions.length)];
@@ -2263,7 +2262,7 @@
       window._freshnessReset = function() { lastUpdate = Date.now(); };
     })();
 
-    // ===== TODO #22: HARDWARE FINGERPRINT DB GROWTH =====
+    // ===== HARDWARE FINGERPRINT DB GROWTH =====
     (function() {
       var fpEl = document.getElementById('hwFpCount');
       var trendEl = document.getElementById('hwFpTrend');
@@ -2278,7 +2277,7 @@
       trendEl.title = 'New device fingerprints catalogued';
     })();
 
-    // ===== TODO #4: LIVE REGION LATENCY =====
+    // ===== LIVE REGION LATENCY =====
     (function() {
       var el = document.getElementById('avgLatencyLive');
       if (!el) return;
@@ -2291,8 +2290,8 @@
       setInterval(updateLatency, 5000);
     })();
 
-    // ===== QOL #9: DATA EXPORT BUTTONS =====
-    // ===== FALSE POSITIVE TRACKER (TODO #21) =====
+    // ===== DATA EXPORT BUTTONS =====
+    // ===== FALSE POSITIVE TRACKER =====
     (function() {
       var fpEl = document.getElementById('fpDaysClean');
       if (!fpEl) return;
@@ -2304,7 +2303,7 @@
       fpEl.textContent = Math.max(1, daysSinceLastFp);
     })();
 
-    // ===== SESSION REVIEW QUEUE (TODO #12) =====
+    // ===== SESSION REVIEW QUEUE =====
     (function() {
       var countEl = document.getElementById('reviewQueueCount');
       var barEl = document.getElementById('reviewQueueBar');
@@ -2344,7 +2343,7 @@
       }, 8000 + Math.floor(Math.random() * 7000));
     })();
 
-    // ===== SIGNATURE DB SYNC WAVE (TODO #18) =====
+    // ===== SIGNATURE DB SYNC WAVE =====
     (function() {
       var syncEl = document.getElementById('sigSyncStatus');
       if (!syncEl) return;
@@ -2427,7 +2426,7 @@
       setTimeout(runSyncAnimation, 120000 + Math.floor(Math.random() * 180000));
     })();
 
-    // ===== BAN WAVE COUNTDOWN (TODO #6) =====
+    // ===== BAN WAVE COUNTDOWN =====
     (function() {
       var timerEl = document.getElementById('banWaveTimer');
       var statusEl = document.getElementById('banWaveStatus');
@@ -2494,7 +2493,7 @@
       updateCountdown();
     })();
 
-    // ===== TODO #20: WEBHOOK EVENT LOG =====
+    // ===== WEBHOOK EVENT LOG =====
     (function() {
       var logEl = document.getElementById('webhookLog');
       if (!logEl) return;
@@ -2547,7 +2546,7 @@
       setInterval(addWebhookEntry, 15000 + Math.floor(Math.random() * 25000));
     })();
 
-    // ===== QOL #7: REALISTIC ERROR STATES =====
+    // ===== REALISTIC ERROR STATES =====
     // Occasionally show a brief "Connection lost, reconnecting..." banner
     (function() {
       function showReconnect() {

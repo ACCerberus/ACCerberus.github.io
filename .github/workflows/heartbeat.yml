@@ -33,7 +33,7 @@ jobs:
           SIG_QUEUE=$(jq '.signatureQueue' data/state.json)
           VERSION=$(jq -r '.engineVersion' data/state.json)
 
-          # ── Core metrics (beta-scale: ~6 partner titles, 1-3K peak CCU) ──
+          # ── Core metrics (beta-scale: 18 partner titles across ~12 studios, ~1.4K peak CCU) ──
           NEW_SIGS=$((SIGS + RANDOM % 5 + 1))
           NEW_BANS=$((BANS + RANDOM % 8 + 1))
           NEW_DETECTIONS=$((40 + RANDOM % 80))
@@ -69,9 +69,9 @@ jobs:
             fi
           fi
 
-          # Active sessions (beta-scale: ~6 titles, 1-3K peak CCU total)
+          # Active sessions (beta-scale: 18 partner titles across ~12 studios, ~1.4K peak CCU)
           if [ "$HOUR" -ge 14 ] && [ "$HOUR" -le 22 ]; then
-            SESSIONS=$((800 + RANDOM % 600))
+            SESSIONS=$((700 + RANDOM % 641))
           elif [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 14 ]; then
             SESSIONS=$((350 + RANDOM % 400))
           else
@@ -81,6 +81,11 @@ jobs:
           # Weekend boost
           if [ "$DAY" -ge 6 ]; then
             SESSIONS=$((SESSIONS * 115 / 100))
+          fi
+
+          # Hard cap — peak CCU across the closed beta never exceeds ~1.4K
+          if [ "$SESSIONS" -gt 1440 ]; then
+            SESSIONS=1440
           fi
 
           # ── Next-gen metrics ──
@@ -153,25 +158,56 @@ jobs:
           # ── Incident state machine ──
           ACTIVE_INCIDENT=$(jq -r '.activeIncident' data/state.json)
           INCIDENT_HISTORY=$(jq -c '.incidentHistory' data/state.json)
+          # Kept as raw JSON ("..." or null) so it can be passed straight back with --argjson
+          LAST_INCIDENT=$(jq -c '.lastIncident' data/state.json)
 
           # Incident template pool
-          INCIDENT_TITLES=("False positive rate spike in EU-West region" "Webhook delivery delays" "API response time degradation" "Scan latency increase detected" "Region connectivity issues — Asia-Pacific" "Signature DB sync delay" "Dashboard metrics reporting lag" "Elevated DMA false positives" "SDK authentication timeout errors" "Behavioral model inference latency spike" "Kernel scan timeout on high-CCU instances" "Certificate pinning mismatch on SDK auth" "Behavioral model confidence degradation" "Partner webhook endpoint unreachable — US-East" "Memory scan false positive on accessibility software" "PCIe enumeration failure on Intel Arc GPUs" "Ban API rate limiter false triggers" "Signature verification checksum mismatch" "Session telemetry ingestion backlog" "Detection pipeline queue saturation")
+          INCIDENT_TITLES=("False positive rate spike in EU-West region" "Webhook delivery delays" "API response time degradation" "Scan latency increase detected" "Region connectivity issues — Asia-Pacific" "Signature DB sync delay" "Dashboard metrics reporting lag" "Elevated DMA false positives" "SDK authentication timeout errors" "Behavioral model inference latency spike" "Kernel scan timeout on high-CCU instances" "Certificate pinning mismatch on SDK auth" "Behavioral model confidence degradation" "Partner webhook endpoint unreachable — US-East" "Memory scan false positive on accessibility software" "PCIe enumeration failure on Intel Arc GPUs" "Ban API rate limiter false triggers" "Signature verification checksum mismatch" "Session telemetry ingestion backlog" "Detection pipeline queue saturation" "Attestation report signing delay" "Appeal webhook fan-out lag — EU-West" "Signature CDN cache miss storm" "Dashboard SSO callback timeout" "PCIe fingerprint DB replication lag — AP-Southeast" "Scan scheduler regression on hybrid CPUs (alpha channel)")
           INCIDENT_CAUSES=("Misconfigured rate limiter on edge node" "Database connection pool exhaustion" "Network congestion on inter-region backbone" "Memory pressure from concurrent scan operations" "DNS resolution delay on failover endpoint" "Cache invalidation storm after signature push" "Load balancer health check misconfiguration" "Upstream provider API throttling" "Certificate renewal race condition" "Garbage collection pause in scan worker" "Signature database index corruption after concurrent write" "Detection threshold miscalibration in latest model update" "Model inference out-of-memory on GPU-constrained nodes" "Third-party CDN provider rate limiting during peak" "Data pipeline race condition between scan and report workers" "TLS certificate pinning hash mismatch after CA rotation" "Kernel module incompatibility with latest Windows Insider build" "Redis cluster split-brain during network partition" "Disk I/O saturation on signature database primary" "Hot-reload race condition in configuration management")
 
           if [ "$ACTIVE_INCIDENT" = "null" ]; then
             # 3% chance of new incident per run (~1 every 3 days)
             if [ $((RANDOM % 100)) -lt 3 ]; then
-              INC_IDX=$((RANDOM % ${#INCIDENT_TITLES[@]}))
+              # Avoid repeating any of the last 5 incident titles (max 10 tries)
+              RECENT_TITLES=$(echo "$INCIDENT_HISTORY" | jq -r '.[0:5][].title' 2>/dev/null || echo "")
+              INC_TITLE=""
+              CAND=""
+              ATTEMPT=0
+              while [ "$ATTEMPT" -lt 10 ]; do
+                CAND="${INCIDENT_TITLES[$((RANDOM % ${#INCIDENT_TITLES[@]}))]}"
+                if ! printf '%s\n' "$RECENT_TITLES" | grep -qxF -- "$CAND"; then
+                  INC_TITLE="$CAND"
+                  break
+                fi
+                ATTEMPT=$((ATTEMPT + 1))
+              done
+              if [ -z "$INC_TITLE" ]; then
+                INC_TITLE="$CAND"
+              fi
+
+              # Severity mix: mostly minor, occasionally moderate
+              if [ $((RANDOM % 100)) -lt 85 ]; then
+                INC_SEVERITY="minor"
+              else
+                INC_SEVERITY="moderate"
+              fi
+
+              IMPACT_PCTS=("0.6" "0.9" "1.2" "1.7" "2.1" "2.8" "3.4")
+              IMP_IDX=$((RANDOM % ${#IMPACT_PCTS[@]}))
+              INC_IMPACT="${IMPACT_PCTS[$IMP_IDX]}"
+
               CAUSE_IDX=$((RANDOM % ${#INCIDENT_CAUSES[@]}))
               INC_ID="INC-$(date -u +%Y%m%d)-$(printf '%04d' $((RANDOM % 10000)))"
               ACTIVE_INCIDENT=$(jq -n \
                 --arg id "$INC_ID" \
-                --arg title "${INCIDENT_TITLES[$INC_IDX]}" \
+                --arg title "$INC_TITLE" \
                 --arg status "INVESTIGATING" \
                 --arg started "$NOW" \
                 --arg updated "$NOW" \
                 --arg cause "${INCIDENT_CAUSES[$CAUSE_IDX]}" \
-                '{id: $id, title: $title, status: $status, startedAt: $started, updatedAt: $updated, rootCause: $cause, severity: "minor", impactPct: 2.5}')
+                --arg severity "$INC_SEVERITY" \
+                --argjson impact "$INC_IMPACT" \
+                '{id: $id, title: $title, status: $status, startedAt: $started, updatedAt: $updated, rootCause: $cause, severity: $severity, impactPct: $impact}')
             fi
           else
             # Progress existing incident through stages
@@ -201,6 +237,8 @@ jobs:
                   # Prepend to history, keep last 5
                   INCIDENT_HISTORY=$(echo "$INCIDENT_HISTORY" | jq --argjson inc "$RESOLVED" '[$inc] + . | .[0:5]')
                   ACTIVE_INCIDENT="null"
+                  # Record when the most recent incident ended
+                  LAST_INCIDENT="\"$NOW\""
                 fi
                 ;;
             esac
@@ -234,7 +272,8 @@ jobs:
              --argjson armscycle "$ARMS_CYCLE" \
              --argjson incident "$INC_ARG" \
              --argjson history "$INCIDENT_HISTORY" \
-             '.lastUpdate = $now |
+             --argjson lastincident "$LAST_INCIDENT" \
+             '.lastUpdate = $now | .lastIncident = $lastincident |
               .signatureDb = $sigs | .totalBans = $bans | .dailyDetections = $det |
               .avgScanLatency = $lat | .activeSessions = $sess |
               .pendingReviews = $rev | .signatureQueue = $sigq | .threatLevel = $level |
@@ -290,6 +329,177 @@ jobs:
 
           echo "COMMIT_MSG=$COMMIT_MSG" >> $GITHUB_ENV
 
+      - name: Regenerate status.json
+        run: |
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          # 30-day uptime stays inside the published 97.2-98.4% band
+          UPTIME=$(awk -v n=$((RANDOM % 13)) 'BEGIN{printf "%.1f", 97.2 + n/10}')
+
+          # Service uptime = overall +/- 0.4; per-region = service +/- 0.3, clamped
+          jit() { awk -v b="$1" -v s="$2" -v n="$3" 'BEGIN{ v = b + (n - s)/10; if (v < 97.0) v = 97.0; if (v > 98.6) v = 98.6; printf "%.1f", v }'; }
+
+          S1=$(jit "$UPTIME" 4 $((RANDOM % 9)))
+          S2=$(jit "$UPTIME" 4 $((RANDOM % 9)))
+          S3=$(jit "$UPTIME" 4 $((RANDOM % 9)))
+
+          R11=$(jit "$S1" 3 $((RANDOM % 7))); R12=$(jit "$S1" 3 $((RANDOM % 7))); R13=$(jit "$S1" 3 $((RANDOM % 7)))
+          R21=$(jit "$S2" 3 $((RANDOM % 7))); R22=$(jit "$S2" 3 $((RANDOM % 7))); R23=$(jit "$S2" 3 $((RANDOM % 7)))
+          R31=$(jit "$S3" 3 $((RANDOM % 7))); R32=$(jit "$S3" 3 $((RANDOM % 7))); R33=$(jit "$S3" 3 $((RANDOM % 7)))
+
+          ACTIVE=$(jq -c '.activeIncident' data/state.json)
+          INC_TITLE=$(jq -r '.activeIncident.title // ""' data/state.json)
+          INC_SEV=$(jq -r '.activeIncident.severity // ""' data/state.json)
+
+          if [ "$ACTIVE" = "null" ]; then
+            OVERALL="operational"
+            MESSAGE="All Systems Operational"
+          elif [ "$INC_SEV" = "minor" ]; then
+            OVERALL="minor_incident"
+            MESSAGE="Minor incident — ${INC_TITLE}"
+          else
+            OVERALL="degraded"
+            MESSAGE="Degraded performance — ${INC_TITLE}"
+          fi
+
+          # A region is degraded only when the active incident names it
+          region_status() {
+            st="operational"
+            if [ "$ACTIVE" != "null" ]; then
+              for pat in "$@"; do
+                case "$INC_TITLE" in
+                  *"$pat"*) st="degraded" ;;
+                esac
+              done
+            fi
+            echo "$st"
+          }
+          RS1=$(region_status "US-East")
+          RS2=$(region_status "EU-West")
+          RS3=$(region_status "AP-Southeast" "Asia-Pacific")
+
+          ANY_REGION="no"
+          if [ "$RS1" = "degraded" ] || [ "$RS2" = "degraded" ] || [ "$RS3" = "degraded" ]; then
+            ANY_REGION="yes"
+          fi
+
+          # Route the active incident to the service it most plausibly belongs to
+          DEGRADED_SVC=""
+          if [ "$ACTIVE" != "null" ]; then
+            case "$INC_TITLE" in
+              *Webhook*|*webhook*|*API*|*Dashboard*|*SSO*|*SDK*|*Ban\ API*) DEGRADED_SVC="api-dashboard" ;;
+              *telemetry*|*ingestion*|*Signature*|*signature*|*replication*|*pipeline*) DEGRADED_SVC="data-pipeline" ;;
+              *) DEGRADED_SVC="detection-engine" ;;
+            esac
+          fi
+
+          svc_status() {
+            if [ "$1" = "$DEGRADED_SVC" ]; then echo "degraded"; else echo "operational"; fi
+          }
+          svc_region_status() {
+            if [ "$1" = "$DEGRADED_SVC" ]; then
+              if [ "$ANY_REGION" = "no" ] || [ "$2" = "degraded" ]; then echo "degraded"; return; fi
+            fi
+            echo "operational"
+          }
+
+          ST1=$(svc_status "detection-engine")
+          ST2=$(svc_status "api-dashboard")
+          ST3=$(svc_status "data-pipeline")
+
+          SR11=$(svc_region_status "detection-engine" "$RS1"); SR12=$(svc_region_status "detection-engine" "$RS2"); SR13=$(svc_region_status "detection-engine" "$RS3")
+          SR21=$(svc_region_status "api-dashboard" "$RS1");    SR22=$(svc_region_status "api-dashboard" "$RS2");    SR23=$(svc_region_status "api-dashboard" "$RS3")
+          SR31=$(svc_region_status "data-pipeline" "$RS1");    SR32=$(svc_region_status "data-pipeline" "$RS2");    SR33=$(svc_region_status "data-pipeline" "$RS3")
+
+          SVC_UPT=$(printf '[%s,%s,%s]' "$S1" "$S2" "$S3")
+          REG_UPT=$(printf '[[%s,%s,%s],[%s,%s,%s],[%s,%s,%s]]' "$R11" "$R12" "$R13" "$R21" "$R22" "$R23" "$R31" "$R32" "$R33")
+          SVC_ST=$(jq -n --arg a "$ST1" --arg b "$ST2" --arg c "$ST3" '[$a,$b,$c]')
+          REG_ST=$(jq -n --arg a "$SR11" --arg b "$SR12" --arg c "$SR13" --arg d "$SR21" --arg e "$SR22" --arg f "$SR23" --arg g "$SR31" --arg h "$SR32" --arg i "$SR33" '[[$a,$b,$c],[$d,$e,$f],[$g,$h,$i]]')
+          REGION_ST=$(jq -n --arg a "$RS1" --arg b "$RS2" --arg c "$RS3" '[$a,$b,$c]')
+
+          jq -n \
+            --arg now "$NOW" \
+            --arg status "$OVERALL" \
+            --arg message "$MESSAGE" \
+            --argjson uptime "$UPTIME" \
+            --argjson regionSt "$REGION_ST" \
+            --argjson svcSt "$SVC_ST" \
+            --argjson svcUpt "$SVC_UPT" \
+            --argjson regSt "$REG_ST" \
+            --argjson regUpt "$REG_UPT" \
+            --argjson active "$ACTIVE" \
+            --slurpfile state data/state.json \
+            --slurpfile meta data/version-meta.json \
+            '
+            ($state[0]) as $s |
+            ($meta[0]) as $m |
+            ["US-East","EU-West","AP-Southeast"] as $regionNames |
+            [{id:"detection-engine",name:"Detection Engine"},
+             {id:"api-dashboard",name:"API & Dashboard"},
+             {id:"data-pipeline",name:"Data Pipeline"}] as $svcDefs |
+            {
+              schemaVersion: "1.1.0",
+              generatedAt: $now,
+              status: $status,
+              statusMessage: $message,
+              uptime: { period: "30d", overallPercent: $uptime },
+              regions: [ range(0; 3) as $i | { name: ($regionNames | .[$i]), status: ($regionSt | .[$i]) } ],
+              services: [ range(0; 3) as $i |
+                {
+                  id: ($svcDefs | .[$i] | .id),
+                  name: ($svcDefs | .[$i] | .name),
+                  status: ($svcSt | .[$i]),
+                  uptimePercent30d: ($svcUpt | .[$i]),
+                  regions: [ range(0; 3) as $j |
+                    { key: ($regionNames | .[$j]),
+                      value: { status: ($regSt | .[$i] | .[$j]),
+                               uptimePercent30d: ($regUpt | .[$i] | .[$j]) } }
+                  ] | from_entries
+                }
+              ],
+              incidents: (if $active == null then [] else [$active] end),
+              recentResolvedIncidents: [ ($s.incidentHistory // [])[0:3][] |
+                { id: .id, title: .title, severity: (.severity // "minor"),
+                  startedAt: .startedAt, resolvedAt: (.resolvedAt // .updatedAt),
+                  rootCause: (.rootCause // "Under investigation") } ],
+              components: {
+                kernelDriver: ($m.currentVersion // $s.engineVersion),
+                behavioralModel: ($s.behavioralModelVersion // "bm-3.2.0"),
+                signatureDbCount: $s.signatureDb,
+                driverChannel: ($m.channel // "alpha"),
+                stableKernelDriver: ($m.stableChannelVersion // "")
+              },
+              metrics: {
+                falsePositiveRatePercent: $s.falsePositiveRate,
+                activeSessions: $s.activeSessions,
+                dailyDetections: $s.dailyDetections
+              }
+            }' > status.tmp.json
+
+          # Only replace the published feed once the generated file is known to
+          # be valid JSON — a redirect straight onto status.json would truncate
+          # it before jq ran, so any jq error would publish an empty feed.
+          if [ ! -s status.tmp.json ] || ! jq empty status.tmp.json >/dev/null 2>&1; then
+            echo "status.json regeneration produced invalid JSON — keeping the previous file"
+            rm -f status.tmp.json
+            exit 1
+          fi
+          mv status.tmp.json status.json
+
+          echo "Regenerated status.json (status: $OVERALL, uptime: $UPTIME%)"
+
+      - name: Bump sitemap lastmod for /status/
+        run: |
+          TODAY=$(date -u +"%Y-%m-%d")
+
+          if [ -f sitemap.xml ]; then
+            # Only rewrite the <lastmod> that immediately follows the /status/ <loc> line.
+            TODAY="$TODAY" perl -0pi -e 's{(<loc>https://cerberusac\.dev/status/</loc>\s*<lastmod>)[^<]*(</lastmod>)}{$1 . $ENV{TODAY} . $2}ge' sitemap.xml
+            echo "Bumped sitemap lastmod to $TODAY for /status/"
+          else
+            echo "sitemap.xml not found — skipping"
+          fi
+
       - name: Commit and push
         run: |
           git config user.name "cerberus-bot"
@@ -302,6 +512,15 @@ jobs:
             git add site-anticheat/data/state.json
           fi
           git add data/state.json
+
+          if [ -f status.json ] && [ -d site-anticheat ]; then
+            cp -f status.json site-anticheat/status.json
+            git add status.json site-anticheat/status.json
+          fi
+          if [ -f sitemap.xml ] && [ -d site-anticheat ]; then
+            cp -f sitemap.xml site-anticheat/sitemap.xml
+            git add sitemap.xml site-anticheat/sitemap.xml
+          fi
 
           # Check if there are changes
           if git diff --cached --quiet; then

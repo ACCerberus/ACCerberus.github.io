@@ -104,11 +104,6 @@
     .case-card:hover { border-color: rgba(232,160,32,0.2); }
     .case-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 6px; }
     .case-studio { display: flex; align-items: center; gap: 14px; }
-    .case-logo {
-      width: 46px; height: 46px; border-radius: 12px; background: var(--accent-dim);
-      display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
-      font-family: var(--font-heading); font-weight: 800; color: var(--accent);
-    }
     .case-studio h3 { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--text-bright); }
     .case-meta { font-size: 0.78rem; color: var(--text-dim); margin-top: 2px; }
     .case-genre-badge {
@@ -148,9 +143,44 @@
       color: var(--text-dim); font-family: var(--font-mono);
     }
 
+    /* STUDIO IDENTITY ON EACH CARD */
+    .case-studio { flex-direction: column; align-items: flex-start; gap: 7px; }
+    .case-wordmark { color: var(--text-bright); line-height: 0; }
+    .case-wordmark svg { height: 24px; width: auto; display: block; }
+
+    .case-facts {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 16px;
+      font-size: 0.76rem; color: var(--text-dim);
+    }
+    .case-facts .sep { color: rgba(255,255,255,0.16); }
+
+    .case-ext {
+      display: inline-flex; align-items: baseline; gap: 4px; color: var(--accent);
+      text-decoration: none; font-weight: 600;
+      border-bottom: 1px dotted rgba(232,160,32,0.45); transition: color 0.2s, border-color 0.2s;
+    }
+    .case-ext:hover { color: #f4b437; border-bottom-color: currentColor; }
+    .case-ext:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+    .case-ext .arr { font-size: 0.9em; line-height: 1; }
+
+    .case-integration {
+      margin-top: 12px; display: inline-block; padding: 5px 11px; border-radius: 6px;
+      font-family: var(--font-mono); font-size: 0.67rem; letter-spacing: 0.3px; color: var(--text-dim);
+      border: 1px solid var(--border); background: rgba(255,255,255,0.02);
+    }
+    .case-integration b { color: var(--text); font-weight: 600; }
+
+    .case-asof {
+      margin-left: 8px; font-family: var(--font-mono); font-size: 0.62rem; font-weight: 500;
+      letter-spacing: 0.4px; color: var(--text-dim); text-transform: none;
+    }
+
+    .case-release { margin-top: 16px; font-size: 0.79rem; }
+
     @media (max-width: 720px) {
       .case-cols { grid-template-columns: 1fr; }
       .case-head { flex-direction: column; }
+      .case-wordmark svg { height: 21px; }
     }
     @media (max-width: 600px) {
       .nav { padding: 12px 20px; }
@@ -229,6 +259,9 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button">Resources <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/plans/">Plans</a>
+          <a href="/downloads/">Downloads</a>
+          <a href="/readiness/">Readiness Check</a>
           <a href="/blog/">Blog</a>
           <a href="/updates/">Updates</a>
         </div>
@@ -245,7 +278,7 @@
     <div class="page-header-label">Case Studies</div>
     <h1>Early results from closed-beta partners</h1>
     <p>Cerberus is still in closed beta — these are the first studios running it in production, and the honest, modest numbers they've seen so far. No inflated claims, just what actually happened in the first few weeks.</p>
-    <div class="beta-note"><span class="dot"></span>5 closed-beta partner studios &middot; v0.5.x beta channel &middot; v0.6.0.0a alpha available</div>
+    <div class="beta-note"><span class="dot"></span><span id="csTitles">18</span> protected titles across <span id="csStudios">12</span> partner studios &middot; <span id="csPublic">5</span> studios published case studies &middot; v0.5.x beta channel &middot; v0.6 alpha available</div>
   </div>
 
   <div class="container">
@@ -261,14 +294,24 @@
         <div class="case-card" id="vantage-point">
           <div class="case-head">
             <div class="case-studio">
-              <div class="case-logo">VP</div>
-              <div>
-                <h3>Vantage Point Games</h3>
-                <div class="case-meta">Ashfall Protocol &middot; Tactical military shooter</div>
-              </div>
+              <h3 class="case-wordmark">
+                <svg viewBox="0 0 240 36" role="img" aria-label="Vantage Point Games" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 5 L27 27 H3 Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+                  <circle cx="15" cy="19" r="3" fill="currentColor"/>
+                  <text x="40" y="25" fill="currentColor" font-family="'Barlow Condensed', 'Arial Narrow', Arial, sans-serif" font-size="21" font-weight="700" letter-spacing="2.4">VANTAGE POINT</text>
+                </svg>
+              </h3>
+              <div class="case-meta">Ashfall Protocol &middot; Tactical military shooter</div>
             </div>
             <span class="case-genre-badge">DMA / HARDWARE CHEATS</span>
           </div>
+          <div class="case-facts">
+            <span>Portland, Oregon</span><span class="sep">&middot;</span>
+            <span>Founded 2016</span><span class="sep">&middot;</span>
+            <span>38 people</span><span class="sep">&middot;</span>
+            <a class="case-ext" href="/studios/vantage-point/" target="_blank" rel="noopener" aria-label="Vantage Point Games website (opens in a new tab)">Website <span class="arr" aria-hidden="true">&#8599;</span></a>
+          </div>
+          <div class="case-integration"><b>Integration:</b> v0.5.x beta &rarr; v0.6 alpha (Sep 2026)</div>
           <div class="case-cols">
             <div class="case-block challenge">
               <h4>Challenge</h4>
@@ -280,12 +323,15 @@
             </div>
           </div>
           <div class="case-results">
-            <h4>Results</h4>
+            <h4>Results <span class="case-asof">as of Aug 2026</span></h4>
             <ul>
               <li>Detected and banned a DMA-cheat ring of 11 linked accounts within 72 hours of Layer 1 rollout</li>
               <li>Reported cheating incidents in ranked play down roughly 40% in the first month</li>
               <li>No confirmed DMA bypass reports in the six weeks since — though the team is clear that's a beta-window result, not a permanence claim</li>
             </ul>
+          </div>
+          <div class="case-release">
+            <a class="case-ext" href="/studios/vantage-point/press/#cerberus" target="_blank" rel="noopener" aria-label="Read the Vantage Point Games press release (opens in a new tab)">Read the press release <span class="arr" aria-hidden="true">&#8599;</span></a>
           </div>
           <div class="case-quote">
             "We knew DMA cheats existed in our game, we just couldn't see them. Cerberus caught a ring we'd been chasing for months within three days of going live. It's not a silver bullet, but it's the first anti-cheat that's actually shown us the hardware layer."
@@ -297,14 +343,24 @@
         <div class="case-card" id="cindercrest">
           <div class="case-head">
             <div class="case-studio">
-              <div class="case-logo">CS</div>
-              <div>
-                <h3>Cindercrest Studios</h3>
-                <div class="case-meta">Riftbound Arena &middot; Competitive hero shooter</div>
-              </div>
+              <h3 class="case-wordmark">
+                <svg viewBox="0 0 240 36" role="img" aria-label="Cindercrest Studios" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 4 L27 16 H21 L15 10 L9 16 H3 Z" fill="currentColor"/>
+                  <path d="M15 17 L27 29 H21 L15 23 L9 29 H3 Z" fill="currentColor" opacity="0.62"/>
+                  <text x="40" y="25" fill="currentColor" font-family="'Outfit', 'Segoe UI', system-ui, sans-serif" font-size="20" font-weight="700" letter-spacing="0.6">CINDERCREST</text>
+                </svg>
+              </h3>
+              <div class="case-meta">Riftbound Arena &middot; Competitive hero shooter</div>
             </div>
             <span class="case-genre-badge">CHEAT-SELLING ECOSYSTEM</span>
           </div>
+          <div class="case-facts">
+            <span>Austin, Texas</span><span class="sep">&middot;</span>
+            <span>Founded 2018</span><span class="sep">&middot;</span>
+            <span>52 people</span><span class="sep">&middot;</span>
+            <a class="case-ext" href="/studios/cindercrest/" target="_blank" rel="noopener" aria-label="Cindercrest Studios website (opens in a new tab)">Website <span class="arr" aria-hidden="true">&#8599;</span></a>
+          </div>
+          <div class="case-integration"><b>Integration:</b> v0.5.x beta &rarr; v0.6 alpha (Sep 2026)</div>
           <div class="case-cols">
             <div class="case-block challenge">
               <h4>Challenge</h4>
@@ -316,12 +372,15 @@
             </div>
           </div>
           <div class="case-results">
-            <h4>Results</h4>
+            <h4>Results <span class="case-asof">as of Aug 2026</span></h4>
             <ul>
               <li>18 accounts tied to a specific cheat-seller's build were identified and banned in the first two weeks</li>
               <li>Ranked-queue cheating complaints in their support queue dropped from roughly 50/week to around 15/week</li>
               <li>One tracked seller storefront stopped advertising builds "safe for Riftbound Arena" after the second ban wave</li>
             </ul>
+          </div>
+          <div class="case-release">
+            <a class="case-ext" href="/studios/cindercrest/press/#cerberus" target="_blank" rel="noopener" aria-label="Read the Cindercrest Studios press release (opens in a new tab)">Read the press release <span class="arr" aria-hidden="true">&#8599;</span></a>
           </div>
           <div class="case-quote">
             "The sellers were operating in the open, tagging our own subreddit in their ads. We're not naive enough to think we shut the ecosystem down — but we made it materially harder and slower for them, and our players noticed within days."
@@ -333,14 +392,23 @@
         <div class="case-card" id="molten-anvil">
           <div class="case-head">
             <div class="case-studio">
-              <div class="case-logo">MA</div>
-              <div>
-                <h3>Molten Anvil Interactive</h3>
-                <div class="case-meta">Ironclad Siege &middot; Squad-based competitive shooter</div>
-              </div>
+              <h3 class="case-wordmark">
+                <svg viewBox="0 0 240 36" role="img" aria-label="Molten Anvil Interactive" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 7 H27 V13 H19 V19 H24 L27 29 H5 L8 19 H13 V13 H10 Z" fill="currentColor"/>
+                  <text x="40" y="25" fill="currentColor" font-family="'Oswald', 'Arial Narrow', Arial, sans-serif" font-size="20" font-weight="600" letter-spacing="1.4">MOLTEN ANVIL</text>
+                </svg>
+              </h3>
+              <div class="case-meta">Ironclad Siege &middot; Squad-based competitive shooter</div>
             </div>
             <span class="case-genre-badge">FALSE-POSITIVE TRUST DEFICIT</span>
           </div>
+          <div class="case-facts">
+            <span>Krak&oacute;w, Poland</span><span class="sep">&middot;</span>
+            <span>Founded 2014</span><span class="sep">&middot;</span>
+            <span>44 people</span><span class="sep">&middot;</span>
+            <a class="case-ext" href="/studios/molten-anvil/" target="_blank" rel="noopener" aria-label="Molten Anvil Interactive website (opens in a new tab)">Website <span class="arr" aria-hidden="true">&#8599;</span></a>
+          </div>
+          <div class="case-integration"><b>Integration:</b> v0.5.x beta &rarr; v0.6 alpha (Sep 2026)</div>
           <div class="case-cols">
             <div class="case-block challenge">
               <h4>Challenge</h4>
@@ -352,12 +420,15 @@
             </div>
           </div>
           <div class="case-results">
-            <h4>Results</h4>
+            <h4>Results <span class="case-asof">as of Aug 2026</span></h4>
             <ul>
               <li>False-positive appeals dropped from several per week under the old vendor to near zero over their first full month on Cerberus</li>
               <li>Reinstated 6 accounts that had been wrongly banned by their previous anti-cheat, with zero new false-positive bans reported since migration</li>
               <li>Support ticket volume tagged "unfair ban" fell noticeably, though Molten Anvil is watching this over a longer window before calling it settled</li>
             </ul>
+          </div>
+          <div class="case-release">
+            <a class="case-ext" href="/studios/molten-anvil/press/#cerberus" target="_blank" rel="noopener" aria-label="Read the Molten Anvil Interactive press release (opens in a new tab)">Read the press release <span class="arr" aria-hidden="true">&#8599;</span></a>
           </div>
           <div class="case-quote">
             "Our old anti-cheat banned a top-100 leaderboard player for using an unusual controller. That's the kind of thing that costs you a community's trust for a year. We're six weeks into Cerberus and haven't had a single ban that made us wince yet."
@@ -369,14 +440,25 @@
         <div class="case-card" id="paperlight">
           <div class="case-head">
             <div class="case-studio">
-              <div class="case-logo">PG</div>
-              <div>
-                <h3>Paperlight Games</h3>
-                <div class="case-meta">Skybreak Royale &middot; Battle royale</div>
-              </div>
+              <h3 class="case-wordmark">
+                <svg viewBox="0 0 240 36" role="img" aria-label="Paperlight Games" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 4 H18 L27 13 V31 H5 Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+                  <path d="M18 4 V13 H27" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+                  <circle cx="15" cy="21" r="3.6" fill="currentColor"/>
+                  <text x="40" y="25" fill="currentColor" font-family="'Baloo 2', 'Trebuchet MS', 'Segoe UI', sans-serif" font-size="21" font-weight="700" letter-spacing="0.2">Paperlight</text>
+                </svg>
+              </h3>
+              <div class="case-meta">Skybreak Royale &middot; Battle royale</div>
             </div>
             <span class="case-genre-badge">MULTI-REGION COVERAGE</span>
           </div>
+          <div class="case-facts">
+            <span>Lisbon, Portugal</span><span class="sep">&middot;</span>
+            <span>Founded 2019</span><span class="sep">&middot;</span>
+            <span>29 people</span><span class="sep">&middot;</span>
+            <a class="case-ext" href="/studios/paperlight/" target="_blank" rel="noopener" aria-label="Paperlight Games website (opens in a new tab)">Website <span class="arr" aria-hidden="true">&#8599;</span></a>
+          </div>
+          <div class="case-integration"><b>Integration:</b> v0.5.x beta &rarr; v0.6 alpha (Sep 2026)</div>
           <div class="case-cols">
             <div class="case-block challenge">
               <h4>Challenge</h4>
@@ -388,12 +470,15 @@
             </div>
           </div>
           <div class="case-results">
-            <h4>Results</h4>
+            <h4>Results <span class="case-asof">as of Aug 2026</span></h4>
             <ul>
               <li>AP-Southeast cheating reports fell an estimated 35% in the first month after regional coverage went live there</li>
               <li>Time-to-ban for confirmed cheaters in EU-West and AP-Southeast is now roughly in line with their US-East numbers, closing a gap that had persisted for over a year</li>
               <li>Regional uptime has held in the high 97% range across all three regions since launch — solid, not flawless, and Paperlight has said as much publicly</li>
             </ul>
+          </div>
+          <div class="case-release">
+            <a class="case-ext" href="/studios/paperlight/press/#cerberus" target="_blank" rel="noopener" aria-label="Read the Paperlight Games press release (opens in a new tab)">Read the press release <span class="arr" aria-hidden="true">&#8599;</span></a>
           </div>
           <div class="case-quote">
             "We'd effectively been running a two-tier anti-cheat experience — good in NA, rough everywhere else. Getting real regional coverage in AP-Southeast and EU-West without renegotiating three separate vendor contracts was the actual win here."
@@ -405,14 +490,25 @@
         <div class="case-card" id="driftwood-signal">
           <div class="case-head">
             <div class="case-studio">
-              <div class="case-logo">DS</div>
-              <div>
-                <h3>Driftwood Signal</h3>
-                <div class="case-meta">Undercroft Tactics &middot; Tactical extraction shooter</div>
-              </div>
+              <h3 class="case-wordmark">
+                <svg viewBox="0 0 240 36" role="img" aria-label="Driftwood Signal" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 26 q5.5 -5 11 0 t11 0" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                  <path d="M9 17 a8.5 8.5 0 0 1 12 0" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                  <path d="M4.5 11 a14.5 14.5 0 0 1 21 0" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity="0.55"/>
+                  <text x="40" y="25" fill="currentColor" font-family="'Bitter', Georgia, 'Times New Roman', serif" font-size="19" font-weight="600" letter-spacing="0.8">DRIFTWOOD SIGNAL</text>
+                </svg>
+              </h3>
+              <div class="case-meta">Undercroft Tactics &middot; Tactical extraction shooter</div>
             </div>
             <span class="case-genre-badge">BAN EVASION / REPEAT OFFENDERS</span>
           </div>
+          <div class="case-facts">
+            <span>Halifax, Nova Scotia</span><span class="sep">&middot;</span>
+            <span>Founded 2020</span><span class="sep">&middot;</span>
+            <span>23 people</span><span class="sep">&middot;</span>
+            <a class="case-ext" href="/studios/driftwood-signal/" target="_blank" rel="noopener" aria-label="Driftwood Signal website (opens in a new tab)">Website <span class="arr" aria-hidden="true">&#8599;</span></a>
+          </div>
+          <div class="case-integration"><b>Integration:</b> v0.5.x beta &rarr; v0.6 alpha (Sep 2026)</div>
           <div class="case-cols">
             <div class="case-block challenge">
               <h4>Challenge</h4>
@@ -424,12 +520,15 @@
             </div>
           </div>
           <div class="case-results">
-            <h4>Results</h4>
+            <h4>Results <span class="case-asof">as of Aug 2026</span></h4>
             <ul>
               <li>Identified and banned a linked network of 40+ accounts tied to a single persistent ban-evasion group</li>
               <li>Repeat-offender re-registration (same person banned again within 30 days) down an estimated 30% since rollout</li>
               <li>Studio notes this is a cat-and-mouse process — a handful of evasion attempts still get through, and they expect that to continue as long as hardware spoofing tools evolve</li>
             </ul>
+          </div>
+          <div class="case-release">
+            <a class="case-ext" href="/studios/driftwood-signal/press/#cerberus" target="_blank" rel="noopener" aria-label="Read the Driftwood Signal press release (opens in a new tab)">Read the press release <span class="arr" aria-hidden="true">&#8599;</span></a>
           </div>
           <div class="case-quote">
             "Banning the account was never the hard part. Stopping the same person from being back in ten minutes with a new email was. We're not going to pretend it's solved forever, but the group that used to live in our lobbies has mostly gone quiet."
@@ -460,7 +559,22 @@
 
   <script src="/js/cerberus-engine.js"></script>
   <script src="/js/cerberus-shared.js"></script>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Partner/title counts come from the engine so they match the rest of the site.
+    (function() {
+      var E = window.CerberusEngine;
+      if (!E || !E.CONFIG) return;
+      function set(id, val) {
+        var el = document.getElementById(id);
+        if (el && typeof val === 'number') el.textContent = val;
+      }
+      set('csTitles', E.CONFIG.games);
+      set('csStudios', E.CONFIG.studios);
+      set('csPublic', E.CONFIG.publicCaseStudies);
+    })();
+  </script>
 
 </body>
 </html>
