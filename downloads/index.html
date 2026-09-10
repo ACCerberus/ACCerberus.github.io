@@ -610,9 +610,9 @@ sha256sum -c SHA256SUMS.txt --ignore-missing</div>
         if (!side) return;
         if (signedIn()) {
           side.innerHTML =
-            '<div class="small">You're signed in. Runtime packages are issued per title from the dashboard once your key has cleared manual review.</div>' +
-            '<a class="btn-ghost" href="/dashboard/">Sign in to the dashboard to fetch the runtime →</a>' +
-            '<div class="small">If your account still shows "provisioning pending", nothing is wrong — you'll be emailed when the signed driver package is ready.</div>';
+            '<div class="small">You\'re signed in. Runtime packages are issued per title from the dashboard once your key has cleared manual review.</div>' +
+            '<a class="btn-ghost" href="/dashboard/">Open the dashboard to fetch the runtime →</a>' +
+            '<div class="small">If your account still shows "provisioning pending", nothing is wrong — you\'ll be emailed when the signed driver package is ready.</div>';
         } else {
           side.innerHTML =
             '<div class="small">Already a partner? The runtime download lives in your dashboard.</div>' +
@@ -702,10 +702,10 @@ sha256sum -c SHA256SUMS.txt --ignore-missing</div>
             show(out, 'info', '<strong>Hashed, but the release manifest could not be loaded</strong>, so there is nothing to compare against. Compare this digest with SHA256SUMS.txt manually.' +
               '<code>' + res.sha256 + '</code>');
           } else if (res.nameMatch) {
-            show(out, 'bad', '<strong>✗ Mismatch.</strong> The file is named like <strong>' + esc(res.nameMatch.fileName) + '</strong> but its contents differ from what we published. Delete it and download again from this page; if it still fails, don't run it — the file was modified in transit or on disk.' +
+            show(out, 'bad', '<strong>✗ Mismatch.</strong> The file is named like <strong>' + esc(res.nameMatch.fileName) + '</strong> but its contents differ from what we published. Delete it and download again from this page; if it still fails, don\'t run it — the file was modified in transit or on disk.' +
               '<code>got&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + res.sha256 + '</code><code>expected ' + esc(res.nameMatch.sha256) + '</code>');
           } else {
-            show(out, 'bad', '<strong>✗ Not a published artifact.</strong> No current release has this hash. That's expected for an archived build or a file you extracted from a zip; for anything named like a Cerberus package it means the file is not one we shipped.' +
+            show(out, 'bad', '<strong>✗ Not a published artifact.</strong> No current release has this hash. That\'s expected for an archived build or a file you extracted from a zip; for anything named like a Cerberus package it means the file is not one we shipped.' +
               '<code>' + res.sha256 + '</code>');
           }
         }).catch(function (err) {
@@ -745,9 +745,9 @@ sha256sum -c SHA256SUMS.txt --ignore-missing</div>
             if (verdict === 'valid') {
               show(sigOut, 'ok', '<strong>✓ Signature valid.</strong> SHA256SUMS.txt (' + count + ' entr' + (count === 1 ? 'y' : 'ies') + ') was signed by the key with the fingerprint shown below. The hashes in that list are the ones this page compares against.');
             } else if (verdict === 'invalid') {
-              show(sigOut, 'bad', '<strong>✗ Signature does not verify.</strong> Either the checksum list or the signature was altered, or the public key is not ours. Don't trust the hashes until this is resolved — <a href="mailto:security@arsenalrx.dev" style="color:var(--accent);">tell us</a>.');
+              show(sigOut, 'bad', '<strong>✗ Signature does not verify.</strong> Either the checksum list or the signature was altered, or the public key is not ours. Don\'t trust the hashes until this is resolved — <a href="mailto:security@arsenalrx.dev" style="color:var(--accent);">tell us</a>.');
             } else {
-              show(sigOut, 'info', '<strong>This browser can't verify Ed25519 with WebCrypto.</strong> The three files were fetched fine — run the openssl command below to verify locally. Chrome and Safari support it; Firefox support is recent and version-dependent.');
+              show(sigOut, 'info', '<strong>This browser can\'t verify Ed25519 with WebCrypto.</strong> The three files were fetched fine — run the openssl command below to verify locally. Chrome and Safari support it; Firefox support is recent and version-dependent.');
             }
           });
         }).catch(function (err) {
