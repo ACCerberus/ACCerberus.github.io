@@ -1,0 +1,12 @@
+# Release package sources are zipped byte-for-byte by tools/build-releases.js.
+# Git's CRLF conversion would change their bytes on checkout and make the
+# published archives non-reproducible, so pin them to LF everywhere.
+tools/packages/** text eol=lf
+downloads/*.zip binary
+downloads/*.sig binary
+downloads/*.pub text eol=lf
+downloads/SHA256SUMS.txt text eol=lf
+
+# Batch launchers are double-clicked by Windows users; keep CRLF (still
+# deterministic, because the attribute pins it on every checkout).
+tools/packages/**/*.cmd text eol=crlf
