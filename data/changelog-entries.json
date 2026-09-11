@@ -3246,5 +3246,41 @@
         "text": "AI inference batch throughput doubled"
       }
     ]
+  },
+  {
+    "date": "2026-09-11",
+    "timestamp": "2026-09-11T10:02:45Z",
+    "version": "v0.6.0.1a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized NexusCheat radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 7465 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on AMD ReLive injection"
+      },
+      {
+        "type": "improved",
+        "text": "scan latency reduced by 8%"
+      }
+    ]
+  },
+  {
+    "date": "2026-09-11",
+    "timestamp": "2026-09-11T10:02:46Z",
+    "version": "v0.6.0.1a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "added",
+        "text": "SDK: Added Unreal Engine 5.5 plugin compatibility shim"
+      }
+    ]
   }
 ]
