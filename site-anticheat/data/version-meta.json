@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.6.0.1a",
-  "buildNumber": 3001,
-  "lastPatchBump": "2026-09-09T10:09:59Z",
+  "currentVersion": "v0.6.0.2a",
+  "buildNumber": 3002,
+  "lastPatchBump": "2026-09-11T10:02:46Z",
   "lastMinorBump": "2026-09-06T16:00:00Z",
   "lastFeatureBump": "2026-09-06T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.6.0.2a",
+      "date": "2026-09-11T10:02:46Z",
+      "summary": "Session lifecycle race condition fix"
+    },
     {
       "version": "v0.6.0.1a",
       "date": "2026-09-09T10:09:59Z",
@@ -49,11 +54,6 @@
       "version": "v0.5.1.3b",
       "date": "2026-08-21T06:20:48Z",
       "summary": "PCIe enumeration edge case fixes"
-    },
-    {
-      "version": "v0.5.1.2b",
-      "date": "2026-08-20T06:20:44Z",
-      "summary": "Kernel module compatibility fixes"
     }
   ],
   "channel": "alpha",
