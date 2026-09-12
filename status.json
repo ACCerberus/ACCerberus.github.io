@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-12T13:25:20Z",
+  "generatedAt": "2026-09-12T16:50:09Z",
   "status": "operational",
   "statusMessage": "All Systems Operational",
   "uptime": {
@@ -26,15 +26,15 @@
       "id": "detection-engine",
       "name": "Detection Engine",
       "status": "operational",
-      "uptimePercent30d": 98.5,
+      "uptimePercent30d": 98.6,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 98.6
+          "uptimePercent30d": 98.5
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 98.6
+          "uptimePercent30d": 98.4
         },
         "AP-Southeast": {
           "status": "operational",
@@ -50,15 +50,15 @@
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 98.0
+          "uptimePercent30d": 98.3
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 98.0
+          "uptimePercent30d": 98.1
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 98.5
+          "uptimePercent30d": 98.3
         }
       }
     },
@@ -66,19 +66,19 @@
       "id": "data-pipeline",
       "name": "Data Pipeline",
       "status": "operational",
-      "uptimePercent30d": 98.6,
+      "uptimePercent30d": 98.2,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 98.6
+          "uptimePercent30d": 98.3
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 98.6
+          "uptimePercent30d": 98.0
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 98.5
+          "uptimePercent30d": 98.0
         }
       }
     }
@@ -113,13 +113,13 @@
   "components": {
     "kernelDriver": "v0.6.0.2a",
     "behavioralModel": "bm-3.2.0",
-    "signatureDbCount": 7490,
+    "signatureDbCount": 7495,
     "driverChannel": "alpha",
     "stableKernelDriver": "v0.5.1.9b"
   },
   "metrics": {
     "falsePositiveRatePercent": 0.14,
-    "activeSessions": 495,
-    "dailyDetections": 80
+    "activeSessions": 1147,
+    "dailyDetections": 75
   }
 }
