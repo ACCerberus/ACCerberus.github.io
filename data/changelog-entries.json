@@ -3282,5 +3282,29 @@
         "text": "SDK: Added Unreal Engine 5.5 plugin compatibility shim"
       }
     ]
+  },
+  {
+    "date": "2026-09-12",
+    "timestamp": "2026-09-12T09:38:53Z",
+    "version": "v0.6.0.2a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized GhostWare input injection variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 7486 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on NVIDIA overlay hook"
+      },
+      {
+        "type": "improved",
+        "text": "ban accuracy improved by 2.1%"
+      }
+    ]
   }
 ]

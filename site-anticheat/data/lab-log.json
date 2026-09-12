@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-11",
+  "lastUpdated": "2026-09-12",
   "entries": [
     {
       "id": "lab-001",
@@ -135,6 +135,15 @@
       "startDate": "2026-06-30",
       "lastUpdate": "2026-06-30",
       "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-016",
+      "title": "PCIe Link Training Telemetry for Passive DMA Detection",
+      "desc": "Looking at whether link training and retrain events recorded at enumeration time distinguish DMA capture cards from ordinary add-in boards. Sample size is currently too small to be conclusive.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-09-12",
+      "lastUpdate": "2026-09-12",
+      "findings": "Initial research phase. Literature review in progress."
     }
   ],
   "templatePool": [
@@ -153,10 +162,6 @@
     {
       "title": "WebAssembly Sandboxing for Custom Rule Execution",
       "desc": "Evaluating a Wasm runtime for partner-authored detection rules so custom logic runs isolated from the scan engine. Chiefly interested in the per-tick cost budget."
-    },
-    {
-      "title": "PCIe Link Training Telemetry for Passive DMA Detection",
-      "desc": "Looking at whether link training and retrain events recorded at enumeration time distinguish DMA capture cards from ordinary add-in boards. Sample size is currently too small to be conclusive."
     },
     {
       "title": "Input Device Firmware Fingerprinting",
