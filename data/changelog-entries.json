@@ -3306,5 +3306,29 @@
         "text": "ban accuracy improved by 2.1%"
       }
     ]
+  },
+  {
+    "date": "2026-09-13",
+    "timestamp": "2026-09-13T10:40:02Z",
+    "version": "v0.6.0.2a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized NexusCheat DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 7514 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on ASUS Aura SDK"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.6%"
+      }
+    ]
   }
 ]
