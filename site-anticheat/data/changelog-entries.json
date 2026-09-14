@@ -3330,5 +3330,29 @@
         "text": "webhook delivery success rate up to 99.6%"
       }
     ]
+  },
+  {
+    "date": "2026-09-14",
+    "timestamp": "2026-09-14T11:00:32Z",
+    "version": "v0.6.0.3a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PhantomOverlay radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 7522 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on EVGA Precision X1 overlay"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.6%"
+      }
+    ]
   }
 ]
