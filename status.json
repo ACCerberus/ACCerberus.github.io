@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-14T12:12:09Z",
+  "generatedAt": "2026-09-14T19:05:56Z",
   "status": "operational",
   "statusMessage": "All Systems Operational",
   "uptime": {
     "period": "30d",
-    "overallPercent": 97.6
+    "overallPercent": 97.8
   },
   "regions": [
     {
@@ -30,15 +30,15 @@
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.6
+          "uptimePercent30d": 97.2
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.6
+          "uptimePercent30d": 97.2
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.2
+          "uptimePercent30d": 97.7
         }
       }
     },
@@ -46,7 +46,7 @@
       "id": "api-dashboard",
       "name": "API & Dashboard",
       "status": "operational",
-      "uptimePercent30d": 97.5,
+      "uptimePercent30d": 97.4,
       "regions": {
         "US-East": {
           "status": "operational",
@@ -54,11 +54,11 @@
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.4
+          "uptimePercent30d": 97.7
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.3
+          "uptimePercent30d": 97.7
         }
       }
     },
@@ -66,15 +66,15 @@
       "id": "data-pipeline",
       "name": "Data Pipeline",
       "status": "operational",
-      "uptimePercent30d": 97.7,
+      "uptimePercent30d": 97.9,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.8
+          "uptimePercent30d": 97.9
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.5
+          "uptimePercent30d": 98.2
         },
         "AP-Southeast": {
           "status": "operational",
@@ -113,13 +113,13 @@
   "components": {
     "kernelDriver": "v0.6.0.3a",
     "behavioralModel": "bm-3.2.0",
-    "signatureDbCount": 7523,
+    "signatureDbCount": 7528,
     "driverChannel": "alpha",
     "stableKernelDriver": "v0.5.1.9b"
   },
   "metrics": {
     "falsePositiveRatePercent": 0.14,
-    "activeSessions": 560,
-    "dailyDetections": 82
+    "activeSessions": 713,
+    "dailyDetections": 96
   }
 }
