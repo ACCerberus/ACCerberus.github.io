@@ -3354,5 +3354,29 @@
         "text": "webhook delivery success rate up to 99.6%"
       }
     ]
+  },
+  {
+    "date": "2026-09-15",
+    "timestamp": "2026-09-15T10:30:57Z",
+    "version": "v0.6.0.3a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidEngine triggerbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 7531 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on MSI Afterburner overlay"
+      },
+      {
+        "type": "improved",
+        "text": "signature matching throughput up 22%"
+      }
+    ]
   }
 ]
