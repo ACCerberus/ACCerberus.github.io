@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-15T16:33:39Z",
+  "generatedAt": "2026-09-15T20:59:58Z",
   "status": "operational",
   "statusMessage": "All Systems Operational",
   "uptime": {
     "period": "30d",
-    "overallPercent": 97.3
+    "overallPercent": 97.2
   },
   "regions": [
     {
@@ -34,11 +34,11 @@
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.3
+          "uptimePercent30d": 97.0
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.1
+          "uptimePercent30d": 97.0
         }
       }
     },
@@ -50,7 +50,7 @@
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.0
+          "uptimePercent30d": 97.2
         },
         "EU-West": {
           "status": "operational",
@@ -58,7 +58,7 @@
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.0
+          "uptimePercent30d": 97.1
         }
       }
     },
@@ -66,19 +66,19 @@
       "id": "data-pipeline",
       "name": "Data Pipeline",
       "status": "operational",
-      "uptimePercent30d": 97.4,
+      "uptimePercent30d": 97.3,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.7
+          "uptimePercent30d": 97.4
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.7
+          "uptimePercent30d": 97.6
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.1
+          "uptimePercent30d": 97.0
         }
       }
     }
@@ -113,13 +113,13 @@
   "components": {
     "kernelDriver": "v0.6.0.4a",
     "behavioralModel": "bm-3.2.0",
-    "signatureDbCount": 7537,
+    "signatureDbCount": 7541,
     "driverChannel": "alpha",
     "stableKernelDriver": "v0.5.1.9b"
   },
   "metrics": {
     "falsePositiveRatePercent": 0.14,
-    "activeSessions": 1085,
-    "dailyDetections": 80
+    "activeSessions": 1258,
+    "dailyDetections": 109
   }
 }
