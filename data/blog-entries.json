@@ -308,5 +308,14 @@
     "title": "Hardware Fingerprinting: Lessons from Production",
     "author": "mzhang",
     "generated": true
+  },
+  {
+    "date": "2026-09-15",
+    "timestamp": "2026-09-15T10:30:57Z",
+    "type": "threat",
+    "title": "Monthly Threat Landscape Report",
+    "author": "nvoronov",
+    "summary": "What changed in the GhostWare family since the last report, and how the signature set responded. Drawn from closed-beta telemetry only, so the sample is small and the numbers move week to week.",
+    "generated": true
   }
 ]
