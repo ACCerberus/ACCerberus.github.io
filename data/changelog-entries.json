@@ -3378,5 +3378,29 @@
         "text": "signature matching throughput up 22%"
       }
     ]
+  },
+  {
+    "date": "2026-09-16",
+    "timestamp": "2026-09-16T10:20:02Z",
+    "version": "v0.6.0.4a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PrismHack radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+7 signatures — 7547 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on EVGA Precision X1 overlay"
+      },
+      {
+        "type": "improved",
+        "text": "player appeal rate reduced by 18%"
+      }
+    ]
   }
 ]
