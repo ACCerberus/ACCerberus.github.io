@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-17T21:04:55Z",
+  "generatedAt": "2026-09-17T23:59:15Z",
   "status": "operational",
   "statusMessage": "All Systems Operational",
   "uptime": {
     "period": "30d",
-    "overallPercent": 97.6
+    "overallPercent": 97.5
   },
   "regions": [
     {
@@ -26,19 +26,19 @@
       "id": "detection-engine",
       "name": "Detection Engine",
       "status": "operational",
-      "uptimePercent30d": 97.5,
+      "uptimePercent30d": 97.1,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.8
+          "uptimePercent30d": 97.0
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.4
+          "uptimePercent30d": 97.0
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.2
+          "uptimePercent30d": 97.0
         }
       }
     },
@@ -46,15 +46,15 @@
       "id": "api-dashboard",
       "name": "API & Dashboard",
       "status": "operational",
-      "uptimePercent30d": 97.4,
+      "uptimePercent30d": 97.2,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.7
+          "uptimePercent30d": 97.0
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.6
+          "uptimePercent30d": 97.0
         },
         "AP-Southeast": {
           "status": "operational",
@@ -66,19 +66,19 @@
       "id": "data-pipeline",
       "name": "Data Pipeline",
       "status": "operational",
-      "uptimePercent30d": 97.9,
+      "uptimePercent30d": 97.6,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.9
+          "uptimePercent30d": 97.3
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.8
+          "uptimePercent30d": 97.9
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.9
+          "uptimePercent30d": 97.8
         }
       }
     }
@@ -113,13 +113,13 @@
   "components": {
     "kernelDriver": "v0.6.0.4a",
     "behavioralModel": "bm-3.2.0",
-    "signatureDbCount": 7565,
+    "signatureDbCount": 7567,
     "driverChannel": "alpha",
     "stableKernelDriver": "v0.5.1.9b"
   },
   "metrics": {
     "falsePositiveRatePercent": 0.14,
-    "activeSessions": 747,
-    "dailyDetections": 70
+    "activeSessions": 144,
+    "dailyDetections": 55
   }
 }
