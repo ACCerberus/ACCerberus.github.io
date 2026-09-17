@@ -3402,5 +3402,29 @@
         "text": "player appeal rate reduced by 18%"
       }
     ]
+  },
+  {
+    "date": "2026-09-17",
+    "timestamp": "2026-09-17T10:29:33Z",
+    "version": "v0.6.0.4a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidEngine anti-recoil variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+5 signatures — 7557 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Logitech G Hub macro engine"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
   }
 ]
