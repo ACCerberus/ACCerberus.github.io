@@ -3426,5 +3426,29 @@
         "text": "kernel callback response time reduced by 15ms"
       }
     ]
+  },
+  {
+    "date": "2026-09-18",
+    "timestamp": "2026-09-18T10:06:09Z",
+    "version": "v0.6.0.4a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized GhostWare wallhack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 7571 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Citrix virtual display driver"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
   }
 ]
