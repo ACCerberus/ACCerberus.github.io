@@ -3486,5 +3486,29 @@
         "text": "API: Added cursor-based pagination to /v2/bans"
       }
     ]
+  },
+  {
+    "date": "2026-09-20",
+    "timestamp": "2026-09-20T10:08:45Z",
+    "version": "v0.6.0.5a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidEngine radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 7601 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Corsair iCUE driver"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.6%"
+      }
+    ]
   }
 ]
