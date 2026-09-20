@@ -317,5 +317,14 @@
     "author": "nvoronov",
     "summary": "What changed in the GhostWare family since the last report, and how the signature set responded. Drawn from closed-beta telemetry only, so the sample is small and the numbers move week to week.",
     "generated": true
+  },
+  {
+    "date": "2026-09-20",
+    "timestamp": "2026-09-20T10:08:45Z",
+    "type": "infra",
+    "title": "Telemetry Ingestion Throughput Report",
+    "author": "mzhang",
+    "summary": "A short operational note on the EU-West deployment and the pipeline behind it. Mostly relevant to partners watching latency in that region.",
+    "generated": true
   }
 ]

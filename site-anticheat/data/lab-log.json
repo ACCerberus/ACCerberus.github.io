@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-19",
+  "lastUpdated": "2026-09-20",
   "entries": [
     {
       "id": "lab-001",
@@ -144,6 +144,15 @@
       "startDate": "2026-09-12",
       "lastUpdate": "2026-09-12",
       "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-017",
+      "title": "Kernel Callback Latency Budgeting Under High CCU",
+      "desc": "Measuring how ring-0 callback latency degrades as concurrent sessions rise on a single host, and whether a fixed per-callback budget avoids the tail. Relevant to the scan timeout issue seen in beta.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-09-20",
+      "lastUpdate": "2026-09-20",
+      "findings": "Initial research phase. Literature review in progress."
     }
   ],
   "templatePool": [
@@ -170,10 +179,6 @@
     {
       "title": "Sequence Models for Cross-Session Identity Drift",
       "desc": "Trying sequence models on aggregated per-session behavioral summaries to see whether a banned player returning on new hardware is identifiable. Held to a deliberately conservative false positive budget."
-    },
-    {
-      "title": "Kernel Callback Latency Budgeting Under High CCU",
-      "desc": "Measuring how ring-0 callback latency degrades as concurrent sessions rise on a single host, and whether a fixed per-callback budget avoids the tail. Relevant to the scan timeout issue seen in beta."
     },
     {
       "title": "Signature Cache Warm-Up on Cold Boot",
