@@ -3510,5 +3510,41 @@
         "text": "webhook delivery success rate up to 99.6%"
       }
     ]
+  },
+  {
+    "date": "2026-09-21",
+    "timestamp": "2026-09-21T11:10:06Z",
+    "version": "v0.6.0.6a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidEngine DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 7614 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "kernel callback response time reduced by 15ms"
+      }
+    ]
+  },
+  {
+    "date": "2026-09-21",
+    "timestamp": "2026-09-21T11:10:06Z",
+    "version": "v0.6.0.6a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "added",
+        "text": "SDK: Added retry-with-backoff config option to webhook client"
+      }
+    ]
   }
 ]
