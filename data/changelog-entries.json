@@ -3546,5 +3546,29 @@
         "text": "SDK: Added retry-with-backoff config option to webhook client"
       }
     ]
+  },
+  {
+    "date": "2026-09-22",
+    "timestamp": "2026-09-22T10:23:47Z",
+    "version": "v0.6.0.6a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized HydraDMA memory manipulation variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+6 signatures — 7627 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on VMware Workstation compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
   }
 ]
