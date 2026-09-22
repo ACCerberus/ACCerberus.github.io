@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.6.0.6a",
-  "buildNumber": 3006,
-  "lastPatchBump": "2026-09-20T10:08:45Z",
+  "currentVersion": "v0.6.0.7a",
+  "buildNumber": 3007,
+  "lastPatchBump": "2026-09-22T10:23:47Z",
   "lastMinorBump": "2026-09-06T16:00:00Z",
   "lastFeatureBump": "2026-09-06T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.6.0.7a",
+      "date": "2026-09-22T10:23:47Z",
+      "summary": "DMA fingerprint database expansion"
+    },
     {
       "version": "v0.6.0.6a",
       "date": "2026-09-20T10:08:45Z",
@@ -49,11 +54,6 @@
       "version": "v0.5.1.8b",
       "date": "2026-09-03T10:09:45Z",
       "summary": "PCIe enumeration edge case fixes"
-    },
-    {
-      "version": "v0.5.1.7b",
-      "date": "2026-09-02T09:59:29Z",
-      "summary": "Kernel module compatibility fixes"
     }
   ],
   "channel": "alpha",
