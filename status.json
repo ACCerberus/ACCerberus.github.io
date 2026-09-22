@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-22T14:28:15Z",
+  "generatedAt": "2026-09-22T19:37:01Z",
   "status": "operational",
   "statusMessage": "All Systems Operational",
   "uptime": {
     "period": "30d",
-    "overallPercent": 97.9
+    "overallPercent": 97.6
   },
   "regions": [
     {
@@ -26,51 +26,11 @@
       "id": "detection-engine",
       "name": "Detection Engine",
       "status": "operational",
-      "uptimePercent30d": 98.2,
+      "uptimePercent30d": 97.7,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 98.1
-        },
-        "EU-West": {
-          "status": "operational",
-          "uptimePercent30d": 98.4
-        },
-        "AP-Southeast": {
-          "status": "operational",
-          "uptimePercent30d": 98.0
-        }
-      }
-    },
-    {
-      "id": "api-dashboard",
-      "name": "API & Dashboard",
-      "status": "operational",
-      "uptimePercent30d": 98.2,
-      "regions": {
-        "US-East": {
-          "status": "operational",
-          "uptimePercent30d": 98.2
-        },
-        "EU-West": {
-          "status": "operational",
-          "uptimePercent30d": 98.0
-        },
-        "AP-Southeast": {
-          "status": "operational",
-          "uptimePercent30d": 97.9
-        }
-      }
-    },
-    {
-      "id": "data-pipeline",
-      "name": "Data Pipeline",
-      "status": "operational",
-      "uptimePercent30d": 97.6,
-      "regions": {
-        "US-East": {
-          "status": "operational",
-          "uptimePercent30d": 97.4
+          "uptimePercent30d": 97.8
         },
         "EU-West": {
           "status": "operational",
@@ -78,7 +38,47 @@
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.3
+          "uptimePercent30d": 97.6
+        }
+      }
+    },
+    {
+      "id": "api-dashboard",
+      "name": "API & Dashboard",
+      "status": "operational",
+      "uptimePercent30d": 98.0,
+      "regions": {
+        "US-East": {
+          "status": "operational",
+          "uptimePercent30d": 97.8
+        },
+        "EU-West": {
+          "status": "operational",
+          "uptimePercent30d": 97.8
+        },
+        "AP-Southeast": {
+          "status": "operational",
+          "uptimePercent30d": 98.3
+        }
+      }
+    },
+    {
+      "id": "data-pipeline",
+      "name": "Data Pipeline",
+      "status": "operational",
+      "uptimePercent30d": 97.7,
+      "regions": {
+        "US-East": {
+          "status": "operational",
+          "uptimePercent30d": 97.6
+        },
+        "EU-West": {
+          "status": "operational",
+          "uptimePercent30d": 97.8
+        },
+        "AP-Southeast": {
+          "status": "operational",
+          "uptimePercent30d": 97.9
         }
       }
     }
@@ -113,13 +113,13 @@
   "components": {
     "kernelDriver": "v0.6.0.7a",
     "behavioralModel": "bm-3.2.0",
-    "signatureDbCount": 7628,
+    "signatureDbCount": 7630,
     "driverChannel": "alpha",
     "stableKernelDriver": "v0.5.1.9b"
   },
   "metrics": {
     "falsePositiveRatePercent": 0.14,
-    "activeSessions": 878,
-    "dailyDetections": 114
+    "activeSessions": 994,
+    "dailyDetections": 74
   }
 }
