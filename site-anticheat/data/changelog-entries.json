@@ -3570,5 +3570,29 @@
         "text": "session initialization time cut by 45ms"
       }
     ]
+  },
+  {
+    "date": "2026-09-23",
+    "timestamp": "2026-09-23T10:19:12Z",
+    "version": "v0.6.0.7a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidEngine DMA read variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+10 signatures — 7638 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "ban accuracy improved by 2.1%"
+      }
+    ]
   }
 ]
