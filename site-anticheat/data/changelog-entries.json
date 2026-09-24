@@ -3594,5 +3594,29 @@
         "text": "ban accuracy improved by 2.1%"
       }
     ]
+  },
+  {
+    "date": "2026-09-24",
+    "timestamp": "2026-09-24T10:33:16Z",
+    "version": "v0.6.0.7a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidEngine ESP variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 7652 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Corsair iCUE driver"
+      },
+      {
+        "type": "improved",
+        "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
   }
 ]

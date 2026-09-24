@@ -326,5 +326,14 @@
     "author": "mzhang",
     "summary": "A short operational note on the EU-West deployment and the pipeline behind it. Mostly relevant to partners watching latency in that region.",
     "generated": true
+  },
+  {
+    "date": "2026-09-24",
+    "timestamp": "2026-09-24T10:33:16Z",
+    "type": "engineering",
+    "title": "Inside Our Signature Database Architecture",
+    "author": "eriksson",
+    "summary": "Notes from the team on how this part of the engine is built and what we got wrong along the way. Figures come from the closed beta at roughly 7652 signatures.",
+    "generated": true
   }
 ]
