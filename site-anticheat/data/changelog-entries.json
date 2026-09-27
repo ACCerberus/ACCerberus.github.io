@@ -3666,5 +3666,41 @@
         "text": "AI inference batch throughput doubled"
       }
     ]
+  },
+  {
+    "date": "2026-09-27",
+    "timestamp": "2026-09-27T10:52:29Z",
+    "version": "v0.6.0.8a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PhantomOverlay aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 7696 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Steam overlay compatibility"
+      },
+      {
+        "type": "improved",
+        "text": "regional detection variance reduced by 4.2%"
+      }
+    ]
+  },
+  {
+    "date": "2026-09-27",
+    "timestamp": "2026-09-27T10:52:29Z",
+    "version": "v0.6.0.8a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "improved",
+        "text": "Docs: Reorganized API reference by resource type"
+      }
+    ]
   }
 ]
