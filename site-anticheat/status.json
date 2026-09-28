@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-27T22:52:32Z",
-  "status": "operational",
-  "statusMessage": "All Systems Operational",
+  "generatedAt": "2026-09-28T04:26:55Z",
+  "status": "degraded",
+  "statusMessage": "Degraded performance — Behavioral model confidence degradation",
   "uptime": {
     "period": "30d",
-    "overallPercent": 98.0
+    "overallPercent": 97.3
   },
   "regions": [
     {
@@ -25,20 +25,20 @@
     {
       "id": "detection-engine",
       "name": "Detection Engine",
-      "status": "operational",
-      "uptimePercent30d": 97.7,
+      "status": "degraded",
+      "uptimePercent30d": 97.5,
       "regions": {
         "US-East": {
-          "status": "operational",
-          "uptimePercent30d": 97.6
+          "status": "degraded",
+          "uptimePercent30d": 97.8
         },
         "EU-West": {
-          "status": "operational",
-          "uptimePercent30d": 97.9
+          "status": "degraded",
+          "uptimePercent30d": 97.2
         },
         "AP-Southeast": {
-          "status": "operational",
-          "uptimePercent30d": 97.6
+          "status": "degraded",
+          "uptimePercent30d": 97.5
         }
       }
     },
@@ -46,19 +46,19 @@
       "id": "api-dashboard",
       "name": "API & Dashboard",
       "status": "operational",
-      "uptimePercent30d": 98.3,
+      "uptimePercent30d": 97.2,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 98.1
+          "uptimePercent30d": 97.0
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 98.2
+          "uptimePercent30d": 97.0
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 98.3
+          "uptimePercent30d": 97.0
         }
       }
     },
@@ -66,24 +66,35 @@
       "id": "data-pipeline",
       "name": "Data Pipeline",
       "status": "operational",
-      "uptimePercent30d": 98.3,
+      "uptimePercent30d": 97.4,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 98.6
+          "uptimePercent30d": 97.6
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 98.0
+          "uptimePercent30d": 97.1
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 98.6
+          "uptimePercent30d": 97.4
         }
       }
     }
   ],
-  "incidents": [],
+  "incidents": [
+    {
+      "id": "INC-20260928-3280",
+      "title": "Behavioral model confidence degradation",
+      "status": "INVESTIGATING",
+      "startedAt": "2026-09-28T04:26:55Z",
+      "updatedAt": "2026-09-28T04:26:55Z",
+      "rootCause": "Memory pressure from concurrent scan operations",
+      "severity": "moderate",
+      "impactPct": 3.4
+    }
+  ],
   "recentResolvedIncidents": [
     {
       "id": "INC-20260907-1871",
@@ -113,13 +124,13 @@
   "components": {
     "kernelDriver": "v0.6.0.9a",
     "behavioralModel": "bm-3.2.0",
-    "signatureDbCount": 7704,
+    "signatureDbCount": 7707,
     "driverChannel": "alpha",
     "stableKernelDriver": "v0.5.1.9b"
   },
   "metrics": {
     "falsePositiveRatePercent": 0.14,
-    "activeSessions": 1301,
-    "dailyDetections": 118
+    "activeSessions": 214,
+    "dailyDetections": 106
   }
 }
