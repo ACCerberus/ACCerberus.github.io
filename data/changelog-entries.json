@@ -3702,5 +3702,41 @@
         "text": "Docs: Reorganized API reference by resource type"
       }
     ]
+  },
+  {
+    "date": "2026-09-28",
+    "timestamp": "2026-09-28T12:03:45Z",
+    "version": "v0.6.0.9a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized HydraDMA driver spoof variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+9 signatures — 7707 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Razer Synapse module"
+      },
+      {
+        "type": "improved",
+        "text": "signature matching throughput up 22%"
+      }
+    ]
+  },
+  {
+    "date": "2026-09-28",
+    "timestamp": "2026-09-28T12:03:46Z",
+    "version": "v0.6.0.9a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "improved",
+        "text": "API: Reduced p99 latency on /v2/detections by 15%"
+      }
+    ]
   }
 ]

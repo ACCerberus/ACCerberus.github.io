@@ -335,5 +335,14 @@
     "author": "eriksson",
     "summary": "Notes from the team on how this part of the engine is built and what we got wrong along the way. Figures come from the closed beta at roughly 7652 signatures.",
     "generated": true
+  },
+  {
+    "date": "2026-09-28",
+    "timestamp": "2026-09-28T12:03:46Z",
+    "type": "qa",
+    "title": "Soak Test Summary: 72-Hour Run",
+    "author": "nvoronov",
+    "summary": "Results from this round of hardware and regression testing, including the configurations that still fail. Anything unresolved stays on the known-issues list.",
+    "generated": true
   }
 ]
