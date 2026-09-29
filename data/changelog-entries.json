@@ -3738,5 +3738,29 @@
         "text": "API: Reduced p99 latency on /v2/detections by 15%"
       }
     ]
+  },
+  {
+    "date": "2026-09-29",
+    "timestamp": "2026-09-29T11:37:37Z",
+    "version": "v0.6.0.9a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidEngine ESP variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+11 signatures — 7715 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on ShareX capture module"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
   }
 ]
