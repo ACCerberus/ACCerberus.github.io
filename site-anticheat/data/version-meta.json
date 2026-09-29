@@ -1,10 +1,15 @@
 {
-  "currentVersion": "v0.6.0.9a",
-  "buildNumber": 3009,
-  "lastPatchBump": "2026-09-27T10:52:29Z",
-  "lastMinorBump": "2026-09-06T16:00:00Z",
+  "currentVersion": "v0.6.1.0a",
+  "buildNumber": 3010,
+  "lastPatchBump": "2026-09-29T11:37:37Z",
+  "lastMinorBump": "2026-09-29T11:37:37Z",
   "lastFeatureBump": "2026-09-06T16:00:00Z",
   "patchHistory": [
+    {
+      "version": "v0.6.1.0a",
+      "date": "2026-09-29T11:37:37Z",
+      "summary": "Partner dashboard: appeal triage and live analytics"
+    },
     {
       "version": "v0.6.0.9a",
       "date": "2026-09-27T10:52:29Z",
@@ -49,11 +54,6 @@
       "version": "v0.6.0.1a",
       "date": "2026-09-09T10:09:59Z",
       "summary": "Detection threshold calibration"
-    },
-    {
-      "version": "v0.6.0.0a",
-      "date": "2026-09-06T16:00:00Z",
-      "summary": "Kernel driver generation 2 — ring-0 rewrite, EPT shadow scan, boot-chain attestation, IOMMU enforcement"
     }
   ],
   "channel": "alpha",

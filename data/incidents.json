@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260928-3280",
+      "title": "Behavioral model confidence degradation",
+      "startedAt": "2026-09-28T04:26:55Z",
+      "resolvedAt": "2026-09-29T01:35:05Z",
+      "duration": "21h 8m",
+      "impactPct": 2.8,
+      "rootCause": "Memory pressure from concurrent scan operations",
+      "timeline": [
+        {
+          "time": "2026-09-28T04:26:55Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-09-29T01:35:05Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Implement additional monitoring for affected subsystem",
+        "Update runbook with new escalation procedures"
+      ],
+      "lessonsLearned": [
+        "Configuration changes need staged rollout validation"
+      ]
+    },
+    {
       "incidentId": "INC-20260907-1871",
       "title": "Elevated DMA false positives",
       "startedAt": "2026-09-07T22:37:25Z",
@@ -250,34 +278,6 @@
       ],
       "lessonsLearned": [
         "Communication during incidents needs faster escalation"
-      ]
-    },
-    {
-      "incidentId": "INC-20260808-8303",
-      "title": "Dashboard metrics reporting lag",
-      "startedAt": "2026-08-08T14:33:46Z",
-      "resolvedAt": "2026-08-08T22:31:48Z",
-      "duration": "7h 58m",
-      "impactPct": 1.2,
-      "rootCause": "Third-party CDN provider rate limiting during peak",
-      "timeline": [
-        {
-          "time": "2026-08-08T14:33:46Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-08-08T22:31:48Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
-      ],
-      "actionItems": [
-        "Document incident pattern for on-call training",
-        "Implement additional monitoring for affected subsystem"
-      ],
-      "lessonsLearned": [
-        "Capacity planning needs to account for burst traffic patterns"
       ]
     }
   ]
