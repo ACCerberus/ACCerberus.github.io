@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-28T20:25:18Z",
-  "status": "degraded",
-  "statusMessage": "Degraded performance — Behavioral model confidence degradation",
+  "generatedAt": "2026-09-29T01:35:05Z",
+  "status": "operational",
+  "statusMessage": "All Systems Operational",
   "uptime": {
     "period": "30d",
-    "overallPercent": 97.7
+    "overallPercent": 97.5
   },
   "regions": [
     {
@@ -25,20 +25,20 @@
     {
       "id": "detection-engine",
       "name": "Detection Engine",
-      "status": "degraded",
-      "uptimePercent30d": 98.0,
+      "status": "operational",
+      "uptimePercent30d": 97.4,
       "regions": {
         "US-East": {
-          "status": "degraded",
-          "uptimePercent30d": 97.8
+          "status": "operational",
+          "uptimePercent30d": 97.2
         },
         "EU-West": {
-          "status": "degraded",
-          "uptimePercent30d": 98.2
+          "status": "operational",
+          "uptimePercent30d": 97.4
         },
         "AP-Southeast": {
-          "status": "degraded",
-          "uptimePercent30d": 97.7
+          "status": "operational",
+          "uptimePercent30d": 97.2
         }
       }
     },
@@ -46,19 +46,19 @@
       "id": "api-dashboard",
       "name": "API & Dashboard",
       "status": "operational",
-      "uptimePercent30d": 97.8,
+      "uptimePercent30d": 97.5,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.7
+          "uptimePercent30d": 97.3
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.6
+          "uptimePercent30d": 97.4
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.8
+          "uptimePercent30d": 97.6
         }
       }
     },
@@ -66,36 +66,33 @@
       "id": "data-pipeline",
       "name": "Data Pipeline",
       "status": "operational",
-      "uptimePercent30d": 98.0,
+      "uptimePercent30d": 97.7,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.7
+          "uptimePercent30d": 98.0
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 98.3
+          "uptimePercent30d": 97.9
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.8
+          "uptimePercent30d": 97.9
         }
       }
     }
   ],
-  "incidents": [
+  "incidents": [],
+  "recentResolvedIncidents": [
     {
       "id": "INC-20260928-3280",
       "title": "Behavioral model confidence degradation",
-      "status": "MONITORING",
-      "startedAt": "2026-09-28T04:26:55Z",
-      "updatedAt": "2026-09-28T20:25:18Z",
-      "rootCause": "Memory pressure from concurrent scan operations",
       "severity": "moderate",
-      "impactPct": 3.4
-    }
-  ],
-  "recentResolvedIncidents": [
+      "startedAt": "2026-09-28T04:26:55Z",
+      "resolvedAt": "2026-09-29T01:35:05Z",
+      "rootCause": "Memory pressure from concurrent scan operations"
+    },
     {
       "id": "INC-20260907-1871",
       "title": "Elevated DMA false positives",
@@ -111,26 +108,18 @@
       "startedAt": "2026-09-03T14:13:54Z",
       "resolvedAt": "2026-09-04T03:37:13Z",
       "rootCause": "Redis cluster split-brain during network partition"
-    },
-    {
-      "id": "INC-20260826-7669",
-      "title": "Detection pipeline queue saturation",
-      "severity": "minor",
-      "startedAt": "2026-08-26T04:41:56Z",
-      "resolvedAt": "2026-08-26T12:57:15Z",
-      "rootCause": "Memory pressure from concurrent scan operations"
     }
   ],
   "components": {
     "kernelDriver": "v0.6.0.9a",
     "behavioralModel": "bm-3.2.0",
-    "signatureDbCount": 7711,
+    "signatureDbCount": 7713,
     "driverChannel": "alpha",
     "stableKernelDriver": "v0.5.1.9b"
   },
   "metrics": {
     "falsePositiveRatePercent": 0.14,
-    "activeSessions": 969,
-    "dailyDetections": 100
+    "activeSessions": 339,
+    "dailyDetections": 109
   }
 }
