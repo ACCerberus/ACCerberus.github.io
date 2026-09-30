@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-09-30T04:42:52Z",
+  "generatedAt": "2026-09-30T12:09:00Z",
   "status": "minor_incident",
   "statusMessage": "Minor incident — Certificate pinning mismatch on SDK auth",
   "uptime": {
     "period": "30d",
-    "overallPercent": 98.2
+    "overallPercent": 98.0
   },
   "regions": [
     {
@@ -26,6 +26,46 @@
       "id": "detection-engine",
       "name": "Detection Engine",
       "status": "operational",
+      "uptimePercent30d": 98.0,
+      "regions": {
+        "US-East": {
+          "status": "operational",
+          "uptimePercent30d": 98.1
+        },
+        "EU-West": {
+          "status": "operational",
+          "uptimePercent30d": 98.3
+        },
+        "AP-Southeast": {
+          "status": "operational",
+          "uptimePercent30d": 98.2
+        }
+      }
+    },
+    {
+      "id": "api-dashboard",
+      "name": "API & Dashboard",
+      "status": "degraded",
+      "uptimePercent30d": 97.8,
+      "regions": {
+        "US-East": {
+          "status": "degraded",
+          "uptimePercent30d": 97.7
+        },
+        "EU-West": {
+          "status": "degraded",
+          "uptimePercent30d": 97.7
+        },
+        "AP-Southeast": {
+          "status": "degraded",
+          "uptimePercent30d": 97.7
+        }
+      }
+    },
+    {
+      "id": "data-pipeline",
+      "name": "Data Pipeline",
+      "status": "operational",
       "uptimePercent30d": 98.2,
       "regions": {
         "US-East": {
@@ -34,51 +74,11 @@
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.9
-        },
-        "AP-Southeast": {
-          "status": "operational",
-          "uptimePercent30d": 98.3
-        }
-      }
-    },
-    {
-      "id": "api-dashboard",
-      "name": "API & Dashboard",
-      "status": "degraded",
-      "uptimePercent30d": 98.1,
-      "regions": {
-        "US-East": {
-          "status": "degraded",
-          "uptimePercent30d": 98.4
-        },
-        "EU-West": {
-          "status": "degraded",
           "uptimePercent30d": 98.3
         },
         "AP-Southeast": {
-          "status": "degraded",
-          "uptimePercent30d": 98.3
-        }
-      }
-    },
-    {
-      "id": "data-pipeline",
-      "name": "Data Pipeline",
-      "status": "operational",
-      "uptimePercent30d": 97.8,
-      "regions": {
-        "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.9
-        },
-        "EU-West": {
-          "status": "operational",
-          "uptimePercent30d": 97.5
-        },
-        "AP-Southeast": {
-          "status": "operational",
-          "uptimePercent30d": 97.8
+          "uptimePercent30d": 98.2
         }
       }
     }
@@ -87,9 +87,9 @@
     {
       "id": "INC-20260930-5092",
       "title": "Certificate pinning mismatch on SDK auth",
-      "status": "INVESTIGATING",
+      "status": "IDENTIFIED",
       "startedAt": "2026-09-30T04:42:52Z",
-      "updatedAt": "2026-09-30T04:42:52Z",
+      "updatedAt": "2026-09-30T12:09:00Z",
       "rootCause": "TLS certificate pinning hash mismatch after CA rotation",
       "severity": "minor",
       "impactPct": 2.1
@@ -124,13 +124,13 @@
   "components": {
     "kernelDriver": "v0.6.1.0a",
     "behavioralModel": "bm-3.2.0",
-    "signatureDbCount": 7729,
+    "signatureDbCount": 7731,
     "driverChannel": "alpha",
     "stableKernelDriver": "v0.5.1.9b"
   },
   "metrics": {
     "falsePositiveRatePercent": 0.14,
-    "activeSessions": 276,
-    "dailyDetections": 48
+    "activeSessions": 648,
+    "dailyDetections": 68
   }
 }
