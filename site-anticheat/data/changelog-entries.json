@@ -3762,5 +3762,29 @@
         "text": "false positive rate improved by 0.002%"
       }
     ]
+  },
+  {
+    "date": "2026-09-30",
+    "timestamp": "2026-09-30T11:25:05Z",
+    "version": "v0.6.1.0a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized CobaltEFI radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+8 signatures — 7729 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
   }
 ]
