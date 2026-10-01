@@ -1,6 +1,34 @@
 {
   "postmortems": [
     {
+      "incidentId": "INC-20260930-5092",
+      "title": "Certificate pinning mismatch on SDK auth",
+      "startedAt": "2026-09-30T04:42:52Z",
+      "resolvedAt": "2026-09-30T23:33:24Z",
+      "duration": "18h 50m",
+      "impactPct": 2.8,
+      "rootCause": "TLS certificate pinning hash mismatch after CA rotation",
+      "timeline": [
+        {
+          "time": "2026-09-30T04:42:52Z",
+          "status": "INVESTIGATING",
+          "detail": "Automated monitoring detected anomaly"
+        },
+        {
+          "time": "2026-09-30T23:33:24Z",
+          "status": "RESOLVED",
+          "detail": "Root cause identified and remediated"
+        }
+      ],
+      "actionItems": [
+        "Review and update capacity planning for affected service",
+        "Document incident pattern for on-call training"
+      ],
+      "lessonsLearned": [
+        "Communication during incidents needs faster escalation"
+      ]
+    },
+    {
       "incidentId": "INC-20260928-3280",
       "title": "Behavioral model confidence degradation",
       "startedAt": "2026-09-28T04:26:55Z",
@@ -250,34 +278,6 @@
       ],
       "lessonsLearned": [
         "Observability gaps in this subsystem masked early warning signs"
-      ]
-    },
-    {
-      "incidentId": "INC-20260810-0269",
-      "title": "Signature DB sync delay",
-      "startedAt": "2026-08-10T13:14:32Z",
-      "resolvedAt": "2026-08-10T20:45:13Z",
-      "duration": "7h 30m",
-      "impactPct": 0.8,
-      "rootCause": "Certificate renewal race condition",
-      "timeline": [
-        {
-          "time": "2026-08-10T13:14:32Z",
-          "status": "INVESTIGATING",
-          "detail": "Automated monitoring detected anomaly"
-        },
-        {
-          "time": "2026-08-10T20:45:13Z",
-          "status": "RESOLVED",
-          "detail": "Root cause identified and remediated"
-        }
-      ],
-      "actionItems": [
-        "Implement additional monitoring for affected subsystem",
-        "Update runbook with new escalation procedures"
-      ],
-      "lessonsLearned": [
-        "Communication during incidents needs faster escalation"
       ]
     }
   ]

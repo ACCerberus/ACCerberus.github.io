@@ -3786,5 +3786,41 @@
         "text": "session initialization time cut by 45ms"
       }
     ]
+  },
+  {
+    "date": "2026-10-01",
+    "timestamp": "2026-10-01T11:52:20Z",
+    "version": "v0.6.1.0a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized SpecterRing radar hack variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 7736 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Windows Defender real-time scan"
+      },
+      {
+        "type": "improved",
+        "text": "ban accuracy improved by 2.1%"
+      }
+    ]
+  },
+  {
+    "date": "2026-10-01",
+    "timestamp": "2026-10-01T11:52:20Z",
+    "version": "v0.6.1.0a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "added",
+        "text": "SDK: Added retry-with-backoff config option to webhook client"
+      }
+    ]
   }
 ]

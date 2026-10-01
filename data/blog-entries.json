@@ -344,5 +344,14 @@
     "author": "nvoronov",
     "summary": "Results from this round of hardware and regression testing, including the configurations that still fail. Anything unresolved stays on the known-issues list.",
     "generated": true
+  },
+  {
+    "date": "2026-10-01",
+    "timestamp": "2026-10-01T11:52:20Z",
+    "type": "qa",
+    "title": "Compatibility Update: New GPU Drivers",
+    "author": "nvoronov",
+    "summary": "Results from this round of hardware and regression testing, including the configurations that still fail. Anything unresolved stays on the known-issues list.",
+    "generated": true
   }
 ]
