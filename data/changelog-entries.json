@@ -3822,5 +3822,29 @@
         "text": "SDK: Added retry-with-backoff config option to webhook client"
       }
     ]
+  },
+  {
+    "date": "2026-10-02",
+    "timestamp": "2026-10-02T11:24:43Z",
+    "version": "v0.6.1.0a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized VoidEngine aimbot variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+13 signatures — 7751 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Nahimic audio service"
+      },
+      {
+        "type": "improved",
+        "text": "session initialization time cut by 45ms"
+      }
+    ]
   }
 ]
