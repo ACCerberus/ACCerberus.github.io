@@ -3846,5 +3846,29 @@
         "text": "session initialization time cut by 45ms"
       }
     ]
+  },
+  {
+    "date": "2026-10-03",
+    "timestamp": "2026-10-03T10:41:25Z",
+    "version": "v0.6.1.1a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized PrismHack silent aim variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+12 signatures — 7759 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on Logitech G Hub macro engine"
+      },
+      {
+        "type": "improved",
+        "text": "false positive rate improved by 0.002%"
+      }
+    ]
   }
 ]
