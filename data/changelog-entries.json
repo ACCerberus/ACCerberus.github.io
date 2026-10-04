@@ -3870,5 +3870,29 @@
         "text": "false positive rate improved by 0.002%"
       }
     ]
+  },
+  {
+    "date": "2026-10-04",
+    "timestamp": "2026-10-04T11:21:47Z",
+    "version": "v0.6.1.1a",
+    "type": "daily",
+    "changes": [
+      {
+        "type": "security",
+        "text": "Neutralized NexusCheat driver spoof variant — signatures deployed"
+      },
+      {
+        "type": "added",
+        "text": "+4 signatures — 7778 total coverage"
+      },
+      {
+        "type": "fixed",
+        "text": "Resolved false positive on EVGA Precision X1 overlay"
+      },
+      {
+        "type": "improved",
+        "text": "webhook delivery success rate up to 99.6%"
+      }
+    ]
   }
 ]
