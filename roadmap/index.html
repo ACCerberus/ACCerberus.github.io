@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roadmap and release history — Cerberus OS</title>
+  <meta name="description" content="Where Cerberus OS is going, phase by phase, and every release from the first snapshot to the latest version." />
+  <meta property="og:title" content="Cerberus OS — roadmap and release history" />
+  <meta property="og:description" content="Where Cerberus OS is going, and every release so far." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://accerberus.github.io/roadmap/" />
+  <meta property="og:image" content="https://accerberus.github.io/img/hero.png" />
+  <link rel="canonical" href="https://accerberus.github.io/roadmap/" />
+  <meta name="theme-color" content="#06070f" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2306070f'/><circle cx='50' cy='50' r='20' fill='%235aa2ff'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #06070f;
+      --surface: rgba(255,255,255,0.03);
+      --surface-hover: rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.08);
+      --border-bright: rgba(80,170,255,0.4);
+      --accent: #38b6ff;
+      --accent-strong: #0a84ff;
+      --violet: #8b5cf6;
+      --grad: linear-gradient(95deg, #3ad4ff, #3b8bff 45%, #9b6bff);
+      --green: #35d07f;
+      --amber: #ffb65a;
+      --red: #ff6b7d;
+      --text: #aab1c5;
+      --text-bright: #f1f3f9;
+      --text-dim: #6a7189;
+      --font: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, monospace;
+      --max: 920px;
+    }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    /* three slow-drifting lights: the wallpaper's navy and violet, turned up */
+    .aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+    .aurora i { position: absolute; border-radius: 50%; will-change: transform; animation: drift 26s ease-in-out infinite alternate; }
+    .aurora i:nth-child(1) { width: 1100px; height: 800px; right: -300px; top: -320px; background: radial-gradient(closest-side, rgba(20,100,255,0.55), transparent); }
+    .aurora i:nth-child(2) { width: 900px; height: 800px; left: -420px; top: 30%; background: radial-gradient(closest-side, rgba(120,60,240,0.38), transparent); animation-duration: 32s; animation-direction: alternate-reverse; }
+    .aurora i:nth-child(3) { width: 900px; height: 700px; right: -200px; bottom: -380px; background: radial-gradient(closest-side, rgba(0,150,255,0.30), transparent); animation-duration: 38s; }
+    @keyframes drift { to { transform: translate3d(-90px, 70px, 0) scale(1.12); } }
+    .progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 20; background: var(--grad); transform-origin: 0 50%; transform: scaleX(0); }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+    code { font-family: var(--font-mono); font-size: 0.86em; padding: 1px 6px; border-radius: 5px; background: rgba(255,255,255,0.06); color: #c9d2e8; }
+
+    .nav { position: sticky; top: 14px; z-index: 10; padding: 0 16px; margin-top: 14px; }
+    .nav .wrap { max-width: 1120px; display: flex; align-items: center; justify-content: space-between; height: 64px;  height: 56px; padding: 0 12px 0 22px; border-radius: 16px;
+      border: 1px solid var(--border); background: rgba(9,11,24,0.62);
+      backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.05) inset; }
+    .wordmark { font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: var(--text-bright); display: inline-flex; align-items: baseline; gap: 5px; }
+    .wordmark i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 16px var(--accent), 0 0 4px #fff; }
+    .nav-links { display: flex; align-items: center; gap: 28px; font-size: 14px; }
+    .nav-links a { color: var(--text); transition: color .15s; padding: 6px 0; }
+    .nav-links { padding-right: 10px; }
+    .nav-links a:hover { color: var(--text-bright); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px; border-radius: 10px;
+      font: 600 13.5px var(--font); cursor: pointer;
+      border: 1px solid var(--border); color: var(--text-bright);
+      background: var(--surface);
+      transition: background .15s, border-color .15s;
+    }
+    .btn:hover { background: var(--surface-hover); border-color: var(--border-bright); }
+
+    .head { padding: 80px 0 8px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+    .eyebrow::before { content: ''; width: 28px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
+    h1 { margin: 16px 0 18px; font-size: clamp(36px, 6vw, 60px); line-height: 1.06; letter-spacing: -0.04em; font-weight: 700; color: var(--text-bright); }
+    h1 span { background: var(--grad); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 8s ease-in-out infinite alternate; filter: drop-shadow(0 0 28px rgba(60,140,255,0.35)); }
+    @keyframes sheen { to { background-position: 100% 0; } }
+    .lead { max-width: 620px; font-size: 18px; }
+    .jump { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
+
+    .track { display: grid; grid-template-columns: repeat(20, 1fr); gap: 5px; margin-top: 52px; }
+    .track i { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.08); }
+    .track i.done { background: var(--grad); box-shadow: 0 0 14px rgba(56,182,255,0.55); }
+    .track i.next { background: rgba(90,162,255,0.35); animation: pulse 1.8s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: .35; } }
+    .track-label { display: flex; justify-content: space-between; margin-top: 12px; font-family: var(--font-mono); font-size: 12.5px; color: var(--text-dim); }
+
+    section { padding-top: 104px; }
+    h2 { margin: 14px 0 12px; font-size: clamp(26px, 4vw, 38px); line-height: 1.12; letter-spacing: -0.03em; color: var(--text-bright); font-weight: 600; }
+    .sub { max-width: 620px; }
+    .bar { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; }
+
+    /* what is coming: a vertical line of phases */
+    .ahead { margin-top: 44px; position: relative; padding-left: 34px; }
+    .ahead::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 1px; background: linear-gradient(var(--accent), rgba(122,92,255,0.5) 40%, var(--border)); }
+    .phase { position: relative; margin-bottom: 16px; padding: 24px 26px; border-radius: 18px; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015)); backdrop-filter: blur(6px); transition: border-color .2s, background .2s; }
+    .phase:hover { border-color: var(--border-bright); background: var(--surface-hover); }
+    .phase::before { content: ''; position: absolute; left: -32px; top: 30px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--text-dim); }
+    .phase.next { border-color: var(--border-bright); background: linear-gradient(120deg, rgba(56,182,255,0.12), rgba(139,92,246,0.08)); box-shadow: 0 0 70px rgba(20,110,255,0.2); }
+    .phase.next::before { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 14px var(--accent); }
+    .phase header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .phase .n { font-family: var(--font-mono); font-size: 12.5px; color: var(--accent); }
+    .phase h3 { font-size: 19px; color: var(--text-bright); font-weight: 600; letter-spacing: -0.01em; }
+    .phase .tag { margin-left: auto; font-family: var(--font-mono); font-size: 11.5px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); }
+    .phase.next .tag { color: var(--green); border-color: rgba(53,208,127,0.35); }
+    .phase > p { margin-top: 8px; font-size: 15px; }
+    .phase ul { list-style: none; margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 9px 28px; font-size: 14.5px; }
+    .phase li { padding-left: 18px; position: relative; }
+    .phase li::before { content: ''; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+    .phase li b { color: var(--text-bright); font-weight: 600; }
+    .phase .goal { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 13.5px; color: var(--text-dim); }
+    .phase .goal b { color: var(--text); font-weight: 600; }
+
+    /* release history: one dropdown per version */
+    .releases { margin-top: 36px; display: grid; gap: 10px; }
+    details { border-radius: 14px; border: 1px solid var(--border); background: var(--surface); transition: border-color .2s, background .2s; }
+    details:hover { border-color: var(--border-bright); }
+    details[open] { border-color: var(--border-bright); background: rgba(255,255,255,0.04); }
+    summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 96px 1fr auto 18px; gap: 16px; align-items: center; padding: 18px 22px; }
+    summary::-webkit-details-marker { display: none; }
+    summary .v { font-family: var(--font-mono); font-size: 15px; font-weight: 500; color: var(--text-bright); }
+    summary .t { font-size: 15px; color: var(--text); }
+    summary .t small { display: block; font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); }
+    summary .chips { display: flex; gap: 6px; }
+    .chip { font-family: var(--font-mono); font-size: 11px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); white-space: nowrap; }
+    .chip.latest { color: var(--green); border-color: rgba(53,208,127,0.35); }
+    .chip.sec { color: var(--amber); border-color: rgba(255,182,90,0.3); }
+    .chip.ph { color: var(--accent); border-color: rgba(90,162,255,0.3); }
+    summary .arrow { width: 9px; height: 9px; border-right: 2px solid var(--text-dim); border-bottom: 2px solid var(--text-dim); transform: rotate(45deg); transition: transform .2s; justify-self: center; margin-top: -4px; }
+    details[open] summary .arrow { transform: rotate(-135deg); margin-top: 4px; }
+    .body { padding: 4px 22px 22px; border-top: 1px solid var(--border); }
+    .body h4 { margin: 20px 0 10px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+    .body h4::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .body h4.security { color: var(--amber); } .body h4.added { color: var(--green); } .body h4.changed { color: var(--accent); }
+    .body h4.performance { color: #b79bff; } .body h4.fixed { color: var(--red); }
+    .body ul { list-style: none; display: grid; gap: 8px; font-size: 14.5px; }
+    .body li { padding-left: 18px; position: relative; }
+    .body li::before { content: ''; position: absolute; left: 2px; top: 11px; width: 6px; height: 1px; background: var(--text-dim); }
+
+    footer { margin-top: 104px; border-top: 1px solid var(--border); padding: 32px 0 48px; font-size: 13.5px; color: var(--text-dim); }
+    footer .wrap { max-width: 1120px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    footer a:hover { color: var(--text-bright); }
+    footer nav { display: flex; gap: 22px; }
+
+    @media (prefers-reduced-motion: reduce) { .track i.next, .aurora i, h1 span { animation: none; } html { scroll-behavior: auto; } }
+    @media (max-width: 720px) {
+      .head { padding-top: 56px; }
+      section { padding-top: 76px; }
+      .phase ul { grid-template-columns: 1fr; }
+      .phase .tag { margin-left: 0; }
+      .track { gap: 3px; }
+      summary { grid-template-columns: 1fr 18px; gap: 6px 12px; padding: 16px 18px; }
+      summary .t { grid-column: 1; grid-row: 2; }
+      summary .chips { grid-column: 1; grid-row: 3; flex-wrap: wrap; }
+      summary .arrow { grid-column: 2; grid-row: 1; }
+      .body { padding: 4px 18px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="progress" id="progress"></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
+    <nav class="nav-links">
+      <a href="#ahead">What's coming</a>
+      <a href="#releases">Releases</a>
+      <a href="/">Home</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="head">
+      <span class="eyebrow">Roadmap</span>
+      <h1>Where Cerberus is going, <span>and how it got here.</span></h1>
+      <p class="lead">Cerberus is built in numbered phases. Each one ends in a tested release, and no phase starts until the one before it passes its acceptance tests.</p>
+      <div class="jump">
+        <a class="btn" href="#ahead">What's coming</a>
+        <a class="btn" href="#releases">Release history</a>
+      </div>
+      <div class="track" aria-hidden="true">
+        <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="next"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="track-label"><span>11 of 20 phases done</span><span>v0.0.5f</span></div>
+    </div>
+
+    <section id="ahead">
+      <span class="eyebrow">What's coming</span>
+      <h2>The road from here.</h2>
+      <p class="sub">The highlights of every phase still ahead, in the order they will be built.</p>
+
+      <div class="ahead">
+        <article class="phase next">
+          <header><span class="n">Phase 12</span><h3>Pane, the window server</h3><span class="tag">up next</span></header>
+          <p>The desktop moves out of the kernel and becomes its own protected program.</p>
+          <ul>
+            <li><b>Real window management:</b> move, resize, stack, focus, minimise, maximise and full screen.</li>
+            <li><b>Zero-copy drawing:</b> each window paints into its own shared buffer.</li>
+            <li><b>Eye candy:</b> transparency, per-window opacity, shadows and rounded corners.</li>
+            <li><b>Private windows:</b> a program sees only its own windows and its own input.</li>
+            <li><b>Permissioned capture:</b> screenshots, recording and global shortcuts are denied by default.</li>
+            <li><b>Secure password entry:</b> nothing else receives keys while a password box has focus.</li>
+          </ul>
+          <p class="goal"><b>Target:</b> a full 1920×1080 frame with 10 windows in under 8 ms, and no work at all when nothing changed.</p>
+        </article>
+
+        <article class="phase">
+          <header><span class="n">Phase 13</span><h3>Facet and the first real apps</h3><span class="tag">planned</span></header>
+          <p>A widget toolkit, a proper desktop shell, and the applications that make it a system you can use.</p>
+          <ul>
+            <li><b>Facet toolkit:</b> buttons, lists, menus, tabs, dialogs, theming and keyboard navigation.</li>
+            <li><b>Desktop shell:</b> taskbar, launcher, notifications, wallpapers and themes.</li>
+            <li><b>Ember, Crate and Slate:</b> a terminal with tabs, a file manager and a text editor.</li>
+            <li><b>Gauge, Dial and Tally:</b> a system monitor, settings and a calculator.</li>
+            <li><b>Frame, Daub and Chronos:</b> an image viewer, a paint program and a clock.</li>
+            <li><b>Warren:</b> a small game, plus TrueType fonts across the system.</li>
+          </ul>
+          <p class="goal"><b>Target:</b> power-on to a usable desktop in under 3 seconds.</p>
+        </article>
+
+        <article class="phase">
+          <header><span class="n">Phase 14</span><h3>Networking</h3><span class="tag">planned</span></header>
+          <p>Cerberus gets online, with a network stack that runs outside the kernel.</p>
+          <ul>
+            <li><b>Network drivers:</b> virtio-net and e1000.</li>
+            <li><b>netd:</b> Ethernet, ARP, IPv4, ICMP, UDP and a full TCP implementation.</li>
+            <li><b>DHCP and DNS:</b> an address and name lookups without setup.</li>
+            <li><b>Sockets:</b> the familiar calls, working with event queues.</li>
+            <li><b>Tools:</b> <code>ping</code>, <code>ifconfig</code>, <code>nslookup</code>, <code>fetch</code> and <code>netstat</code>.</li>
+            <li><b>Firewall on by default:</b> incoming connections are blocked, and network access is a per-app permission.</li>
+          </ul>
+          <p class="goal"><b>Target:</b> a 100 MB transfer that matches by checksum. Nothing is sent at boot except DHCP.</p>
+        </article>
+
+        <article class="phase">
+          <header><span class="n">Phase 15</span><h3>Users, sandboxing and TLS</h3><span class="tag">planned</span></header>
+          <p>Accounts, a login screen, and real boundaries between applications.</p>
+          <ul>
+            <li><b>User accounts:</b> passwords stored as Argon2id hashes.</li>
+            <li><b>Login and lock screen:</b> Super+L and an idle timeout, with no auto-login.</li>
+            <li><b>No setuid programs:</b> admin actions go through one service that asks for the password and logs it.</li>
+            <li><b>Sandboxing:</b> a program can permanently give up network, files, or starting other programs.</li>
+            <li><b>Keyring:</b> a password manager encrypted with a key from your login.</li>
+            <li><b>HTTPS:</b> TLS with a certificate store, and an audit log of logins and permission decisions.</li>
+          </ul>
+          <p class="goal"><b>Target:</b> one user cannot read another's files, and killing the lock screen does not unlock it.</p>
+        </article>
+
+        <article class="phase">
+          <header><span class="n">Phase 15B</span><h3>A web browser of its own</h3><span class="tag">planned</span></header>
+          <p>Written for Cerberus, starting with simple pages.</p>
+          <ul>
+            <li><b>HTML and CSS:</b> a standards-following parser and a documented CSS subset, including flex basics.</li>
+            <li><b>Layout and images:</b> text wrapping, tables, smooth scrolling, PNG, JPEG and GIF.</li>
+            <li><b>A real browser window:</b> tabs, bookmarks, history, downloads, find in page and zoom.</li>
+            <li><b>Sandboxed tabs:</b> a bad page can crash a tab, never the system.</li>
+            <li><b>Private by default:</b> HTTPS first, third-party cookies off, no telemetry.</li>
+            <li><b>JavaScript:</b> a later, separate decision.</li>
+          </ul>
+        </article>
+
+        <article class="phase">
+          <header><span class="n">Phase 16</span><h3>Spec, the language</h3><span class="tag">planned</span></header>
+          <p>The systems language designed alongside the OS starts compiling for it.</p>
+          <ul>
+            <li><b>specc:</b> the compiler, from lexer to x86-64 code and an ELF writer.</li>
+            <li><b>Standard library:</b> text, collections, files, threads, and direct system-call bindings.</li>
+            <li><b>Tooling:</b> a formatter, a test runner and a build tool.</li>
+            <li><b>Excellent error messages:</b> a requirement, with the rule explained and a fix suggested.</li>
+            <li><b>Apps in Spec:</b> at least three applications rewritten in it, one with a GUI.</li>
+          </ul>
+          <p class="goal"><b>Target:</b> <code>specc hello.spec -o hello</code> makes a program that runs on Cerberus.</p>
+        </article>
+
+        <article class="phase">
+          <header><span class="n">Phase 17</span><h3>Running real software</h3><span class="tag">planned</span></header>
+          <p>Enough compatibility that existing programs can be ported.</p>
+          <ul>
+            <li><b>Shared libraries:</b> a dynamic linker and <code>dlopen</code>.</li>
+            <li><b>POSIX C library:</b> big enough to build unmodified programs such as zlib, Lua and the Tiny C Compiler.</li>
+            <li><b>Job control:</b> pseudo-terminals, Ctrl+Z, <code>fg</code> and <code>bg</code>.</li>
+            <li><b>pkg:</b> a package manager with signed packages and sandboxed install scripts.</li>
+          </ul>
+          <p class="goal"><b>Target:</b> the Tiny C Compiler compiles and runs a C program on Cerberus itself.</p>
+        </article>
+
+        <article class="phase">
+          <header><span class="n">Phase 18</span><h3>Installer and disk encryption</h3><span class="tag">planned</span></header>
+          <p>Cerberus leaves the ISO and lives on a disk.</p>
+          <ul>
+            <li><b>Live installer:</b> erase a disk, or install alongside an existing system.</li>
+            <li><b>Boot menu:</b> Cerberus, the previous kernel, recovery, and Windows or other systems found.</li>
+            <li><b>Full-disk encryption:</b> optional, with the key derived from a passphrase.</li>
+            <li><b>Signed updates:</b> the previous kernel stays bootable, and it never updates on its own.</li>
+            <li><b>Recovery:</b> a read-only rescue shell and a file-system repair tool.</li>
+            <li><b>Service manager:</b> start order, restart policy and a sandbox per service.</li>
+          </ul>
+          <p class="goal"><b>Target:</b> an interrupted update still boots.</p>
+        </article>
+
+        <article class="phase">
+          <header><span class="n">Phase 19</span><h3>Real hardware and stretch goals</h3><span class="tag">stretch</span></header>
+          <p>Out of the virtual machine and onto real PCs.</p>
+          <ul>
+            <li><b>USB:</b> keyboards, mice and USB sticks.</li>
+            <li><b>Sound:</b> Intel HD Audio and a mixing server.</li>
+            <li><b>Booting on real PCs,</b> including installs beside Windows.</li>
+            <li><b>Kernel address randomisation</b> and IPv6.</li>
+            <li><b>HiDPI scaling</b> and more accessibility features.</li>
+            <li><b>Spec compiling itself,</b> and an ARM64 port.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="releases">
+      <div class="bar">
+        <div>
+          <span class="eyebrow">Release history</span>
+          <h2>Every version so far.</h2>
+          <p class="sub">From the first snapshot to the latest release. Pick a version to see what it changed.</p>
+        </div>
+        <button class="btn" id="toggle" type="button">Expand all</button>
+      </div>
+      <div class="releases" id="list"></div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Cerberus OS &middot; v0.0.5f</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="#ahead">What's coming</a>
+      <a href="#releases">Releases</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  // oldest first; to publish a new version, append one entry to the end
+  var RELEASES = [
+    { v: '0.0.1', date: '2026-09-14', title: 'First snapshot', phase: 'Phases 0–3', groups: {
+      Added: [
+        'Boots through the Limine bootloader on BIOS and UEFI, with a boot banner on screen and serial.',
+        'CPU setup: interrupts with symbolised crash dumps, ACPI, APIC, HPET, a 100 Hz timer and a real-time clock.',
+        'A physical memory allocator with its own self-test.',
+        'A kernel shell with PS/2 keyboard input.',
+        'The desktop preview: windows with shadows that move, resize, stack, minimise and maximise.',
+        'A panel with a launcher, task buttons, memory use and a clock.',
+        'Terminal, About, System Monitor and Memory Map windows, a PS/2 mouse, and the Alt+Tab, Alt+F4 and Super hotkeys.'
+      ] } },
+    { v: '0.3.0', date: '2026-10-03', title: 'Boot, console, interrupts and timers complete', phase: 'Phases 0–3', groups: {
+      Fixed: [
+        'Keyboard and mouse can no longer swallow each other\'s input: both now read the PS/2 controller through one shared routine.',
+        'The desktop no longer freezes on VirtualBox when it runs on the Hyper-V backend.'
+      ],
+      Added: [
+        'Shell commands `gui` (compositor statistics) and `irqs` (interrupt counts).',
+        'The boot log reports how long the first desktop frame took.'
+      ],
+      Changed: [
+        'Development builds show the commit after the version number.',
+        'Security, privacy, networking and performance became written requirements of the specification.'
+      ] } },
+    { v: '0.4.0', date: '2026-10-03', title: 'Virtual memory', phase: 'Phase 4', security: true, groups: {
+      Security: [
+        'No memory can be both writable and executable; every request for such a mapping is refused.',
+        'All memory outside the kernel\'s code is non-executable.',
+        'Kernel code and read-only data can no longer be written, and kernel data can no longer be executed.',
+        'Memory handed to an address space is always zeroed first, so nothing left by a previous owner can be read.',
+        'The first 64 KiB of an address space can never be mapped, so a null pointer always faults.',
+        'A stack overflow on a guarded kernel stack is reported and stops the system instead of overwriting other memory.',
+        'Stack variables are zero-initialised; debug builds stop with the source line on undefined behaviour.'
+      ],
+      Added: [
+        'The virtual memory manager: private address spaces, memory allocated on first use, and copy-on-write copies of an address space.',
+        '2 MiB pages for large kernel mappings.',
+        'The `test vmm` self-test, plus stack-overflow and undefined-behaviour tests.'
+      ],
+      Changed: [
+        'The other CPUs now wait inside the kernel instead of inside the bootloader\'s code.'
+      ] } },
+    { v: '0.5.0', date: '2026-10-03', title: 'The kernel heap', phase: 'Phase 5', security: true, groups: {
+      Security: [
+        'The kernel\'s allocator protects its own bookkeeping: a corrupted free list is detected and stops the system instead of being followed.',
+        'Freeing the same memory twice, or freeing something never allocated, stops the system with a clear message.',
+        'Debug builds catch writes past either end of an allocation and writes to memory after it was freed.',
+        '`kfree_sensitive` wipes memory before releasing it, ready for keys and passwords in later phases.'
+      ],
+      Added: [
+        'The kernel heap: `kmalloc`, `kzalloc`, `kfree` and `krealloc`.',
+        'The `heapstat` command: heap usage and, in debug builds, every outstanding allocation grouped by the code that made it.',
+        'The `test heap` self-test and three corruption tests.'
+      ],
+      Changed: [
+        'The desktop\'s pixel buffers and the memory manager\'s records now come from the heap.'
+      ] } },
+    { v: '0.5.1', date: '2026-10-03', title: 'VirtualBox keyboard fix', groups: {
+      Fixed: [
+        'On VirtualBox the keyboard no longer stops responding after a few keys when the VM has more than one CPU.',
+        'CPUs the kernel is not using yet now sleep instead of spinning, so they stop using a full host core each.'
+      ] } },
+    { v: '0.6.0', date: '2026-10-03', title: 'Threads and scheduling', phase: 'Phase 6', groups: {
+      Security: [
+        'Every kernel stack has a guard page below it. A runaway thread is reported as a kernel stack overflow with its name instead of overwriting other memory.'
+      ],
+      Performance: [
+        'The desktop stays responsive while long commands run: the compositor has its own high-priority thread and wakes the moment input arrives.',
+        'An idle desktop uses 0% CPU. Before, it spun a full core.'
+      ],
+      Added: [
+        'Threads and processes with a four-level preemptive scheduler, sleeping and wait queues.',
+        'Locks: spinlock, mutex, semaphore, condition variable and reader-writer lock.',
+        'Shell commands `ps` (thread list) and `bench` (micro-benchmarks), with the first recorded numbers.',
+        'The `test sched` self-test.'
+      ],
+      Changed: [
+        'The kernel shell and the desktop now run as threads.'
+      ],
+      Fixed: [
+        'The automated tests no longer fail on a busy host, and UEFI boots work in the test tool.'
+      ] } },
+    { v: '0.7.0', date: '2026-10-03', title: 'User programs and system calls', phase: 'Phase 7', security: true, groups: {
+      Security: [
+        'Programs run in user mode (ring 3), each in its own address space, and reach the kernel only through system calls. A program that crashes is ended and reported; the system carries on.',
+        'Every system-call argument is checked. Bad pointers, lengths that wrap and unknown flags are refused with an error.',
+        'SMEP, SMAP and UMIP are turned on when the CPU has them: the kernel can neither run nor casually touch program memory.',
+        'Address-space layout randomisation: a program\'s code, stack and mapped memory land at different addresses on every run.',
+        'A ChaCha20 kernel random-number generator, seeded from the CPU\'s hardware generator and interrupt timing, supplies all randomness.',
+        'Stack-overflow detection in the kernel and in every program.',
+        'Fuzzing: the program loader, the boot-archive reader and the system-call interface are attacked with damaged and random input on every release.'
+      ],
+      Added: [
+        'The first system calls: `exit`, `write`, `read`, `open`, `close`, `mmap`, `munmap`, `fork`, `execve`, `waitpid`, `getpid`, `yield`, `sleep_ms` and `getrandom`.',
+        'A small C library for programs, and the first programs carried in a boot archive: `init`, `hello` and test programs.',
+        '`run <path>` starts a program and reports how it ended.',
+        '`bench` measures a system-call round trip.'
+      ],
+      Fixed: [
+        'The context-switch benchmark no longer reports nonsense when the shell thread has been lowered in priority.',
+        'A program\'s output line can no longer be split in the middle by a kernel message.'
+      ] } },
+    { v: '0.0.5a', date: '2026-10-04', title: 'Every processor core', phase: 'Phase 8', security: true, groups: {
+      Security: [
+        'Memory that is unmapped or made read-only is withdrawn from every processor before the change returns (TLB shootdown).',
+        'The order in which kernel locks may be taken is written down in one place and checked on every acquisition in debug builds.',
+        'A fatal error stops all processors, not just the one that hit it.',
+        'The kernel\'s reads and writes of program memory can no longer be steered at kernel memory speculatively.'
+      ],
+      Performance: [
+        'All processors run threads. Work is spread across idle processors, and a processor with nothing to do takes waiting work from a busy one.',
+        'The kernel heap gives each processor its own pool, so allocating memory does not make processors wait for each other.',
+        'Timekeeping uses the processor\'s own counter where it is steady: wake-up latency fell to 7–9 µs from 18–19 µs under QEMU.'
+      ],
+      Added: [
+        'The `test smp` self-test and a lock-order violation test.',
+        '`ps` shows which processor each thread is on, with per-processor statistics.'
+      ],
+      Changed: [
+        'First release under the new version scheme: each release now moves one letter (0.0.5a, 0.0.5b and so on).',
+        'The boot log shows each processor reporting in.'
+      ],
+      Fixed: [
+        'On machines without an HPET, such as VirtualBox, the clock ran several times too fast when two processors read it at once.',
+        'The scheduler and SMP self-tests no longer fail on slow virtual machines.'
+      ] } },
+    { v: '0.0.5b', date: '2026-10-04', title: 'Desktop polish', groups: {
+      Added: [
+        'The terminal keeps the last 1,000 lines. Scroll with the mouse wheel or Shift+Page Up and Shift+Page Down; typing jumps back to the bottom.',
+        'A scrollbar shows where you are in the terminal.',
+        '`gui` reports the slowest frame and how many pixels were actually written.'
+      ],
+      Changed: [
+        'Window buttons are thin symbols in flat buttons; close turns red under the mouse.',
+        'Rounded corners are larger and anti-aliased on windows, taskbar buttons, the menu and the scrollbar.',
+        'The Super key opens the menu only when pressed and released on its own.',
+        'Resizing the terminal keeps its text instead of clearing it.'
+      ],
+      Performance: [
+        'Only pixels that changed are written to the screen. Dragging a window writes about a fifth of the pixels it did.',
+        'Frames are drawn as soon as input arrives, up to about 160 per second, instead of waiting for the next timer tick.'
+      ],
+      Fixed: [
+        'Keys typed while the launcher menu is open no longer reach the terminal.'
+      ] } },
+    { v: '0.0.5c', date: '2026-10-04', title: 'Files and file systems', phase: 'Phase 9', security: true, groups: {
+      Security: [
+        'File permissions (owner, group, others) are checked on every file operation.',
+        'Mount options: read-only, no programs, no device files, no set-user. The root file system is read-only.',
+        'The disk file system treats every disk as hostile: every field is checked, metadata carries CRC32C checksums, and a damaged disk gives an error, never a crash.',
+        'cerfs is fuzzed: thousands of damaged disk images a minute are mounted and used by the real driver.',
+        'A disk in use by a mounted file system cannot be opened for writing.',
+        'A new disk block is never shown with what a deleted file left in it.'
+      ],
+      Performance: [
+        'One page cache for file contents and disks, with read-ahead and background write-back: reading a 64 MiB file a second time takes 6 ms instead of 0.7 s.',
+        'A name cache remembers recently used paths, and closed files stay cached.',
+        'SATA disks are read and written by DMA, at about 87 MB/s in QEMU.'
+      ],
+      Added: [
+        'Files and folders: a read-only `/`, an in-memory `/tmp`, `/dev` for devices, and disks mounted anywhere.',
+        'cerfs, the journaled disk file system: pulling the power mid-write leaves the disk consistent.',
+        '`mkfs.cerfs` formats a disk from inside Cerberus.',
+        'Disk drivers for SATA (AHCI) and IDE; `pci` lists the PCI devices.',
+        'File tools: `ls`, `cat`, `echo`, `mkdir`, `rm`, `mv`, `cp`, `touch`, `stat`, `ln -s`, `sync`, `mount` and more.',
+        'The shell runs programs by name, redirects output with `>` and `>>`, and has `cd` and `pwd`.',
+        'File system calls: `open`, `seek`, `stat`, `rename`, `readdir`, `dup`, `ioctl`, `fsync`, `symlink`, `chmod`, `mount` and the rest.',
+        '`/dev/null`, `/dev/zero`, `/dev/random`, `/dev/urandom` and `/dev/console`.'
+      ],
+      Fixed: [
+        'On VirtualBox the clock could run unevenly. Cerberus now trusts the processor counter only where it is declared steady, and checks it three times first.'
+      ] } },
+    { v: '0.0.5d', date: '2026-10-04', title: 'Smooth text', groups: {
+      Changed: [
+        'All desktop text is anti-aliased: DejaVu Sans for the interface, DejaVu Sans Mono for the terminal, and a large bold face for the Cerberus wordmark.',
+        'The close button\'s cross is drawn with a smooth thin line.',
+        'The wallpaper is dithered, which removes the visible bands in its dark gradient.',
+        'The terminal\'s rows are one pixel taller.'
+      ] } },
+    { v: '0.0.5e', date: '2026-10-04', title: 'Drivers', phase: 'Phase 10', security: true, groups: {
+      Security: [
+        'The screen, keyboard, mouse and disks can be opened by root only; a program running as another user is refused.',
+        '`/tmp` is writable by everyone, and only a file\'s owner can delete or rename it there.',
+        'Everything a device reports is checked before it is used, in every new driver.'
+      ],
+      Added: [
+        '`poweroff` and `reboot` work through ACPI, after writing everything to disk.',
+        'NVMe and virtio disks work alongside SATA and IDE.',
+        'Keyboard and mouse events can be read from `/dev/input`: key codes, press, release and repeat, mouse movement, wheel and buttons.',
+        'The whole keyboard works: the numeric keypad with Num Lock, the menu key, Print Screen, Pause, and right-hand Ctrl and Alt.',
+        '`drivers` lists the drivers and what each has attached; `runas` runs a program as another user.',
+        '`/dev/fb0`: the screen as a file.'
+      ],
+      Changed: [
+        'The keyboard is read in its native mode (scancode set 2), with a fallback for keyboards that refuse.',
+        'Drivers are found and started through one registry, the driver model.'
+      ],
+      Performance: [
+        'SATA commands are completed by an interrupt (MSI) where the controller offers it, so the processor is free while the disk works.'
+      ] } },
+    { v: '0.0.5f', date: '2026-10-04', title: 'Programs talking to each other', phase: 'Phase 11', security: true, groups: {
+      Security: [
+        'A named port has an owner and permission bits like a file; a program without permission cannot connect to it.',
+        'The receiver of a connection learns the other side\'s process, user and group from the kernel, so it cannot be faked.',
+        'Message sizes, descriptors per message and queue lengths are limited; a sender that finds a queue full waits, and nothing is dropped.',
+        'A signal can be sent only to a process of the same user.',
+        'A process can give up root and cannot take it back.'
+      ],
+      Added: [
+        'Ports: named message channels between programs. Whole messages of up to 64 KiB, in order, which can carry open files and shared memory.',
+        'Shared memory that several programs map at once.',
+        'Signals with handlers in programs: SIGKILL, SIGTERM, SIGSEGV, SIGCHLD, SIGUSR1 and SIGUSR2.',
+        'Threads in programs: `pthread_create` and `join`, mutexes, condition variables and thread-local variables.',
+        'Futexes: locks that enter the kernel only to wait, also between processes.',
+        'Event queues: one wait over ports, timers and child exit. A waiting server uses no CPU and wakes about 50 microseconds after a message is sent.',
+        '`mmap` of a file, `mprotect`, `kill`, `umask`, `sysinfo` and more: 74 system calls now.',
+        'The mouse cursor turns into a two-headed arrow over a window\'s edges, so resizing is discoverable.',
+        'Test programs: `ipctest`, `threadtest`, `sigtest`, `eventtest` and `mmaptest`.'
+      ],
+      Changed: [
+        '`sleep_ms` and `waitpid` return early when a signal arrives.',
+        'A program\'s fault is delivered as a signal first; only an unhandled one ends the program.'
+      ] } }
+  ];
+
+
+  // thin reading-progress line under the top edge
+  var progress = document.getElementById('progress');
+  function onScroll() {
+    var max = document.documentElement.scrollHeight - innerHeight;
+    progress.style.transform = 'scaleX(' + (max > 0 ? scrollY / max : 0) + ')';
+    if (window.tilt) tilt();
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  function fmt(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/`([^`]+)`/g, '<code>$1</code>');
+  }
+  var ORDER = ['Security', 'Added', 'Changed', 'Performance', 'Fixed'];
+  var list = document.getElementById('list');
+  list.innerHTML = RELEASES.map(function (r, i) {
+    var chips = '';
+    if (i === RELEASES.length - 1) chips += '<span class="chip latest">latest</span>';
+    if (r.phase) chips += '<span class="chip ph">' + fmt(r.phase) + '</span>';
+    if (r.security) chips += '<span class="chip sec">security</span>';
+    var body = ORDER.filter(function (g) { return r.groups[g]; }).map(function (g) {
+      return '<h4 class="' + g.toLowerCase() + '">' + g + '</h4><ul>' +
+        r.groups[g].map(function (line) { return '<li>' + fmt(line) + '</li>'; }).join('') + '</ul>';
+    }).join('');
+    return '<details id="v' + r.v + '"><summary><span class="v">' + r.v + '</span>' +
+      '<span class="t">' + fmt(r.title) + '<small>' + r.date + '</small></span>' +
+      '<span class="chips">' + chips + '</span><span class="arrow"></span></summary>' +
+      '<div class="body">' + body + '</div></details>';
+  }).join('');
+
+  var all = Array.prototype.slice.call(list.querySelectorAll('details'));
+  var toggle = document.getElementById('toggle');
+  function sync() { toggle.textContent = all.every(function (d) { return d.open; }) ? 'Collapse all' : 'Expand all'; }
+  toggle.addEventListener('click', function () {
+    var open = !all.every(function (d) { return d.open; });
+    all.forEach(function (d) { d.open = open; });
+    sync();
+  });
+  all.forEach(function (d) { d.addEventListener('toggle', sync); });
+
+  // a link such as /roadmap/#v0.0.5f opens that version
+  function openHash() {
+    var d = location.hash && document.getElementById(location.hash.slice(1));
+    if (d && d.tagName === 'DETAILS') { d.open = true; d.scrollIntoView(); }
+  }
+  window.addEventListener('hashchange', openHash);
+  openHash();
+</script>
+</body>
+</html>
