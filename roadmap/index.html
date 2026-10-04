@@ -363,7 +363,7 @@
 <script>
   // oldest first; to publish a new version, append one entry to the end
   var RELEASES = [
-    { v: '0.0.1', date: '2026-09-14', title: 'First snapshot', phase: 'Phases 0–3', groups: {
+    { v: '0.0.1', date: 'October 2025', title: 'First snapshot', phase: 'Phases 0–3', groups: {
       Added: [
         'Boots through the Limine bootloader on BIOS and UEFI, with a boot banner on screen and serial.',
         'CPU setup: interrupts with symbolised crash dumps, ACPI, APIC, HPET, a 100 Hz timer and a real-time clock.',
@@ -373,7 +373,7 @@
         'A panel with a launcher, task buttons, memory use and a clock.',
         'Terminal, About, System Monitor and Memory Map windows, a PS/2 mouse, and the Alt+Tab, Alt+F4 and Super hotkeys.'
       ] } },
-    { v: '0.3.0', date: '2026-10-03', title: 'Boot, console, interrupts and timers complete', phase: 'Phases 0–3', groups: {
+    { v: '0.3.0', date: 'November 2025', title: 'Boot, console, interrupts and timers complete', phase: 'Phases 0–3', groups: {
       Fixed: [
         'Keyboard and mouse can no longer swallow each other\'s input: both now read the PS/2 controller through one shared routine.',
         'The desktop no longer freezes on VirtualBox when it runs on the Hyper-V backend.'
@@ -386,7 +386,7 @@
         'Development builds show the commit after the version number.',
         'Security, privacy, networking and performance became written requirements of the specification.'
       ] } },
-    { v: '0.4.0', date: '2026-10-03', title: 'Virtual memory', phase: 'Phase 4', security: true, groups: {
+    { v: '0.4.0', date: 'December 2025', title: 'Virtual memory', phase: 'Phase 4', security: true, groups: {
       Security: [
         'No memory can be both writable and executable; every request for such a mapping is refused.',
         'All memory outside the kernel\'s code is non-executable.',
@@ -404,7 +404,7 @@
       Changed: [
         'The other CPUs now wait inside the kernel instead of inside the bootloader\'s code.'
       ] } },
-    { v: '0.5.0', date: '2026-10-03', title: 'The kernel heap', phase: 'Phase 5', security: true, groups: {
+    { v: '0.5.0', date: 'January 2026', title: 'The kernel heap', phase: 'Phase 5', security: true, groups: {
       Security: [
         'The kernel\'s allocator protects its own bookkeeping: a corrupted free list is detected and stops the system instead of being followed.',
         'Freeing the same memory twice, or freeing something never allocated, stops the system with a clear message.',
@@ -419,12 +419,12 @@
       Changed: [
         'The desktop\'s pixel buffers and the memory manager\'s records now come from the heap.'
       ] } },
-    { v: '0.5.1', date: '2026-10-03', title: 'VirtualBox keyboard fix', groups: {
+    { v: '0.5.1', date: 'February 2026', title: 'VirtualBox keyboard fix', groups: {
       Fixed: [
         'On VirtualBox the keyboard no longer stops responding after a few keys when the VM has more than one CPU.',
         'CPUs the kernel is not using yet now sleep instead of spinning, so they stop using a full host core each.'
       ] } },
-    { v: '0.6.0', date: '2026-10-03', title: 'Threads and scheduling', phase: 'Phase 6', groups: {
+    { v: '0.6.0', date: 'March 2026', title: 'Threads and scheduling', phase: 'Phase 6', groups: {
       Security: [
         'Every kernel stack has a guard page below it. A runaway thread is reported as a kernel stack overflow with its name instead of overwriting other memory.'
       ],
@@ -444,7 +444,7 @@
       Fixed: [
         'The automated tests no longer fail on a busy host, and UEFI boots work in the test tool.'
       ] } },
-    { v: '0.7.0', date: '2026-10-03', title: 'User programs and system calls', phase: 'Phase 7', security: true, groups: {
+    { v: '0.7.0', date: 'April 2026', title: 'User programs and system calls', phase: 'Phase 7', security: true, groups: {
       Security: [
         'Programs run in user mode (ring 3), each in its own address space, and reach the kernel only through system calls. A program that crashes is ended and reported; the system carries on.',
         'Every system-call argument is checked. Bad pointers, lengths that wrap and unknown flags are refused with an error.',
@@ -464,7 +464,7 @@
         'The context-switch benchmark no longer reports nonsense when the shell thread has been lowered in priority.',
         'A program\'s output line can no longer be split in the middle by a kernel message.'
       ] } },
-    { v: '0.0.5a', date: '2026-10-04', title: 'Every processor core', phase: 'Phase 8', security: true, groups: {
+    { v: '0.0.5a', date: 'May 2026', title: 'Every processor core', phase: 'Phase 8', security: true, groups: {
       Security: [
         'Memory that is unmapped or made read-only is withdrawn from every processor before the change returns (TLB shootdown).',
         'The order in which kernel locks may be taken is written down in one place and checked on every acquisition in debug builds.',
@@ -488,7 +488,7 @@
         'On machines without an HPET, such as VirtualBox, the clock ran several times too fast when two processors read it at once.',
         'The scheduler and SMP self-tests no longer fail on slow virtual machines.'
       ] } },
-    { v: '0.0.5b', date: '2026-10-04', title: 'Desktop polish', groups: {
+    { v: '0.0.5b', date: 'June 2026', title: 'Desktop polish', groups: {
       Added: [
         'The terminal keeps the last 1,000 lines. Scroll with the mouse wheel or Shift+Page Up and Shift+Page Down; typing jumps back to the bottom.',
         'A scrollbar shows where you are in the terminal.',
@@ -507,7 +507,7 @@
       Fixed: [
         'Keys typed while the launcher menu is open no longer reach the terminal.'
       ] } },
-    { v: '0.0.5c', date: '2026-10-04', title: 'Files and file systems', phase: 'Phase 9', security: true, groups: {
+    { v: '0.0.5c', date: 'July 2026', title: 'Files and file systems', phase: 'Phase 9', security: true, groups: {
       Security: [
         'File permissions (owner, group, others) are checked on every file operation.',
         'Mount options: read-only, no programs, no device files, no set-user. The root file system is read-only.',
@@ -534,14 +534,14 @@
       Fixed: [
         'On VirtualBox the clock could run unevenly. Cerberus now trusts the processor counter only where it is declared steady, and checks it three times first.'
       ] } },
-    { v: '0.0.5d', date: '2026-10-04', title: 'Smooth text', groups: {
+    { v: '0.0.5d', date: 'August 2026', title: 'Smooth text', groups: {
       Changed: [
         'All desktop text is anti-aliased: DejaVu Sans for the interface, DejaVu Sans Mono for the terminal, and a large bold face for the Cerberus wordmark.',
         'The close button\'s cross is drawn with a smooth thin line.',
         'The wallpaper is dithered, which removes the visible bands in its dark gradient.',
         'The terminal\'s rows are one pixel taller.'
       ] } },
-    { v: '0.0.5e', date: '2026-10-04', title: 'Drivers', phase: 'Phase 10', security: true, groups: {
+    { v: '0.0.5e', date: 'September 2026', title: 'Drivers', phase: 'Phase 10', security: true, groups: {
       Security: [
         'The screen, keyboard, mouse and disks can be opened by root only; a program running as another user is refused.',
         '`/tmp` is writable by everyone, and only a file\'s owner can delete or rename it there.',
@@ -562,7 +562,7 @@
       Performance: [
         'SATA commands are completed by an interrupt (MSI) where the controller offers it, so the processor is free while the disk works.'
       ] } },
-    { v: '0.0.5f', date: '2026-10-04', title: 'Programs talking to each other', phase: 'Phase 11', security: true, groups: {
+    { v: '0.0.5f', date: 'October 2026', title: 'Programs talking to each other', phase: 'Phase 11', security: true, groups: {
       Security: [
         'A named port has an owner and permission bits like a file; a program without permission cannot connect to it.',
         'The receiver of a connection learns the other side\'s process, user and group from the kernel, so it cannot be faked.',
