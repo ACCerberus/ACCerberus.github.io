@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-03",
+  "lastUpdated": "2026-10-04",
   "entries": [
     {
       "id": "lab-001",
@@ -162,16 +162,21 @@
       "startDate": "2026-09-29",
       "lastUpdate": "2026-09-29",
       "findings": "Initial research phase. Literature review in progress."
+    },
+    {
+      "id": "lab-019",
+      "title": "Deterministic Replay for False Positive Triage",
+      "desc": "Recording enough scan-time context to replay a flagged session offline and reproduce the exact decision path. Goal is faster false positive triage without shipping more telemetry.",
+      "status": "HYPOTHESIS",
+      "startDate": "2026-10-04",
+      "lastUpdate": "2026-10-04",
+      "findings": "Initial research phase. Literature review in progress."
     }
   ],
   "templatePool": [
     {
       "title": "Hardware Performance Counter Anomaly Detection",
       "desc": "Testing whether CPU performance counters (branch mispredicts, cache-miss ratios) shift measurably while an external overlay hooks the render path. Early interest is in whether the signal survives across CPU generations."
-    },
-    {
-      "title": "Deterministic Replay for False Positive Triage",
-      "desc": "Recording enough scan-time context to replay a flagged session offline and reproduce the exact decision path. Goal is faster false positive triage without shipping more telemetry."
     },
     {
       "title": "Federated Learning Across Partner Titles",
