@@ -172,6 +172,7 @@
     .card .ico { display: grid; place-items: center; width: 38px; height: 38px; margin-bottom: 14px; border-radius: 11px; color: var(--accent); border: 1px solid rgba(56,182,255,0.3); background: rgba(56,182,255,0.08); box-shadow: 0 0 24px rgba(56,182,255,0.18) inset; }
     .card .ico svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     .card .ico + h3 { margin-top: 0; font-size: 16.5px; }
+    .card code { font-family: var(--font-mono); font-size: 0.86em; padding: 1px 6px; border-radius: 5px; background: rgba(255,255,255,0.06); color: #c9d2e8; }
 
     /* security and privacy */
     .vow { margin-top: 44px; padding: 34px 36px; border-radius: 22px; border: 1px solid var(--border-bright); display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center;
@@ -313,7 +314,7 @@
   <div class="wrap">
 
     <div class="hero">
-      <span class="pill"><b></b>v0.0.5f &middot; phase 11 of 20 &middot; early</span>
+      <span class="pill"><b></b>v0.0.5f &middot; phases 0&ndash;11 done &middot; phase 12 in progress</span>
       <h1>An operating system, <span>written from scratch.</span></h1>
       <p class="lead">Cerberus is a 64-bit OS with its own kernel, its own file system, its own drivers and its own desktop. Nothing here is Linux, BSD or Windows underneath.</p>
       <div class="cta">
@@ -323,7 +324,7 @@
 
       <!-- SCREENSHOT SLOT 1: img/hero.png (the main desktop shot) -->
       <figure class="shot hero-shot reveal">
-        <div class="tilt"><img src="img/hero.png" alt="The Cerberus desktop with a terminal and the system monitor open" width="1280" height="800" /></div>
+        <div class="tilt"><img src="img/hero.png" alt="The Cerberus desktop with the Settings window open and an animated rainbow border around it" width="1280" height="800" /></div>
       </figure>
 
       <div class="stats reveal">
@@ -368,7 +369,7 @@
         <article class="card slim reveal"><h3>Threads and IPC</h3><p>Ports, shared memory, signals, futexes, and event queues so servers sleep instead of polling.</p></article>
         <article class="card slim reveal"><h3>Files</h3><p>A VFS, a page cache, and cerfs: a journaled, checksummed file system that survives power cuts.</p></article>
         <article class="card slim reveal"><h3>Drivers</h3><p>AHCI, NVMe, virtio-blk, IDE, PCI with MSI, PS/2 input, framebuffer, ACPI power.</p></article>
-        <article class="card slim reveal"><h3>Desktop</h3><p>A compositor with anti-aliased text, a taskbar and launcher, a terminal, a system monitor.</p></article>
+        <article class="card slim reveal"><h3>Desktop</h3><p>A compositor with anti-aliased text, a floating taskbar with app search, a terminal, a system monitor and Settings.</p></article>
         <article class="card slim reveal"><h3>Hardening</h3><p>W^X everywhere, SMEP/SMAP/UMIP, stack protectors, and fuzzers on every parser.</p></article>
       </div>
     </section>
@@ -441,11 +442,12 @@
         <div>
           <span class="eyebrow">The desktop</span>
           <h2>The desktop, so far.</h2>
-          <p>Today the desktop is a preview that runs inside the kernel; phase 12 moves it into its own protected program.</p>
+          <p>A floating taskbar, a launcher with app search, and a Settings window that changes the look live. Today it is a preview that runs inside the kernel; phase 12 moves it into its own protected program.</p>
           <div class="keys">
             <div><span><kbd>Super</kbd></span>Open the launcher</div>
             <div><span><kbd>Super</kbd><kbd>T</kbd></span>Open a terminal</div>
             <div><span><kbd>Alt</kbd><kbd>Tab</kbd></span>Switch windows</div>
+            <div><span><kbd>Super</kbd><kbd>M</kbd></span>Maximise a window</div>
             <div><span><kbd>Alt</kbd><kbd>F4</kbd></span>Close a window</div>
           </div>
         </div>
@@ -454,24 +456,30 @@
           <pre aria-label="The Cerberus shell listing its built-in self-tests"><span id="typed"></span><span class="caret"></span></pre>
         </div>
       </div>
-      <div class="grid g2">
+      <div class="grid g4">
+        <article class="card slim reveal"><h3>Make it yours</h3><p>Nine accent colours, three wallpapers (Nebula, Aurora, Ember), and square, soft or round window corners.</p></article>
+        <article class="card slim reveal"><h3>RGB window borders</h3><p>Static, breathing, flashing, rainbow or chase, with your choice of colour, thickness, speed and glow.</p></article>
+        <article class="card slim reveal"><h3>Launcher with search</h3><p>Type to filter the app list and press Enter to open the first match. Power off and Restart live there too.</p></article>
+        <article class="card slim reveal"><h3>Any resolution</h3><p>Switch from 800x600 up to 1920x1080 in Settings, or with <code>resolution</code> in the shell.</p></article>
+      </div>
+      <div class="grid g2" style="margin-top:16px">
         <!-- SCREENSHOT SLOT 2: img/shot-1.png -->
-        <figure class="shot reveal"><img src="img/shot-1.png" alt="Cerberus desktop screenshot" width="1280" height="800" loading="lazy" /></figure>
+        <figure class="shot reveal"><img src="img/shot-1.png" alt="The Cerberus launcher menu with its search field and app list" width="1280" height="800" loading="lazy" /></figure>
         <!-- SCREENSHOT SLOT 3: img/shot-2.png -->
-        <figure class="shot reveal"><img src="img/shot-2.png" alt="Cerberus desktop screenshot" width="1280" height="800" loading="lazy" /></figure>
+        <figure class="shot reveal"><img src="img/shot-2.png" alt="The Cerberus terminal and System Monitor windows" width="1280" height="800" loading="lazy" /></figure>
       </div>
     </section>
 
     <section id="roadmap">
       <span class="eyebrow">Roadmap</span>
-      <h2>Built in numbered phases. Eleven of twenty are done.</h2>
+      <h2>Built in numbered phases. 0 to 11 are done.</h2>
       <p class="sub">Each phase ends in a tested release, and no phase starts until the one before it passes its acceptance tests.</p>
       <div class="track reveal" aria-hidden="true">
-        <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="next"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="next"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
       </div>
-      <div class="track-label"><span>boot</span><span>phase 12 is next</span><span>real hardware</span></div>
+      <div class="track-label"><span>phase 0</span><span>phase 12 in progress</span><span>phase 19</span></div>
       <div class="phases">
-        <div class="phase up reveal"><code>12 &middot; next</code><b>Pane, the window server</b><span>The desktop leaves the kernel. Programs cannot read each other's windows or keystrokes.</span></div>
+        <div class="phase up reveal"><code>12 &middot; now</code><b>Pane, the window server</b><span>The desktop leaves the kernel. Programs cannot read each other's windows or keystrokes.</span></div>
         <div class="phase reveal"><code>13</code><b>Facet and the first apps</b><span>An app toolkit, then a file manager, text editor, settings, image viewer and calculator.</span></div>
         <div class="phase reveal"><code>14</code><b>Networking</b><span>Network drivers, an in-tree TCP/IP stack, DHCP, DNS, sockets.</span></div>
         <div class="phase reveal"><code>15</code><b>Users, TLS and sandboxing</b><span>Accounts, encrypted connections, per-application permissions, then a web browser of its own.</span></div>
@@ -518,7 +526,7 @@
 
     <div class="closing reveal">
       <span class="wordmark">Cerberus<i></i></span>
-      <h2>Phase 12 is next.</h2>
+      <h2>Phase 12 is under way.</h2>
       <p>Pane, the window server, moves the desktop out of the kernel and into its own protected program.</p>
       <div class="cta">
         <a class="btn primary" href="/roadmap/">Read the full roadmap</a>

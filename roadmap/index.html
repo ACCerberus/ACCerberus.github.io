@@ -127,6 +127,17 @@
     .phase .goal { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 13.5px; color: var(--text-dim); }
     .phase .goal b { color: var(--text); font-weight: 600; }
 
+    .minor { margin-top: 44px; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); }
+    .work { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .work div { padding: 16px 20px; border-radius: 14px; border: 1px dashed var(--border); font-size: 14.5px; }
+    .work b { color: var(--text-bright); font-weight: 600; }
+    .finished { margin-top: 36px; border-top: 1px solid var(--border); }
+    .finished a { display: grid; grid-template-columns: 44px 1fr auto; gap: 16px; align-items: baseline; padding: 15px 8px; border-bottom: 1px solid var(--border); font-size: 14.5px; transition: background .15s; }
+    .finished a:hover { background: var(--surface-hover); }
+    .finished a > code { background: none; padding: 0; font-size: 13px; color: var(--green); }
+    .finished b { color: var(--text-bright); font-weight: 600; }
+    .finished em { font-style: normal; font-family: var(--font-mono); font-size: 11.5px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); }
+
     /* release history: one dropdown per version */
     .releases { margin-top: 36px; display: grid; gap: 10px; }
     details { border-radius: 14px; border: 1px solid var(--border); background: var(--surface); transition: border-color .2s, background .2s; }
@@ -165,7 +176,9 @@
       .nav .wrap { padding-left: 16px; }
       .head { padding-top: 56px; }
       section { padding-top: 76px; }
-      .phase ul { grid-template-columns: 1fr; }
+      .phase ul, .work { grid-template-columns: 1fr; }
+      .finished a { grid-template-columns: 30px 1fr; }
+      .finished em { display: none; }
       .phase .tag { margin-left: 0; }
       .track { gap: 3px; }
       summary { grid-template-columns: 1fr 18px; gap: 6px 12px; padding: 16px 18px; }
@@ -184,7 +197,9 @@
   <div class="wrap">
     <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
     <nav class="nav-links">
-      <a href="#ahead">What's coming</a>
+      <a href="#now">Now</a>
+      <a href="#ahead">Coming</a>
+      <a href="#done">Done</a>
       <a href="#releases">Releases</a>
       <a href="/">Home</a>
     </nav>
@@ -199,23 +214,25 @@
       <h1>Where Cerberus is going, <span>and how it got here.</span></h1>
       <p class="lead">Cerberus is built in numbered phases. Each one ends in a tested release, and no phase starts until the one before it passes its acceptance tests.</p>
       <div class="jump">
+        <a class="btn" href="#now">In progress</a>
         <a class="btn" href="#ahead">What's coming</a>
+        <a class="btn" href="#done">Completed</a>
         <a class="btn" href="#releases">Release history</a>
       </div>
       <div class="track" aria-hidden="true">
-        <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="next"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="next"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
       </div>
-      <div class="track-label"><span>11 of 20 phases done</span><span>v0.0.5f</span></div>
+      <div class="track-label"><span>phases 0 to 11 done</span><span>phase 12 in progress &middot; v0.0.5f</span></div>
     </div>
 
-    <section id="ahead">
-      <span class="eyebrow">What's coming</span>
-      <h2>The road from here.</h2>
-      <p class="sub">The highlights of every phase still ahead, in the order they will be built.</p>
+    <section id="now">
+      <span class="eyebrow">In progress</span>
+      <h2>What is being built right now.</h2>
+      <p class="sub">Phase 11 shipped in v0.0.5f. The current development builds are working towards phase 12.</p>
 
       <div class="ahead">
         <article class="phase next">
-          <header><span class="n">Phase 12</span><h3>Pane, the window server</h3><span class="tag">up next</span></header>
+          <header><span class="n">Phase 12</span><h3>Pane, the window server</h3><span class="tag">in progress</span></header>
           <p>The desktop moves out of the kernel and becomes its own protected program.</p>
           <ul>
             <li><b>Real window management:</b> move, resize, stack, focus, minimise, maximise and full screen.</li>
@@ -227,7 +244,23 @@
           </ul>
           <p class="goal"><b>Target:</b> a full 1920×1080 frame with 10 windows in under 8 ms, and no work at all when nothing changed.</p>
         </article>
+      </div>
 
+      <p class="minor">Also on the workbench</p>
+      <div class="work">
+        <div><b>Faster page faults.</b> A minor page fault takes 2.0 to 2.9 µs against a 2 µs budget. It is the one number over budget, and it gets profiled first.</div>
+        <div><b>Window animations.</b> Open and close animations, and frame pacing from a one-shot timer.</div>
+        <div><b>Finishing memory mapping.</b> Shared and demand-paged file mappings, plus signal masks.</div>
+        <div><b>Driver loose ends.</b> MSI-X so NVMe and virtio disks stop being polled, keyboard LEDs, and layouts other than US.</div>
+      </div>
+    </section>
+
+    <section id="ahead">
+      <span class="eyebrow">What's coming</span>
+      <h2>The road from here.</h2>
+      <p class="sub">The highlights of every phase after this one, in the order they will be built.</p>
+
+      <div class="ahead">
         <article class="phase">
           <header><span class="n">Phase 13</span><h3>Facet and the first real apps</h3><span class="tag">planned</span></header>
           <p>A widget toolkit, a proper desktop shell, and the applications that make it a system you can use.</p>
@@ -334,6 +367,26 @@
             <li><b>Spec compiling itself,</b> and an ARM64 port.</li>
           </ul>
         </article>
+      </div>
+    </section>
+
+    <section id="done">
+      <span class="eyebrow">Completed</span>
+      <h2>Twelve phases done.</h2>
+      <p class="sub">Every finished phase passed its acceptance tests before the next one started. Pick one to open the release that completed it.</p>
+      <div class="finished">
+        <a href="#v0.0.1"><code>0</code><span><b>Scaffolding.</b> The cross compiler, the bootloader, the build and the boot test harness.</span><em>0.0.1</em></a>
+        <a href="#v0.0.1"><code>1</code><span><b>Boot and output.</b> Serial, a framebuffer console and the boot banner.</span><em>0.0.1</em></a>
+        <a href="#v0.0.1"><code>2</code><span><b>CPU and interrupts.</b> Symbolised crash dumps, ACPI, APIC, HPET, a 100 Hz timer and the kernel shell.</span><em>0.0.1</em></a>
+        <a href="#v0.3.0"><code>3</code><span><b>Physical memory.</b> The frame allocator and its self-test.</span><em>0.3.0</em></a>
+        <a href="#v0.4.0"><code>4</code><span><b>Virtual memory.</b> Private address spaces, demand paging and copy-on-write.</span><em>0.4.0</em></a>
+        <a href="#v0.5.0"><code>5</code><span><b>Kernel heap.</b> A hardened allocator that detects corruption.</span><em>0.5.0</em></a>
+        <a href="#v0.6.0"><code>6</code><span><b>Threads and scheduling.</b> A four-level preemptive scheduler and the full set of locks.</span><em>0.6.0</em></a>
+        <a href="#v0.7.0"><code>7</code><span><b>User programs.</b> Ring 3, system calls, the ELF loader, <code>fork</code> and <code>exec</code>.</span><em>0.7.0</em></a>
+        <a href="#v0.0.5a"><code>8</code><span><b>Every core.</b> All processors scheduling, with work stealing and TLB shootdown.</span><em>0.0.5a</em></a>
+        <a href="#v0.0.5c"><code>9</code><span><b>Files.</b> The VFS, the page cache, cerfs and the first disk drivers.</span><em>0.0.5c</em></a>
+        <a href="#v0.0.5e"><code>10</code><span><b>Drivers.</b> The driver model, NVMe and virtio disks, input devices and power management.</span><em>0.0.5e</em></a>
+        <a href="#v0.0.5f"><code>11</code><span><b>Programs talking to each other.</b> Ports, shared memory, signals, threads, futexes and event queues.</span><em>0.0.5f</em></a>
       </div>
     </section>
 
@@ -565,7 +618,7 @@
       Performance: [
         'SATA commands are completed by an interrupt (MSI) where the controller offers it, so the processor is free while the disk works.'
       ] } },
-    { v: '0.0.5f', date: 'October 2026', title: 'Programs talking to each other', phase: 'Phase 11', security: true, groups: {
+    { v: '0.0.5f', date: 'October 2026', title: 'Programs talking to each other, and a new desktop', phase: 'Phase 11', security: true, groups: {
       Security: [
         'A named port has an owner and permission bits like a file; a program without permission cannot connect to it.',
         'The receiver of a connection learns the other side\'s process, user and group from the kernel, so it cannot be faked.',
@@ -581,6 +634,11 @@
         'Futexes: locks that enter the kernel only to wait, also between processes.',
         'Event queues: one wait over ports, timers and child exit. A waiting server uses no CPU and wakes about 50 microseconds after a message is sent.',
         '`mmap` of a file, `mprotect`, `kill`, `umask`, `sysinfo` and more: 74 system calls now.',
+        'Settings: nine accent colours, three wallpapers (Nebula, Aurora, Ember), square, soft or round window corners, a floating or docked taskbar, and a 12- or 24-hour clock.',
+        'Window-border effects: static, breathing, flashing, rainbow and chase, with a choice of colour, thickness, speed and glow.',
+        'Screen resolution can be changed in Settings, from 800x600 to 1920x1080, or with `resolution` in the shell.',
+        'A new launcher: a logo button, a search box on the taskbar, and a menu you can type in to filter apps, with Power off and Restart.',
+        'A new taskbar: a rounded bar floating clear of the screen edges, an icon for each open window, a memory meter and a bolder clock.',
         'The mouse cursor turns into a two-headed arrow over a window\'s edges, so resizing is discoverable.',
         'Test programs: `ipctest`, `threadtest`, `sigtest`, `eventtest` and `mmaptest`.'
       ],
@@ -634,7 +692,7 @@
   // a link such as /roadmap/#v0.0.5f opens that version
   function openHash() {
     var d = location.hash && document.getElementById(location.hash.slice(1));
-    if (d && d.tagName === 'DETAILS') { d.open = true; d.scrollIntoView(); }
+    if (d && d.tagName === 'DETAILS') { d.open = true; d.scrollIntoView(); sync(); }
   }
   window.addEventListener('hashchange', openHash);
   openHash();
