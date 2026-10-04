@@ -85,6 +85,13 @@
     .nav-links a:not(.btn) { color: var(--text); transition: color .15s; }
     .nav-links a:not(.btn):hover { color: var(--text-bright); }
 
+    .menu-btn { display: none; place-items: center; width: 40px; height: 40px; border-radius: 11px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; }
+    .menu-btn span, .menu-btn span::before { display: block; width: 16px; height: 2px; border-radius: 2px; background: var(--text-bright); transition: transform .2s; }
+    .menu-btn span { position: relative; transform: translateY(-3px); }
+    .menu-btn span::before { content: ''; position: absolute; top: 6px; }
+    .nav.open .menu-btn span { transform: rotate(45deg); }
+    .nav.open .menu-btn span::before { top: 0; transform: rotate(-90deg); }
+
     .btn {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 11px 20px; border-radius: 12px; backdrop-filter: blur(8px);
@@ -145,7 +152,7 @@
     .stat:first-child { border-left: 0; }
     .stat strong { display: block; font-size: 40px; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; color: var(--text-bright); font-weight: 600; }
     .stat strong small { font-size: 16px; color: var(--accent); margin-left: 3px; font-weight: 500; }
-    .stat span { font-size: 13.5px; color: var(--text-dim); }
+    .stat > span { font-size: 13.5px; color: var(--text-dim); }
 
     /* sections */
     section { padding: 112px 0 0; }
@@ -259,7 +266,11 @@
     @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } .track i.next, .aurora i, h1 span { animation: none; } html { scroll-behavior: auto; } }
 
     @media (max-width: 860px) {
-      .nav-links a:not(.btn) { display: none; }
+      .menu-btn { display: grid; }
+      .nav-links { display: none; position: absolute; top: 64px; left: 16px; right: 16px; flex-direction: column; align-items: stretch; gap: 0; padding: 8px; border-radius: 16px; border: 1px solid var(--border); background: #0a0c19; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+      .nav.open .nav-links { display: flex; }
+      .nav-links a:not(.btn) { padding: 13px 14px; border-radius: 10px; font-size: 15.5px; }
+      .nav-links a:not(.btn):active { background: var(--surface-hover); }
       .hero { padding-top: 64px; }
       .g3, .g2, .split, .soon { grid-template-columns: 1fr; }
       .vow { grid-template-columns: 1fr; gap: 12px; padding: 26px 24px; }
@@ -286,6 +297,7 @@
 <header class="nav">
   <div class="wrap">
     <a class="wordmark" href="#top" aria-label="Cerberus OS home">Cerberus<i></i></a>
+    <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
     <nav class="nav-links">
       <a href="#today">Today</a>
       <a href="#security">Security</a>
@@ -586,6 +598,12 @@
       })(t0);
     });
   }, { threshold: 0.6 }).observe(document.querySelector('.stats'));
+
+  // phone menu
+  var nav = document.querySelector('.nav'), menu = document.getElementById('menu');
+  function setMenu(open) { nav.classList.toggle('open', open); menu.setAttribute('aria-expanded', open); }
+  menu.addEventListener('click', function () { setMenu(!nav.classList.contains('open')); });
+  nav.querySelectorAll('.nav-links a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
 
   // click a screenshot to view it full size
   var lightbox = document.getElementById('lightbox');
