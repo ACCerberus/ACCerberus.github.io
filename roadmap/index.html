@@ -160,6 +160,9 @@
 
     @media (prefers-reduced-motion: reduce) { .track i.next, .aurora i, h1 span { animation: none; } html { scroll-behavior: auto; } }
     @media (max-width: 720px) {
+      .nav-links { gap: 16px; font-size: 13.5px; padding-right: 8px; white-space: nowrap; }
+      .nav-links a[href="/"] { display: none; }
+      .nav .wrap { padding-left: 16px; }
       .head { padding-top: 56px; }
       section { padding-top: 76px; }
       .phase ul { grid-template-columns: 1fr; }
