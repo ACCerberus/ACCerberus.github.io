@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.1.0",
-  "generatedAt": "2026-10-04T11:58:55Z",
+  "generatedAt": "2026-10-04T16:47:34Z",
   "status": "operational",
   "statusMessage": "All Systems Operational",
   "uptime": {
     "period": "30d",
-    "overallPercent": 97.2
+    "overallPercent": 98.3
   },
   "regions": [
     {
@@ -26,19 +26,19 @@
       "id": "detection-engine",
       "name": "Detection Engine",
       "status": "operational",
-      "uptimePercent30d": 97.6,
+      "uptimePercent30d": 98.0,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.8
+          "uptimePercent30d": 98.0
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.4
+          "uptimePercent30d": 98.2
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.8
+          "uptimePercent30d": 97.7
         }
       }
     },
@@ -46,19 +46,19 @@
       "id": "api-dashboard",
       "name": "API & Dashboard",
       "status": "operational",
-      "uptimePercent30d": 97.0,
+      "uptimePercent30d": 97.9,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.0
+          "uptimePercent30d": 97.8
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.0
+          "uptimePercent30d": 98.1
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.0
+          "uptimePercent30d": 97.6
         }
       }
     },
@@ -66,19 +66,19 @@
       "id": "data-pipeline",
       "name": "Data Pipeline",
       "status": "operational",
-      "uptimePercent30d": 97.1,
+      "uptimePercent30d": 98.2,
       "regions": {
         "US-East": {
           "status": "operational",
-          "uptimePercent30d": 97.4
+          "uptimePercent30d": 98.4
         },
         "EU-West": {
           "status": "operational",
-          "uptimePercent30d": 97.0
+          "uptimePercent30d": 98.4
         },
         "AP-Southeast": {
           "status": "operational",
-          "uptimePercent30d": 97.4
+          "uptimePercent30d": 98.4
         }
       }
     }
@@ -113,13 +113,13 @@
   "components": {
     "kernelDriver": "v0.6.1.1a",
     "behavioralModel": "bm-3.2.0",
-    "signatureDbCount": 7783,
+    "signatureDbCount": 7784,
     "driverChannel": "alpha",
     "stableKernelDriver": "v0.5.1.9b"
   },
   "metrics": {
     "falsePositiveRatePercent": 0.14,
-    "activeSessions": 507,
-    "dailyDetections": 59
+    "activeSessions": 857,
+    "dailyDetections": 85
   }
 }
