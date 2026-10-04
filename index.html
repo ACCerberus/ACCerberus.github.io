@@ -264,8 +264,6 @@
       <a href="#desktop">Desktop</a>
       <a href="#roadmap">Roadmap</a>
       <a href="#spec">Spec</a>
-      <a href="#run">Run it</a>
-      <a class="btn small" href="https://github.com/ArsenalRX/CerberusOS">GitHub</a>
     </nav>
   </div>
 </header>
@@ -278,8 +276,8 @@
       <h1>An operating system, <span>written from scratch.</span></h1>
       <p class="lead">Cerberus is a 64-bit OS with its own kernel, its own file system, its own drivers and its own desktop. Nothing here is Linux, BSD or Windows underneath.</p>
       <div class="cta">
-        <a class="btn primary" href="#run">Run it in a VM</a>
-        <a class="btn" href="https://github.com/ArsenalRX/CerberusOS">View the source</a>
+        <a class="btn primary" href="#today">See what works</a>
+        <a class="btn" href="#roadmap">Roadmap</a>
       </div>
 
       <!-- SCREENSHOT SLOT 1: img/hero.png (the main desktop shot) -->
@@ -312,7 +310,7 @@
         <article class="card reveal">
           <span class="num">03</span>
           <h3>Understandable</h3>
-          <p>One codebase you can read end to end, with a written specification and the reasoning behind every decision.</p>
+          <p>One small system, with a written specification and the reasoning behind every decision.</p>
         </article>
       </div>
     </section>
@@ -354,7 +352,7 @@
     <section id="measured">
       <span class="eyebrow">Measured</span>
       <h2>Every budget is measured and written down.</h2>
-      <p class="sub">Figures from the current build on QEMU/KVM with 4 cores. The full record, with the budget next to each number, lives in the repository.</p>
+      <p class="sub">Figures from the current build on QEMU/KVM with 4 cores. Each one is checked against a written budget.</p>
       <div class="grid g4">
         <article class="card metric reveal"><strong>68<small>ms</small></strong><p>for 100,000 messages through a port, none lost or reordered</p></article>
         <article class="card metric reveal"><strong>~50<small>&micro;s</small></strong><p>for a blocked server to wake after a message is sent</p></article>
@@ -442,39 +440,12 @@
       </div>
     </section>
 
-    <section id="run">
-      <div class="split">
-        <div>
-          <span class="eyebrow">Run it</span>
-          <h2>Boot it in a virtual machine.</h2>
-          <p>Build on Linux, or on Windows with WSL2. The cross compiler is a one-off build of 15 to 30 minutes; after that, an ISO takes moments.</p>
-          <ul>
-            <li><b>40 integration tests</b> boot the ISO headless and check the output.</li>
-            <li><b>Fuzzers</b> cover the ELF loader, the archive reader, cerfs and the system calls.</li>
-            <li><b>VirtualBox</b> works too: type Other/Unknown (64-bit), 2 CPUs, 512 MiB.</li>
-          </ul>
-        </div>
-        <div class="code reveal">
-          <header><span>terminal</span><button class="btn small" id="copy" type="button">Copy</button></header>
-<pre id="cmds"><span class="c"># one-off: build the x86_64-elf cross compiler</span>
-<span class="p">$</span> ./toolchain/build-cross.sh
-
-<span class="c"># kernel + userland + bootable ISO</span>
-<span class="p">$</span> make iso
-
-<span class="c"># boot it in QEMU</span>
-<span class="p">$</span> make run</pre>
-        </div>
-      </div>
-    </section>
-
     <div class="closing reveal">
       <span class="wordmark">Cerberus<i></i></span>
-      <h2>Read it. Boot it. Break it.</h2>
-      <p>The whole system is one codebase you can read end to end, from the bootloader handoff to the window compositor.</p>
+      <h2>Phase 12 is next.</h2>
+      <p>Pane, the window server, moves the desktop out of the kernel and into its own protected program.</p>
       <div class="cta">
-        <a class="btn primary" href="https://github.com/ArsenalRX/CerberusOS">Get the source</a>
-        <a class="btn" href="https://github.com/ArsenalRX/CerberusOS/blob/main/docs/ROADMAP.md">Read the full roadmap</a>
+        <a class="btn primary" href="#roadmap">See the roadmap</a>
       </div>
     </div>
 
@@ -487,7 +458,6 @@
   <div class="wrap">
     <span>Cerberus OS &middot; v0.0.5f</span>
     <nav>
-      <a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a>
       <a href="#roadmap">Roadmap</a>
       <a href="#top">Back to top</a>
     </nav>
@@ -552,14 +522,6 @@
   new IntersectionObserver(function (entries, obs) {
     if (entries[0].isIntersecting) { obs.disconnect(); play(0); }
   }, { threshold: 0.4 }).observe(document.getElementById('term'));
-
-  document.getElementById('copy').addEventListener('click', function () {
-    var btn = this;
-    navigator.clipboard.writeText('./toolchain/build-cross.sh\nmake iso\nmake run').then(function () {
-      btn.textContent = 'Copied';
-      setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
-    });
-  });
 </script>
 </body>
 </html>
