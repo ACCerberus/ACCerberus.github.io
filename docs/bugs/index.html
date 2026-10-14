@@ -26,7 +26,7 @@
   <div class="wrap">
     <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
     <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
-    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a><a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a></nav>
+    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a></nav>
   </div>
 </header>
 <main id="top">
@@ -34,7 +34,7 @@
 
     <div class="head">
       <span class="eyebrow">Docs &middot; BUGS.md</span>
-      <div class="docmeta"><span>1,905 words</span><span>updated with every commit</span><a href="https://github.com/ArsenalRX/CerberusOS/blob/main/docs/BUGS.md">View the source on GitHub</a></div>
+      <div class="docmeta"><span>1,907 words</span><span>regenerated with every change</span></div>
       
     </div>
     <article class="prose"><h1 id="bug-ledger">Bug ledger</h1>
@@ -163,7 +163,7 @@
 <li>Symptom: a 50 ms wait measured as 49 ms.</li>
 <li>Cause: a wait counted in timer ticks and measured with the reference clock can read 1 ms short.</li>
 <li>Fix: the test allows 45 ms. Looped 16 times afterwards without failure.</li>
-<li>Guard: the rule in CLAUDE.md ("Timing checks in tests: leave a margin").</li>
+<li>Guard: the rule in docs/WORKING_NOTES.md ("Timing checks in tests: leave a margin").</li>
 <li>Status: FIXED 2026-10-04.</li>
 </ul>
 <h3 id="b-007-keyboard-stalled-on-virtualbox-with-several-cpus">B-007 — Keyboard stalled on VirtualBox with several CPUs</h3>
@@ -193,7 +193,7 @@
 <li>Symptom: a Python patch written through a heredoc turned <code>\n</code> inside a C string into a real newline; the kernel then failed to compile with "missing terminating \" character".</li>
 <li>Cause: one level of backslash escaping is removed by the shell path.</li>
 <li>Fix: write patch scripts with the editor into <code>build/wip/</code> and run them from there; grep for a line that is only <code>");</code> afterwards.</li>
-<li>Guard: the rule in CLAUDE.md "Pitfalls".</li>
+<li>Guard: the rule in docs/WORKING_NOTES.md "Pitfalls".</li>
 <li>Status: FIXED (process).</li>
 </ul></article>
 
@@ -202,12 +202,11 @@
 <div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
 <footer>
   <div class="wrap">
-    <span>Cerberus OS &middot; v0.0.5i &middot; this page was generated from the repository's docs on 2026-10-13</span>
+    <span>Cerberus OS &middot; v0.0.5j &middot; this page was generated from the repository's docs on 2026-10-13</span>
     <nav>
       <a href="/">Home</a>
       <a href="/roadmap/">Roadmap</a>
       <a href="/docs/">Docs</a>
-      <a href="https://github.com/ArsenalRX/CerberusOS">Source</a>
     </nav>
   </div>
 </footer>

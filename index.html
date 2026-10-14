@@ -26,23 +26,23 @@
   <div class="wrap">
     <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
     <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
-    <nav class="nav-links"><a href="/" class="on">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a><a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a></nav>
+    <nav class="nav-links"><a href="/" class="on">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a></nav>
   </div>
 </header>
 <main id="top">
   <div class="wrap">
 
     <div class="hero">
-      <span class="pill"><b></b>v0.0.5i &middot; phases 0&ndash;11 done &middot; phase 12 next &middot; 0.0.5j built, release pending</span>
+      <span class="pill"><b></b>v0.0.5j &middot; phases 0&ndash;11 done &middot; phase 12 next</span>
       <h1>An operating system, <span>written from scratch.</span></h1>
       <p class="lead">Cerberus is a 64-bit OS with its own kernel, its own file system, its own drivers and its own desktop. Nothing here is Linux, BSD or Windows underneath.</p>
       <div class="cta">
         <a class="btn primary" href="#today">See what works</a>
         <a class="btn" href="/roadmap/">Roadmap</a>
-        <a class="btn" href="https://github.com/ArsenalRX/CerberusOS">Source on GitHub</a>
+        <a class="btn" href="/docs/">Docs</a>
       </div>
       <figure class="shot hero-shot reveal"><div class="tilt"><img src="/img/screenshots/settings.png" alt="Settings: a custom accent colour, the Aurora wallpaper and the Chase window border" width="1280" height="800" /></div></figure>
-      <div class="stats reveal"><div class="stat"><strong><span data-count="24">24</span><small>ns</small></strong><span>context switch</span></div><div class="stat"><strong><span data-count="36">36</span><small>ns</small></strong><span>system call</span></div><div class="stat"><strong><span data-count="0">0</span><small>%</small></strong><span>CPU on an idle desktop</span></div><div class="stat"><strong><span data-count="74">74</span><small></small></strong><span>system calls</span></div></div>
+      <div class="stats reveal"><div class="stat"><strong><span data-count="21">21</span><small>ns</small></strong><span>context switch</span></div><div class="stat"><strong><span data-count="30">30</span><small>ns</small></strong><span>system call</span></div><div class="stat"><strong><span data-count="0">0</span><small>%</small></strong><span>CPU on an idle desktop</span></div><div class="stat"><strong><span data-count="74">74</span><small></small></strong><span>system calls</span></div></div>
     </div>
 
     <section id="why">
@@ -65,10 +65,10 @@
 
     <section id="new">
       <span class="eyebrow">What's new</span>
-      <h2>Version 0.0.5i, released 2026-10-05.</h2>
-      <p class="sub">The release notes, straight from the changelog.</p>
-      <div class="news reveal"><div class="card"><h4 class="performance">Performance</h4><ul><li>The first touch of a page (a minor page fault) takes 1.4 µs instead of 2.1 µs: frames are zeroed ahead of time by a background thread (B-015).</li></ul></div><div class="card"><h4 class="added">Added</h4><ul><li><code>sigprocmask</code>: a thread can block signals; a blocked signal waits until it is unblocked. SIGKILL cannot be blocked. New threads and children inherit the mask.</li><li><code>port_try_send</code>: as <code>port_send</code>, but EAGAIN instead of waiting when the queue is full.</li><li>The keyboard's Caps Lock and Num Lock lights follow the keys.</li></ul></div></div>
-      <div class="cta" style="justify-content:flex-start;margin-top:24px"><a class="btn small" href="/roadmap/#v0.0.5i">The full release notes</a><a class="btn small" href="/roadmap/#releases">Every release</a></div>
+      <h2>Version 0.0.5j, released 2026-10-13.</h2>
+      <p class="sub">Round 3 continued (hard links) and round 4 of polish, the owner's eight picks of the 0.0.5i list, as far as a three-hour box allowed. Built and fully tested on 2026-10-06 (53 of 53 tests); released on 2026-10-13.</p>
+      <div class="news reveal"><div class="card"><h4 class="security">Security</h4><ul><li>The desktop can <strong>lock itself</strong> after 1, 5, 15 or 30 idle minutes (Settings → Security, once a password is set).</li></ul></div><div class="card"><h4 class="fixed">Fixed</h4><ul><li>Settings scrolls with the wheel when its content does not fit (B-012).</li><li>Task buttons no longer run under the tray when the taskbar is full.</li></ul></div><div class="card"><h4 class="added">Added</h4><ul><li><strong>Hard links</strong>: <code>ln a b</code> on cerfs and tmpfs (<code>link</code> system call 16).</li><li><strong>Virtual desktops</strong>: four of them; Super+1..4 switches, Super+Shift+1..4 moves the focused window; squares on the taskbar show which hold windows (click to switch).</li><li><strong>System Monitor</strong>: CPU and memory graphs over the last minute, a process table with each process's CPU share, and End task.</li><li><strong>Image Viewer</strong>: opens BMP files (Print Screen's output) from Files; "Set as wallpaper" makes the picture the background.</li><li><strong>Reminders repeat</strong>: start the text with <code>daily</code> or <code>weekly</code>; a reminder's notification has a <strong>Snooze</strong> button (five minutes).</li></ul><a class="more" href="/roadmap/#v0.0.5j">and 3 more &rarr;</a></div></div>
+      <div class="cta" style="justify-content:flex-start;margin-top:24px"><a class="btn small" href="/roadmap/#v0.0.5j">The full release notes</a><a class="btn small" href="/roadmap/#releases">Every release</a></div>
     </section>
 
     <section id="security">
@@ -117,8 +117,8 @@
     <section id="measured">
       <span class="eyebrow">Measured</span>
       <h2>Every budget is measured and written down.</h2>
-      <p class="sub">The newest block in <a href="/docs/bench/">the benchmark record</a> (0.0.5i — 2026-10-05 (polish round 3: the pre-zeroed frame pool)), on QEMU/KVM with 4 cores. Each number is checked against a written budget.</p>
-      <div class="grid g4"><article class="card metric reveal"><strong>1,394<small>ns</small></strong><p>first touch of a memory page (minor page fault)</p></article><article class="card metric reveal"><strong>10<small>µs</small></strong><p>to wake an interactive thread</p></article><article class="card metric reveal"><strong>76<small>ns</small></strong><p>for a kernel heap allocation and free</p></article><article class="card metric reveal"><strong>356<small>µs</small></strong><p>to composite a desktop frame</p></article></div>
+      <p class="sub">The newest block in <a href="/docs/bench/">the benchmark record</a> (0.0.5j — 2026-10-13 (hard links; polish round 4)), on QEMU/KVM with 4 cores. Each number is checked against a written budget.</p>
+      <div class="grid g4"><article class="card metric reveal"><strong>1,161<small>ns</small></strong><p>first touch of a memory page (minor page fault)</p></article><article class="card metric reveal"><strong>10<small>µs</small></strong><p>to wake an interactive thread</p></article><article class="card metric reveal"><strong>67<small>ns</small></strong><p>for a kernel heap allocation and free</p></article><article class="card metric reveal"><strong>300<small>µs</small></strong><p>to composite a desktop frame</p></article></div>
     </section>
 
     <section id="desktop">
@@ -201,12 +201,11 @@
 <div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
 <footer>
   <div class="wrap">
-    <span>Cerberus OS &middot; v0.0.5i &middot; this page was generated from the repository's docs on 2026-10-13</span>
+    <span>Cerberus OS &middot; v0.0.5j &middot; this page was generated from the repository's docs on 2026-10-13</span>
     <nav>
       <a href="/">Home</a>
       <a href="/roadmap/">Roadmap</a>
       <a href="/docs/">Docs</a>
-      <a href="https://github.com/ArsenalRX/CerberusOS">Source</a>
     </nav>
   </div>
 </footer>

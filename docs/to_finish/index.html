@@ -26,7 +26,7 @@
   <div class="wrap">
     <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
     <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
-    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a><a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a></nav>
+    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a></nav>
   </div>
 </header>
 <main id="top">
@@ -34,20 +34,20 @@
 
     <div class="head">
       <span class="eyebrow">Docs &middot; TO_FINISH.md</span>
-      <div class="docmeta"><span>4,653 words</span><span>updated with every commit</span><a href="https://github.com/ArsenalRX/CerberusOS/blob/main/docs/TO_FINISH.md">View the source on GitHub</a></div>
-      <nav class="toc"><b>On this page</b><ul><li><a href="#right-now-phase-12-pane-the-polish-box-is-spent">Right now: phase 12 (Pane) — the polish box is spent</a></li><li><a href="#done-committed">Done (committed)</a></li><li><a href="#spec-phases-remaining-in-order-do-not-start-n-1-before-n-passes">Spec phases remaining (in order — do not start N+1 before N passes)</a></li><li><a href="#proposed-additions-awaiting-the-owner-review-of-2026-10-12">Proposed additions awaiting the owner (review of 2026-10-12)</a></li><li><a href="#waiting-on-the-owner">Waiting on the owner</a></li><li><a href="#owner-added-requirements-beyond-the-spec">Owner-added requirements (beyond the spec)</a></li><li><a href="#known-issues-to-clean-up">Known issues to clean up</a></li><li><a href="#how-to-work-quick-reference">How to work (quick reference)</a></li></ul></nav>
+      <div class="docmeta"><span>4,690 words</span><span>regenerated with every change</span></div>
+      <nav class="toc"><b>On this page</b><ul><li><a href="#right-now-phase-12-pane-or-the-owner-s-decisions-8-15-first">Right now: phase 12 (Pane), or the owner's decisions 8–15 first</a></li><li><a href="#done-committed">Done (committed)</a></li><li><a href="#spec-phases-remaining-in-order-do-not-start-n-1-before-n-passes">Spec phases remaining (in order — do not start N+1 before N passes)</a></li><li><a href="#proposed-additions-awaiting-the-owner-review-of-2026-10-12">Proposed additions awaiting the owner (review of 2026-10-12)</a></li><li><a href="#waiting-on-the-owner">Waiting on the owner</a></li><li><a href="#owner-added-requirements-beyond-the-spec">Owner-added requirements (beyond the spec)</a></li><li><a href="#known-issues-to-clean-up">Known issues to clean up</a></li><li><a href="#how-to-work-quick-reference">How to work (quick reference)</a></li></ul></nav>
     </div>
     <article class="prose"><h1 id="cerberus-to-finish">Cerberus — To Finish</h1>
-<p>A living checklist of what is done, what is in progress, and what remains. Pairs with <code>docs/STATUS.md</code> (current state) and <code>docs/SPEC.md</code> (the full plan). Read this to pick up work. Dates are absolute. Last updated 2026-10-05 (release 0.0.5g).</p>
+<p>A living checklist of what is done, what is in progress, and what remains. Pairs with <code>docs/STATUS.md</code> (current state) and <code>docs/SPEC.md</code> (the full plan). Read this to pick up work. Dates are absolute. Last updated 2026-10-13 (release 0.0.5j).</p>
 <p><strong>What this file is for.</strong> The ordered list of everything left to build, and the one place that says what to do first.</p>
 <p><strong>When to update it.</strong> Whenever a phase or item is finished, added, re-scoped or re-ordered; whenever the "Right now" section stops being true; and at the end of any session that changed what remains.</p>
 <p><strong>How to update it.</strong> Tick finished items and move them to "Done" with the date. Keep the phase list identical in numbering and scope to docs/SPEC.md §5 and §5A; if they disagree, the spec wins and this file is fixed in the same session. Rewrite "Right now" so it always names the single next job. Update the "Last updated" date.</p>
 <p><strong>Why.</strong> docs/STATUS.md says what is true; this file says what to do about it. If it drifts from the spec, sessions build the wrong thing or in the wrong order.</p>
 <p><strong>Before starting any item below,</strong> follow docs/SPEC.md §21 (implementation procedure): read, threat-check (§19), budget-check (§20), design, test first, implement, self-review, verify with real output, document, commit.</p>
 <hr />
-<h2 id="right-now-phase-12-pane-the-polish-box-is-spent">Right now: phase 12 (Pane) — the polish box is spent</h2>
-<p>Version <strong>0.0.5g</strong> (desktop polish: calendar, reminders, notifications, animations, snapping, Alt+Tab, Settings cards, VirtualBox mouse) is the release of 2026-10-05. The owner said on 2026-10-05: "do more polish until we start phase 12", with a fixed loop: each iteration ships to VirtualBox, updates the HTML list on their Windows desktop, and ends with <strong>8 numbered candidates</strong>; the owner picks by number (CLAUDE.md, "After every iteration"). docs/FEATURES.md lists what exists; docs/BUGS.md the bugs.</p>
-<p><strong>Start here next session: phase 12</strong>, step 4 below. The owner's three-hour polish box ended with 0.0.5j on 2026-10-06; what it did not reach is listed in docs/DECISIONS.md (2026-10-06) and in step 3, and is done only if the owner asks for it by number.</p>
+<h2 id="right-now-phase-12-pane-or-the-owner-s-decisions-8-15-first">Right now: phase 12 (Pane), or the owner's decisions 8–15 first</h2>
+<p>Version <strong>0.0.5j</strong> (hard links; polish round 4: virtual desktops, System Monitor graphs and process table, BMP viewer, repeating reminders, auto-lock) is the release of 2026-10-13. The loop since 2026-10-05: each iteration ships to VirtualBox, updates the HTML list on the owner's Windows desktop, ends with <strong>8 numbered candidates</strong>, and since 2026-10-13 <strong>every build is released</strong> (tag, <code>dist/</code>, VM renamed, website pushed) and the website is regenerated from <code>docs/</code> (docs/WORKING_NOTES.md, "After every iteration"). docs/FEATURES.md lists what exists; docs/BUGS.md the bugs.</p>
+<p><strong>Start here next session: phase 12</strong>, step 4 below, unless the owner has answered decisions 8–15 in docs/DECISIONS.md (2026-10-13), in particular whether the proposed phases 11B (plumbing) and 11C (debugging) come before Pane. The three-hour polish box ended with 0.0.5j; what it did not reach is in docs/DECISIONS.md (2026-10-06) and in step 3, and is done only if the owner asks for it by number.</p>
 <p><strong>The owner's instruction of 2026-10-05 (evening):</strong> "do all 1-8 additions and re-go through all phases 1-11 and see if you can iterate to make it better each phase; i want you to complete it. I mess around with it then ask you to iterate." So, in order, each step a verified build in <code>dist/</code> and an updated Desktop HTML list:</p>
 <ol>
 <li><strong>Round 2 (→ 0.0.5h): DONE 2026-10-05.</strong> The eight additions: (1) saved settings and reminders — the owner's "do all" is the yes to auto-mounting a cerfs disk at boot (<code>/data</code>), with a Settings button that formats an empty disk for it; (2) text selection, copy and paste in the terminal and a desktop clipboard; (3) a Files window; (4) a Notes text editor; (5) a Calculator; (6) keyboard settings (layouts, repeat, lock indicators); (7) a lock screen (Super+L, password in Settings, hashed); (8) a system tray with quick settings, a CPU/RAM meter and the notification history. New windows go in their own files under <code>kernel/gui/</code> (an app = paint + key + click + wheel over a Surface), dispatched from <code>desktop.cpp</code>.</li>
@@ -183,12 +183,11 @@
 <div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
 <footer>
   <div class="wrap">
-    <span>Cerberus OS &middot; v0.0.5i &middot; this page was generated from the repository's docs on 2026-10-13</span>
+    <span>Cerberus OS &middot; v0.0.5j &middot; this page was generated from the repository's docs on 2026-10-13</span>
     <nav>
       <a href="/">Home</a>
       <a href="/roadmap/">Roadmap</a>
       <a href="/docs/">Docs</a>
-      <a href="https://github.com/ArsenalRX/CerberusOS">Source</a>
     </nav>
   </div>
 </footer>
