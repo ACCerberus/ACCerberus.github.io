@@ -26,20 +26,19 @@
   <div class="wrap">
     <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
     <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
-    <nav class="nav-links"><a href="/" class="on">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a></nav>
+    <nav class="nav-links"><a href="/" class="on">Home</a><a href="/#today">Today</a><a href="/#security">Security</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a></nav>
   </div>
 </header>
 <main id="top">
   <div class="wrap">
 
     <div class="hero">
-      <span class="pill"><b></b>v0.0.5j &middot; phases 0&ndash;11 done &middot; phase 12 next</span>
+      <span class="pill"><b></b>v0.0.5j &middot; phases 0&ndash;11 done &middot; phase 12 next &middot; 0.0.6a in development</span>
       <h1>An operating system, <span>written from scratch.</span></h1>
       <p class="lead">Cerberus is a 64-bit OS with its own kernel, its own file system, its own drivers and its own desktop. Nothing here is Linux, BSD or Windows underneath.</p>
       <div class="cta">
         <a class="btn primary" href="#today">See what works</a>
         <a class="btn" href="/roadmap/">Roadmap</a>
-        <a class="btn" href="/docs/">Docs</a>
       </div>
       <figure class="shot hero-shot reveal"><div class="tilt"><img src="/img/screenshots/settings.png" alt="Settings: a custom accent colour, the Aurora wallpaper and the Chase window border" width="1280" height="800" /></div></figure>
       <div class="stats reveal"><div class="stat"><strong><span data-count="21">21</span><small>ns</small></strong><span>context switch</span></div><div class="stat"><strong><span data-count="30">30</span><small>ns</small></strong><span>system call</span></div><div class="stat"><strong><span data-count="0">0</span><small>%</small></strong><span>CPU on an idle desktop</span></div><div class="stat"><strong><span data-count="74">74</span><small></small></strong><span>system calls</span></div></div>
@@ -51,22 +50,22 @@
       <div class="grid g3">
         <article class="card reveal"><span class="num">01</span><h3>Private and secure by design</h3><p>No telemetry. Nothing leaves the machine unless you ask. Memory is never writable and executable at once, and every system-call argument is treated as hostile.</p></article>
         <article class="card reveal"><span class="num">02</span><h3>Fast and small</h3><p>A message between two programs takes well under a microsecond. Every performance budget is measured and recorded, so a regression is visible.</p></article>
-        <article class="card reveal"><span class="num">03</span><h3>Understandable</h3><p>One small system, with a written specification and the reasoning behind every decision, all published in <a href="/docs/">the docs</a>.</p></article>
+        <article class="card reveal"><span class="num">03</span><h3>Understandable</h3><p>One small system, with a written specification and the reasoning behind every decision written down.</p></article>
       </div>
     </section>
 
     <section id="today">
       <span class="eyebrow">What works today</span>
       <h2>A real system, from the boot sector to the window shadows.</h2>
-      <p class="sub">It runs in QEMU and VirtualBox today, brings up every CPU core, and runs protected user programs. Each card is the first line of its section in <a href="/docs/features/">the feature inventory</a>, which lists everything.</p>
-      <div class="grid g3"><article class="card slim reveal"><h3>Boot and hardware</h3><p>Boots from the hybrid ISO on BIOS and UEFI (Limine); straight into the kernel, no menu wait.</p><a class="more" href="/docs/features/#boot-and-hardware">All of it &rarr;</a></article><article class="card slim reveal"><h3>Files</h3><p>VFS: one tree, mounts, ./.., symbolic links, permissions, mount flags (ro, noexec, nodev, nosuid), name cache.</p><a class="more" href="/docs/features/#files">All of it &rarr;</a></article><article class="card slim reveal"><h3>Programs and IPC</h3><p>Ring-3 processes from position-independent ELF files; ASLR; fork, execve, waitpid; 74 system calls (docs/SYSCALLS.md); a small libc.</p><a class="more" href="/docs/features/#programs-and-ipc">All of it &rarr;</a></article><article class="card slim reveal"><h3>Kernel shell</h3><p>Commands grouped by help; help &lt;command&gt;, help tests.</p><a class="more" href="/docs/features/#kernel-shell-the-terminal-window-also-com1">All of it &rarr;</a></article><article class="card slim reveal"><h3>Desktop</h3><p>Move by the title bar; resize at any edge or corner (cursor changes); minimise / maximise / close buttons (Windows style); stacking; focus follows clicks.</p><a class="more" href="/docs/features/#desktop-kernel-hosted-preview-of-pane">All of it &rarr;</a></article><article class="card slim reveal"><h3>Security and privacy</h3><p>W^X everywhere, SMEP/SMAP/UMIP, stack protectors, zeroed memory, heap free-list encoding, guard pages, user-copy routines only, ASLR, CSPRNG.</p><a class="more" href="/docs/features/#security-and-privacy-in-place-see-docs-status-md-for-the-full-list">All of it &rarr;</a></article></div>
+      <p class="sub">It runs in QEMU and VirtualBox today, brings up every CPU core, and runs protected user programs. Each card is the first line of its section in the feature inventory.</p>
+      <div class="grid g3"><article class="card slim reveal"><h3>Boot and hardware</h3><p>Boots from the hybrid ISO on BIOS and UEFI (Limine); straight into the kernel, no menu wait.</p></article><article class="card slim reveal"><h3>Files</h3><p>VFS: one tree, mounts, ./.., symbolic links, permissions, mount flags (ro, noexec, nodev, nosuid), name cache.</p></article><article class="card slim reveal"><h3>Programs and IPC</h3><p>Ring-3 processes from position-independent ELF files; ASLR; fork, execve, waitpid; 74 system calls (docs/SYSCALLS.md); a small libc.</p></article><article class="card slim reveal"><h3>Kernel shell</h3><p>Commands grouped by help; help &lt;command&gt;, help tests.</p></article><article class="card slim reveal"><h3>Desktop</h3><p>Move by the title bar; resize at any edge or corner (cursor changes); minimise / maximise / close buttons (Windows style); stacking; focus follows clicks.</p></article><article class="card slim reveal"><h3>Security and privacy</h3><p>W^X everywhere, SMEP/SMAP/UMIP, stack protectors, zeroed memory, heap free-list encoding, guard pages, user-copy routines only, ASLR, CSPRNG.</p></article></div>
       <p class="note" style="margin-top:28px"><b>Not there yet:</b> Networking, user accounts and login, sound, USB, printing, real hardware, an installer, the Spec compiler, images or any file type but text in the built-in apps.</p>
     </section>
 
     <section id="new">
       <span class="eyebrow">What's new</span>
       <h2>Version 0.0.5j, released 2026-10-13.</h2>
-      <p class="sub">Round 3 continued (hard links) and round 4 of polish, the owner's eight picks of the 0.0.5i list, as far as a three-hour box allowed. Built and fully tested on 2026-10-06 (53 of 53 tests); released on 2026-10-13.</p>
+      <p class="sub">Round 3 continued (hard links) and round 4 of polish, the eight picks of the 0.0.5i list, as far as a three-hour box allowed. Built and fully tested on 2026-10-06 (53 of 53 tests); released on 2026-10-13.</p>
       <div class="news reveal"><div class="card"><h4 class="security">Security</h4><ul><li>The desktop can <strong>lock itself</strong> after 1, 5, 15 or 30 idle minutes (Settings → Security, once a password is set).</li></ul></div><div class="card"><h4 class="fixed">Fixed</h4><ul><li>Settings scrolls with the wheel when its content does not fit (B-012).</li><li>Task buttons no longer run under the tray when the taskbar is full.</li></ul></div><div class="card"><h4 class="added">Added</h4><ul><li><strong>Hard links</strong>: <code>ln a b</code> on cerfs and tmpfs (<code>link</code> system call 16).</li><li><strong>Virtual desktops</strong>: four of them; Super+1..4 switches, Super+Shift+1..4 moves the focused window; squares on the taskbar show which hold windows (click to switch).</li><li><strong>System Monitor</strong>: CPU and memory graphs over the last minute, a process table with each process's CPU share, and End task.</li><li><strong>Image Viewer</strong>: opens BMP files (Print Screen's output) from Files; "Set as wallpaper" makes the picture the background.</li><li><strong>Reminders repeat</strong>: start the text with <code>daily</code> or <code>weekly</code>; a reminder's notification has a <strong>Snooze</strong> button (five minutes).</li></ul><a class="more" href="/roadmap/#v0.0.5j">and 3 more &rarr;</a></div></div>
       <div class="cta" style="justify-content:flex-start;margin-top:24px"><a class="btn small" href="/roadmap/#v0.0.5j">The full release notes</a><a class="btn small" href="/roadmap/#releases">Every release</a></div>
     </section>
@@ -94,7 +93,7 @@
         <div><code>phase 15</code><span><b>Sandboxed apps.</b> Each app declares what it needs and can be denied network, files or devices.</span></div>
         <div><code>phase 18</code><span><b>Your disk, your updates.</b> Optional full-disk encryption, and signed updates that never install on their own.</span></div>
       </div>
-      <p class="minor">Open bugs, from the ledger</p><div class="work reveal"><div><b><a href="/docs/bugs/#b-010-eventtest-misses-its-1-ms-wake-up-limit-on-virtualbox">B-010</a></b> <code>eventtest</code> misses its 1 ms wake-up limit on VirtualBox</div></div>
+      <p class="minor">Open bugs, from the ledger</p><div class="work reveal"><div><b>B-016</b> On VirtualBox the pointer only moved when a button was clicked</div><div><b>B-010</b> <code>eventtest</code> misses its 1 ms wake-up limit on VirtualBox</div></div>
     </section>
 
     <section id="design">
@@ -103,7 +102,7 @@
           <span class="eyebrow">Architecture</span>
           <h2>A hybrid kernel, in clear layers.</h2>
           <p>Anything that needs sub-microsecond speed or special processor instructions stays in the kernel. Everything else runs as an ordinary, protected program.</p>
-          <p style="margin-top:14px">Each layer only talks to the one below it through well-defined, checked doors. The plain-language tour is in <a href="/docs/about/">About Cerberus</a>.</p>
+          <p style="margin-top:14px">Each layer only talks to the one below it through well-defined, checked doors.</p>
         </div>
         <div class="stack reveal">
           <div class="layer"><b>Applications</b><span>Terminal, file manager, editor</span><em>phase 13</em></div>
@@ -117,7 +116,7 @@
     <section id="measured">
       <span class="eyebrow">Measured</span>
       <h2>Every budget is measured and written down.</h2>
-      <p class="sub">The newest block in <a href="/docs/bench/">the benchmark record</a> (0.0.5j — 2026-10-13 (hard links; polish round 4)), on QEMU/KVM with 4 cores. Each number is checked against a written budget.</p>
+      <p class="sub">The newest block of the benchmark record (0.0.5j — 2026-10-13 (hard links; polish round 4)), on QEMU/KVM with 4 cores. Each number is checked against a written budget.</p>
       <div class="grid g4"><article class="card metric reveal"><strong>1,161<small>ns</small></strong><p>first touch of a memory page (minor page fault)</p></article><article class="card metric reveal"><strong>10<small>µs</small></strong><p>to wake an interactive thread</p></article><article class="card metric reveal"><strong>67<small>ns</small></strong><p>for a kernel heap allocation and free</p></article><article class="card metric reveal"><strong>300<small>µs</small></strong><p>to composite a desktop frame</p></article></div>
     </section>
 
@@ -140,7 +139,6 @@
         <figure class="shot reveal"><img src="/img/screenshots/settings.png" alt="Settings: a custom accent colour, the Aurora wallpaper and the Chase window border" width="1280" height="800" loading="lazy" /><figcaption>Settings: a custom accent colour, the Aurora wallpaper and the Chase window border</figcaption></figure>
       </div>
       <div class="grid g3" style="margin-top:16px"><figure class="shot reveal"><img src="/img/screenshots/calendar.png" alt="The calendar with a reminder, opened from the taskbar clock" width="1280" height="800" loading="lazy" /><figcaption>The calendar with a reminder, opened from the taskbar clock</figcaption></figure><figure class="shot reveal"><img src="/img/screenshots/launcher.png" alt="The launcher with app search and the floating taskbar" width="1280" height="800" loading="lazy" /><figcaption>The launcher with app search and the floating taskbar</figcaption></figure><figure class="shot reveal"><img src="/img/screenshots/snap.png" alt="Dragging a window to the screen edge: the snap outline" width="1280" height="800" loading="lazy" /><figcaption>Dragging a window to the screen edge: the snap outline</figcaption></figure></div>
-      <p class="note">Everything the desktop can do, key by key, is in <a href="/docs/features/#desktop-kernel-hosted-preview-of-pane">the feature inventory</a>.</p>
     </section>
 
     <section id="roadmap">
@@ -149,7 +147,7 @@
       <p class="sub">Each phase ends in a tested release, and no phase starts until the one before it passes its acceptance tests.</p>
       <div class="track reveal" aria-hidden="true"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="next"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div>
       <div class="track-label"><span>phase 0</span><span>phase 12 next</span><span>phase 19</span></div>
-      <div class="phases"><div class="phase-row up reveal"><code>12 &middot; next</code><b>Pane: window server as a userland process</b><span>Move the compositor out of the kernel behind the port protocol (<code>docs/SPEC.md</code> §9); per-window shm buffers, <code>libpane</code>.</span></div><div class="phase-row reveal"><code>13</code><b>Facet toolkit, shell, applications</b><span>Widget toolkit, desktop shell, and the apps in §12 (Ember terminal, Crate files, Slate editor, Gauge, Dial, Tally, Frame, Daub, Chronos, Warren, lsh, CLI utils).</span></div><div class="phase-row reveal"><code>14</code><b>Networking</b><span>virtio-net + e1000; <code>netd</code> userland stack (Ethernet, ARP, IPv4, ICMP, UDP, TCP, DHCP, DNS, loopback); socket syscalls 70–83; default-deny inbound firewall; per-app network permission…</span></div><div class="phase-row reveal"><code>15</code><b>Security model, users, encrypted transport</b><span>Users and groups, Argon2id password hashes, credentials, <code>authd</code> broker (no setuid), login and lock screens, <code>restrict</code> sandbox, permission prompts, keyring, TLS client with certificate store, audit log.</span></div><div class="phase-row reveal"><code>15B</code><b>Our own web browser</b><span>(owner, 2026-10-04).</span></div><div class="phase-row reveal"><code>16</code><b>Spec native backend</b><span>(was phase 14).</span></div><div class="phase-row reveal"><code>17</code><b>Software platform</b><span>Dynamic linking with full RELRO, POSIX-subset libc (<code>docs/LIBC.md</code>), ptys and job control, full signals, signed package manager <code>pkg</code>; proof ports: zlib, Lua, tinycc, make.</span></div><div class="phase-row reveal"><code>18</code><b>Installer, updates, storage encryption, recovery</b><span>Live-ISO installer (GPT, cerfs + FAT32 EFI), optional full-disk encryption, signed updates with a fallback kernel, recovery boot entry and repairing <code>fsck.cerfs</code>, service manager with per-service sandbox.</span></div><div class="phase-row reveal"><code>19</code><b>Stretch</b><span>(was phase 15).</span></div></div>
+      <div class="phases"><div class="phase-row up reveal"><code>12 &middot; next</code><b>Pane: window server as a userland process</b><span>Move the compositor out of the kernel behind the port protocol (<code>docs/SPEC.md</code> §9); per-window shm buffers, <code>libpane</code>.</span></div><div class="phase-row reveal"><code>13</code><b>Facet toolkit, shell, applications</b><span>Widget toolkit, desktop shell, and the apps in §12 (Ember terminal, Crate files, Slate editor, Gauge, Dial, Tally, Frame, Daub, Chronos, Warren, lsh, CLI utils).</span></div><div class="phase-row reveal"><code>14</code><b>Networking</b><span>virtio-net + e1000; <code>netd</code> userland stack (Ethernet, ARP, IPv4, ICMP, UDP, TCP, DHCP, DNS, loopback); socket syscalls 70–83; default-deny inbound firewall; per-app network permission…</span></div><div class="phase-row reveal"><code>15</code><b>Security model, users, encrypted transport</b><span>Users and groups, Argon2id password hashes, credentials, <code>authd</code> broker (no setuid), login and lock screens, <code>restrict</code> sandbox, permission prompts, keyring, TLS client with certificate store, audit log.</span></div><div class="phase-row reveal"><code>15B</code><b>Our own web browser</b><span>.</span></div><div class="phase-row reveal"><code>16</code><b>Spec native backend</b><span>(was phase 14).</span></div><div class="phase-row reveal"><code>17</code><b>Software platform</b><span>Dynamic linking with full RELRO, POSIX-subset libc (<code>docs/LIBC.md</code>), ptys and job control, full signals, signed package manager <code>pkg</code>; proof ports: zlib, Lua, tinycc, make.</span></div><div class="phase-row reveal"><code>18</code><b>Installer, updates, storage encryption, recovery</b><span>Live-ISO installer (GPT, cerfs + FAT32 EFI), optional full-disk encryption, signed updates with a fallback kernel, recovery boot entry and repairing <code>fsck.cerfs</code>, service manager with per-service sandbox.</span></div><div class="phase-row reveal"><code>19</code><b>Stretch</b><span>(was phase 15).</span></div></div>
       <div class="cta" style="margin-top:36px"><a class="btn" href="/roadmap/">Read the full roadmap</a></div>
     </section>
 
@@ -192,7 +190,7 @@
       <p>Move the compositor out of the kernel behind the port protocol (<code>docs/SPEC.md</code> §9); per-window shm buffers, <code>libpane</code>.</p>
       <div class="cta">
         <a class="btn primary" href="/roadmap/">Read the full roadmap</a>
-        <a class="btn" href="/docs/status/">What is verified right now</a>
+        <a class="btn" href="/roadmap/#releases">Release history</a>
       </div>
     </div>
 
@@ -205,7 +203,7 @@
     <nav>
       <a href="/">Home</a>
       <a href="/roadmap/">Roadmap</a>
-      <a href="/docs/">Docs</a>
+      <a href="/roadmap/#releases">Releases</a>
     </nav>
   </div>
 </footer>
