@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cerberus — working notes for the coding assistant — Cerberus OS</title>
+  <meta name="description" content="Cerberus — working notes for the coding assistant" />
+  <meta property="og:title" content="Cerberus — working notes for the coding assistant — Cerberus OS" />
+  <meta property="og:description" content="Cerberus — working notes for the coding assistant" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://accerberus.github.io/docs/working_notes/" />
+  <meta property="og:image" content="https://accerberus.github.io/img/screenshots/settings.png" />
+  <link rel="canonical" href="https://accerberus.github.io/docs/working_notes/" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#06070f" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2306070f'/><circle cx='50' cy='50' r='20' fill='%235aa2ff'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/site.css" />
+</head>
+<body class="narrow">
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="progress" id="progress"></div>
+<header class="nav">
+  <div class="wrap">
+    <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
+    <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
+    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a></nav>
+  </div>
+</header>
+<main id="top">
+  <div class="wrap">
+
+    <div class="head">
+      <span class="eyebrow">Docs &middot; WORKING_NOTES.md</span>
+      <div class="docmeta"><span>1,995 words</span><span>regenerated with every change</span></div>
+      <nav class="toc"><b>On this page</b><ul><li><a href="#start-of-every-session">Start of every session</a></li><li><a href="#after-every-iteration-owner-2026-10-05">After every iteration (owner, 2026-10-05)</a></li><li><a href="#build-test-run-all-inside-wsl-ubuntu-24-04">Build, test, run (all inside WSL Ubuntu-24.04)</a></li><li><a href="#pitfalls-learned-the-hard-way">Pitfalls (learned the hard way)</a></li><li><a href="#owner-preferences">Owner preferences</a></li><li><a href="#code-map">Code map</a></li><li><a href="#rules-that-never-bend-spec-19">Rules that never bend (SPEC §19)</a></li></ul></nav>
+    </div>
+    <article class="prose"><h1 id="cerberus-working-notes-for-the-coding-assistant">Cerberus — working notes for the coding assistant</h1>
+<p>(This file is loaded at the start of every session through the untracked root pointer file. The owner asked on 2026-10-13 that the repository carry no assistant name or attribution: no <code>Co-Authored-By</code> lines, no tool names in docs or commit messages.)</p>
+<p>(The OS was called Lumen until 2026-10-04; history files and git log use the old name. Its file system lumfs is now cerfs.)</p>
+<p>Cerberus is a from-scratch x86-64 hybrid-kernel OS with its own desktop, plus <strong>Spec</strong>, its systems language (the spec calls it "Glint"; renamed, see docs/DECISIONS.md top: <code>glintc</code>→<code>specc</code>, <code>.gl</code>→<code>.spec</code>). Owner-facing overview: docs/ABOUT.md. Plain-language plan: docs/ROADMAP.md.</p>
+<h2 id="start-of-every-session">Start of every session</h2>
+<ol>
+<li>Read <code>docs/STATUS.md</code> (what is true now) and <code>docs/TO_FINISH.md</code> ("Right now" names the next job). <code>docs/SPEC.md</code> is the full plan and wins over every other doc; <code>docs/DECISIONS.md</code> records why things are the way they are (read the newest entries).</li>
+<li>Read <code>docs/FEATURES.md</code> (what exists and how it is used: check it before proposing or building anything, update it with every user-visible change) and the OPEN entries of <code>docs/BUGS.md</code> (the bug ledger: every bug gets an entry with symptom, cause, fix and guard, id <code>B-nnn</code>; search it first when something strange happens).</li>
+<li>Stop after each phase or distinct piece of work: report, list what the next phase adds, and wait for the owner's go-ahead — unless the owner has said to keep going for the session.</li>
+</ol>
+<h2 id="after-every-iteration-owner-2026-10-05">After every iteration (owner, 2026-10-05)</h2>
+<ul>
+<li><strong>Every build is a release</strong> (owner, 2026-10-13: "release after every build"). When a piece of work is finished and <code>make test</code> passes, do the whole of SPEC §23.4 at once, without asking: changelog block, STATUS, <code>release: &lt;version&gt;</code> commit, tag <code>v&lt;version&gt;</code>, <code>make RELEASE=1 dist</code>, rename the VM, the Desktop list, <code>release: begin &lt;next&gt;</code>, push <code>main</code> and the tags, <code>make site-push</code>. Run <code>make fuzz</code> when a hostile-input path changed and <code>make bench</code> when a budgeted path changed (record it in docs/BENCH.md); otherwise say in the report that they were not re-run.</li>
+<li>Put the build into VirtualBox: <code>make dist</code> (or copy <code>build/cerberus.iso</code> to <code>dist/cerberus.iso</code> while <code>make test</code> is running), and tell the owner the version (bottom-right of the wallpaper and in About). If the owner's VM is powered off, rename it <code>Cerberus &lt;version&gt;</code> so they know what they are running; a saved VM cannot be changed.</li>
+<li>Rewrite the list on the owner's Windows desktop, <code>C:\Users\devot\Desktop\Cerberus &lt;version&gt; - what changed.html</code> (replace the old file; one file): what was fixed, added and what is open, in plain words, plus a table of from-scratch programs still to write, and always end with <strong>8 numbered QoL / addition candidates</strong> for the owner to pick from.</li>
+<li><strong>Preview every build yourself in VirtualBox</strong> (owner, 2026-10-13): boot the release ISO in a temporary VM (4 CPUs, 2 GiB, VBoxVGA, made with VBoxManage in the scratchpad and deleted afterwards), drive it with <code>keyboardputscancode</code>, take <code>screenshotpng</code> pictures of the desktop, the launcher, Settings and whatever changed, <strong>look at them</strong>, and write a "GUI and layout review" section into the Desktop list: what looks off (alignment, spacing, contrast, clipping, stale text) and concrete improvements to recommend. The QEMU probe's <code>!screenshot</code> is the fast check during work; the VirtualBox pass is the one that ships.</li>
+<li>The owner has an ultrawide monitor (32:9 modes matter) and tests in VirtualBox with the Hyper-V backend.</li>
+<li><strong>Update and push the public website</strong> (owner, 2026-10-13): <code>make site-push</code> regenerates <a href="https://accerberus.github.io">https://accerberus.github.io</a> from <code>docs/</code> into the sibling repo <code>D:\Programs\ACCerberus.github.io</code> (<code>tools/gen-site.py</code>, standard library only) and pushes it. Run it after every change to <code>docs/</code>, every release and every finished iteration; <code>make dist</code> runs <code>make site</code> on its own. Never edit the site's HTML by hand: change the docs and regenerate. The generator treats a changelog block as released only when its <code>v&lt;version&gt;</code> git tag exists.</li>
+</ul>
+<h2 id="build-test-run-all-inside-wsl-ubuntu-24-04">Build, test, run (all inside WSL Ubuntu-24.04)</h2>
+<pre><code>wsl -d Ubuntu-24.04 -u root -- bash -c 'cd /mnt/d/Programs/OS &amp;&amp; make iso'</code></pre>
+<ul>
+<li><code>make</code> / <code>make iso</code> — kernel, userland, <code>build/cerberus.iso</code>.</li>
+<li><code>make test</code> — every <code>tests/integration/*.expect</code> in headless QEMU/KVM (4 CPUs) via <code>tools/qemu-probe.py</code>; ~25 min. Logs: <code>build/test-&lt;name&gt;.log</code>.</li>
+<li><code>make bench</code> (record in docs/BENCH.md), <code>make fuzz</code> (60 s per harness).</li>
+<li><code>make dist</code> — overwrites <code>dist/cerberus.iso</code> (+<code>VERSION.txt</code>) and re-points every powered-off VirtualBox VM that boots from <code>dist/</code>. <code>make RELEASE=1 dist</code> for a release (tagged commit, plain version number).</li>
+<li><code>make site</code> / <code>make site-push</code> — generate (and commit + push) the public website from <code>docs/</code> (see "After every iteration").</li>
+<li>Probe directives in <code>.expect</code> files: <code>!send</code>, <code>!key</code>, <code>!wait</code>, <code>!mouse</code>, <code>!mouseto</code>, <code>!button</code>, <code>!wheel</code>, <code>!screenshot</code>, <code>!kill</code> (power cut); other lines must appear in the serial log in order. Setup lines at the top: <code>#!machine pc</code> (legacy IDE; default q35 = AHCI), <code>#!disk new|blank &lt;size&gt; &lt;name&gt;</code> / <code>#!disk keep &lt;name&gt;</code> (images in <code>build/disk-&lt;name&gt;.img</code>), <code>#!hostcheck[-replay] &lt;name&gt;</code> (independent check with <code>mkfs.cerfs --check</code> afterwards).</li>
+<li><code>tools/run-tests.sh name...</code> runs chosen integration tests and prints the key lines; <code>make tools</code> builds the host <code>build/tools/mkfs.cerfs</code>. A scratch <code>.expect</code> in <code>build/</code> plus <code>python3 tools/qemu-probe.py build/cerberus.iso --wait 6 --expect F</code> (no <code>--quiet</code>, to see serial output) is the quickest way to look at a change.</li>
+</ul>
+<h2 id="pitfalls-learned-the-hard-way">Pitfalls (learned the hard way)</h2>
+<ul>
+<li><strong>From Git Bash, always <code>export MSYS_NO_PATHCONV=1</code></strong> before calling <code>wsl</code>, or <code>/tmp/...</code> arguments are rewritten to Windows paths.</li>
+<li>Inside <code>wsl ... bash -c '...'</code>, <code>$?</code> and <code>$var</code> arrive empty or pre-expanded. Check build results by grepping the log (<code>grep -E "error:|undefined reference" build/iso.log</code>) and the ISO's timestamp — never trust an <code>rc=</code> echo. A failed link leaves the <strong>old</strong> ISO in place, and testing it wastes a cycle.</li>
+<li>Long jobs (<code>make test</code>, <code>make fuzz</code>): start detached with <code>setsid nohup bash -c "... &gt; build/x.log 2&gt;&amp;1; echo DONE &gt;&gt; build/x.log" &amp;</code> and poll the log in <code>build/</code> (WSL's <code>/tmp</code> can vanish when WSL restarts).</li>
+<li><code>sed</code> with <code>\n</code> in a replacement inside a C string literal splits the string; use the Edit tool or a Python script (run with WSL's <code>python3</code>; Windows <code>python3</code> is not installed) for multi-line source edits.</li>
+<li>A Python patch script written through a Git Bash heredoc loses one level of backslashes (<code>\\n</code> arrives as a real newline inside a C string). Write the script with the Write tool into <code>build/wip/</code> (ignored by git, not compiled) and run it with WSL's python3. After any scripted edit, grep for a line that is just <code>");</code>.</li>
+<li>A detached job started as the last thing in a <code>wsl ... bash -c</code> dies with it: put <code>sleep 2</code> after the <code>setsid nohup ... &amp;</code> and check that the log file exists before waiting on it.</li>
+<li><code>make test</code> now takes about 25 minutes (41 tests). It tests <code>build/cerberus.iso</code>: do not rebuild while it runs. To keep working, copy the ISO and test the copy.</li>
+<li>Timing checks in tests: a wait counted in timer ticks and measured with the reference clock can read 1 ms short. Leave a margin.</li>
+<li>The kernel links without libgcc: no 128-bit division (<code>__udivti3</code>); 128-bit multiplication is fine.</li>
+<li>VirtualBox on this host runs on the Hyper-V backend: slow video memory (~100 MB/s), slow interrupts, no HPET (the clock falls back to the PIT, the TSC there reads ~4–7 MHz). Budgets in SPEC §20 are for QEMU/KVM. Always also verify on VirtualBox with <strong>4 CPUs</strong> — it has caught bugs QEMU did not (PIT race, keyboard stall).</li>
+<li>VBoxManage: check <code>VBoxManage list vms</code> and <code>showvminfo &lt;vm&gt; --machinereadable | grep VMState</code> before touching a VM; the owner creates and deletes VMs in the GUI. Wizard-made VMs are 32-bit ("stuck at Limine") until <code>--ostype Other_64 --longmode on</code>. Use a temporary VM in the scratchpad for automated checks and delete it afterwards; <code>keyboardputscancode</code> (arrows need the <code>e0</code> prefix) and <code>screenshotpng</code> drive it; the mouse cannot be driven.</li>
+</ul>
+<h2 id="owner-preferences">Owner preferences</h2>
+<ul>
+<li>After every finished update, <code>make dist</code> so <code>dist/cerberus.iso</code> (one file, always overwritten) boots the new build in the owner's VirtualBox VM.</li>
+<li>Versions: <code>0.0.5a</code>, <code>0.0.5b</code> … <code>0.0.5j</code>, then <code>0.0.6a</code> (SPEC §23.1); the next version is in <code>./VERSION</code>; history in docs/CHANGELOG.md.</li>
+<li>Desktop must look sleek ("Linux and Windows combined"), Windows-style caption buttons, smooth and responsive; privacy and security first; efficient on memory and CPU.</li>
+<li>Commit messages: <code>phaseN: …</code>, <code>release: …</code>, <code>desktop: …</code>, <code>docs: …</code>; no attribution or co-author lines (owner, 2026-10-13).</li>
+<li>GitHub: <code>origin</code> is <a href="https://github.com/ArsenalRX/CerberusOS.">https://github.com/ArsenalRX/CerberusOS.</a> After every verified release push <code>main</code> and the tags, with README.md (the public overview) and <code>docs/screenshots/</code> brought up to date.</li>
+<li>The owner steers by screenshot: they send pictures of the VM and ask for visual changes mid-task. Do those promptly, show a screenshot back (the probe's <code>!screenshot</code>), and keep the desktop customisable.</li>
+</ul>
+<h2 id="code-map">Code map</h2>
+<ul>
+<li><code>kernel/arch/x86_64/</code> GDT/IDT/interrupts, per-CPU data (GS), SMP and IPIs, CPU features (<code>g_cpu</code>), ACPI.</li>
+<li><code>kernel/mm/</code> frame allocator (<code>pmm</code>), virtual memory (<code>vmm</code>: address spaces, VMAs, COW, shootdown), heap (<code>kheap</code>: per-CPU slabs), user copies.</li>
+<li><code>kernel/sched/</code> scheduler (one lock, per-CPU queues, work stealing), sync primitives, interruptible waits. <code>kernel/proc/</code> processes and their threads, ELF loader, <code>signal.cpp</code> (handlers, <code>user_return</code> on every way back to ring 3). <code>kernel/syscall/</code> dispatch generated from <code>table.def</code> (→ docs/SYSCALLS.md); descriptors are looked up with <code>FdRef</code>.</li>
+<li><code>kernel/ipc/</code> kernel objects behind descriptors (<code>object.cpp</code>: also the shared descriptor table and <code>poll_wake</code>), <code>port</code>, <code>shm</code>, <code>futex</code>, <code>event</code>.</li>
+<li><code>kernel/drivers/</code> LAPIC/IOAPIC/HPET/PIT, <code>refclock</code> (TSC, else HPET, else PIT), PS/2, serial, RTC, framebuffer console, <code>pci</code>, disks (<code>ahci</code> DMA, <code>ata</code> PIO, <code>ramdisk</code>), <code>nvme</code>, <code>virtio_blk</code>, <code>input</code> (/dev/input), <code>bga</code> (resolution switching on VM display adapters).</li>
+<li><code>kernel/fs/</code> <code>vfs</code> (tree, mounts, permissions, name cache, one sleeping VFS lock), <code>file</code> (open files, flags), <code>tmpfs</code> (also the read-only root from the boot archive and <code>/dev</code>), <code>dev</code> (device switch), <code>block</code> (disks), <code>pagecache</code> (one cache, read-ahead, write-back thread, journal holds), <code>cerfs</code> + <code>cerfs_format.h</code> + <code>cerfs_mkfs.h</code> (on-disk format shared with <code>tools/mkfs-cerfs.cpp</code> and <code>userland/bin/mkfs.cerfs.cpp</code>), <code>fs.cpp</code> (boot mounts).</li>
+<li><code>kernel/gfx/</code> libgfx software renderer (anti-aliased rounded shapes). <code>kernel/gui/</code> the in-kernel desktop (<code>desktop.cpp</code>: compositor, windows, floating panel, launcher with search, Settings window and <code>g_prefs</code>, border effects, wallpapers, <code>set_resolution</code>; <code>terminal.cpp</code>: shell terminal with scrollback). Desktop tests click fixed coordinates (1280x800): moving anything in the panel, launcher or Settings means updating <code>tests/integration/desktop*.expect</code>. It moves to userland as Pane in phase 12.</li>
+<li><code>kernel/lib/</code> kprintf, console lock, kernel shell (<code>shell.cpp</code>), panic, CSPRNG, lock ranks (<code>lock_order.h</code> — add new locks there).</li>
+<li><code>userland/</code> libc (<code>cerberus.h</code>; <code>thread.cpp</code> has TLS, pthreads and the futex locks; <code>ipc.cpp</code> the phase 11 wrappers), programs in <code>bin/</code> (packed into <code>boot/initrd.tar</code>; <code>fileutils.cpp</code> is one program under many names, listed in the Makefile's <code>FILEUTILS_NAMES</code>), <code>etc/</code> files.</li>
+<li><code>tests/kernel/</code> in-kernel self-tests (register in <code>registry.cpp</code>; <code>test all</code> runs them — update <code>tests/integration/shell-tests.expect</code> when the count changes). <code>tests/integration/</code> QEMU scenarios. <code>tests/fuzz/</code> host fuzzers.</li>
+<li><code>spec/</code> the Spec language: empty until phase 16.</li>
+<li>System calls: add to <code>kernel/syscall/table.def</code> (generates the dispatcher, docs/SYSCALLS.md and libc's numbers), write <code>sys_&lt;name&gt;</code>, extend <code>userland/bin/badptr.cpp</code> with bad-pointer checks for it.</li>
+</ul>
+<h2 id="rules-that-never-bend-spec-19">Rules that never bend (SPEC §19)</h2>
+<p>Never dereference a user pointer outside the user-copy routines; never map memory writable and executable; never log user content; never add a dependency or a network connection the owner has not approved; treat every value from a device, disk, file or network as hostile.</p></article>
+
+  </div>
+</main>
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
+<footer>
+  <div class="wrap">
+    <span>Cerberus OS &middot; v0.0.5j &middot; this page was generated from the repository's docs on 2026-10-13</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/roadmap/">Roadmap</a>
+      <a href="/docs/">Docs</a>
+    </nav>
+  </div>
+</footer>
+<script src="/site.js"></script>
+</body>
+</html>

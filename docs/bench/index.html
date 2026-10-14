@@ -26,7 +26,7 @@
   <div class="wrap">
     <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
     <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
-    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a><a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a></nav>
+    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a></nav>
   </div>
 </header>
 <main id="top">
@@ -34,8 +34,8 @@
 
     <div class="head">
       <span class="eyebrow">Docs &middot; BENCH.md</span>
-      <div class="docmeta"><span>2,423 words</span><span>updated with every commit</span><a href="https://github.com/ArsenalRX/CerberusOS/blob/main/docs/BENCH.md">View the source on GitHub</a></div>
-      <nav class="toc"><b>On this page</b><ul><li><a href="#0-6-0-2026-10-03-phase-6-threads-and-scheduling">0.6.0 — 2026-10-03 (phase 6: threads and scheduling)</a></li><li><a href="#0-7-0-2026-10-03-phase-7-userland-and-system-calls">0.7.0 — 2026-10-03 (phase 7: userland and system calls)</a></li><li><a href="#0-0-5a-2026-10-04-phase-8-smp">0.0.5a — 2026-10-04 (phase 8: SMP)</a></li><li><a href="#0-0-5b-2026-10-04-desktop-polish">0.0.5b — 2026-10-04 (desktop polish)</a></li><li><a href="#0-0-5c-2026-10-04-phase-9-files-and-file-systems">0.0.5c — 2026-10-04 (phase 9: files and file systems)</a></li><li><a href="#0-0-5e-2026-10-04-phase-10-drivers">0.0.5e — 2026-10-04 (phase 10: drivers)</a></li><li><a href="#0-0-5i-2026-10-05-polish-round-3-the-pre-zeroed-frame-pool">0.0.5i — 2026-10-05 (polish round 3: the pre-zeroed frame pool)</a></li></ul></nav>
+      <div class="docmeta"><span>2,606 words</span><span>regenerated with every change</span></div>
+      <nav class="toc"><b>On this page</b><ul><li><a href="#0-6-0-2026-10-03-phase-6-threads-and-scheduling">0.6.0 — 2026-10-03 (phase 6: threads and scheduling)</a></li><li><a href="#0-7-0-2026-10-03-phase-7-userland-and-system-calls">0.7.0 — 2026-10-03 (phase 7: userland and system calls)</a></li><li><a href="#0-0-5a-2026-10-04-phase-8-smp">0.0.5a — 2026-10-04 (phase 8: SMP)</a></li><li><a href="#0-0-5b-2026-10-04-desktop-polish">0.0.5b — 2026-10-04 (desktop polish)</a></li><li><a href="#0-0-5c-2026-10-04-phase-9-files-and-file-systems">0.0.5c — 2026-10-04 (phase 9: files and file systems)</a></li><li><a href="#0-0-5e-2026-10-04-phase-10-drivers">0.0.5e — 2026-10-04 (phase 10: drivers)</a></li><li><a href="#0-0-5i-2026-10-05-polish-round-3-the-pre-zeroed-frame-pool">0.0.5i — 2026-10-05 (polish round 3: the pre-zeroed frame pool)</a></li><li><a href="#0-0-5j-2026-10-13-hard-links-polish-round-4">0.0.5j — 2026-10-13 (hard links; polish round 4)</a></li></ul></nav>
     </div>
     <article class="prose"><h1 id="benchmarks">Benchmarks</h1>
 <blockquote><p><strong>Name:</strong> the operating system was called <strong>Lumen</strong> until 2026-10-04, when the owner renamed it <strong>Cerberus</strong> (its file system lumfs became <strong>cerfs</strong>). Entries written before that date keep the old names.</p></blockquote>
@@ -111,19 +111,23 @@
 <p>Commit: the <code>v0.0.5i</code> tag. Debug build.</p>
 <h3 id="qemu-8-2-kvm-in-wsl2-4-cpus-512-mib-make-bench-one-run-4">QEMU 8.2 + KVM in WSL2, 4 CPUs, 512 MiB — <code>make bench</code>, one run</h3>
 <div class="table"><table><thead><tr><th>Metric</th><th>Measured</th><th>Budget</th><th>Verdict</th></tr></thead><tbody><tr><td>Context switch</td><td>24 ns</td><td>2,000 ns</td><td>within</td></tr><tr><td>Wake-up latency, average</td><td>10 µs</td><td>1,000 µs</td><td>within</td></tr><tr><td>Wake-up latency, worst of 500</td><td>114 µs</td><td>1,000 µs</td><td>within</td></tr><tr><td><code>kmalloc(64)</code> + <code>kfree</code> pair</td><td>76 ns</td><td>100 ns</td><td>within</td></tr><tr><td>Minor page fault</td><td><strong>1,394 ns</strong> (was 2,052–2,129)</td><td>2,000 ns</td><td><strong>within</strong> for the first time (B-015)</td></tr><tr><td>System-call round trip</td><td>36 ns</td><td>300 ns</td><td>within</td></tr><tr><td>Idle desktop CPU use</td><td>0 % of ticks</td><td>under 1 %</td><td>within</td></tr><tr><td>Last composite</td><td>356 µs</td><td>8 ms</td><td>within (the bench ran with the desktop's windows open)</td></tr></tbody></table></div>
-<p>The page fault no longer clears its frame: a background thread keeps up to 512 frames zeroed, so the fault takes one that is ready, and the hypervisor's first-touch cost moves out of the fault into idle time. Everything else is unchanged within run-to-run variation.</p></article>
+<p>The page fault no longer clears its frame: a background thread keeps up to 512 frames zeroed, so the fault takes one that is ready, and the hypervisor's first-touch cost moves out of the fault into idle time. Everything else is unchanged within run-to-run variation.</p>
+<h2 id="0-0-5j-2026-10-13-hard-links-polish-round-4">0.0.5j — 2026-10-13 (hard links; polish round 4)</h2>
+<p>Commit: the <code>v0.0.5j</code> tag (the kernel is that of 2026-10-06; the release build differs only in its version string). Debug build. Run on 2026-10-13 before tagging, together with <code>make fuzz</code> (ELF 4,203,264 inputs, tar 25,856, 600 <code>sysfuzz</code> children, 5,257 damaged cerfs images with the new hard-link code: no crash).</p>
+<h3 id="qemu-8-2-kvm-in-wsl2-4-cpus-512-mib-make-bench-one-run-5">QEMU 8.2 + KVM in WSL2, 4 CPUs, 512 MiB — <code>make bench</code>, one run</h3>
+<div class="table"><table><thead><tr><th>Metric</th><th>Measured</th><th>Budget</th><th>Verdict</th></tr></thead><tbody><tr><td>Context switch</td><td>21 ns</td><td>2,000 ns</td><td>within</td></tr><tr><td>Wake-up latency, average</td><td>10 µs</td><td>1,000 µs</td><td>within</td></tr><tr><td>Wake-up latency, worst of 500</td><td>194 µs</td><td>1,000 µs</td><td>within</td></tr><tr><td><code>kmalloc(64)</code> + <code>kfree</code> pair</td><td>67 ns</td><td>100 ns</td><td>within</td></tr><tr><td>Minor page fault</td><td>1,161 ns</td><td>2,000 ns</td><td>within</td></tr><tr><td>System-call round trip</td><td>30 ns</td><td>300 ns</td><td>within</td></tr><tr><td>Idle desktop CPU use</td><td>0 % of ticks</td><td>under 1 %</td><td>within</td></tr><tr><td>Last composite</td><td>300 µs</td><td>8 ms</td><td>within (partial frame)</td></tr></tbody></table></div>
+<p>No change from 0.0.5i outside run-to-run variation; every budgeted figure is within budget.</p></article>
 
   </div>
 </main>
 <div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
 <footer>
   <div class="wrap">
-    <span>Cerberus OS &middot; v0.0.5i &middot; this page was generated from the repository's docs on 2026-10-13</span>
+    <span>Cerberus OS &middot; v0.0.5j &middot; this page was generated from the repository's docs on 2026-10-13</span>
     <nav>
       <a href="/">Home</a>
       <a href="/roadmap/">Roadmap</a>
       <a href="/docs/">Docs</a>
-      <a href="https://github.com/ArsenalRX/CerberusOS">Source</a>
     </nav>
   </div>
 </footer>

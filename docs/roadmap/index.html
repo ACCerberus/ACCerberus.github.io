@@ -26,7 +26,7 @@
   <div class="wrap">
     <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
     <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
-    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a><a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a></nav>
+    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a></nav>
   </div>
 </header>
 <main id="top">
@@ -34,17 +34,23 @@
 
     <div class="head">
       <span class="eyebrow">Docs &middot; ROADMAP.md</span>
-      <div class="docmeta"><span>3,778 words</span><span>updated with every commit</span><a href="https://github.com/ArsenalRX/CerberusOS/blob/main/docs/ROADMAP.md">View the source on GitHub</a></div>
-      <nav class="toc"><b>On this page</b><ul><li><a href="#what-cerberus-can-do-today-0-0-5g">What Cerberus can do today (0.0.5g)</a></li><li><a href="#how-the-work-is-ordered">How the work is ordered</a></li><li><a href="#done-in-0-0-5b-desktop-polish">Done in 0.0.5b: desktop polish</a></li><li><a href="#done-in-0-0-5c-phase-9-files-and-file-systems">Done in 0.0.5c: Phase 9 — Files and file systems</a></li><li><a href="#done-in-0-0-5e-phase-10-drivers">Done in 0.0.5e: Phase 10 — Drivers</a></li><li><a href="#phase-11-programs-talking-to-each-other-ipc">Phase 11 — Programs talking to each other (IPC)</a></li><li><a href="#phase-12-pane-the-real-window-server">Phase 12 — Pane: the real window server</a></li><li><a href="#phase-13-toolkit-desktop-shell-and-applications">Phase 13 — Toolkit, desktop shell and applications</a></li><li><a href="#phase-14-networking-and-internet">Phase 14 — Networking and internet</a></li><li><a href="#phase-15-users-passwords-sandboxing-and-secure-connections">Phase 15 — Users, passwords, sandboxing and secure connections</a></li><li><a href="#phase-15b-our-own-web-browser">Phase 15B — Our own web browser</a></li><li><a href="#phase-16-the-spec-language-compiles-for-cerberus">Phase 16 — The Spec language compiles for Cerberus</a></li><li><a href="#phase-17-running-real-software">Phase 17 — Running real software</a></li><li><a href="#phase-18-installing-to-a-disk-updates-encryption-recovery">Phase 18 — Installing to a disk, updates, encryption, recovery</a></li><li><a href="#phase-19-stretch-goals">Phase 19 — Stretch goals</a></li><li><a href="#known-bugs-and-loose-ends-fix-list">Known bugs and loose ends (fix list)</a></li><li><a href="#performance-where-we-are-and-what-to-improve">Performance: where we are and what to improve</a></li><li><a href="#decisions-waiting-on-the-owner">Decisions waiting on the owner</a></li></ul></nav>
+      <div class="docmeta"><span>4,030 words</span><span>regenerated with every change</span></div>
+      <nav class="toc"><b>On this page</b><ul><li><a href="#what-cerberus-can-do-today-0-0-5j">What Cerberus can do today (0.0.5j)</a></li><li><a href="#how-the-work-is-ordered">How the work is ordered</a></li><li><a href="#done-in-0-0-5b-desktop-polish">Done in 0.0.5b: desktop polish</a></li><li><a href="#done-in-0-0-5d-anti-aliased-text">Done in 0.0.5d: anti-aliased text</a></li><li><a href="#done-in-0-0-5c-phase-9-files-and-file-systems">Done in 0.0.5c: Phase 9 — Files and file systems</a></li><li><a href="#done-in-0-0-5e-phase-10-drivers">Done in 0.0.5e: Phase 10 — Drivers</a></li><li><a href="#phase-11-programs-talking-to-each-other-ipc">Phase 11 — Programs talking to each other (IPC)</a></li><li><a href="#phase-12-pane-the-real-window-server">Phase 12 — Pane: the real window server</a></li><li><a href="#phase-13-toolkit-desktop-shell-and-applications">Phase 13 — Toolkit, desktop shell and applications</a></li><li><a href="#phase-14-networking-and-internet">Phase 14 — Networking and internet</a></li><li><a href="#phase-15-users-passwords-sandboxing-and-secure-connections">Phase 15 — Users, passwords, sandboxing and secure connections</a></li><li><a href="#phase-15b-our-own-web-browser">Phase 15B — Our own web browser</a></li><li><a href="#phase-16-the-spec-language-compiles-for-cerberus">Phase 16 — The Spec language compiles for Cerberus</a></li><li><a href="#phase-17-running-real-software">Phase 17 — Running real software</a></li><li><a href="#phase-18-installing-to-a-disk-updates-encryption-recovery">Phase 18 — Installing to a disk, updates, encryption, recovery</a></li><li><a href="#phase-19-stretch-goals">Phase 19 — Stretch goals</a></li><li><a href="#known-bugs-and-loose-ends-fix-list">Known bugs and loose ends (fix list)</a></li><li><a href="#performance-where-we-are-and-what-to-improve">Performance: where we are and what to improve</a></li><li><a href="#decisions-waiting-on-the-owner">Decisions waiting on the owner</a></li></ul></nav>
     </div>
     <article class="prose"><h1 id="cerberus-roadmap">Cerberus Roadmap</h1>
 <p><strong>What this file is for.</strong> One readable overview for the owner: what Cerberus can do today, and everything still to add, implement, fix and speed up, in the order it will be built. It summarises docs/SPEC.md (the full plan, which wins if the two disagree), docs/TO_FINISH.md (the working checklist) and docs/STATUS.md (what is verified).</p>
 <p><strong>When to update it.</strong> At every release, and whenever a phase is finished, re-ordered or re-scoped, or the owner adds a request.</p>
 <p><strong>How to update it.</strong> Rewrite "What Cerberus can do today" so it stays true and is written for a person, not a programmer; tick items and move finished phases into it. Keep phase numbers identical to docs/SPEC.md §5.</p>
-<p>Last updated: <strong>2026-10-05</strong>, at release <strong>0.0.5g</strong> (phase 11 complete; desktop polish).</p>
+<p>Last updated: <strong>2026-10-13</strong>, at release <strong>0.0.5j</strong> (phase 11 complete; polish rounds 1–4).</p>
 <hr />
-<h2 id="what-cerberus-can-do-today-0-0-5g">What Cerberus can do today (0.0.5g)</h2>
+<h2 id="what-cerberus-can-do-today-0-0-5j">What Cerberus can do today (0.0.5j)</h2>
 <p>Cerberus is a 64-bit operating system written from scratch. It boots in QEMU and VirtualBox from an ISO (<code>dist/cerberus.iso</code>), with old BIOS or UEFI.</p>
+<p><strong>New since 0.0.5g (releases 0.0.5h, i, j; the full list is docs/FEATURES.md)</strong></p>
+<ul>
+<li>Settings, reminders and notes are <strong>saved</strong> on a <code>/data</code> disk (Settings → Storage sets one up); a <strong>lock screen</strong> (Super+L, auto-lock after idle minutes); a clipboard with text selection; <strong>Files</strong>, <strong>Notes</strong>, <strong>Calculator</strong> and an <strong>Image Viewer</strong> (BMP, "Set as wallpaper"); keyboard layouts US/UK/DE/FR with repeat settings and lock lights; a <strong>tray</strong> with night light, a CPU meter and the notification history.</li>
+<li><strong>Four virtual desktops</strong> (Super+1..4); a <strong>System Monitor</strong> with CPU and memory graphs, a process table and End task; repeating reminders with snooze; a right-click menu on taskbar buttons; <code>clear</code> in the terminal.</li>
+<li><strong>Hard links</strong> (<code>ln a b</code>), <code>sigprocmask</code>, <code>port_try_send</code>; the minor page fault is inside its budget (1.4 µs) thanks to a pool of pre-zeroed frames.</li>
+</ul>
 <p><strong>Starting up</strong></p>
 <ul>
 <li>Boots straight into its own kernel in about a second; prints a boot log on screen and on the serial port.</li>
@@ -122,7 +128,13 @@
 <li><span class="box done" aria-label="done"></span>Terminal scrollback: 1,000 lines, mouse wheel, Shift+Page Up/Down, scrollbar; resizing keeps the text.</li>
 <li><span class="box done" aria-label="done"></span>Only changed pixels are written to the screen (about 5× fewer while dragging); frames drawn as soon as input arrives.</li>
 <li><span class="box done" aria-label="done"></span>Super opens the menu only on its own; the open menu takes all keys; About window fixes.</li>
-<li><span class="box todo" aria-label="to do"></span>Still to do: open/close animations; frame pacing from a one-shot timer; send input interrupts to a core that is not drawing.</li>
+<li><span class="box done" aria-label="done"></span>Open/close animations (done in 0.0.5g).</li>
+<li><span class="box todo" aria-label="to do"></span>Still to do: frame pacing from a one-shot timer; send input interrupts to a core that is not drawing.</li>
+</ul>
+<hr />
+<h2 id="done-in-0-0-5d-anti-aliased-text">Done in 0.0.5d: anti-aliased text</h2>
+<ul>
+<li><span class="box done" aria-label="done"></span>Build-time rendered DejaVu fonts for the whole desktop (interface, terminal, wordmarks), a smooth close button, a dithered wallpaper.</li>
 </ul>
 <hr />
 <h2 id="done-in-0-0-5c-phase-9-files-and-file-systems">Done in 0.0.5c: Phase 9 — Files and file systems</h2>
@@ -342,15 +354,17 @@
 <li><span class="box todo" aria-label="to do"></span><em>(fix)</em> <code>early_map</code> should hand its addresses over to the VMM's device mappings.</li>
 <li><span class="box todo" aria-label="to do"></span><em>(fix)</em> "Clock skew detected" warnings from <code>make</code> on the Windows drive (harmless).</li>
 <li><span class="box todo" aria-label="to do"></span>Security left-overs: decide on retpolines; a per-core stack-protector value.</li>
-<li><span class="box todo" aria-label="to do"></span>Not yet checked: UEFI boot and software emulation for this release; a non-debug (<code>DEBUG=0</code>) build since 0.5.0.</li>
+<li><span class="box todo" aria-label="to do"></span>Not yet checked: UEFI boot and software emulation for this release; a non-debug (<code>DEBUG=0</code>) build since release 0.5.0 (2026-10-03).</li>
+<li><span class="box todo" aria-label="to do"></span><em>(fix)</em> Not everything the kernel can do has a command-line tool yet: <code>head tail wc grep find sort diff du df kill sleep date env tee hexdump uname free top</code> (phase 13's CLI set, or the proposed phase 11B).</li>
+<li><span class="box todo" aria-label="to do"></span>Not there yet, so nobody looks for it: swap, pipes, a debugger, drag and drop, time zones beyond a UTC offset.</li>
 </ul>
 <hr />
 <h2 id="performance-where-we-are-and-what-to-improve">Performance: where we are and what to improve</h2>
 <p>Budgets are defined for QEMU/KVM (docs/BENCH.md has every measurement).</p>
-<div class="table"><table><thead><tr><th>What</th><th>Now (0.0.5a)</th><th>Budget</th><th>Status</th></tr></thead><tbody><tr><td>Switching between threads</td><td>22–24 ns</td><td>2,000 ns</td><td>well within</td></tr><tr><td>Waking a waiting thread</td><td>7–9 µs</td><td>1,000 µs</td><td>well within</td></tr><tr><td>Kernel memory allocate + free</td><td>76–84 ns</td><td>100 ns</td><td>within</td></tr><tr><td>System call round trip</td><td>33–34 ns</td><td>300 ns</td><td>well within</td></tr><tr><td>First touch of a memory page (minor fault)</td><td>2.0–2.9 µs</td><td>2 µs</td><td><strong>over</strong></td></tr><tr><td>Idle desktop CPU use</td><td>0 %</td><td>under 1 %</td><td>within</td></tr><tr><td>Full-screen redraw on VirtualBox</td><td>~23 ms</td><td>8 ms (phase 12)</td><td><strong>over</strong></td></tr></tbody></table></div>
+<div class="table"><table><thead><tr><th>What</th><th>Now (0.0.5i)</th><th>Budget</th><th>Status</th></tr></thead><tbody><tr><td>Switching between threads</td><td>24 ns</td><td>2,000 ns</td><td>well within</td></tr><tr><td>Waking a waiting thread</td><td>10 µs</td><td>1,000 µs</td><td>well within</td></tr><tr><td>Kernel memory allocate + free</td><td>76 ns</td><td>100 ns</td><td>within</td></tr><tr><td>System call round trip</td><td>36 ns</td><td>300 ns</td><td>well within</td></tr><tr><td>First touch of a memory page (minor fault)</td><td>1.4 µs</td><td>2 µs</td><td>within (since 0.0.5i)</td></tr><tr><td>Idle desktop CPU use</td><td>0 %</td><td>under 1 %</td><td>within</td></tr><tr><td>Full-screen redraw on VirtualBox</td><td>~23 ms</td><td>8 ms (phase 12)</td><td><strong>over</strong></td></tr></tbody></table></div>
 <p><strong>Improvements planned</strong></p>
 <ul>
-<li><span class="box todo" aria-label="to do"></span><em>(speed)</em> Profile and cut the minor page-fault cost under 2 µs.</li>
+<li><span class="box done" aria-label="done"></span><em>(speed)</em> The minor page fault under 2 µs: a pool of pre-zeroed frames (0.0.5i, B-015).</li>
 <li><span class="box done" aria-label="done"></span><em>(speed)</em> Faster window dragging: only changed pixels written (0.0.5b). The framebuffer was already write-combining.</li>
 <li><span class="box todo" aria-label="to do"></span><em>(speed)</em> One-shot timer: frame pacing at the display rate, and later a tickless kernel (idle cores fully asleep, better for laptops).</li>
 <li><span class="box todo" aria-label="to do"></span><em>(speed)</em> Cheaper cross-core wake-ups: let an idle core poll briefly before sleeping, or wake a thread on the waker's core when the waker is about to sleep.</li>
@@ -377,12 +391,11 @@
 <div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
 <footer>
   <div class="wrap">
-    <span>Cerberus OS &middot; v0.0.5i &middot; this page was generated from the repository's docs on 2026-10-13</span>
+    <span>Cerberus OS &middot; v0.0.5j &middot; this page was generated from the repository's docs on 2026-10-13</span>
     <nav>
       <a href="/">Home</a>
       <a href="/roadmap/">Roadmap</a>
       <a href="/docs/">Docs</a>
-      <a href="https://github.com/ArsenalRX/CerberusOS">Source</a>
     </nav>
   </div>
 </footer>
