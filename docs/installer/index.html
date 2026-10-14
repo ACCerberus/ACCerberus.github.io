@@ -73,7 +73,7 @@
 <ul>
 <li><strong>Limine is the menu.</strong> It cannot read cerfs, only FAT and ISO9660. The kernel therefore lives on a small FAT32 <strong>Cerberus boot partition</strong> (about 512 MiB); cerfs holds the system and home. Windows' EFI partition (often only 100 MB) gets only the loader.</li>
 <li><strong>The existing EFI partition is shared, never formatted.</strong> Cerberus adds <code>\EFI\Cerberus\BOOTX64.EFI</code> and <code>\EFI\Cerberus\limine.conf</code> and does not overwrite <code>\EFI\BOOT\BOOTX64.EFI</code> when Windows is present.</li>
-<li><strong>Menu entries</strong> (Limine config syntax): ``<code> timeout: 5 remember_last_entry: yes /Cerberus protocol: limine path: guid(&lt;cerberus-boot-partition-uuid&gt;):/cerberus.elf module_path: guid(&lt;cerberus-boot-partition-uuid&gt;):/initrd.tar /Cerberus (previous kernel) /Cerberus recovery /Windows protocol: efi path: guid(&lt;efi-partition-uuid&gt;):/EFI/Microsoft/Boot/bootmgfw.efi </code>``</li>
+<li><strong>Menu entries</strong> (Limine config syntax):</li>
 </ul>
 <ul>
 <li><strong>Firmware boot entry.</strong> For the PC to start Limine, the installer writes a UEFI variable <code>Boot####</code> ("Cerberus" → <code>\EFI\Cerberus\BOOTX64.EFI</code>) and puts it first in <code>BootOrder</code> (checkbox "start Cerberus's menu by default"; the old order is backed up). This needs UEFI runtime services in the kernel, which is new work.</li>
