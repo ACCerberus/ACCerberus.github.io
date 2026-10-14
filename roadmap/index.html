@@ -5,389 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Roadmap and release history — Cerberus OS</title>
   <meta name="description" content="Where Cerberus OS is going, phase by phase, and every release from the first snapshot to the latest version." />
-  <meta property="og:title" content="Cerberus OS — roadmap and release history" />
-  <meta property="og:description" content="Where Cerberus OS is going, and every release so far." />
+  <meta property="og:title" content="Roadmap and release history — Cerberus OS" />
+  <meta property="og:description" content="Where Cerberus OS is going, phase by phase, and every release from the first snapshot to the latest version." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://accerberus.github.io/roadmap/" />
-  <meta property="og:image" content="https://accerberus.github.io/img/hero.png" />
+  <meta property="og:image" content="https://accerberus.github.io/img/screenshots/settings.png" />
   <link rel="canonical" href="https://accerberus.github.io/roadmap/" />
+  <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#06070f" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2306070f'/><circle cx='50' cy='50' r='20' fill='%235aa2ff'/></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --bg: #06070f;
-      --surface: rgba(255,255,255,0.03);
-      --surface-hover: rgba(255,255,255,0.05);
-      --border: rgba(255,255,255,0.08);
-      --border-bright: rgba(80,170,255,0.4);
-      --accent: #38b6ff;
-      --accent-strong: #0a84ff;
-      --violet: #8b5cf6;
-      --grad: linear-gradient(95deg, #3ad4ff, #3b8bff 45%, #9b6bff);
-      --green: #35d07f;
-      --amber: #ffb65a;
-      --red: #ff6b7d;
-      --text: #aab1c5;
-      --text-bright: #f1f3f9;
-      --text-dim: #6a7189;
-      --font: 'Inter', -apple-system, 'Segoe UI', sans-serif;
-      --font-mono: 'JetBrains Mono', Consolas, monospace;
-      --max: 920px;
-    }
-
-    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 16px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-    /* three slow-drifting lights: the wallpaper's navy and violet, turned up */
-    .aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
-    .aurora i { position: absolute; border-radius: 50%; will-change: transform; animation: drift 26s ease-in-out infinite alternate; }
-    .aurora i:nth-child(1) { width: 1100px; height: 800px; right: -300px; top: -320px; background: radial-gradient(closest-side, rgba(20,100,255,0.55), transparent); }
-    .aurora i:nth-child(2) { width: 900px; height: 800px; left: -420px; top: 30%; background: radial-gradient(closest-side, rgba(120,60,240,0.38), transparent); animation-duration: 32s; animation-direction: alternate-reverse; }
-    .aurora i:nth-child(3) { width: 900px; height: 700px; right: -200px; bottom: -380px; background: radial-gradient(closest-side, rgba(0,150,255,0.30), transparent); animation-duration: 38s; }
-    @keyframes drift { to { transform: translate3d(-90px, 70px, 0) scale(1.12); } }
-    .progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 20; background: var(--grad); transform-origin: 0 50%; transform: scaleX(0); }
-    a { color: inherit; text-decoration: none; }
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
-    code { font-family: var(--font-mono); font-size: 0.86em; padding: 1px 6px; border-radius: 5px; background: rgba(255,255,255,0.06); color: #c9d2e8; }
-
-    .nav { position: sticky; top: 14px; z-index: 10; padding: 0 16px; margin-top: 14px; }
-    .nav .wrap { max-width: 1120px; display: flex; align-items: center; justify-content: space-between; height: 64px;  height: 56px; padding: 0 12px 0 22px; border-radius: 16px;
-      border: 1px solid var(--border); background: rgba(9,11,24,0.62);
-      backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.05) inset; }
-    .wordmark { font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: var(--text-bright); display: inline-flex; align-items: baseline; gap: 5px; }
-    .wordmark i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 16px var(--accent), 0 0 4px #fff; }
-    .nav-links { display: flex; align-items: center; gap: 28px; font-size: 14px; }
-    .nav-links a { color: var(--text); transition: color .15s; padding: 6px 0; }
-    .nav-links { padding-right: 10px; }
-    .nav-links a:hover { color: var(--text-bright); }
-
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 8px 14px; border-radius: 10px;
-      font: 600 13.5px var(--font); cursor: pointer;
-      border: 1px solid var(--border); color: var(--text-bright);
-      background: var(--surface);
-      transition: background .15s, border-color .15s;
-    }
-    .btn:hover { background: var(--surface-hover); border-color: var(--border-bright); }
-
-    .head { padding: 80px 0 8px; }
-    .eyebrow { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
-    .eyebrow::before { content: ''; width: 28px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
-    h1 { margin: 16px 0 18px; font-size: clamp(36px, 6vw, 60px); line-height: 1.06; letter-spacing: -0.04em; font-weight: 700; color: var(--text-bright); }
-    h1 span { background: var(--grad); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 8s ease-in-out infinite alternate; filter: drop-shadow(0 0 28px rgba(60,140,255,0.35)); }
-    @keyframes sheen { to { background-position: 100% 0; } }
-    .lead { max-width: 620px; font-size: 18px; }
-    .jump { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
-
-    .track { display: grid; grid-template-columns: repeat(20, 1fr); gap: 5px; margin-top: 52px; }
-    .track i { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.08); }
-    .track i.done { background: var(--grad); box-shadow: 0 0 14px rgba(56,182,255,0.55); }
-    .track i.next { background: rgba(90,162,255,0.35); animation: pulse 1.8s ease-in-out infinite; }
-    @keyframes pulse { 50% { opacity: .35; } }
-    .track-label { display: flex; justify-content: space-between; margin-top: 12px; font-family: var(--font-mono); font-size: 12.5px; color: var(--text-dim); }
-
-    section { padding-top: 104px; }
-    h2 { margin: 14px 0 12px; font-size: clamp(26px, 4vw, 38px); line-height: 1.12; letter-spacing: -0.03em; color: var(--text-bright); font-weight: 600; }
-    .sub { max-width: 620px; }
-    .bar { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; }
-
-    /* what is coming: a vertical line of phases */
-    .ahead { margin-top: 44px; position: relative; padding-left: 34px; }
-    .ahead::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 1px; background: linear-gradient(var(--accent), rgba(122,92,255,0.5) 40%, var(--border)); }
-    .phase { position: relative; margin-bottom: 16px; padding: 24px 26px; border-radius: 18px; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015)); backdrop-filter: blur(6px); transition: border-color .2s, background .2s; }
-    .phase:hover { border-color: var(--border-bright); background: var(--surface-hover); }
-    .phase::before { content: ''; position: absolute; left: -32px; top: 30px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--text-dim); }
-    .phase.next { border-color: var(--border-bright); background: linear-gradient(120deg, rgba(56,182,255,0.12), rgba(139,92,246,0.08)); box-shadow: 0 0 70px rgba(20,110,255,0.2); }
-    .phase.next::before { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 14px var(--accent); }
-    .phase header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-    .phase .n { font-family: var(--font-mono); font-size: 12.5px; color: var(--accent); }
-    .phase h3 { font-size: 19px; color: var(--text-bright); font-weight: 600; letter-spacing: -0.01em; }
-    .phase .tag { margin-left: auto; font-family: var(--font-mono); font-size: 11.5px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); }
-    .phase.next .tag { color: var(--green); border-color: rgba(53,208,127,0.35); }
-    .phase > p { margin-top: 8px; font-size: 15px; }
-    .phase ul { list-style: none; margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 9px 28px; font-size: 14.5px; }
-    .phase li { padding-left: 18px; position: relative; }
-    .phase li::before { content: ''; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
-    .phase li b { color: var(--text-bright); font-weight: 600; }
-    .phase .goal { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 13.5px; color: var(--text-dim); }
-    .phase .goal b { color: var(--text); font-weight: 600; }
-
-    .minor { margin-top: 44px; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); }
-    .work { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
-    .work div { padding: 16px 20px; border-radius: 14px; border: 1px dashed var(--border); font-size: 14.5px; }
-    .work b { color: var(--text-bright); font-weight: 600; }
-    .finished { margin-top: 36px; border-top: 1px solid var(--border); }
-    .finished a { display: grid; grid-template-columns: 44px 1fr auto; gap: 16px; align-items: baseline; padding: 15px 8px; border-bottom: 1px solid var(--border); font-size: 14.5px; transition: background .15s; }
-    .finished a:hover { background: var(--surface-hover); }
-    .finished a > code { background: none; padding: 0; font-size: 13px; color: var(--green); }
-    .finished b { color: var(--text-bright); font-weight: 600; }
-    .finished em { font-style: normal; font-family: var(--font-mono); font-size: 11.5px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); }
-
-    /* release history: one dropdown per version */
-    .releases { margin-top: 36px; display: grid; gap: 10px; }
-    details { border-radius: 14px; border: 1px solid var(--border); background: var(--surface); transition: border-color .2s, background .2s; }
-    details:hover { border-color: var(--border-bright); }
-    details[open] { border-color: var(--border-bright); background: rgba(255,255,255,0.04); }
-    summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 96px 1fr auto 18px; gap: 16px; align-items: center; padding: 18px 22px; }
-    summary::-webkit-details-marker { display: none; }
-    summary .v { font-family: var(--font-mono); font-size: 15px; font-weight: 500; color: var(--text-bright); }
-    summary .t { font-size: 15px; color: var(--text); }
-    summary .t small { display: block; font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); }
-    summary .chips { display: flex; gap: 6px; }
-    .chip { font-family: var(--font-mono); font-size: 11px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); white-space: nowrap; }
-    .chip.latest { color: var(--green); border-color: rgba(53,208,127,0.35); }
-    .chip.sec { color: var(--amber); border-color: rgba(255,182,90,0.3); }
-    .chip.ph { color: var(--accent); border-color: rgba(90,162,255,0.3); }
-    summary .arrow { width: 9px; height: 9px; border-right: 2px solid var(--text-dim); border-bottom: 2px solid var(--text-dim); transform: rotate(45deg); transition: transform .2s; justify-self: center; margin-top: -4px; }
-    details[open] summary .arrow { transform: rotate(-135deg); margin-top: 4px; }
-    .body { padding: 4px 22px 22px; border-top: 1px solid var(--border); }
-    .body h4 { margin: 20px 0 10px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-    .body h4::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-    .body h4.security { color: var(--amber); } .body h4.added { color: var(--green); } .body h4.changed { color: var(--accent); }
-    .body h4.performance { color: #b79bff; } .body h4.fixed { color: var(--red); }
-    .body ul { list-style: none; display: grid; gap: 8px; font-size: 14.5px; }
-    .body li { padding-left: 18px; position: relative; }
-    .body li::before { content: ''; position: absolute; left: 2px; top: 11px; width: 6px; height: 1px; background: var(--text-dim); }
-
-    footer { margin-top: 104px; border-top: 1px solid var(--border); padding: 32px 0 48px; font-size: 13.5px; color: var(--text-dim); }
-    footer .wrap { max-width: 1120px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-    footer a:hover { color: var(--text-bright); }
-    footer nav { display: flex; gap: 22px; }
-
-    @media (prefers-reduced-motion: reduce) { .track i.next, .aurora i, h1 span { animation: none; } html { scroll-behavior: auto; } }
-    @media (max-width: 720px) {
-      .nav-links { gap: 16px; font-size: 13.5px; padding-right: 8px; white-space: nowrap; }
-      .nav-links a[href="/"] { display: none; }
-      .nav .wrap { padding-left: 16px; }
-      .head { padding-top: 56px; }
-      section { padding-top: 76px; }
-      .phase ul, .work { grid-template-columns: 1fr; }
-      .finished a { grid-template-columns: 30px 1fr; }
-      .finished em { display: none; }
-      .phase .tag { margin-left: 0; }
-      .track { gap: 3px; }
-      summary { grid-template-columns: 1fr 18px; gap: 6px 12px; padding: 16px 18px; }
-      summary .t { grid-column: 1; grid-row: 2; }
-      summary .chips { grid-column: 1; grid-row: 3; flex-wrap: wrap; }
-      summary .arrow { grid-column: 2; grid-row: 1; }
-      .body { padding: 4px 18px 20px; }
-    }
-  </style>
+  <link rel="stylesheet" href="/site.css" />
 </head>
-<body>
+<body class="narrow">
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="progress" id="progress"></div>
-
 <header class="nav">
   <div class="wrap">
     <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
-    <nav class="nav-links">
-      <a href="#now">Now</a>
-      <a href="#ahead">Coming</a>
-      <a href="#done">Done</a>
-      <a href="#releases">Releases</a>
-      <a href="/">Home</a>
-    </nav>
+    <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
+    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/" class="on">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a><a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a></nav>
   </div>
 </header>
-
-<main>
+<main id="top">
   <div class="wrap">
 
     <div class="head">
       <span class="eyebrow">Roadmap</span>
       <h1>Where Cerberus is going, <span>and how it got here.</span></h1>
-      <p class="lead">Cerberus is built in numbered phases. Each one ends in a tested release, and no phase starts until the one before it passes its acceptance tests.</p>
+      <p class="lead">Cerberus is built in numbered phases. Each one ends in a tested release, and no phase starts until the one before it passes its acceptance tests. This page is generated from <a href="/docs/to_finish/">the checklist</a>, <a href="/docs/roadmap/">the roadmap document</a> and <a href="/docs/changelog/">the changelog</a>.</p>
       <div class="jump">
-        <a class="btn" href="#now">In progress</a>
-        <a class="btn" href="#ahead">What's coming</a>
-        <a class="btn" href="#done">Completed</a>
-        <a class="btn" href="#releases">Release history</a>
+        <a class="btn small" href="#now">Next up</a>
+        <a class="btn small" href="#ahead">What's coming</a>
+        <a class="btn small" href="#done">Completed</a>
+        <a class="btn small" href="#releases">Release history</a>
       </div>
-      <div class="track" aria-hidden="true">
-        <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="next"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-      </div>
-      <div class="track-label"><span>phases 0 to 11 done</span><span>phase 12 in progress &middot; v0.0.5f</span></div>
+      <div class="track" aria-hidden="true"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="next"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div>
+      <div class="track-label"><span>phases 0 to 11 done</span><span>phase 12 next &middot; v0.0.5i released</span></div>
     </div>
 
     <section id="now">
-      <span class="eyebrow">In progress</span>
-      <h2>What is being built right now.</h2>
-      <p class="sub">Phase 11 shipped in v0.0.5f. The current development builds are working towards phase 12.</p>
-
-      <div class="ahead">
-        <article class="phase next">
-          <header><span class="n">Phase 12</span><h3>Pane, the window server</h3><span class="tag">in progress</span></header>
-          <p>The desktop moves out of the kernel and becomes its own protected program.</p>
-          <ul>
-            <li><b>Real window management:</b> move, resize, stack, focus, minimise, maximise and full screen.</li>
-            <li><b>Zero-copy drawing:</b> each window paints into its own shared buffer.</li>
-            <li><b>Eye candy:</b> transparency, per-window opacity, shadows and rounded corners.</li>
-            <li><b>Private windows:</b> a program sees only its own windows and its own input.</li>
-            <li><b>Permissioned capture:</b> screenshots, recording and global shortcuts are denied by default.</li>
-            <li><b>Secure password entry:</b> nothing else receives keys while a password box has focus.</li>
-          </ul>
-          <p class="goal"><b>Target:</b> a full 1920×1080 frame with 10 windows in under 8 ms, and no work at all when nothing changed.</p>
-        </article>
-      </div>
-
-      <p class="minor">Also on the workbench</p>
-      <div class="work">
-        <div><b>Faster page faults.</b> A minor page fault takes 2.0 to 2.9 µs against a 2 µs budget. It is the one number over budget, and it gets profiled first.</div>
-        <div><b>Window animations.</b> Open and close animations, and frame pacing from a one-shot timer.</div>
-        <div><b>Finishing memory mapping.</b> Shared and demand-paged file mappings, plus signal masks.</div>
-        <div><b>Driver loose ends.</b> MSI-X so NVMe and virtio disks stop being polled, keyboard LEDs, and layouts other than US.</div>
-      </div>
+      <span class="eyebrow">Next up</span>
+      <h2>What is being built next.</h2>
+      <p class="sub">The newest release is v0.0.5i (2026-10-05). phase 12 (Pane) — the polish box is spent</p>
+      <div class="ahead"><article class="phase next" id="phase-12"><header><span class="n">Phase 12</span><h3>Pane: the real window server</h3><span class="tag">next</span></header><p>The desktop moves out of the kernel into its own protected program.</p><ul><li class="">Pane, a user program that owns the screen: double-buffered, redraws only what changed.</li><li class="">Window management: create, close, move, resize, stack, focus, minimise, maximise, full screen.</li><li class="">Each window draws into its own shared-memory buffer and reports what changed (zero-copy).</li><li class="">Transparency, per-window opacity, shadows, rounded corners.</li><li class="">Keyboard goes to the focused window, mouse to the window under it, with drag grabs. Software cursor drawn last.</li><li class=""><code>libpane</code>, the library programs use to make windows.</li><li class="">The kernel's current desktop is the model to port; the desktop polish above carries over.</li><li class="">A program sees only its own windows and its own input; it can't fake input, move others' windows, or read their titles or contents.</li></ul><p class="note">5 more items in <a href="/docs/roadmap/#phase-12-pane-the-real-window-server">the roadmap document</a>.</p><p class="goal"><b>Done when:</b> three windows drag, resize, stack and focus with no tearing or flicker; a 10×10 repaint recomposites only that area; a misbehaving test client is refused and logged; 60 s of protocol fuzzing leaves Pane running.</p></article></div>
+      <p class="minor">Right now, from the checklist</p>
+      <div class="work"><div>Version <strong>0.0.5g</strong> (desktop polish: calendar, reminders, notifications, animations, snapping, Alt+Tab, Settings cards, VirtualBox mouse) is the release of 2026-10-05. The owner said on 2026-10-05: "do more polish until we start phase 12", with a fixed loop: each iteration ships to VirtualBox, updates the HTML list on their Windows desktop, and ends with <strong>8 numbered candidates</strong>; the owner picks by number (CLAUDE.md, "After every iteration"). docs/FEATURES.md lists what exists; docs/BUGS.md the bugs.</div></div>
     </section>
 
     <section id="ahead">
       <span class="eyebrow">What's coming</span>
       <h2>The road from here.</h2>
-      <p class="sub">The highlights of every phase after this one, in the order they will be built.</p>
-
-      <div class="ahead">
-        <article class="phase">
-          <header><span class="n">Phase 13</span><h3>Facet and the first real apps</h3><span class="tag">planned</span></header>
-          <p>A widget toolkit, a proper desktop shell, and the applications that make it a system you can use.</p>
-          <ul>
-            <li><b>Facet toolkit:</b> buttons, lists, menus, tabs, dialogs, theming and keyboard navigation.</li>
-            <li><b>Desktop shell:</b> taskbar, launcher, notifications, wallpapers and themes.</li>
-            <li><b>Ember, Crate and Slate:</b> a terminal with tabs, a file manager and a text editor.</li>
-            <li><b>Gauge, Dial and Tally:</b> a system monitor, settings and a calculator.</li>
-            <li><b>Frame, Daub and Chronos:</b> an image viewer, a paint program and a clock.</li>
-            <li><b>Warren:</b> a small game, plus TrueType fonts across the system.</li>
-          </ul>
-          <p class="goal"><b>Target:</b> power-on to a usable desktop in under 3 seconds.</p>
-        </article>
-
-        <article class="phase">
-          <header><span class="n">Phase 14</span><h3>Networking</h3><span class="tag">planned</span></header>
-          <p>Cerberus gets online, with a network stack that runs outside the kernel.</p>
-          <ul>
-            <li><b>Network drivers:</b> virtio-net and e1000.</li>
-            <li><b>netd:</b> Ethernet, ARP, IPv4, ICMP, UDP and a full TCP implementation.</li>
-            <li><b>DHCP and DNS:</b> an address and name lookups without setup.</li>
-            <li><b>Sockets:</b> the familiar calls, working with event queues.</li>
-            <li><b>Tools:</b> <code>ping</code>, <code>ifconfig</code>, <code>nslookup</code>, <code>fetch</code> and <code>netstat</code>.</li>
-            <li><b>Firewall on by default:</b> incoming connections are blocked, and network access is a per-app permission.</li>
-          </ul>
-          <p class="goal"><b>Target:</b> a 100 MB transfer that matches by checksum. Nothing is sent at boot except DHCP.</p>
-        </article>
-
-        <article class="phase">
-          <header><span class="n">Phase 15</span><h3>Users, sandboxing and TLS</h3><span class="tag">planned</span></header>
-          <p>Accounts, a login screen, and real boundaries between applications.</p>
-          <ul>
-            <li><b>User accounts:</b> passwords stored as Argon2id hashes.</li>
-            <li><b>Login and lock screen:</b> Super+L and an idle timeout, with no auto-login.</li>
-            <li><b>No setuid programs:</b> admin actions go through one service that asks for the password and logs it.</li>
-            <li><b>Sandboxing:</b> a program can permanently give up network, files, or starting other programs.</li>
-            <li><b>Keyring:</b> a password manager encrypted with a key from your login.</li>
-            <li><b>HTTPS:</b> TLS with a certificate store, and an audit log of logins and permission decisions.</li>
-          </ul>
-          <p class="goal"><b>Target:</b> one user cannot read another's files, and killing the lock screen does not unlock it.</p>
-        </article>
-
-        <article class="phase">
-          <header><span class="n">Phase 15B</span><h3>A web browser of its own</h3><span class="tag">planned</span></header>
-          <p>Written for Cerberus, starting with simple pages.</p>
-          <ul>
-            <li><b>HTML and CSS:</b> a standards-following parser and a documented CSS subset, including flex basics.</li>
-            <li><b>Layout and images:</b> text wrapping, tables, smooth scrolling, PNG, JPEG and GIF.</li>
-            <li><b>A real browser window:</b> tabs, bookmarks, history, downloads, find in page and zoom.</li>
-            <li><b>Sandboxed tabs:</b> a bad page can crash a tab, never the system.</li>
-            <li><b>Private by default:</b> HTTPS first, third-party cookies off, no telemetry.</li>
-            <li><b>JavaScript:</b> a later, separate decision.</li>
-          </ul>
-        </article>
-
-        <article class="phase">
-          <header><span class="n">Phase 16</span><h3>Spec, the language</h3><span class="tag">planned</span></header>
-          <p>The systems language designed alongside the OS starts compiling for it.</p>
-          <ul>
-            <li><b>specc:</b> the compiler, from lexer to x86-64 code and an ELF writer.</li>
-            <li><b>Standard library:</b> text, collections, files, threads, and direct system-call bindings.</li>
-            <li><b>Tooling:</b> a formatter, a test runner and a build tool.</li>
-            <li><b>Excellent error messages:</b> a requirement, with the rule explained and a fix suggested.</li>
-            <li><b>Apps in Spec:</b> at least three applications rewritten in it, one with a GUI.</li>
-          </ul>
-          <p class="goal"><b>Target:</b> <code>specc hello.spec -o hello</code> makes a program that runs on Cerberus.</p>
-        </article>
-
-        <article class="phase">
-          <header><span class="n">Phase 17</span><h3>Running real software</h3><span class="tag">planned</span></header>
-          <p>Enough compatibility that existing programs can be ported.</p>
-          <ul>
-            <li><b>Shared libraries:</b> a dynamic linker and <code>dlopen</code>.</li>
-            <li><b>POSIX C library:</b> big enough to build unmodified programs such as zlib, Lua and the Tiny C Compiler.</li>
-            <li><b>Job control:</b> pseudo-terminals, Ctrl+Z, <code>fg</code> and <code>bg</code>.</li>
-            <li><b>pkg:</b> a package manager with signed packages and sandboxed install scripts.</li>
-          </ul>
-          <p class="goal"><b>Target:</b> the Tiny C Compiler compiles and runs a C program on Cerberus itself.</p>
-        </article>
-
-        <article class="phase">
-          <header><span class="n">Phase 18</span><h3>Installer and disk encryption</h3><span class="tag">planned</span></header>
-          <p>Cerberus leaves the ISO and lives on a disk.</p>
-          <ul>
-            <li><b>Live installer:</b> erase a disk, or install alongside an existing system.</li>
-            <li><b>Boot menu:</b> Cerberus, the previous kernel, recovery, and Windows or other systems found.</li>
-            <li><b>Full-disk encryption:</b> optional, with the key derived from a passphrase.</li>
-            <li><b>Signed updates:</b> the previous kernel stays bootable, and it never updates on its own.</li>
-            <li><b>Recovery:</b> a read-only rescue shell and a file-system repair tool.</li>
-            <li><b>Service manager:</b> start order, restart policy and a sandbox per service.</li>
-          </ul>
-          <p class="goal"><b>Target:</b> an interrupted update still boots.</p>
-        </article>
-
-        <article class="phase">
-          <header><span class="n">Phase 19</span><h3>Real hardware and stretch goals</h3><span class="tag">stretch</span></header>
-          <p>Out of the virtual machine and onto real PCs.</p>
-          <ul>
-            <li><b>USB:</b> keyboards, mice and USB sticks.</li>
-            <li><b>Sound:</b> Intel HD Audio and a mixing server.</li>
-            <li><b>Booting on real PCs,</b> including installs beside Windows.</li>
-            <li><b>Kernel address randomisation</b> and IPv6.</li>
-            <li><b>HiDPI scaling</b> and more accessibility features.</li>
-            <li><b>Spec compiling itself,</b> and an ARM64 port.</li>
-          </ul>
-        </article>
-      </div>
+      <p class="sub">Every phase after the next one, in the order it will be built, with its items from the roadmap document.</p>
+      <div class="ahead"><article class="phase " id="phase-13"><header><span class="n">Phase 13</span><h3>Toolkit, desktop shell and applications</h3><span class="tag">planned</span></header><p>Widget toolkit, desktop shell, and the apps in §12 (Ember terminal, Crate files, Slate editor, Gauge, Dial, Tally, Frame, Daub, Chronos, Warren, lsh, CLI utils).</p><ul><li class=""><strong>Facet</strong>, the widget toolkit: layout containers, buttons, text boxes, lists, menus, scroll bars, tabs, dialogs, theming, keyboard navigation and accessibility basics (SPEC §10).</li><li class="">The desktop shell: taskbar, launcher, notifications, wallpaper, settings for theme and layout (SPEC §11).</li><li class="">Applications (SPEC §12):</li><li class=""><strong>Ember</strong> — terminal (selection, scrollback, colours and escape sequences, tabs).</li><li class=""><strong>Crate</strong> — file manager.</li><li class=""><strong>Slate</strong> — text editor.</li><li class=""><strong>Gauge</strong> — system monitor.</li><li class=""><strong>Dial</strong> — settings.</li></ul><p class="note">11 more items in <a href="/docs/roadmap/#phase-13-toolkit-desktop-shell-and-applications">the roadmap document</a>.</p><p class="goal"><b>Done when:</b> boot to the desktop, open a text file from the file manager, edit and save it in the editor, reopen it and see the change, run commands in the terminal, all with mouse and keyboard.</p></article><article class="phase " id="phase-14"><header><span class="n">Phase 14</span><h3>Networking and internet</h3><span class="tag">planned</span></header><p>virtio-net + e1000; <code>netd</code> userland stack (Ethernet, ARP, IPv4, ICMP, UDP, TCP, DHCP, DNS, loopback); socket syscalls 70–83; default-deny inbound firewall; per-app network permission…</p><ul><li class="">Network card drivers: <strong>virtio-net</strong> (QEMU) and <strong>e1000</strong> (VirtualBox and QEMU).</li><li class=""><code>netd</code>, a user-mode network server: Ethernet, ARP, IPv4 (with fragment reassembly), ICMP (ping), UDP, TCP (full state machine, retransmission, congestion control, window scaling), loopback.</li><li class="">DHCP (get an address automatically) and DNS (look up names).</li><li class="">Socket system calls (<code>socket</code>, <code>bind</code>, <code>connect</code>, <code>listen</code>, <code>accept</code>, <code>send</code>, <code>recv</code>, …) usable with event waiting and non-blocking mode.</li><li class="">Tools: <code>ping</code>, <code>ifconfig</code>, <code>nslookup</code>, <code>fetch</code> (download a web page), <code>netstat</code>.</li><li class="">Network page in Settings; connection indicator on the taskbar.</li><li class="">Firewall: incoming connections blocked by default; rules in <code>/etc/cerberus/firewall.conf</code>.</li><li class="">Per-application network permission.</li></ul><p class="note">2 more items in <a href="/docs/roadmap/#phase-14-networking-and-internet">the roadmap document</a>.</p><p class="goal"><b>Done when:</b> DHCP gets an address; ping, name lookup and fetching <code>http://example.com/</code> work; a 100 MB transfer matches by checksum; a blocked port drops and logs; a program without permission can't open a socket.</p><p class="goal"><b>Owner decision first:</b> write the TCP/IP stack ourselves or port lwIP.</p></article><article class="phase " id="phase-15"><header><span class="n">Phase 15</span><h3>Users, passwords, sandboxing and secure connections</h3><span class="tag">planned</span></header><p>Users and groups, Argon2id password hashes, credentials, <code>authd</code> broker (no setuid), login and lock screens, <code>restrict</code> sandbox, permission prompts, keyring, TLS client with certificate store, audit log.</p><ul><li class="">User accounts and groups; passwords stored as Argon2id hashes.</li><li class="">Login screen and lock screen (Super+L, idle timeout); no auto-login by default.</li><li class="">Process identities (user and group IDs). No setuid programs: admin actions go through <code>authd</code>, which asks for the password and logs the action.</li><li class=""><code>restrict</code>: a program can permanently give up network, files outside given folders, starting programs, or raw devices. The desktop applies each app's declared permissions with it.</li><li class="">Permission prompts (screen capture, clipboard history, network), remembered per app.</li><li class="">Keyring (password manager) for the user's own secrets, encrypted with a key from the login password.</li><li class="">TLS (HTTPS) for <code>fetch</code> and the package manager, with a certificate store.</li><li class="">Audit log of logins, failures, privilege use and permission decisions.</li></ul><p class="goal"><b>Done when:</b> one user can't read another's files; wrong passwords are refused with growing delays; Argon2id matches the official test vectors; a sandboxed program is refused network, outside files and <code>fork</code>; killing the lock screen doesn't unlock it; <code>fetch https://example.com/</code> works and a bad certificate is refused.</p><p class="goal"><b>Owner decision first:</b> TLS/crypto library: port Mbed TLS (recommended), port BearSSL, or write our own.</p></article><article class="phase " id="phase-15B"><header><span class="n">Phase 15B</span><h3>Our own web browser</h3><span class="tag">planned</span></header><p>Decided by the owner on 2026-10-04. Needs phases 13–15 (toolkit, networking, HTTPS and the sandbox). Name still to choose.</p><ul><li class="">HTTP/1.1 client (keep-alive, redirects, chunked, gzip) and HTTPS.</li><li class="">Cache and cookies (per site, per user, clearable; third-party cookies off by default).</li><li class="">HTML parser following the web standard for common pages, tolerant of broken markup; a document tree (DOM).</li><li class="">CSS for a documented subset: selectors, box model, colours, fonts, borders, backgrounds, block/inline/flex basics, positioning.</li><li class="">Layout and painting: text wrapping, images (PNG, JPEG, GIF), basic tables, smooth scrolling.</li><li class="">Browser window: address bar, back/forward/reload, tabs, bookmarks, history, downloads, find in page, zoom.</li><li class="">Later (separate decision): JavaScript — write an engine or port QuickJS.</li><li class="">Runs sandboxed: network and its own folder only; files only through the trusted dialogs; tabs isolated from each other.</li></ul><p class="note">2 more items in <a href="/docs/roadmap/#phase-15b-our-own-web-browser">the roadmap document</a>.</p><p class="goal"><b>Done when:</b> <code>http://example.com/</code> and <code>https://example.com/</code> render readably; a set of test pages matches reference screenshots; fuzzing finds no crash; a page can't read files or other tabs.</p></article><article class="phase " id="phase-16"><header><span class="n">Phase 16</span><h3>The Spec language compiles for Cerberus</h3><span class="tag">planned</span></header><p>Nothing of the compiler exists yet (<code>spec/</code> holds only empty folders).</p><ul><li class="">The language itself (SPEC §13.1) and the compiler pipeline: lexer, parser, type checker, intermediate code (§13.2).</li><li class="">x86-64 code generation and an ELF writer.</li><li class="">Standard library and Cerberus system-call bindings (§13.3).</li><li class="">Tooling: formatter, test runner, build tool (§13.4).</li><li class="">At least three applications rewritten in Spec, one with a GUI.</li></ul><p class="goal"><b>Done when:</b> <code>specc hello.spec -o hello</code> makes a program that runs on Cerberus, and a Spec GUI application runs on the desktop.</p></article><article class="phase " id="phase-17"><header><span class="n">Phase 17</span><h3>Running real software</h3><span class="tag">planned</span></header><p>Dynamic linking with full RELRO, POSIX-subset libc (<code>docs/LIBC.md</code>), ptys and job control, full signals, signed package manager <code>pkg</code>; proof ports: zlib, Lua, tinycc, make.</p><ul><li class="">Shared libraries and a dynamic linker (<code>/lib/ld-cerberus.so</code>, full RELRO), <code>dlopen</code>.</li><li class="">A POSIX-compatible C library big enough to build unmodified programs (listed in <code>docs/LIBC.md</code>). Proof: <code>zlib</code>, <code>lua</code>, <code>tinycc</code>, <code>make</code>.</li><li class="">Pseudo-terminals, job control (Ctrl+Z, <code>fg</code>, <code>bg</code>), full signals.</li><li class="">Package manager <code>pkg</code> (install, remove, list, search, upgrade) with signed (Ed25519) packages; install scripts sandboxed.</li><li class=""><em>(speed)</em> Measure program start-up and dynamic-link time.</li></ul><p class="goal"><b>Done when:</b> Lua and the Tiny C Compiler built from upstream source run on Cerberus; tcc compiles and runs a C program on Cerberus; a tampered package is refused; a 50-library GUI app starts in under 200 ms.</p><p class="goal"><b>Owner decision first:</b> grow our own C library or port mlibc.</p></article><article class="phase " id="phase-18"><header><span class="n">Phase 18</span><h3>Installing to a disk, updates, encryption, recovery</h3><span class="tag">planned</span></header><p>Design notes for the installer and dual boot: docs/INSTALLER.md.</p><ul><li class="">Live installer, like Windows Setup:</li><li class="">pick a disk (model, size, partitions and existing systems shown);</li><li class="">"Erase this disk and install Cerberus", or "Install alongside the existing system" in free space;</li><li class="">review every change before anything is written; erasing needs the disk's name typed;</li><li class="">create a user, copy the system, install the boot loader, reboot.</li><li class="">Boot menu listing Cerberus, the previous Cerberus kernel, Cerberus recovery and <strong>Windows</strong> (or other systems found).</li><li class="">UEFI boot entry so the PC starts Cerberus's menu; BitLocker, Secure Boot and Fast Startup checks with clear instructions.</li><li class="">GPT and FAT32 support; making a bootable USB documented (Rufus "DD image" mode or balenaEtcher).</li></ul><p class="note">4 more items in <a href="/docs/roadmap/#phase-18-installing-to-a-disk-updates-encryption-recovery">the roadmap document</a>.</p><p class="goal"><b>Done when:</b> installed to a blank disk it boots without the ISO; an encrypted disk shows only ciphertext; an interrupted update still boots; recovery repairs a damaged disk. Proposed addition: installing beside a fake Windows leaves every Windows byte unchanged and both boot from the menu.</p></article><article class="phase " id="phase-19"><header><span class="n">Phase 19</span><h3>Stretch goals</h3><span class="tag">stretch</span></header><p>(was phase 15).</p><ul><li class="">USB (XHCI controller, keyboards and mice, USB sticks).</li><li class="">Sound (Intel HD Audio, a mixing server).</li><li class="">IPv6.</li><li class="">Kernel address randomisation (KASLR).</li><li class="">Booting on real PCs (and installing beside Windows on them).</li><li class="">The Spec compiler compiling itself; a Spec package ecosystem.</li><li class="">HiDPI scaling; more accessibility features.</li><li class="">ARM64 port.</li></ul></article></div>
     </section>
 
     <section id="done">
       <span class="eyebrow">Completed</span>
-      <h2>Twelve phases done.</h2>
+      <h2>12 phases done.</h2>
       <p class="sub">Every finished phase passed its acceptance tests before the next one started. Pick one to open the release that completed it.</p>
-      <div class="finished">
-        <a href="#v0.0.1"><code>0</code><span><b>Scaffolding.</b> The cross compiler, the bootloader, the build and the boot test harness.</span><em>0.0.1</em></a>
-        <a href="#v0.0.1"><code>1</code><span><b>Boot and output.</b> Serial, a framebuffer console and the boot banner.</span><em>0.0.1</em></a>
-        <a href="#v0.0.1"><code>2</code><span><b>CPU and interrupts.</b> Symbolised crash dumps, ACPI, APIC, HPET, a 100 Hz timer and the kernel shell.</span><em>0.0.1</em></a>
-        <a href="#v0.3.0"><code>3</code><span><b>Physical memory.</b> The frame allocator and its self-test.</span><em>0.3.0</em></a>
-        <a href="#v0.4.0"><code>4</code><span><b>Virtual memory.</b> Private address spaces, demand paging and copy-on-write.</span><em>0.4.0</em></a>
-        <a href="#v0.5.0"><code>5</code><span><b>Kernel heap.</b> A hardened allocator that detects corruption.</span><em>0.5.0</em></a>
-        <a href="#v0.6.0"><code>6</code><span><b>Threads and scheduling.</b> A four-level preemptive scheduler and the full set of locks.</span><em>0.6.0</em></a>
-        <a href="#v0.7.0"><code>7</code><span><b>User programs.</b> Ring 3, system calls, the ELF loader, <code>fork</code> and <code>exec</code>.</span><em>0.7.0</em></a>
-        <a href="#v0.0.5a"><code>8</code><span><b>Every core.</b> All processors scheduling, with work stealing and TLB shootdown.</span><em>0.0.5a</em></a>
-        <a href="#v0.0.5c"><code>9</code><span><b>Files.</b> The VFS, the page cache, cerfs and the first disk drivers.</span><em>0.0.5c</em></a>
-        <a href="#v0.0.5e"><code>10</code><span><b>Drivers.</b> The driver model, NVMe and virtio disks, input devices and power management.</span><em>0.0.5e</em></a>
-        <a href="#v0.0.5f"><code>11</code><span><b>Programs talking to each other.</b> Ports, shared memory, signals, threads, futexes and event queues.</span><em>0.0.5f</em></a>
-      </div>
+      <div class="finished"><a href="#v0.3.0"><code>0</code><span><b>Scaffolding.</b> Repo layout, cross toolchain (<code>toolchain/build-cross.sh</code>, GCC 13.3.0 x86_64-elf), Limine 11.4.1, all <code>make</code> targets, QMP boot probe.</span><em>0.3.0</em></a><a href="#v0.3.0"><code>1</code><span><b>Boot and output.</b> BootInfo from Limine, COM1 serial, <code>kprintf</code>, PSF2 framebuffer console, boot banner.</span><em>0.3.0</em></a><a href="#v0.3.0"><code>2</code><span><b>CPU structures and interrupts.</b> GDT/TSS, IDT with symbolised exception dumps and backtraces, embedded symbol table, PIC/ACPI/APIC/IOAPIC, HPET, self-correcting 100 Hz timer, kernel shell,…</span><em>0.3.0</em></a><a href="#v0.3.0"><code>3</code><span><b>Physical memory.</b> Bitmap frame allocator, <code>test pmm</code>.</span><em>0.3.0</em></a><a href="#v0.4.0"><code>4</code><span><b>Virtual memory.</b> <code>AddressSpace</code> (map/unmap/protect/translate), VMAs (anonymous, device, guard), <code>mmap</code>/<code>munmap</code>/<code>mprotect</code>, demand paging, COW clone, guarded kernel stacks, 2…</span><em>0.4.0</em></a><a href="#v0.5.0"><code>5</code><span><b>Kernel heap.</b> Slab caches 16–2048 bytes, whole pages above; <code>kmalloc/kzalloc/kfree/krealloc/kfree_sensitive</code>; encoded and validated free lists; debug red zones, poisoning…</span><em>0.5.0</em></a><a href="#v0.6.0"><code>6</code><span><b>Threads and scheduling.</b> Threads, processes, four-level preemptive scheduler, sleep and wait queues, spinlock/mutex/semaphore/condition variable/reader-writer lock, idle and reaper…</span><em>0.6.0</em></a><a href="#v0.7.0"><code>7</code><span><b>Userland and syscalls.</b> Ring 3, <code>syscall</code>/<code>sysret</code>, dispatch generated from <code>table.def</code> (docs/SYSCALLS.md), validated user copies, hardened ELF64 loader (PIE only), 14 system calls,…</span><em>0.7.0</em></a><a href="#v0.0.5a"><code>8</code><span><b>SMP.</b> All CPUs started through the bootloader; per-CPU data, run queues, work stealing; reschedule, TLB and stop IPIs; TLB shootdown; per-address-space VMM lock;…</span><em>0.0.5a</em></a><a href="#v0.0.5c"><code>9</code><span><b>Files and file systems.</b> VFS (mounts, symlinks, permissions, mount flags, name cache), tmpfs, read-only initramfs root, devfs, page cache (read-ahead, write-back, journal holds), cerfs…</span><em>0.0.5c</em></a><a href="#v0.0.5e"><code>10</code><span><b>Drivers.</b> Driver model, PCI MSI, AHCI by interrupt, NVMe, virtio transport + virtio-blk, PS/2 keyboard in set 2 with the full map, <code>/dev/input</code>, <code>/dev/fb0</code>, device…</span><em>0.0.5e</em></a><a href="#v0.0.5f"><code>11</code><span><b>IPC.</b> Plus the Settings window, launcher with search, floating taskbar, resolution switching.</span><em>0.0.5f</em></a></div>
     </section>
 
     <section id="releases">
@@ -395,307 +74,28 @@
         <div>
           <span class="eyebrow">Release history</span>
           <h2>Every version so far.</h2>
-          <p class="sub">From the first snapshot to the latest release. Pick a version to see what it changed.</p>
+          <p class="sub">From the first snapshot to the latest release, with the real dates, straight from <a href="/docs/changelog/">the changelog</a>. Pick a version to see what it changed.</p>
         </div>
         <button class="btn" id="toggle" type="button">Expand all</button>
       </div>
-      <div class="releases" id="list"></div>
+      <p class="minor">Built, not yet released (no release tag; the ISO in dist/ is still v0.0.5i)</p><div class="releases"><details id="v0.0.5j" open><summary><span class="v">0.0.5j</span><span class="t">Round 3 continued (hard links) and round 4 of polish, the owner's eight picks of the 0.0.5i list, as far as a…<small>built 2026-10-06, not yet released</small></span><span class="chips"><span class="chip dev">release pending</span></span><span class="arrow"></span></summary><div class="body"><p>Round 3 continued (hard links) and round 4 of polish, the owner's eight picks of the 0.0.5i list, as far as a three-hour box allowed.</p><h4 class="security">Security</h4><ul><li>The desktop can <strong>lock itself</strong> after 1, 5, 15 or 30 idle minutes (Settings → Security, once a password is set).</li></ul><h4 class="fixed">Fixed</h4><ul><li>Settings scrolls with the wheel when its content does not fit (B-012).</li><li>Task buttons no longer run under the tray when the taskbar is full.</li></ul><h4 class="added">Added</h4><ul><li><strong>Hard links</strong>: <code>ln a b</code> on cerfs and tmpfs (<code>link</code> system call 16).</li><li><strong>Virtual desktops</strong>: four of them; Super+1..4 switches, Super+Shift+1..4 moves the focused window; squares on the taskbar show which hold windows (click to switch).</li><li><strong>System Monitor</strong>: CPU and memory graphs over the last minute, a process table with each process's CPU share, and End task.</li><li><strong>Image Viewer</strong>: opens BMP files (Print Screen's output) from Files; "Set as wallpaper" makes the picture the background.</li><li><strong>Reminders repeat</strong>: start the text with <code>daily</code> or <code>weekly</code>; a reminder's notification has a <strong>Snooze</strong> button (five minutes).</li><li><strong>Taskbar button right-click</strong>: Restore, Minimise, Maximise, Snap left, Snap right, Close.</li><li>Terminal: <code>clear</code> and Ctrl+L.</li><li>Power off and Restart in the launcher ask twice ("Sure?").</li></ul></div></details></div>
+      <div class="releases" id="list"><details id="v0.0.5i" open><summary><span class="v">0.0.5i</span><span class="t">The first touch of a page (a minor page fault) takes 1.4 µs instead of 2.1 µs: frames are zeroed ahead of…<small>2026-10-05</small></span><span class="chips"><span class="chip latest">latest</span></span><span class="arrow"></span></summary><div class="body"><h4 class="performance">Performance</h4><ul><li>The first touch of a page (a minor page fault) takes 1.4 µs instead of 2.1 µs: frames are zeroed ahead of time by a background thread (B-015).</li></ul><h4 class="added">Added</h4><ul><li><code>sigprocmask</code>: a thread can block signals; a blocked signal waits until it is unblocked. SIGKILL cannot be blocked. New threads and children inherit the mask.</li><li><code>port_try_send</code>: as <code>port_send</code>, but EAGAIN instead of waiting when the queue is full.</li><li>The keyboard's Caps Lock and Num Lock lights follow the keys.</li></ul></div></details><details id="v0.0.5h"><summary><span class="v">0.0.5h</span><span class="t">A lock screen: Super+L (or the tray's Lock) locks the desktop behind a password set in Settings → Security;…<small>2026-10-05</small></span><span class="chips"></span><span class="arrow"></span></summary><div class="body"><h4 class="security">Security</h4><ul><li>A <strong>lock screen</strong>: Super+L (or the tray's Lock) locks the desktop behind a password set in Settings → Security; the password is stored as a salted SHA-256 hash, compared in constant time, and a wrong try waits a second. (Argon2id and real users come with phase 15.)</li></ul><h4 class="added">Added</h4><ul><li><strong>Saved settings and reminders</strong> (B-011): the first disk holding a cerfs volume labelled <code>data</code> is mounted at <code>/data</code> at boot; Settings → Storage sets a blank disk up for it. Everything in Settings, the custom accent, the keyboard choices and reminders survive a restart.</li><li><strong>Text selection and a clipboard</strong>: drag over the terminal to select (it copies), Ctrl+C / Ctrl+V in the terminal, the launcher, the calendar and the new applications.</li><li><strong>Files</strong>: browse folders and disks, sizes and dates, New folder, Rename, Delete (asks twice), open a text file in Notes with a double-click.</li><li><strong>Notes</strong>: a text editor with selection, undo, find, Ctrl+S (to <code>/data</code> or <code>/tmp</code>), mouse and wheel; 64 KiB per file.</li><li><strong>Calculator</strong>: typed or clicked expressions with brackets, ^ and %, six decimals, the result in hex and binary, memory, copy.</li><li><strong>Keyboard settings</strong>: US, UK, German and French (AZERTY) layouts with AltGr, repeat delay and rate; CAPS / NUM-off pills on the taskbar.</li><li><strong>Tray</strong> (the chevron beside the clock): night light, show desktop, lock, Settings, accent swatches, frame rate, a CPU meter per core, RAM, and the notification history.</li><li>Settings tabs: Keyboard, Storage, Security.</li><li><code>test sha256</code> (FIPS vectors).</li></ul><h4 class="changed">Changed</h4><ul><li>Launcher search ranks name matches above keyword matches.</li><li>The large display fonts include digits (the lock screen's clock).</li></ul></div></details><details id="v0.0.5g"><summary><span class="v">0.0.5g</span><span class="t">VirtualBox at 1920x1080 (and any scaled window): the mouse pointer no longer stops short of the screen's…<small>2026-10-05</small></span><span class="chips"></span><span class="arrow"></span></summary><div class="body"><h4 class="fixed">Fixed</h4><ul><li>VirtualBox at 1920x1080 (and any scaled window): the mouse pointer no longer stops short of the screen's edges. A driver for VirtualBox's guest device takes the host's pointer position, so the pointer sits exactly under the host's and the mouse need not be captured (B-003).</li><li>The boot menu no longer waits (it did not count down on VirtualBox and needed Enter): the ISO boots straight into Cerberus (B-002).</li><li>The About window has a minimum size and shortens its subtitle instead of clipping it (B-004).</li></ul><h4 class="added">Added</h4><ul><li><strong>Calendar</strong>: click the clock. A month view with today marked; page with the arrows, the wheel or Left/Right; "Today".</li><li><strong>Reminders</strong>: type <code>14:30 Call home</code> (or just the text, for 09:00) into the calendar and press Enter; a notification appears at that minute. Days with reminders show a dot. Kept in memory until a restart.</li><li><strong>Notifications</strong>: cards in the top-right corner, gone after 8 s or when clicked; <code>notify &lt;text&gt;</code> in the terminal shows one.</li><li><strong>Animations</strong>: windows fade and slide when opened, closed, minimised or restored; the launcher and the calendar rise out of the taskbar.</li><li><strong>Window snapping</strong>: drop a window at the left or right edge for half the screen, at the top to maximise (an outline previews it); Super+Left, Super+Right, Super+Up; Super+Down restores, then minimises. Dragging a maximised or snapped window gives it its old size back.</li><li><strong>Double-click</strong> a title bar to maximise or restore.</li><li><strong>Alt+Tab switcher</strong>: tiles of every window; Tab moves on, Shift+Tab back, releasing Alt picks, Escape cancels.</li><li><strong>Super+D</strong> hides every window and brings them back in the same order.</li><li><strong>Middle-click</strong> a taskbar button to close its window.</li><li><strong>Right-click the desktop</strong>: Terminal, Settings, Change wallpaper, Show desktop, About.</li><li><strong>Print Screen</strong> saves the screen as <code>/tmp/screenshot-N.bmp</code>.</li><li>Terminal: <strong>command history</strong> with Up/Down and <strong>Tab completion</strong> of command names.</li><li>Settings: <strong>any accent colour</strong> from a hue strip (click or drag); three more wallpapers (<strong>Ocean, Sunset, Graphite</strong>) on their own tab; <strong>time zone</strong> (UTC offset); <strong>18 resolutions</strong> from 800x600 to 5120x1440 including ultrawide (2560x1080, 3440x1440, 3840x1600); a <strong>frame rate</strong> cap of 30–144 Hz.</li></ul><h4 class="changed">Changed</h4><ul><li>Settings is laid out as titled cards with icons in the sidebar, and the hint sentences are gone. Tabs: Appearance, Wallpaper, Window borders, Display.</li><li>The test probe can type shifted punctuation (<code>!key 14:30</code>), press key combinations (<code>!keys alt tab</code>) and double-click (<code>!dblclick</code>).</li></ul></div></details><details id="v0.0.5f"><summary><span class="v">0.0.5f</span><span class="t">Spec phase 11, programs talking to each other, is complete, and the desktop gained a Settings window, a new…<small>2026-10-04</small></span><span class="chips"><span class="chip ph">Phase 11</span><span class="chip sec">security</span></span><span class="arrow"></span></summary><div class="body"><p>Spec phase 11, programs talking to each other, is complete, and the desktop gained a Settings window, a new launcher and resolution switching.</p><h4 class="security">Security</h4><ul><li>A named port has an owner and permission bits like a file; a program without write permission cannot connect to it (tested as user 1000).</li><li>The receiver of a connection learns the other side's process, user and group from the kernel, not from the message, so it cannot be faked.</li><li>Message sizes, descriptors per message and queue lengths are limited; a sender that finds a queue full waits, and nothing is dropped.</li><li>A signal can be sent only to a process of the same user (root: any).</li><li>A process can give up root (<code>setuid</code>, <code>setgid</code>) and cannot take it back.</li><li>Every thread of a program shares its open files; a file being used by one thread stays valid while another closes it.</li></ul><h4 class="added">Added</h4><ul><li><strong>Ports</strong>: named message channels between programs. Whole messages of up to 64 KiB, in order, which can carry open files and shared memory.</li><li><strong>Shared memory</strong> that several programs map at once.</li><li><strong>Signals</strong>: SIGKILL, SIGTERM, SIGSEGV (also SIGILL, SIGFPE), SIGCHLD, SIGUSR1/2, with handlers in programs; a waiting call returns EINTR.</li><li><strong>Threads in programs</strong>: <code>pthread_create</code>/<code>join</code>, mutexes and condition variables, thread-local variables (<code>__thread</code>, and <code>errno</code> is one).</li><li><strong>Futexes</strong>: locks that enter the kernel only to wait, also between processes through shared memory.</li><li><strong>Event queues</strong> (<code>event_create</code>/<code>ctl</code>/<code>wait</code>): one wait over ports, timers and child exit. A waiting server uses no CPU and wakes about 50 microseconds after a message is sent.</li><li><code>mmap</code> of a file (a private copy), <code>mprotect</code>, <code>kill</code>, <code>getppid</code>, <code>getuid</code> and friends, <code>umask</code>, <code>sysinfo</code>, <code>time_us</code>: 74 system calls now.</li><li>Desktop: the mouse cursor turns into a two-headed arrow over a window's edges and corners, and they are easier to grab, so resizing a window is discoverable.</li><li><strong>Settings</strong> (launcher, or search for it): nine accent colours; three wallpapers (Nebula, Aurora, Ember); square, soft or round window corners; floating or docked, glass or solid taskbar; 12- or 24-hour clock with or without seconds.</li><li><strong>Window-border effects</strong> in Settings: static, breathing, flashing, rainbow and chase (colours running round the window), with a choice of colour, thickness, speed, glow, and the focused window or all windows.</li><li><strong>Screen resolution</strong> can be changed in Settings (800x600 to 1920x1080) on the standard display adapter of VirtualBox and QEMU.</li><li><strong>A new launcher</strong>: a "C" logo button in the corner, a search box on the taskbar, and a menu with a search field (type to filter, Enter opens the first match), coloured application icons, and Power off / Restart.</li><li><strong>A new taskbar</strong>: a rounded bar floating clear of the screen edges, an icon for each open window with a mark under the focused one, a memory meter, and a bolder clock.</li><li><code>resolution [&lt;width&gt; &lt;height&gt;]</code> in the shell shows or changes the screen resolution from the keyboard.</li><li><code>help</code> in the shell is grouped and gives each command one short line; <code>help &lt;command&gt;</code> and <code>help tests</code> show more.</li><li>Programs: <code>ipctest</code>, <code>threadtest</code>, <code>sigtest</code>, <code>eventtest</code>, <code>mmaptest</code>.</li></ul><h4 class="changed">Changed</h4><ul><li>Taskbar buttons narrow to share the space when many windows are open or the screen is small.</li><li><code>sleep_ms</code> and <code>waitpid</code> return early (EINTR) when a signal arrives.</li><li>A program's fault is delivered as a signal first; only an unhandled one ends the program.</li></ul></div></details><details id="v0.0.5e"><summary><span class="v">0.0.5e</span><span class="t">Spec phase 10, drivers, is complete.<small>2026-10-04</small></span><span class="chips"><span class="chip ph">Phase 10</span><span class="chip sec">security</span></span><span class="arrow"></span></summary><div class="body"><p>Spec phase 10, drivers, is complete.</p><h4 class="security">Security</h4><ul><li>The screen (<code>/dev/fb0</code>), keyboard and mouse (<code>/dev/input/*</code>) and disks can be opened by root only; a program running as another user is refused (tested with a program run as user 1000).</li><li><code>/tmp</code> is writable by everyone, and only a file's owner can delete or rename it there (the "sticky" rule).</li><li>Everything a device reports (sizes, counts, queue positions) is checked before it is used, in every new driver.</li></ul><h4 class="performance">Performance</h4><ul><li>SATA commands are completed by an interrupt (MSI) where the controller offers it, so the processor is free while the disk works; VirtualBox's controller does not, and is polled as before.</li></ul><h4 class="added">Added</h4><ul><li><code>poweroff</code> switches the machine off and <code>reboot</code> restarts it, through ACPI, after writing everything to disk (also as the <code>reboot</code> system call).</li><li>NVMe disks (the kind most current PCs have) and virtio disks (QEMU's fast disk) work alongside SATA and IDE.</li><li>Keyboard and mouse events can be read from <code>/dev/input/kbd0</code> and <code>/dev/input/mouse0</code>: key codes, press, release and repeat, the character typed, the modifier keys; mouse movement, wheel and buttons.</li><li>The whole keyboard works: the numeric keypad with Num Lock, the menu key, Print Screen, Pause, right-hand Ctrl and Alt, keypad Enter and <code>/</code>.</li><li><code>drivers</code> lists the drivers and what each has attached; <code>runas &lt;uid&gt; &lt;program&gt;</code> runs a program as another user.</li><li><code>/dev/fb0</code>: the screen as a file, with its size from an ioctl.</li></ul><h4 class="changed">Changed</h4><ul><li>The keyboard is read in its native mode (scancode set 2) instead of the controller's translation, falling back to the old mode if a keyboard refuses.</li><li>Drivers are found and started through one registry (the driver model).</li></ul></div></details><details id="v0.0.5d"><summary><span class="v">0.0.5d</span><span class="t">Smooth text: the desktop no longer looks pixelated.<small>2026-10-04</small></span><span class="chips"></span><span class="arrow"></span></summary><div class="body"><p>Smooth text: the desktop no longer looks pixelated.</p><h4 class="changed">Changed</h4><ul><li>All desktop text is anti-aliased: DejaVu Sans for the interface, DejaVu Sans Mono for the terminal and tables, and a large bold face for the "Cerberus" wordmarks (they were a small pixel font enlarged two and three times, which made every letter stair-stepped).</li><li>The close button's cross is drawn with a smooth thin line.</li><li>The wallpaper is dithered, which removes the visible bands in its dark gradient.</li><li>The terminal's rows are one pixel taller (8×17 cells).</li></ul></div></details><details id="v0.0.5c"><summary><span class="v">0.0.5c</span><span class="t">Spec phase 9, files and file systems, is complete: Cerberus can keep files on a disk.<small>2026-10-04</small></span><span class="chips"><span class="chip ph">Phase 9</span><span class="chip sec">security</span></span><span class="arrow"></span></summary><div class="body"><p>Spec phase 9, files and file systems, is complete: Cerberus can keep files on a disk. The system has a new name: Cerberus.</p><h4 class="security">Security</h4><ul><li>File permissions (owner, group, others) are checked on every file operation; a user cannot read another user's private file, write a file they may only read, or look inside a directory closed to them.</li><li>Mount options: read-only, no programs (<code>noexec</code>), no device files (<code>nodev</code>), no set-user (<code>nosuid</code>). The root file system is read-only; <code>/tmp</code> refuses device files; <code>/dev</code> refuses programs.</li><li>The disk file system treats every disk as hostile: every field is checked before use, metadata carries CRC32C checksums, and a damaged disk gives an input/output error, never a crash. It is fuzzed: thousands of damaged disk images a minute are mounted and used by the real driver.</li><li>A disk in use by a mounted file system cannot be opened for writing, so it cannot be formatted or overwritten by accident.</li><li>A new disk block is never shown with what a deleted file left in it.</li><li>Keyboard, mouse and screen device files are readable by root only (this matters from phase 15: until user accounts exist, every program runs as root).</li></ul><h4 class="fixed">Fixed</h4><ul><li>On VirtualBox the clock could run unevenly (it trusted a processor counter that VirtualBox does not keep steady), which made timing self-tests fail there. Cerberus now uses that counter only on real hardware that declares it steady and under KVM, and checks it three times before trusting it.</li></ul><h4 class="performance">Performance</h4><ul><li>One page cache for file contents and disks, with read-ahead for sequential reads and background write-back every 5 seconds: reading a 64 MiB file a second time takes 6 ms instead of 0.7 s.</li><li>A name cache remembers recently used paths.</li><li>Closed files stay cached, so opening them again finds their data in memory.</li><li>SATA disks are read and written by DMA (about 87 MB/s in QEMU).</li></ul><h4 class="added">Added</h4><ul><li>Files and folders: <code>/</code> (read-only, from the boot archive), <code>/tmp</code> (in memory), <code>/dev</code> (devices), and disks mounted anywhere, for example <code>/mnt</code>.</li><li><strong>cerfs</strong>, the disk file system, with a journal: pulling the power while files are being written leaves the disk consistent (tested by killing the machine mid-write and checking the disk with an independent reader).</li><li><code>mkfs.cerfs</code> formats a disk, both inside Cerberus (<code>mkfs.cerfs -y /dev/disk/sda</code>) and on the build machine (<code>mkfs.cerfs --check</code> verifies an image).</li><li>Disk drivers: SATA (AHCI) and the older IDE controller. <code>pci</code> lists the PCI devices.</li><li>Programs: <code>ls</code>, <code>cat</code>, <code>echo</code>, <code>mkdir</code>, <code>rm</code>, <code>rmdir</code>, <code>mv</code>, <code>cp</code>, <code>touch</code>, <code>stat</code>, <code>ln -s</code>, <code>sync</code>, <code>mount</code>, <code>umount</code>, <code>pwd</code>, <code>write</code>, <code>fstest</code>, <code>mkfs.cerfs</code>.</li><li>The shell runs programs by name (<code>ls</code> instead of <code>run /bin/ls</code>), sends their output to a file with <code>&gt;</code> or <code>&gt;&gt;</code>, has <code>cd</code> and <code>pwd</code>, and <code>mount</code> lists file systems and cache statistics.</li><li>System calls for files: <code>open</code> with all the usual flags, <code>openat</code>, <code>seek</code>, <code>stat</code>, <code>lstat</code>, <code>fstat</code>, <code>mkdir</code>, <code>rmdir</code>, <code>unlink</code>, <code>rename</code>, <code>readdir</code>, <code>chdir</code>, <code>getcwd</code>, <code>dup</code>, <code>dup2</code>, <code>ioctl</code>, <code>truncate</code>, <code>sync</code>, <code>fsync</code>, <code>symlink</code>, <code>readlink</code>, <code>chmod</code>, <code>chown</code>, <code>mount</code>, <code>umount</code>, <code>time_ms</code> (docs/SYSCALLS.md). Programs inherit the shell's working directory; close-on-exec works.</li><li><code>/dev/null</code>, <code>/dev/zero</code>, <code>/dev/random</code>, <code>/dev/urandom</code>, <code>/dev/console</code>.</li><li>Self-tests <code>test vfs</code> and <code>test cerfsfuzz</code>.</li></ul><h4 class="changed">Changed</h4><ul><li>Opening a file in <code>/bin</code> for writing now fails with "read-only file system" instead of "operation not permitted".</li><li>The operating system is now called <strong>Cerberus</strong> (it was Lumen). Its disk file system is <strong>cerfs</strong> (<code>mkfs.cerfs</code>, <code>mount -t cerfs</code>), the release image is <code>dist/cerberus.iso</code>, the shell prompt is <code>cerberus&gt;</code>, and the launcher for Windows is <code>run-cerberus.cmd</code>.</li></ul></div></details><details id="v0.0.5b"><summary><span class="v">0.0.5b</span><span class="t">Desktop polish: smoother, rounder, and the terminal scrolls.<small>2026-10-04</small></span><span class="chips"></span><span class="arrow"></span></summary><div class="body"><p>Desktop polish: smoother, rounder, and the terminal scrolls.</p><h4 class="fixed">Fixed</h4><ul><li>Keys typed while the launcher menu is open no longer reach the terminal.</li></ul><h4 class="performance">Performance</h4><ul><li>Only pixels that changed are written to the screen. Dragging a window writes about a fifth of the pixels it did (82,000 instead of about 424,000 per frame in a measured drag), which matters most in VirtualBox, where writing to the screen is slow.</li><li>Frames are drawn as soon as mouse or keyboard input arrives (up to about 160 per second) instead of waiting for the next 10 ms timer tick; the mouse pointer no longer reads back from video memory.</li></ul><h4 class="added">Added</h4><ul><li>The terminal keeps the last 1,000 lines. Scroll with the mouse wheel or Shift+Page Up / Shift+Page Down; a scrollbar shows where you are, and typing jumps back to the bottom.</li><li><code>test terminal</code> self-test (scrollback), included in <code>test all</code>.</li><li><code>gui</code> reports the slowest frame since it was last asked and how many pixels were actually written.</li></ul><h4 class="changed">Changed</h4><ul><li>Window buttons look like Windows: minimise, maximise/restore and close as thin symbols in flat buttons; close turns red under the mouse.</li><li>Rounded corners are larger and anti-aliased (smooth edges instead of steps) on windows, taskbar buttons, the menu and the scrollbar.</li><li>The Super key opens the menu when pressed and released on its own; in a shortcut such as Super+T it no longer toggles the menu.</li><li>Resizing the terminal keeps its text instead of clearing it.</li><li>The About window shortens long values with "…" and no longer claims the Spec compiler is in progress (it has not been started).</li></ul></div></details><details id="v0.0.5a"><summary><span class="v">0.0.5a</span><span class="t">Spec phase 8, SMP, is complete: Lumen now uses every processor.<small>2026-10-04</small></span><span class="chips"><span class="chip ph">Phase 8</span><span class="chip sec">security</span></span><span class="arrow"></span></summary><div class="body"><p>Spec phase 8, SMP, is complete: Lumen now uses every processor. This is the first release under the new version scheme. It comes after 0.7.0 but is numbered 0.0.5a: from now on each release moves one letter (0.0.5a, 0.0.5b … 0.0.5j, then 0.0.6a).</p><h4 class="security">Security</h4><ul><li>Memory that is unmapped or made read-only is withdrawn from every processor before the change returns (TLB shootdown), so no processor can keep using a page that has been taken away.</li><li>The order in which kernel locks may be taken is written down in one place and checked on every acquisition in debug builds; a wrong order stops the kernel with a report instead of becoming a rare deadlock.</li><li>A fatal error stops all processors, not just the one that hit it.</li><li>The kernel's reads and writes of program memory can no longer be steered at kernel memory speculatively.</li></ul><h4 class="fixed">Fixed</h4><ul><li>The scheduler benchmarks no longer depend on there being one processor.</li><li>On machines without an HPET (such as VirtualBox), the clock ran several times too fast when two processors read it at once; it is now read by one processor at a time.</li><li>The scheduler and SMP self-tests measure their busy work in timer ticks and no longer fail on slow virtual machines; <code>test all</code> includes <code>test smp</code>.</li></ul><h4 class="performance">Performance</h4><ul><li>All processors run threads. Work is spread across idle processors, and a processor with nothing to do takes waiting work from a busy one.</li><li>The kernel heap gives each processor its own pool, so allocating memory does not make processors wait for each other.</li><li>The kernel keeps time with the processor's own counter where it runs at a steady rate, instead of reading a timer chip: reading the time is far cheaper (wake-up latency 7–9 µs instead of 18–19 µs under QEMU).</li></ul><h4 class="added">Added</h4><ul><li><code>test smp</code> self-test, and <code>test exceptions lo</code> (lock-order violation).</li><li><code>ps</code> shows which processor each thread is on and per-processor statistics.</li></ul><h4 class="changed">Changed</h4><ul><li>The boot log shows each processor reporting in ("smp: cpu 1 online").</li><li>"init: started as pid 1" is now printed by the kernel when it starts <code>init</code>.</li></ul></div></details><details id="v0.7.0"><summary><span class="v">0.7.0</span><span class="t">Spec phase 7, userland and system calls, is complete.<small>2026-10-03</small></span><span class="chips"><span class="chip ph">Phase 7</span><span class="chip sec">security</span></span><span class="arrow"></span></summary><div class="body"><p>Spec phase 7, userland and system calls, is complete.</p><h4 class="security">Security</h4><ul><li>Programs now run in user mode (ring 3), each in its own address space, and reach the kernel only through system calls. A program that crashes, touches kernel memory or runs a privileged instruction is ended and reported; the system carries on.</li><li>Every system-call argument is checked. Bad pointers, lengths that wrap and unknown flags are refused with an error instead of reaching kernel code; the kernel reads and writes program memory through one guarded path only.</li><li>SMEP, SMAP and UMIP are turned on when the CPU has them: the kernel can neither run nor casually touch program memory.</li><li>Address-space layout randomisation: a program's code, stack and <code>mmap</code> memory land at different addresses on every run. Only position-independent programs are loaded, and nothing can be mapped writable and executable.</li><li>A kernel random-number generator (ChaCha20, seeded from the CPU's hardware generator and interrupt timing) now supplies all randomness; programs get it through <code>getrandom</code>.</li><li>Stack-overflow detection (stack protector) in the kernel and in every program.</li><li><code>make fuzz</code>: the program loader, the boot-archive reader and the system-call interface are attacked with damaged and random input on every release.</li></ul><h4 class="fixed">Fixed</h4><ul><li>The context-switch benchmark (<code>bench</code>, <code>test sched</code>) no longer reports nonsense, or fails, when the shell thread happens to have been lowered in priority; this showed up on VirtualBox.</li><li>A program's output line can no longer be split in the middle by a kernel message.</li></ul><h4 class="added">Added</h4><ul><li>System calls <code>exit write read open close mmap munmap fork execve waitpid getpid yield sleep_ms getrandom</code> (reference: <code>docs/SYSCALLS.md</code>, generated from the kernel's table).</li><li>A small C library for programs (<code>userland/libc</code>) and the first programs, carried in a boot archive: <code>init</code> (process 1), <code>hello</code>, and test programs.</li><li>Shell command <code>run &lt;path&gt; [arguments]</code> starts a program and reports how it ended, for example <code>run /bin/hello</code>.</li><li><code>bench</code> measures a system-call round trip.</li></ul><h4 class="changed">Changed</h4><ul><li><code>dist/</code> holds exactly one file to boot, always named <code>lumen.iso</code>; <code>dist/VERSION.txt</code> says which version it is.</li></ul></div></details><details id="v0.6.0"><summary><span class="v">0.6.0</span><span class="t">Spec phase 6, threads and scheduling, is complete.<small>2026-10-03</small></span><span class="chips"><span class="chip ph">Phase 6</span></span><span class="arrow"></span></summary><div class="body"><p>Spec phase 6, threads and scheduling, is complete.</p><h4 class="security">Security</h4><ul><li>Every kernel stack now has a guard page below it, including the stacks used for fatal errors. A runaway thread is reported as "kernel stack overflow" with its name instead of overwriting other memory.</li></ul><h4 class="fixed">Fixed</h4><ul><li>The automated tests no longer fail on a busy host, and UEFI boots work in the test tool.</li></ul><h4 class="performance">Performance</h4><ul><li>The desktop stays responsive while long commands run: the compositor has its own high-priority thread and is woken the moment a key or mouse movement arrives.</li><li>An idle desktop now uses almost no CPU (0% of timer ticks busy in a 3-second sample); before, it spun a full core.</li></ul><h4 class="added">Added</h4><ul><li>Threads and processes, a four-level preemptive scheduler, sleeping and wait queues, and locks: spinlock, mutex, semaphore, condition variable, reader-writer lock.</li><li>Shell commands <code>ps</code> (thread list) and <code>bench</code> (micro-benchmarks); <code>make bench</code>; <code>docs/BENCH.md</code> with the first recorded numbers.</li><li><code>test sched</code> self-test.</li></ul><h4 class="changed">Changed</h4><ul><li>The kernel shell and the desktop run as threads. <code>idle hlt|spin</code> now sets what the idle thread does.</li></ul></div></details><details id="v0.5.1"><summary><span class="v">0.5.1</span><span class="t">VirtualBox: the keyboard no longer stops responding after a few keys when the VM has more than one CPU.<small>2026-10-03</small></span><span class="chips"></span><span class="arrow"></span></summary><div class="body"><h4 class="fixed">Fixed</h4><ul><li>VirtualBox: the keyboard no longer stops responding after a few keys when the VM has more than one CPU. The CPUs the kernel is not using yet now sleep instead of spinning, which also stops them using a full host core each.</li></ul><h4 class="changed">Changed</h4><ul><li><code>dist/</code> now holds only the newest ISO; making a release replaces the old one and points the VirtualBox VM "Lumen" at the new file.</li></ul></div></details><details id="v0.5.0"><summary><span class="v">0.5.0</span><span class="t">Spec phase 5, the kernel heap, is complete.<small>2026-10-03</small></span><span class="chips"><span class="chip ph">Phase 5</span><span class="chip sec">security</span></span><span class="arrow"></span></summary><div class="body"><p>Spec phase 5, the kernel heap, is complete.</p><h4 class="security">Security</h4><ul><li>The kernel's memory allocator protects its own bookkeeping: a corrupted free list is detected and stops the system instead of being followed.</li><li>Freeing the same memory twice, or freeing something that was never allocated, stops the system with a clear message.</li><li>Debug builds also catch writes past the end or before the start of an allocation, and writes to memory after it was freed.</li><li><code>kfree_sensitive</code> wipes memory before releasing it (for keys and passwords in later phases).</li></ul><h4 class="added">Added</h4><ul><li>Kernel heap: <code>kmalloc</code>, <code>kzalloc</code>, <code>kfree</code>, <code>krealloc</code>.</li><li><code>heapstat</code> shell command: heap usage and, in debug builds, every outstanding allocation grouped by the code that made it.</li><li><code>test heap</code> self-test and three corruption tests (<code>test exceptions fl|waf|df</code>).</li></ul><h4 class="changed">Changed</h4><ul><li>The desktop's pixel buffers and the memory manager's records now come from the heap.</li></ul></div></details><details id="v0.4.0"><summary><span class="v">0.4.0</span><span class="t">Spec phase 4, virtual memory, is complete.<small>2026-10-03</small></span><span class="chips"><span class="chip ph">Phase 4</span><span class="chip sec">security</span></span><span class="arrow"></span></summary><div class="body"><p>Spec phase 4, virtual memory, is complete.</p><h4 class="security">Security</h4><ul><li>No memory can be both writable and executable; every request for such a mapping is refused.</li><li>All memory outside the kernel's code is now non-executable. Before this release the bootloader's mapping left all of RAM executable.</li><li>Kernel code and read-only data can no longer be written; kernel data can no longer be executed.</li><li>Memory handed to an address space is always zeroed first, so nothing left behind by a previous owner can be read.</li><li>The first 64 KiB of an address space can never be mapped, so a null pointer always faults.</li><li>A stack overflow on a guarded kernel stack is reported and stops the system instead of overwriting other memory.</li><li>Stack variables are zero-initialised by the compiler; debug builds stop with the source line on undefined behaviour such as signed overflow.</li></ul><h4 class="added">Added</h4><ul><li>Virtual memory manager: private address spaces, memory regions, memory allocated on first use, copy-on-write copies of an address space, 2 MiB pages for large kernel mappings.</li><li><code>test vmm</code> self-test; <code>test exceptions so</code> (stack overflow) and <code>test exceptions ub</code> (undefined behaviour).</li></ul><h4 class="changed">Changed</h4><ul><li>The other CPUs now wait inside the kernel instead of inside the bootloader's code.</li></ul></div></details><details id="v0.3.0"><summary><span class="v">0.3.0</span><span class="t">First release under the 0.PHASE.PATCH scheme: spec phases 0–3 are complete.<small>2026-10-03</small></span><span class="chips"><span class="chip ph">Phases 0–3</span></span><span class="arrow"></span></summary><div class="body"><p>First release under the <code>0.PHASE.PATCH</code> scheme: spec phases 0–3 are complete.</p><h4 class="fixed">Fixed</h4><ul><li>Keyboard and mouse can no longer swallow each other's input: both interrupts now read the PS/2 controller through one shared routine that sends each byte to the right device.</li><li>The desktop no longer freezes on VirtualBox when it runs on the Hyper-V backend: while the desktop is up the kernel keeps polling instead of halting the CPU, and copies pixels to the screen with plain stores. (This uses a full CPU while idle; the scheduler in phase 6 replaces it. Verified in QEMU; not yet re-verified on VirtualBox.)</li></ul><h4 class="added">Added</h4><ul><li>Shell commands <code>gui</code> (compositor statistics) and <code>irqs</code> (interrupt counts).</li><li>The boot log reports how long the first desktop frame took.</li></ul><h4 class="changed">Changed</h4><ul><li>Versions are now labelled <code>0.PHASE.PATCH</code>; development builds show <code>-dev+&lt;commit&gt;</code> after the number. The number lives in the <code>VERSION</code> file.</li><li>Specification version 2: security, privacy, networking and performance are requirements (see <code>docs/DECISIONS.md</code>, 2026-10-03).</li></ul></div></details><details id="v0.0.1"><summary><span class="v">0.0.1</span><span class="t">First snapshot.<small>2026-09-14</small></span><span class="chips"></span><span class="arrow"></span></summary><div class="body"><p>First snapshot. Covers spec phases 0–3 and the desktop preview.</p><h4 class="added">Added</h4><ul><li>Boots through Limine on BIOS and UEFI; boot banner on screen and serial.</li><li>CPU setup: GDT/TSS, interrupts with symbolised crash dumps, ACPI, APIC, HPET, a 100 Hz timer, real-time clock.</li><li>Physical memory allocator with a self-test.</li><li>Kernel shell with PS/2 keyboard input.</li><li>Desktop preview: windows with shadows that move, resize, stack, minimise and maximise; panel with launcher, task buttons, memory use and clock; Terminal, About, System Monitor and Memory Map windows; PS/2 mouse; Alt+Tab, Alt+F4 and Super hotkeys.</li></ul></div></details></div>
     </section>
 
   </div>
 </main>
-
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
 <footer>
   <div class="wrap">
-    <span>Cerberus OS &middot; v0.0.5f</span>
+    <span>Cerberus OS &middot; v0.0.5i &middot; this page was generated from the repository's docs on 2026-10-13</span>
     <nav>
       <a href="/">Home</a>
-      <a href="#ahead">What's coming</a>
-      <a href="#releases">Releases</a>
+      <a href="/roadmap/">Roadmap</a>
+      <a href="/docs/">Docs</a>
+      <a href="https://github.com/ArsenalRX/CerberusOS">Source</a>
     </nav>
   </div>
 </footer>
-
-<script>
-  // oldest first; to publish a new version, append one entry to the end
-  var RELEASES = [
-    { v: '0.0.1', date: 'October 2025', title: 'First snapshot', phase: 'Phases 0–3', groups: {
-      Added: [
-        'Boots through the Limine bootloader on BIOS and UEFI, with a boot banner on screen and serial.',
-        'CPU setup: interrupts with symbolised crash dumps, ACPI, APIC, HPET, a 100 Hz timer and a real-time clock.',
-        'A physical memory allocator with its own self-test.',
-        'A kernel shell with PS/2 keyboard input.',
-        'The desktop preview: windows with shadows that move, resize, stack, minimise and maximise.',
-        'A panel with a launcher, task buttons, memory use and a clock.',
-        'Terminal, About, System Monitor and Memory Map windows, a PS/2 mouse, and the Alt+Tab, Alt+F4 and Super hotkeys.'
-      ] } },
-    { v: '0.3.0', date: 'November 2025', title: 'Boot, console, interrupts and timers complete', phase: 'Phases 0–3', groups: {
-      Fixed: [
-        'Keyboard and mouse can no longer swallow each other\'s input: both now read the PS/2 controller through one shared routine.',
-        'The desktop no longer freezes on VirtualBox when it runs on the Hyper-V backend.'
-      ],
-      Added: [
-        'Shell commands `gui` (compositor statistics) and `irqs` (interrupt counts).',
-        'The boot log reports how long the first desktop frame took.'
-      ],
-      Changed: [
-        'Development builds show the commit after the version number.',
-        'Security, privacy, networking and performance became written requirements of the specification.'
-      ] } },
-    { v: '0.4.0', date: 'December 2025', title: 'Virtual memory', phase: 'Phase 4', security: true, groups: {
-      Security: [
-        'No memory can be both writable and executable; every request for such a mapping is refused.',
-        'All memory outside the kernel\'s code is non-executable.',
-        'Kernel code and read-only data can no longer be written, and kernel data can no longer be executed.',
-        'Memory handed to an address space is always zeroed first, so nothing left by a previous owner can be read.',
-        'The first 64 KiB of an address space can never be mapped, so a null pointer always faults.',
-        'A stack overflow on a guarded kernel stack is reported and stops the system instead of overwriting other memory.',
-        'Stack variables are zero-initialised; debug builds stop with the source line on undefined behaviour.'
-      ],
-      Added: [
-        'The virtual memory manager: private address spaces, memory allocated on first use, and copy-on-write copies of an address space.',
-        '2 MiB pages for large kernel mappings.',
-        'The `test vmm` self-test, plus stack-overflow and undefined-behaviour tests.'
-      ],
-      Changed: [
-        'The other CPUs now wait inside the kernel instead of inside the bootloader\'s code.'
-      ] } },
-    { v: '0.5.0', date: 'January 2026', title: 'The kernel heap', phase: 'Phase 5', security: true, groups: {
-      Security: [
-        'The kernel\'s allocator protects its own bookkeeping: a corrupted free list is detected and stops the system instead of being followed.',
-        'Freeing the same memory twice, or freeing something never allocated, stops the system with a clear message.',
-        'Debug builds catch writes past either end of an allocation and writes to memory after it was freed.',
-        '`kfree_sensitive` wipes memory before releasing it, ready for keys and passwords in later phases.'
-      ],
-      Added: [
-        'The kernel heap: `kmalloc`, `kzalloc`, `kfree` and `krealloc`.',
-        'The `heapstat` command: heap usage and, in debug builds, every outstanding allocation grouped by the code that made it.',
-        'The `test heap` self-test and three corruption tests.'
-      ],
-      Changed: [
-        'The desktop\'s pixel buffers and the memory manager\'s records now come from the heap.'
-      ] } },
-    { v: '0.5.1', date: 'February 2026', title: 'VirtualBox keyboard fix', groups: {
-      Fixed: [
-        'On VirtualBox the keyboard no longer stops responding after a few keys when the VM has more than one CPU.',
-        'CPUs the kernel is not using yet now sleep instead of spinning, so they stop using a full host core each.'
-      ] } },
-    { v: '0.6.0', date: 'March 2026', title: 'Threads and scheduling', phase: 'Phase 6', groups: {
-      Security: [
-        'Every kernel stack has a guard page below it. A runaway thread is reported as a kernel stack overflow with its name instead of overwriting other memory.'
-      ],
-      Performance: [
-        'The desktop stays responsive while long commands run: the compositor has its own high-priority thread and wakes the moment input arrives.',
-        'An idle desktop uses 0% CPU. Before, it spun a full core.'
-      ],
-      Added: [
-        'Threads and processes with a four-level preemptive scheduler, sleeping and wait queues.',
-        'Locks: spinlock, mutex, semaphore, condition variable and reader-writer lock.',
-        'Shell commands `ps` (thread list) and `bench` (micro-benchmarks), with the first recorded numbers.',
-        'The `test sched` self-test.'
-      ],
-      Changed: [
-        'The kernel shell and the desktop now run as threads.'
-      ],
-      Fixed: [
-        'The automated tests no longer fail on a busy host, and UEFI boots work in the test tool.'
-      ] } },
-    { v: '0.7.0', date: 'April 2026', title: 'User programs and system calls', phase: 'Phase 7', security: true, groups: {
-      Security: [
-        'Programs run in user mode (ring 3), each in its own address space, and reach the kernel only through system calls. A program that crashes is ended and reported; the system carries on.',
-        'Every system-call argument is checked. Bad pointers, lengths that wrap and unknown flags are refused with an error.',
-        'SMEP, SMAP and UMIP are turned on when the CPU has them: the kernel can neither run nor casually touch program memory.',
-        'Address-space layout randomisation: a program\'s code, stack and mapped memory land at different addresses on every run.',
-        'A ChaCha20 kernel random-number generator, seeded from the CPU\'s hardware generator and interrupt timing, supplies all randomness.',
-        'Stack-overflow detection in the kernel and in every program.',
-        'Fuzzing: the program loader, the boot-archive reader and the system-call interface are attacked with damaged and random input on every release.'
-      ],
-      Added: [
-        'The first system calls: `exit`, `write`, `read`, `open`, `close`, `mmap`, `munmap`, `fork`, `execve`, `waitpid`, `getpid`, `yield`, `sleep_ms` and `getrandom`.',
-        'A small C library for programs, and the first programs carried in a boot archive: `init`, `hello` and test programs.',
-        '`run <path>` starts a program and reports how it ended.',
-        '`bench` measures a system-call round trip.'
-      ],
-      Fixed: [
-        'The context-switch benchmark no longer reports nonsense when the shell thread has been lowered in priority.',
-        'A program\'s output line can no longer be split in the middle by a kernel message.'
-      ] } },
-    { v: '0.0.5a', date: 'May 2026', title: 'Every processor core', phase: 'Phase 8', security: true, groups: {
-      Security: [
-        'Memory that is unmapped or made read-only is withdrawn from every processor before the change returns (TLB shootdown).',
-        'The order in which kernel locks may be taken is written down in one place and checked on every acquisition in debug builds.',
-        'A fatal error stops all processors, not just the one that hit it.',
-        'The kernel\'s reads and writes of program memory can no longer be steered at kernel memory speculatively.'
-      ],
-      Performance: [
-        'All processors run threads. Work is spread across idle processors, and a processor with nothing to do takes waiting work from a busy one.',
-        'The kernel heap gives each processor its own pool, so allocating memory does not make processors wait for each other.',
-        'Timekeeping uses the processor\'s own counter where it is steady: wake-up latency fell to 7–9 µs from 18–19 µs under QEMU.'
-      ],
-      Added: [
-        'The `test smp` self-test and a lock-order violation test.',
-        '`ps` shows which processor each thread is on, with per-processor statistics.'
-      ],
-      Changed: [
-        'First release under the new version scheme: each release now moves one letter (0.0.5a, 0.0.5b and so on).',
-        'The boot log shows each processor reporting in.'
-      ],
-      Fixed: [
-        'On machines without an HPET, such as VirtualBox, the clock ran several times too fast when two processors read it at once.',
-        'The scheduler and SMP self-tests no longer fail on slow virtual machines.'
-      ] } },
-    { v: '0.0.5b', date: 'June 2026', title: 'Desktop polish', groups: {
-      Added: [
-        'The terminal keeps the last 1,000 lines. Scroll with the mouse wheel or Shift+Page Up and Shift+Page Down; typing jumps back to the bottom.',
-        'A scrollbar shows where you are in the terminal.',
-        '`gui` reports the slowest frame and how many pixels were actually written.'
-      ],
-      Changed: [
-        'Window buttons are thin symbols in flat buttons; close turns red under the mouse.',
-        'Rounded corners are larger and anti-aliased on windows, taskbar buttons, the menu and the scrollbar.',
-        'The Super key opens the menu only when pressed and released on its own.',
-        'Resizing the terminal keeps its text instead of clearing it.'
-      ],
-      Performance: [
-        'Only pixels that changed are written to the screen. Dragging a window writes about a fifth of the pixels it did.',
-        'Frames are drawn as soon as input arrives, up to about 160 per second, instead of waiting for the next timer tick.'
-      ],
-      Fixed: [
-        'Keys typed while the launcher menu is open no longer reach the terminal.'
-      ] } },
-    { v: '0.0.5c', date: 'July 2026', title: 'Files and file systems', phase: 'Phase 9', security: true, groups: {
-      Security: [
-        'File permissions (owner, group, others) are checked on every file operation.',
-        'Mount options: read-only, no programs, no device files, no set-user. The root file system is read-only.',
-        'The disk file system treats every disk as hostile: every field is checked, metadata carries CRC32C checksums, and a damaged disk gives an error, never a crash.',
-        'cerfs is fuzzed: thousands of damaged disk images a minute are mounted and used by the real driver.',
-        'A disk in use by a mounted file system cannot be opened for writing.',
-        'A new disk block is never shown with what a deleted file left in it.'
-      ],
-      Performance: [
-        'One page cache for file contents and disks, with read-ahead and background write-back: reading a 64 MiB file a second time takes 6 ms instead of 0.7 s.',
-        'A name cache remembers recently used paths, and closed files stay cached.',
-        'SATA disks are read and written by DMA, at about 87 MB/s in QEMU.'
-      ],
-      Added: [
-        'Files and folders: a read-only `/`, an in-memory `/tmp`, `/dev` for devices, and disks mounted anywhere.',
-        'cerfs, the journaled disk file system: pulling the power mid-write leaves the disk consistent.',
-        '`mkfs.cerfs` formats a disk from inside Cerberus.',
-        'Disk drivers for SATA (AHCI) and IDE; `pci` lists the PCI devices.',
-        'File tools: `ls`, `cat`, `echo`, `mkdir`, `rm`, `mv`, `cp`, `touch`, `stat`, `ln -s`, `sync`, `mount` and more.',
-        'The shell runs programs by name, redirects output with `>` and `>>`, and has `cd` and `pwd`.',
-        'File system calls: `open`, `seek`, `stat`, `rename`, `readdir`, `dup`, `ioctl`, `fsync`, `symlink`, `chmod`, `mount` and the rest.',
-        '`/dev/null`, `/dev/zero`, `/dev/random`, `/dev/urandom` and `/dev/console`.'
-      ],
-      Fixed: [
-        'On VirtualBox the clock could run unevenly. Cerberus now trusts the processor counter only where it is declared steady, and checks it three times first.'
-      ] } },
-    { v: '0.0.5d', date: 'August 2026', title: 'Smooth text', groups: {
-      Changed: [
-        'All desktop text is anti-aliased: DejaVu Sans for the interface, DejaVu Sans Mono for the terminal, and a large bold face for the Cerberus wordmark.',
-        'The close button\'s cross is drawn with a smooth thin line.',
-        'The wallpaper is dithered, which removes the visible bands in its dark gradient.',
-        'The terminal\'s rows are one pixel taller.'
-      ] } },
-    { v: '0.0.5e', date: 'September 2026', title: 'Drivers', phase: 'Phase 10', security: true, groups: {
-      Security: [
-        'The screen, keyboard, mouse and disks can be opened by root only; a program running as another user is refused.',
-        '`/tmp` is writable by everyone, and only a file\'s owner can delete or rename it there.',
-        'Everything a device reports is checked before it is used, in every new driver.'
-      ],
-      Added: [
-        '`poweroff` and `reboot` work through ACPI, after writing everything to disk.',
-        'NVMe and virtio disks work alongside SATA and IDE.',
-        'Keyboard and mouse events can be read from `/dev/input`: key codes, press, release and repeat, mouse movement, wheel and buttons.',
-        'The whole keyboard works: the numeric keypad with Num Lock, the menu key, Print Screen, Pause, and right-hand Ctrl and Alt.',
-        '`drivers` lists the drivers and what each has attached; `runas` runs a program as another user.',
-        '`/dev/fb0`: the screen as a file.'
-      ],
-      Changed: [
-        'The keyboard is read in its native mode (scancode set 2), with a fallback for keyboards that refuse.',
-        'Drivers are found and started through one registry, the driver model.'
-      ],
-      Performance: [
-        'SATA commands are completed by an interrupt (MSI) where the controller offers it, so the processor is free while the disk works.'
-      ] } },
-    { v: '0.0.5f', date: 'October 2026', title: 'Programs talking to each other, and a new desktop', phase: 'Phase 11', security: true, groups: {
-      Security: [
-        'A named port has an owner and permission bits like a file; a program without permission cannot connect to it.',
-        'The receiver of a connection learns the other side\'s process, user and group from the kernel, so it cannot be faked.',
-        'Message sizes, descriptors per message and queue lengths are limited; a sender that finds a queue full waits, and nothing is dropped.',
-        'A signal can be sent only to a process of the same user.',
-        'A process can give up root and cannot take it back.'
-      ],
-      Added: [
-        'Ports: named message channels between programs. Whole messages of up to 64 KiB, in order, which can carry open files and shared memory.',
-        'Shared memory that several programs map at once.',
-        'Signals with handlers in programs: SIGKILL, SIGTERM, SIGSEGV, SIGCHLD, SIGUSR1 and SIGUSR2.',
-        'Threads in programs: `pthread_create` and `join`, mutexes, condition variables and thread-local variables.',
-        'Futexes: locks that enter the kernel only to wait, also between processes.',
-        'Event queues: one wait over ports, timers and child exit. A waiting server uses no CPU and wakes about 50 microseconds after a message is sent.',
-        '`mmap` of a file, `mprotect`, `kill`, `umask`, `sysinfo` and more: 74 system calls now.',
-        'Settings: nine accent colours, three wallpapers (Nebula, Aurora, Ember), square, soft or round window corners, a floating or docked taskbar, and a 12- or 24-hour clock.',
-        'Window-border effects: static, breathing, flashing, rainbow and chase, with a choice of colour, thickness, speed and glow.',
-        'Screen resolution can be changed in Settings, from 800x600 to 1920x1080, or with `resolution` in the shell.',
-        'A new launcher: a logo button, a search box on the taskbar, and a menu you can type in to filter apps, with Power off and Restart.',
-        'A new taskbar: a rounded bar floating clear of the screen edges, an icon for each open window, a memory meter and a bolder clock.',
-        'The mouse cursor turns into a two-headed arrow over a window\'s edges, so resizing is discoverable.',
-        'Test programs: `ipctest`, `threadtest`, `sigtest`, `eventtest` and `mmaptest`.'
-      ],
-      Changed: [
-        '`sleep_ms` and `waitpid` return early when a signal arrives.',
-        'A program\'s fault is delivered as a signal first; only an unhandled one ends the program.'
-      ] } }
-  ];
-
-
-  // thin reading-progress line under the top edge
-  var progress = document.getElementById('progress');
-  function onScroll() {
-    var max = document.documentElement.scrollHeight - innerHeight;
-    progress.style.transform = 'scaleX(' + (max > 0 ? scrollY / max : 0) + ')';
-    if (window.tilt) tilt();
-  }
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-  function fmt(s) {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/`([^`]+)`/g, '<code>$1</code>');
-  }
-  var ORDER = ['Security', 'Added', 'Changed', 'Performance', 'Fixed'];
-  var list = document.getElementById('list');
-  list.innerHTML = RELEASES.map(function (r, i) {
-    var chips = '';
-    if (i === RELEASES.length - 1) chips += '<span class="chip latest">latest</span>';
-    if (r.phase) chips += '<span class="chip ph">' + fmt(r.phase) + '</span>';
-    if (r.security) chips += '<span class="chip sec">security</span>';
-    var body = ORDER.filter(function (g) { return r.groups[g]; }).map(function (g) {
-      return '<h4 class="' + g.toLowerCase() + '">' + g + '</h4><ul>' +
-        r.groups[g].map(function (line) { return '<li>' + fmt(line) + '</li>'; }).join('') + '</ul>';
-    }).join('');
-    return '<details id="v' + r.v + '"><summary><span class="v">' + r.v + '</span>' +
-      '<span class="t">' + fmt(r.title) + '<small>' + r.date + '</small></span>' +
-      '<span class="chips">' + chips + '</span><span class="arrow"></span></summary>' +
-      '<div class="body">' + body + '</div></details>';
-  }).join('');
-
-  var all = Array.prototype.slice.call(list.querySelectorAll('details'));
-  var toggle = document.getElementById('toggle');
-  function sync() { toggle.textContent = all.every(function (d) { return d.open; }) ? 'Collapse all' : 'Expand all'; }
-  toggle.addEventListener('click', function () {
-    var open = !all.every(function (d) { return d.open; });
-    all.forEach(function (d) { d.open = open; });
-    sync();
-  });
-  all.forEach(function (d) { d.addEventListener('toggle', sync); });
-
-  // a link such as /roadmap/#v0.0.5f opens that version
-  function openHash() {
-    var d = location.hash && document.getElementById(location.hash.slice(1));
-    if (d && d.tagName === 'DETAILS') { d.open = true; d.scrollIntoView(); sync(); }
-  }
-  window.addEventListener('hashchange', openHash);
-  openHash();
-</script>
+<script src="/site.js"></script>
 </body>
 </html>

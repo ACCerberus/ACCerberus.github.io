@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bug ledger — Cerberus OS</title>
+  <meta name="description" content="The bug ledger: every bug found, its cause, its fix and what guards against it." />
+  <meta property="og:title" content="Bug ledger — Cerberus OS" />
+  <meta property="og:description" content="The bug ledger: every bug found, its cause, its fix and what guards against it." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://accerberus.github.io/docs/bugs/" />
+  <meta property="og:image" content="https://accerberus.github.io/img/screenshots/settings.png" />
+  <link rel="canonical" href="https://accerberus.github.io/docs/bugs/" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#06070f" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2306070f'/><circle cx='50' cy='50' r='20' fill='%235aa2ff'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/site.css" />
+</head>
+<body class="narrow">
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="progress" id="progress"></div>
+<header class="nav">
+  <div class="wrap">
+    <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
+    <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
+    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a><a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a></nav>
+  </div>
+</header>
+<main id="top">
+  <div class="wrap">
+
+    <div class="head">
+      <span class="eyebrow">Docs &middot; BUGS.md</span>
+      <div class="docmeta"><span>1,905 words</span><span>updated with every commit</span><a href="https://github.com/ArsenalRX/CerberusOS/blob/main/docs/BUGS.md">View the source on GitHub</a></div>
+      
+    </div>
+    <article class="prose"><h1 id="bug-ledger">Bug ledger</h1>
+<p><strong>What this file is for.</strong> Every bug that was found and fixed, and every bug that is known and still open, in one place: the symptom as the owner or a test saw it, the real cause, what was changed, and how the fix is kept from coming back. It is the project's memory of failure. A bug fixed without an entry here will be fixed again.</p>
+<p><strong>When to update it.</strong> The moment a bug is understood (even before it is fixed: add it as OPEN), and again when it is fixed and verified. Also when an old bug comes back: add a new entry that links the old one rather than editing it.</p>
+<p><strong>How to use it.</strong> Read the OPEN entries at the start of every session and before touching the area they are in. When something strange happens, search this file for the symptom first. Each entry has an id (<code>B-nnn</code>) so that commits, docs/CHANGELOG.md and docs/DECISIONS.md can refer to it.</p>
+<p><strong>How to write an entry.</strong> <code>### B-nnn — one-line symptom</code> then the fields below. Keep "Cause" to what was actually established, not what was suspected. "Guard" names the test, check or rule that now catches the class of bug; if there is none, say so.</p>
+<div class="table"><table><thead><tr><th>Field</th><th>Meaning</th></tr></thead><tbody><tr><td>Found</td><td>date, and who or what found it (owner, a test, a review)</td></tr><tr><td>Where</td><td>files or subsystem</td></tr><tr><td>Symptom</td><td>what was seen</td></tr><tr><td>Cause</td><td>the actual defect</td></tr><tr><td>Fix</td><td>what changed (and the version it shipped in)</td></tr><tr><td>Guard</td><td>the test / check / rule that now covers it</td></tr><tr><td>Status</td><td>FIXED (date) or OPEN</td></tr></tbody></table></div>
+<hr />
+<h2 id="open">Open</h2>
+<h3 id="b-010-eventtest-misses-its-1-ms-wake-up-limit-on-virtualbox">B-010 — <code>eventtest</code> misses its 1 ms wake-up limit on VirtualBox</h3>
+<ul>
+<li>Found: 2026-10-04, running the phase 11 programs on VirtualBox.</li>
+<li>Where: <code>kernel/ipc/event.cpp</code>, <code>userland/bin/eventtest.cpp</code>; the VirtualBox Hyper-V backend.</li>
+<li>Symptom: a waiting server wakes about 1.6 ms (median) after a message on VirtualBox; 53 us under KVM. The test's 1 ms limit fails there.</li>
+<li>Cause: inter-processor interrupts are slow on that backend; the kernel is not at fault. Not profiled further.</li>
+<li>Fix: none. The limit is right for KVM.</li>
+<li>Guard: none on VirtualBox.</li>
+<li>Status: OPEN.</li>
+</ul>
+<hr />
+<h2 id="fixed">Fixed</h2>
+<h3 id="b-012-the-settings-window-did-not-scroll-when-it-was-small">B-012 — The Settings window did not scroll when it was small</h3>
+<ul>
+<li>Found: 2026-10-04.</li>
+<li>Where: <code>paint_settings</code> in <code>kernel/gui/desktop.cpp</code>.</li>
+<li>Symptom: below its minimum height the lower cards were cut off.</li>
+<li>Fix (0.0.5j): the cards scroll with the wheel (clipped to the content area, a thin bar shows where); the tab's height is measured on every paint.</li>
+<li>Guard: none automated (visual); <code>desktop-qol2</code> opens Settings at the default size.</li>
+<li>Status: FIXED 2026-10-06.</li>
+</ul>
+<h3 id="b-015-the-minor-page-fault-was-over-its-2-s-budget">B-015 — The minor page fault was over its 2 µs budget</h3>
+<ul>
+<li>Found: 2026-10-04, <code>make bench</code> since 0.0.5c (2.0–2.9 µs against 2 µs).</li>
+<li>Where: <code>kernel/mm/pmm.cpp</code> (<code>pmm_alloc_zeroed</code>), the fault path in <code>kernel/mm/vmm.cpp</code>.</li>
+<li>Symptom: every first touch of a page cost about 2.1 µs under QEMU/KVM.</li>
+<li>Cause: the fault allocated a frame and cleared it there and then; under a hypervisor the clearing is also the frame's first touch, which the host has to back (an EPT fault) inside our fault.</li>
+<li>Fix (0.0.5i): a background thread keeps up to 512 frames zeroed ahead of time (<code>zeroer</code>, LOW priority, woken when the pool drops below a quarter); a single-frame <code>pmm_alloc_zeroed</code> takes one of those. Pooled frames are reported as free, <code>pmm_alloc</code> takes them when the bitmap is empty, and tests that audit the bitmap pause the pool (<code>pmm_zeroing_pause</code>). <code>make bench</code>: 1,394 ns.</li>
+<li>Guard: <code>make bench</code> (docs/BENCH.md), <code>test pmm</code>, <code>test vmm</code>.</li>
+<li>Status: FIXED 2026-10-05.</li>
+</ul>
+<h3 id="b-011-settings-and-reminders-were-lost-at-restart">B-011 — Settings and reminders were lost at restart</h3>
+<ul>
+<li>Found: 2026-10-04 (owner: "keep the desktop customisable").</li>
+<li>Where: <code>kernel/fs/fs.cpp</code>, <code>kernel/gui/desktop.cpp</code>.</li>
+<li>Symptom: every preference, the custom accent and every reminder were gone after a restart.</li>
+<li>Cause: nowhere to keep them: the root file system is read-only, <code>/tmp</code> is memory, and a cerfs disk was only mounted by hand.</li>
+<li>Fix (0.0.5h): the first disk holding a cerfs volume labelled <code>data</code> is mounted at <code>/data</code> at boot; Settings → Storage sets a blank disk up for it (format, two presses); the desktop writes <code>/data/desktop.conf</code> and <code>/data/reminders.txt</code> and reads them at start. The owner's "do all 1-8" was the go-ahead for mounting at boot.</li>
+<li>Guard: <code>desktop-storage-1</code> and <code>-2</code> (format, change, reboot, read back, disk checked on the host).</li>
+<li>Status: FIXED 2026-10-05.</li>
+</ul>
+<h3 id="b-014-a-regenerated-fonts-bin-was-not-linked-in-build">B-014 — A regenerated <code>fonts.bin</code> was not linked in (build)</h3>
+<ul>
+<li>Found: 2026-10-05, when the lock screen's clock did not appear after digits were added to the display fonts.</li>
+<li>Where: <code>Makefile</code>, <code>kernel/boot/font.S</code>.</li>
+<li>Symptom: <code>make iso</code> finished but the kernel still had the old fonts.</li>
+<li>Cause: the object that <code>.incbin</code>s the blob depended only on its <code>.S</code> file, not on the blob.</li>
+<li>Fix: an explicit dependency on <code>kernel/gfx/fonts.bin</code> and the PSF files.</li>
+<li>Guard: the Makefile rule.</li>
+<li>Status: FIXED 2026-10-05.</li>
+</ul>
+<h3 id="b-001-virtualbox-cpu-does-not-support-64-bit-at-the-limine-menu">B-001 — VirtualBox: "CPU does not support 64-bit" at the Limine menu</h3>
+<ul>
+<li>Found: 2026-10-03 and again 2026-10-05 (owner, every new VM).</li>
+<li>Where: VirtualBox VM settings, <code>tools/vbox-attach.sh</code>.</li>
+<li>Symptom: a VM made by dragging the ISO into VirtualBox stops at the boot menu with a 64-bit error.</li>
+<li>Cause: the wizard creates the VM as OS type "Other/Unknown", which is 32-bit and hides long mode from the guest.</li>
+<li>Fix: <code>VBoxManage modifyvm &lt;vm&gt; --ostype Other_64 --x86-long-mode on</code>. <code>make dist</code> runs <code>tools/vbox-attach.sh</code>, which does this for every powered-off VM that boots an ISO from <code>dist/</code>. 2026-10-05: the owner's VM "6" fixed by hand.</li>
+<li>Guard: <code>tools/vbox-attach.sh</code> on every <code>make dist</code>; docs/STATUS.md "How to run it" explains it.</li>
+<li>Status: FIXED (recurs for every new VM; the guard handles it).</li>
+</ul>
+<h3 id="b-002-limine-s-boot-menu-stays-on-screen-on-virtualbox">B-002 — Limine's boot menu stays on screen on VirtualBox</h3>
+<ul>
+<li>Found: 2026-10-04 (owner), confirmed 2026-10-05 with a headless boot.</li>
+<li>Where: <code>limine.conf</code>.</li>
+<li>Symptom: with <code>timeout: 1</code> the menu never counts down on VirtualBox; the user has to press Enter.</li>
+<li>Cause: not established in Limine itself; the one-second countdown does not run on that backend (likely its timer source).</li>
+<li>Fix: <code>timeout: 0</code> — the ISO boots the kernel at once (0.0.5g).</li>
+<li>Guard: every integration test boots through this path.</li>
+<li>Status: FIXED 2026-10-05.</li>
+</ul>
+<h3 id="b-003-at-1920x1080-on-virtualbox-the-mouse-cannot-reach-the-bottom">B-003 — At 1920x1080 on VirtualBox the mouse cannot reach the bottom</h3>
+<ul>
+<li>Found: 2026-10-05 (owner, screenshots).</li>
+<li>Where: <code>kernel/drivers/ps2mouse.cpp</code>, new <code>kernel/drivers/vmmdev.cpp</code>.</li>
+<li>Symptom: the desktop pointer stops short of the bottom (and right) of the screen; worse at larger resolutions.</li>
+<li>Cause: VirtualBox only delivered relative PS/2 motion. When the VM window is scaled or the host accelerates the mouse, the guest pointer moves a different distance from the host pointer; when the host pointer hits the window edge no more motion arrives, so the guest pointer is left short of its edge.</li>
+<li>Fix: a driver for VirtualBox's guest device (PCI 80ee:cafe): on every PS/2 packet the kernel asks the host where its pointer is and the desktop puts the cursor there (0.0.5g). This also gives mouse integration (no capture).</li>
+<li>Guard: <code>vmmdev:</code> boot line on VirtualBox says whether the host sends positions. QEMU has no such device, so the tests cover the relative path only; the absolute path is checked by hand on VirtualBox.</li>
+<li>Status: FIXED 2026-10-05 (verify on the owner's ultrawide).</li>
+</ul>
+<h3 id="b-004-the-about-window-clipped-cerberus-when-made-narrow">B-004 — The About window clipped "Cerberus" when made narrow</h3>
+<ul>
+<li>Found: 2026-10-04.</li>
+<li>Where: <code>paint_about</code>, <code>create_window</code> in <code>kernel/gui/desktop.cpp</code>.</li>
+<li>Symptom: the wordmark and the subtitle ran off the right edge.</li>
+<li>Cause: no minimum size for About; plain <code>draw_text</code>.</li>
+<li>Fix: About's minimum size is 430x340; the subtitle uses <code>draw_text_ellipsis</code> (0.0.5g).</li>
+<li>Guard: none (visual).</li>
+<li>Status: FIXED 2026-10-05.</li>
+</ul>
+<h3 id="b-005-super-d-brought-windows-back-in-the-wrong-stacking-order">B-005 — Super+D brought windows back in the wrong stacking order</h3>
+<ul>
+<li>Found: 2026-10-05, by <code>desktop-qol.expect</code> (a click meant for the terminal hit the Settings window).</li>
+<li>Where: <code>toggle_show_desktop</code> in <code>kernel/gui/desktop.cpp</code>.</li>
+<li>Symptom: after Super+D twice the window that had been on top was not.</li>
+<li>Cause: windows were restored in slot order, and each restore raises.</li>
+<li>Fix: restore in stacking order, bottom to top.</li>
+<li>Guard: <code>desktop-qol.expect</code> (types into the terminal after Super+D twice).</li>
+<li>Status: FIXED 2026-10-05.</li>
+</ul>
+<h3 id="b-013-page-fault-at-boot-on-virtualbox-after-the-new-vmmdev-driver">B-013 — Page fault at boot on VirtualBox after the new <code>vmmdev</code> driver</h3>
+<ul>
+<li>Found: 2026-10-05, by the VirtualBox check (4 CPUs) of the 0.0.5g build; QEMU and all 42 tests had passed.</li>
+<li>Where: <code>kernel/drivers/vmmdev.cpp</code>, <code>kernel/drivers/driver.cpp</code>.</li>
+<li>Symptom: <code>#PF</code> with RIP=0 in <code>init_thread</code> right after the <code>vmmdev:</code> boot line; the system halted before the desktop.</li>
+<li>Cause: the driver described itself as a PCI driver (class 08/80) with no <code>attach</code> function, and <code>drivers_probe_all</code> called that null pointer when it offered the VMMDev PCI device to it. QEMU has no such device, so the tests never reached the call.</li>
+<li>Fix: the driver is a platform entry noted as attached by hand (as <code>bga</code> is); the registry also skips PCI drivers without <code>attach</code>.</li>
+<li>Guard: the registry's null check; the rule "always also verify on VirtualBox with 4 CPUs" (it caught this one too).</li>
+<li>Status: FIXED 2026-10-05.</li>
+</ul>
+<h3 id="b-006-user-ipc-failed-once-in-a-full-run-timing">B-006 — <code>user-ipc</code> failed once in a full run (timing)</h3>
+<ul>
+<li>Found: 2026-10-04, one failure in a <code>make test</code>.</li>
+<li>Where: <code>userland/bin/ipctest.cpp</code>.</li>
+<li>Symptom: a 50 ms wait measured as 49 ms.</li>
+<li>Cause: a wait counted in timer ticks and measured with the reference clock can read 1 ms short.</li>
+<li>Fix: the test allows 45 ms. Looped 16 times afterwards without failure.</li>
+<li>Guard: the rule in CLAUDE.md ("Timing checks in tests: leave a margin").</li>
+<li>Status: FIXED 2026-10-04.</li>
+</ul>
+<h3 id="b-007-keyboard-stalled-on-virtualbox-with-several-cpus">B-007 — Keyboard stalled on VirtualBox with several CPUs</h3>
+<ul>
+<li>Found: 2026-10-03 (owner).</li>
+<li>Where: <code>kernel/arch/x86_64/smp.cpp</code>.</li>
+<li>Symptom: typing stopped working after a while on a 4-CPU VM.</li>
+<li>Cause: parked CPUs spinning starved the CPU that served the keyboard interrupt under the Hyper-V backend.</li>
+<li>Fix: parked CPUs <code>hlt</code> (release 0.5.1).</li>
+<li>Guard: the rule "always also verify on VirtualBox with 4 CPUs".</li>
+<li>Status: FIXED 2026-10-03.</li>
+</ul>
+<h3 id="b-008-pit-race-in-the-reference-clock">B-008 — PIT race in the reference clock</h3>
+<ul>
+<li>Found: 2026-10-04, on VirtualBox.</li>
+<li>Where: <code>kernel/drivers/refclock.cpp</code>.</li>
+<li>Symptom: time jumped on VirtualBox, where the TSC is not trustworthy and the PIT is the clock.</li>
+<li>Cause: reading the PIT counter without latching while it wrapped.</li>
+<li>Fix: latched reads and a wrap check (0.0.5a).</li>
+<li>Guard: <code>test timer</code>; VirtualBox verification.</li>
+<li>Status: FIXED 2026-10-04.</li>
+</ul>
+<h3 id="b-009-patch-scripts-lost-backslashes-tooling">B-009 — Patch scripts lost backslashes (tooling)</h3>
+<ul>
+<li>Found: 2026-10-05, three times in one session.</li>
+<li>Where: the Git Bash heredoc path into WSL's python3.</li>
+<li>Symptom: a Python patch written through a heredoc turned <code>\n</code> inside a C string into a real newline; the kernel then failed to compile with "missing terminating \" character".</li>
+<li>Cause: one level of backslash escaping is removed by the shell path.</li>
+<li>Fix: write patch scripts with the editor into <code>build/wip/</code> and run them from there; grep for a line that is only <code>");</code> afterwards.</li>
+<li>Guard: the rule in CLAUDE.md "Pitfalls".</li>
+<li>Status: FIXED (process).</li>
+</ul></article>
+
+  </div>
+</main>
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
+<footer>
+  <div class="wrap">
+    <span>Cerberus OS &middot; v0.0.5i &middot; this page was generated from the repository's docs on 2026-10-13</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/roadmap/">Roadmap</a>
+      <a href="/docs/">Docs</a>
+      <a href="https://github.com/ArsenalRX/CerberusOS">Source</a>
+    </nav>
+  </div>
+</footer>
+<script src="/site.js"></script>
+</body>
+</html>
