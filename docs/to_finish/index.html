@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cerberus — To Finish — Cerberus OS</title>
+  <meta name="description" content="The working checklist: what is done, what is next, what remains." />
+  <meta property="og:title" content="Cerberus — To Finish — Cerberus OS" />
+  <meta property="og:description" content="The working checklist: what is done, what is next, what remains." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://accerberus.github.io/docs/to_finish/" />
+  <meta property="og:image" content="https://accerberus.github.io/img/screenshots/settings.png" />
+  <link rel="canonical" href="https://accerberus.github.io/docs/to_finish/" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#06070f" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2306070f'/><circle cx='50' cy='50' r='20' fill='%235aa2ff'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/site.css" />
+</head>
+<body class="narrow">
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="progress" id="progress"></div>
+<header class="nav">
+  <div class="wrap">
+    <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
+    <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
+    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a><a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a></nav>
+  </div>
+</header>
+<main id="top">
+  <div class="wrap">
+
+    <div class="head">
+      <span class="eyebrow">Docs &middot; TO_FINISH.md</span>
+      <div class="docmeta"><span>4,653 words</span><span>updated with every commit</span><a href="https://github.com/ArsenalRX/CerberusOS/blob/main/docs/TO_FINISH.md">View the source on GitHub</a></div>
+      <nav class="toc"><b>On this page</b><ul><li><a href="#right-now-phase-12-pane-the-polish-box-is-spent">Right now: phase 12 (Pane) — the polish box is spent</a></li><li><a href="#done-committed">Done (committed)</a></li><li><a href="#spec-phases-remaining-in-order-do-not-start-n-1-before-n-passes">Spec phases remaining (in order — do not start N+1 before N passes)</a></li><li><a href="#proposed-additions-awaiting-the-owner-review-of-2026-10-12">Proposed additions awaiting the owner (review of 2026-10-12)</a></li><li><a href="#waiting-on-the-owner">Waiting on the owner</a></li><li><a href="#owner-added-requirements-beyond-the-spec">Owner-added requirements (beyond the spec)</a></li><li><a href="#known-issues-to-clean-up">Known issues to clean up</a></li><li><a href="#how-to-work-quick-reference">How to work (quick reference)</a></li></ul></nav>
+    </div>
+    <article class="prose"><h1 id="cerberus-to-finish">Cerberus — To Finish</h1>
+<p>A living checklist of what is done, what is in progress, and what remains. Pairs with <code>docs/STATUS.md</code> (current state) and <code>docs/SPEC.md</code> (the full plan). Read this to pick up work. Dates are absolute. Last updated 2026-10-05 (release 0.0.5g).</p>
+<p><strong>What this file is for.</strong> The ordered list of everything left to build, and the one place that says what to do first.</p>
+<p><strong>When to update it.</strong> Whenever a phase or item is finished, added, re-scoped or re-ordered; whenever the "Right now" section stops being true; and at the end of any session that changed what remains.</p>
+<p><strong>How to update it.</strong> Tick finished items and move them to "Done" with the date. Keep the phase list identical in numbering and scope to docs/SPEC.md §5 and §5A; if they disagree, the spec wins and this file is fixed in the same session. Rewrite "Right now" so it always names the single next job. Update the "Last updated" date.</p>
+<p><strong>Why.</strong> docs/STATUS.md says what is true; this file says what to do about it. If it drifts from the spec, sessions build the wrong thing or in the wrong order.</p>
+<p><strong>Before starting any item below,</strong> follow docs/SPEC.md §21 (implementation procedure): read, threat-check (§19), budget-check (§20), design, test first, implement, self-review, verify with real output, document, commit.</p>
+<hr />
+<h2 id="right-now-phase-12-pane-the-polish-box-is-spent">Right now: phase 12 (Pane) — the polish box is spent</h2>
+<p>Version <strong>0.0.5g</strong> (desktop polish: calendar, reminders, notifications, animations, snapping, Alt+Tab, Settings cards, VirtualBox mouse) is the release of 2026-10-05. The owner said on 2026-10-05: "do more polish until we start phase 12", with a fixed loop: each iteration ships to VirtualBox, updates the HTML list on their Windows desktop, and ends with <strong>8 numbered candidates</strong>; the owner picks by number (CLAUDE.md, "After every iteration"). docs/FEATURES.md lists what exists; docs/BUGS.md the bugs.</p>
+<p><strong>Start here next session: phase 12</strong>, step 4 below. The owner's three-hour polish box ended with 0.0.5j on 2026-10-06; what it did not reach is listed in docs/DECISIONS.md (2026-10-06) and in step 3, and is done only if the owner asks for it by number.</p>
+<p><strong>The owner's instruction of 2026-10-05 (evening):</strong> "do all 1-8 additions and re-go through all phases 1-11 and see if you can iterate to make it better each phase; i want you to complete it. I mess around with it then ask you to iterate." So, in order, each step a verified build in <code>dist/</code> and an updated Desktop HTML list:</p>
+<ol>
+<li><strong>Round 2 (→ 0.0.5h): DONE 2026-10-05.</strong> The eight additions: (1) saved settings and reminders — the owner's "do all" is the yes to auto-mounting a cerfs disk at boot (<code>/data</code>), with a Settings button that formats an empty disk for it; (2) text selection, copy and paste in the terminal and a desktop clipboard; (3) a Files window; (4) a Notes text editor; (5) a Calculator; (6) keyboard settings (layouts, repeat, lock indicators); (7) a lock screen (Super+L, password in Settings, hashed); (8) a system tray with quick settings, a CPU/RAM meter and the notification history. New windows go in their own files under <code>kernel/gui/</code> (an app = paint + key + click + wheel over a Surface), dispatched from <code>desktop.cpp</code>.</li>
+<li><strong>Round 3 (→ 0.0.5i…), phases 1–11 revisited — IN PROGRESS.</strong> Part 1 shipped as 0.0.5i (2026-10-05): phase 4 page-fault budget met with a pre-zeroed frame pool (B-015); phase 10 keyboard lights; phase 11 <code>sigprocmask</code> and <code>port_try_send</code>; a new docs/BENCH.md block. <strong>START HERE with part 2</strong>, in this order, each with a test: (a) hard links (<code>link</code> syscall 16; tmpfs and cerfs <code>link</code> ops, nlink in unlink, <code>fsck</code>'s link counts); (b) a lightweight <code>fsck.cerfs</code> for the leaked inode after a power cut; (c) MSI-X so NVMe and virtio-blk stop polling; (d) demand-paged and shared file mappings; (e) one-shot APIC timer and tickless idle (measure idle wake-ups before and after); (f) ports passed through ports (the reference-cycle problem in docs/DECISIONS.md must be solved first). The general method: for each phase, read its SPEC §5/§5A rows and docs/DECISIONS.md deviations, run its tests and benchmarks, and close what is closable: phase 4 the minor-page-fault cost; phase 6 one-shot timer / tickless idle; phase 9 <code>fsck</code>-lite and hard links; phase 10 MSI-X (NVMe/virtio interrupts), keyboard LEDs; phase 11 non-blocking <code>port_send</code>, signal masks, demand-paged file mmap, passing ports through ports; <code>make bench</code> and a new docs/BENCH.md block. Record each in docs/BUGS.md or docs/DECISIONS.md.</li>
+<li><strong>Round 4 (owner, 2026-10-05 night: "do all 1-8 improvements"), the eight polish candidates of the 0.0.5i Desktop list, all of them:</strong> (1) image viewer (BMP, PNG) and a wallpaper from a file, Print Screen as PNG; (2) virtual desktops, Super+1..4 / Super+Shift+1..4, a taskbar indicator, quarter snapping; (3) taskbar: pinned apps, drag to reorder, right-click menu on a button, hover previews; (4) terminal: colours and basic escape sequences, Ctrl+L, scrollback search, Ctrl+wheel zoom, a second terminal; (5) System Monitor: per-process list with End task, CPU/RAM graphs over a minute, disk I/O; (6) a light theme, panel colour and transparency, UI scale 100/125/150 %, terminal font size; (7) auto-lock after idle, screen dimming, power-off confirmation, a boot splash; (8) reminders that repeat daily/weekly, snooze, a "today" strip on the clock hover. Interleave with round 3's remaining items where they touch the same code; ship in releases of a few items each. <strong>Time box (owner, 2026-10-05 night): polish for about three hours of work, then move on to phase 12 whatever is left.</strong></li>
+<li>Then phase 12 (below) when the owner says so.</li>
+</ol>
+<p>First steps of phase 12, in order (SPEC §5, §5A and §9 first):</p>
+<ol>
+<li>Write the Pane protocol (docs/SPEC.md §9) as a header shared by server and clients: messages over a port, window buffers as shared memory, input events back to the focused client only.</li>
+<li><code>pane</code>, a user program: opens <code>/dev/fb0</code> and <code>/dev/input/*</code>, creates the port <code>pane</code>, waits in <code>event_wait</code>. It needs an <code>mmap</code> of <code>/dev/fb0</code> (not there yet: <code>/dev/fb0</code> is read/write only) and a way to change the resolution from user mode (an ioctl over <code>kernel/drivers/bga.cpp</code>).</li>
+<li>Move libgfx (<code>kernel/gfx/</code>) into a library both the kernel and user programs build (it is freestanding already; user programs have SSE).</li>
+<li><code>libpane</code> and one client (a terminal needs ptys, which are phase 17: start with a clock or the System Monitor, which needs only <code>sysinfo</code>).</li>
+<li>Port the compositor, window management, panel, launcher and Settings from <code>kernel/gui/desktop.cpp</code>; keep the kernel desktop bootable behind a switch until Pane passes the <code>desktop*</code> tests.</li>
+<li>The +v2 rows: client isolation tests, fuzz the protocol, 8 ms frames.</li>
+</ol>
+<ul>
+<li>Phase 11 left-overs: demand-paged and shared file mappings, a non-blocking <code>port_send</code>, signal masks, passing ports through ports.</li>
+<li>Phase 10 left-overs: MSI-X (NVMe and virtio-blk are polled), keyboard LEDs, layouts other than US.</li>
+<li><strong>Minor page fault is over budget</strong> (docs/BENCH.md). Profile it first.</li>
+<li>Desktop left-overs: one-shot-timer frame pacing, saving preferences and reminders (needs the auto-mount decision, B-011), a Settings window that scrolls (B-012), a real application icon set, text selection and copy/paste in the terminal, a file manager and an editor (phase 13).</li>
+<li><code>make bench</code> was not re-run for 0.0.5f: run it and add a block to docs/BENCH.md (port round trip, futex, thread create/join are new).</li>
+<li>Overview for the owner: docs/ROADMAP.md; explaining Cerberus: docs/ABOUT.md; installer research: docs/INSTALLER.md; own web browser: phase 15B.</li>
+</ul>
+<hr />
+<h2 id="done-committed">Done (committed)</h2>
+<ul>
+<li><strong>Phase 0 — Scaffolding.</strong> Repo layout, cross toolchain (<code>toolchain/build-cross.sh</code>, GCC 13.3.0 x86_64-elf), Limine 11.4.1, all <code>make</code> targets, QMP boot probe.</li>
+<li><strong>Phase 1 — Boot and output.</strong> BootInfo from Limine, COM1 serial, <code>kprintf</code>, PSF2 framebuffer console, boot banner.</li>
+<li><strong>Phase 2 — CPU structures and interrupts.</strong> GDT/TSS, IDT with symbolised exception dumps and backtraces, embedded symbol table, PIC/ACPI/APIC/IOAPIC, HPET, self-correcting 100 Hz timer, kernel shell, RTC, early PS/2 keyboard.</li>
+<li><strong>Phase 3 — Physical memory.</strong> Bitmap frame allocator, <code>test pmm</code>.</li>
+<li><strong>Desktop preview</strong> (owner-requested, brought forward). libgfx software renderer, damage-tracked compositor, panel + launcher, Terminal/About/ System Monitor/Memory Map windows, PS/2 mouse, drag/resize/stack, hotkeys.</li>
+<li>Infrastructure the owner asked for: KVM-accelerated QEMU path (<code>run-cerberus.cmd</code>), per-run VirtualBox serial logs (<code>logs/</code>), <code>make dist</code>.</li>
+<li><strong>Release 0.3.0 (2026-10-03).</strong> Shared PS/2 drain routine, spin-idle under the desktop, <code>gui</code>/<code>irqs</code> shell commands, version scheme (<code>VERSION</code> file, <code>docs/CHANGELOG.md</code>, spec §23), spec v2.</li>
+<li><strong>Phase 4 — Virtual memory. Release 0.4.0 (2026-10-03).</strong> <code>AddressSpace</code> (map/unmap/protect/translate), VMAs (anonymous, device, guard), <code>mmap</code>/<code>munmap</code>/<code>mprotect</code>, demand paging, COW clone, guarded kernel stacks, 2 MiB kernel leaves; W^X, NX outside kernel text, image mapped by section, zeroed frames, null guard; other CPUs parked in kernel text; zero-initialised locals and a UBSAN subset; <code>test vmm</code>, <code>test exceptions so|ub</code>. File-backed regions deferred to phase 9; boot and IST stacks get guard pages in phase 6.</li>
+<li><strong>Phase 5 — Kernel heap. Release 0.5.0 (2026-10-03).</strong> Slab caches 16–2048 bytes, whole pages above; <code>kmalloc/kzalloc/kfree/krealloc/kfree_sensitive</code>; encoded and validated free lists; debug red zones, poisoning and call-site tracking; <code>heapstat</code>; <code>test heap</code>, <code>test exceptions fl|waf|df</code>. Desktop pixel buffers and VMM records moved onto it.</li>
+<li><strong>Release 0.5.1 (2026-10-03).</strong> Parked CPUs halt instead of spinning (fixes the keyboard on VirtualBox with several CPUs); <code>dist/</code> keeps one ISO.</li>
+<li><strong>Phase 6 — Threads and scheduling. Release 0.6.0 (2026-10-03).</strong> Threads, processes, four-level preemptive scheduler, sleep and wait queues, spinlock/mutex/semaphore/condition variable/reader-writer lock, idle and reaper threads; compositor thread; idle <code>hlt</code>; guard pages under every stack; atomic <code>kprintf</code>; <code>ps</code>, <code>bench</code>, <code>make bench</code>, <code>docs/BENCH.md</code>; <code>test sched</code>; the test probe waits for output instead of fixed times. <code>Process</code> gets its file table and working directory in phase 9.</li>
+<li><strong>Phase 7 — Userland and syscalls. Release 0.7.0 (2026-10-03).</strong> Ring 3, <code>syscall</code>/<code>sysret</code>, dispatch generated from <code>table.def</code> (docs/SYSCALLS.md), validated user copies, hardened ELF64 loader (PIE only), 14 system calls, <code>fork</code>/<code>execve</code>/<code>waitpid</code>, in-tree libc, <code>init</code>, boot archive; SMEP/SMAP/UMIP, user ASLR, stack protector everywhere, ChaCha20 CSPRNG + <code>getrandom</code>, <code>make fuzz</code> (ELF, tar, random system calls); <code>run</code> shell command; system-call benchmark. Deviations recorded in docs/DECISIONS.md.</li>
+<li><strong>Phase 8 — SMP. Release 0.0.5a (2026-10-04).</strong> All CPUs started through the bootloader; per-CPU data, run queues, work stealing; reschedule, TLB and stop IPIs; TLB shootdown; per-address-space VMM lock; per-CPU heap slabs; lock-rank checker; every "interrupts off" lock replaced; FPU state saved on every switch; branch-free user-copy masking; time-stamp-counter reference clock (and a PIT race fixed); <code>test smp</code>, <code>test exceptions lo</code>. Deviations recorded in docs/DECISIONS.md. New version scheme (owner).</li>
+<li><strong>Release 0.0.5b (2026-10-04): desktop polish.</strong> Windows-style caption buttons, anti-aliased rounded shapes, terminal scrollback (wheel, Shift+PgUp/PgDn, scrollbar), only changed pixels written, input-paced frames, Super-key and menu fixes, <code>test terminal</code>.</li>
+<li><strong>Phase 9 — Files and file systems. Release 0.0.5c (2026-10-04).</strong> VFS (mounts, symlinks, permissions, mount flags, name cache), tmpfs, read-only initramfs root, devfs, page cache (read-ahead, write-back, journal holds), cerfs with a journal and CRC32C, mkfs.cerfs (host and in-OS), AHCI and IDE drivers (from phase 10), 25 new system calls, file tools, shell redirection; tests: acceptance (IDE and AHCI), power cut and recovery, cache, permissions, in-kernel fuzzing. The OS renamed Cerberus.</li>
+<li><strong>Release 0.0.5d (2026-10-04): anti-aliased text.</strong> Build-time rendered DejaVu fonts (<code>tools/gen-fonts.py</code>, <code>kernel/gfx/fonts.bin</code>), smooth close button, dithered wallpaper.</li>
+<li><strong>Phase 10 — Drivers. Release 0.0.5e (2026-10-04).</strong> Driver model, PCI MSI, AHCI by interrupt, NVMe, virtio transport + virtio-blk, PS/2 keyboard in set 2 with the full map, <code>/dev/input</code>, <code>/dev/fb0</code>, device access rule, ACPI power off and restart, <code>runas</code>, sticky <code>/tmp</code>.</li>
+<li><strong>Phase 11 — IPC. Release 0.0.5f (2026-10-04).</strong> Plus the Settings window, launcher with search, floating taskbar, resolution switching.</li>
+<li><strong>Release 0.0.5j (2026-10-06): hard links; polish round 4.</strong> Virtual desktops, System Monitor graphs and process table, BMP viewer and wallpaper from a file, repeating reminders and snooze, auto-lock, Settings scrolling, <code>clear</code>, task-button menu, two-press power off; 53 tests.</li>
+<li><strong>Release 0.0.5i (2026-10-05): polish round 3, part 1.</strong> Pre-zeroed frame pool (page fault 1.4 µs), <code>sigprocmask</code>, <code>port_try_send</code>, keyboard lock lights, BENCH block.</li>
+<li><strong>Release 0.0.5h (2026-10-05): polish round 2.</strong> <code>/data</code> auto-mount and Settings → Storage; saved settings and reminders; clipboard and terminal selection; Files, Notes, Calculator; keyboard layouts and repeat; lock screen (SHA-256); tray with night light, CPU meter, history; 49 tests.</li>
+<li><strong>Release 0.0.5g (2026-10-05): desktop polish.</strong> Calendar with reminders, notifications, animations, window snapping, Alt+Tab switcher, Super+D, double-click maximise, right-click menu, Print Screen, terminal history and completion, Settings as cards with a hue strip, six wallpapers, time zone, 18 resolutions (ultrawide), frame rate; VirtualBox absolute mouse (<code>vmmdev</code>); Limine without a menu wait; docs/BUGS.md and docs/FEATURES.md.</li>
+</ul>
+<hr />
+<h2 id="spec-phases-remaining-in-order-do-not-start-n-1-before-n-passes">Spec phases remaining (in order — do not start N+1 before N passes)</h2>
+<p>Each ends with a bootable system and its acceptance test (see <code>docs/SPEC.md</code> §5). The desktop preview grows into the real thing across phases 6, 11, 12, 13.</p>
+<p>Spec v2 (2026-10-03) added security and performance rows to phases 4–13 (§5A; marked <strong>+v2</strong> below) and renumbered phases 14 onward. A phase is done only when its §5 criteria <em>and</em> its §5A rows are demonstrated with real output.</p>
+<ul>
+<li><span class="box done" aria-label="done"></span><strong>Phase 11 — IPC and window-server foundation.</strong> Done 2026-10-04 (0.0.5f): ports, shared memory, signals, futex, threads in programs, event queues, private file <code>mmap</code>. Tests <code>user-ipc</code>, <code>user-threads</code>, <code>user-signals</code>, <code>user-events</code>, <code>user-mmap</code>.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 12 — Pane: window server as a userland process.</strong> Move the compositor out of the kernel behind the port protocol (<code>docs/SPEC.md</code> §9); per-window shm buffers, <code>libpane</code>. The kernel-hosted desktop is the reference implementation to port. <strong>+v2:</strong> client isolation (no reading other windows, no input injection, no key logging); user-mediated screen capture and clipboard; secure password entry; fuzzed protocol; 8 ms frame budget.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 13 — Facet toolkit, shell, applications.</strong> Widget toolkit, desktop shell, and the apps in §12 (Ember terminal, Crate files, Slate editor, Gauge, Dial, Tally, Frame, Daub, Chronos, Warren, lsh, CLI utils). <strong>+v2:</strong> per-application permission declarations; trusted file dialogs that hand over a file descriptor; every file-format parser fuzzed; boot to desktop under 3 s.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 14 — Networking.</strong> virtio-net + e1000; <code>netd</code> userland stack (Ethernet, ARP, IPv4, ICMP, UDP, TCP, DHCP, DNS, loopback); socket syscalls 70–83; default-deny inbound firewall; per-app network permission; <code>ping ifconfig nslookup fetch netstat</code>; network page in Dial. Acceptance includes a capture proving no unsolicited traffic. <em>Owner decision needed first: in-tree stack vs lwIP.</em></li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 15 — Security model, users, encrypted transport.</strong> Users and groups, Argon2id password hashes, credentials, <code>authd</code> broker (no setuid), login and lock screens, <code>restrict</code> sandbox, permission prompts, keyring, TLS client with certificate store, audit log. <em>Owner decision needed first: TLS/crypto source.</em></li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 15B — Our own web browser</strong> (owner, 2026-10-04). HTTP/HTTPS, HTML (WHATWG parsing, common cases), a CSS subset, block/inline layout, images, tabbed UI; no JavaScript yet. Sandboxed, every parser fuzzed. See docs/SPEC.md phase 15B.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 16 — Spec native backend</strong> (was phase 14). x86-64 codegen, ELF emitter, stdlib, Cerberus syscall bindings; rewrite ≥3 apps in Spec. (Spec = the spec's "Glint".)</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 17 — Software platform.</strong> Dynamic linking with full RELRO, POSIX-subset libc (<code>docs/LIBC.md</code>), ptys and job control, full signals, signed package manager <code>pkg</code>; proof ports: zlib, Lua, tinycc, make.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 18 — Installer, updates, storage encryption, recovery.</strong> Live-ISO installer (GPT, cerfs + FAT32 EFI), optional full-disk encryption, signed updates with a fallback kernel, recovery boot entry and repairing <code>fsck.cerfs</code>, service manager with per-service sandbox. Owner asked (2026-10-04) for a Windows-Setup-like flow (pick a drive, erase or keep the existing system) and a boot menu with Windows: design notes in docs/INSTALLER.md.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 19 — Stretch</strong> (was phase 15). USB, audio, IPv6, KASLR, real hardware, self-hosting Spec, HiDPI, ARM64.</li>
+</ul>
+<hr />
+<h2 id="proposed-additions-awaiting-the-owner-review-of-2026-10-12">Proposed additions awaiting the owner (review of 2026-10-12)</h2>
+<p>The owner's review drafts <code>ROADMAP_PROPOSALS.md</code> and <code>CERBERUS_DOCS_NEEDED.md</code> were folded into docs/DECISIONS.md (2026-10-13, "The owner's roadmap proposals and docs wish-list") and deleted. Nothing here is scheduled until the owner answers decisions 8–15 there; the items are listed so they are not lost. Proposed order: 11 → 11B → 11C → 12 → 13 → 13B → 14 → 15 → 14B → 15B → 16 → 17 → 17B → 18 → 18B → 19.</p>
+<ul>
+<li><span class="box todo" aria-label="to do"></span><strong>Fixes to make regardless:</strong> a minimal supervisor in phase 12 (Pane must restart if it crashes; <code>init</code> starts nothing until 18); app identity and the <code>restrict</code> core before 12/14 enforce permissions; pty + termios + job control in 13 for Ember; a shared inflate and PNG/JPEG/GIF library in 13; the stale ROADMAP.md lines (0.0.5b animations, performance table at 0.0.5a, missing 0.0.5d section, the file-mmap contradiction, "cannot do yet" omissions).</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 11B — Everyday plumbing.</strong> Pipes/FIFOs; shell grammar (<code>| &lt; 2&gt; &amp; ; &amp;&amp; ||</code>, quoting, <code>$VAR</code>, globbing, <code>~</code>, <code>$?</code>); environment and <code>PATH</code>; <code>/sys</code> introspection (<code>/sys/proc/&lt;pid&gt;/{maps,status,fds,ports, threads}</code>, <code>/sys/cpu</code>, <code>/sys/mem</code>, <code>/sys/irq</code>) replacing <code>ps</code>/<code>irqs</code>/ <code>heapstat</code>; file watching via <code>event_ctl</code>; <code>utimes</code>, file and range locks, cross-directory atomic <code>rename</code>, sparse files, <code>statfs</code>; the phase 11 carry-overs; resource limits per process and user; memory pressure (swap with a per-boot key, OOM policy protecting <code>init</code>, Pane, netd, the shell, pressure events, <code>madvise</code>, 2 MiB pages); monotonic vs real-time clocks, a time-zone database, UTF-8 everywhere; tools <code>chmod chown head tail wc grep find sort diff less du df kill sleep date env tee xargs hexdump uname free top</code>. Done when <code>ls /bin | grep s | sort | head -3 &gt; out</code> works, a fork bomb is stopped with the shell responsive, a memory hog is killed while Pane survives, a watcher sees a change within 10 ms.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 11C — Debug and observe.</strong> GDB stub over serial (<code>-s -S</code> workflow); <code>.eh_frame</code> unwinder (fixes the prologue-fault backtrace); <code>cdb</code> user debugger, core dumps to <code>/var/crash</code>, a symbolised backtrace on every crash; sanitizers (heap quarantine with both stacks, lock-order checker, object leak detector, UBSan, ASan-style libc malloc); always-on per-core flight recorder dumped on panic; tracepoints, <code>trace &lt;program&gt;</code>, a sampling profiler with flame-graph output; lockup/stall watchdogs, reboot-on-panic option; coverage-guided syscall-sequence fuzzing, deterministic TCG <code>-icount</code> CI, golden-screenshot desktop tests, a 10% benchmark gate.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 12 additions.</strong> HiDPI/fractional scale and an accessibility tree in the protocol from day one; multiple monitors and hot-plug; typed clipboard and drag and drop via Pane; frame callbacks and vsync pacing with a frame-time overlay; input-method hooks; a capture indicator nothing can cover; virtio-gpu; protocol versioning; input record/replay with golden screenshots.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 13 additions.</strong> Ember tabs/true colour/search/clickable paths; Slate highlighting/hex view/LSP client/find in files; Crate trash/search/previews/tabs/archives/USB mount; Gauge capability graph and flight-recorder viewer; Dial layouts/locale/power/accessibility and a Permissions page; archive manager, screenshot tool, calendar and notes (port from the kernel desktop), help viewer; combining marks, bidi, emoji, a shaping decision; accessibility as a deliverable (role/name/state on every widget, high contrast, large text, reduce motion, sticky keys, magnifier, colour-blind-safe accents).</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 13B — Real hardware bring-up</strong> (after 13): USB (xHCI, hubs, HID, mass storage); UEFI GOP, SMBIOS in About, Secure Boot status; an AML interpreter (ACPICA or own) for power button, lid, battery, thermal, S3, MWAIT, frequency scaling; touchpads and I2C-HID, brightness keys; invariant-TSC calibration; MSI-X, SMART, TRIM; an IOMMU; e1000e/igc and r8169; <code>hwreport</code>, docs/HARDWARE.md. Done when the ISO on a USB stick boots two real PCs with USB input, one suspends and resumes, battery shows in the taskbar.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 14 additions.</strong> Per-app host allowlists in <code>netd</code>, per-app traffic accounting, network namespaces for sandboxes, measured zero-copy receive, IPv6 pulled from 19.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 14B — Network extras</strong> (after 15): NTP/SNTP (later NTS), mDNS/DNS-SD, DoT/DoH option, WireGuard, SSH client and off-by-default server (Ed25519 only) with scp/SFTP, <code>pcap</code> behind a permission; last and optional: one Wi-Fi family with WPA2/WPA3 for the user's own networks, Bluetooth HID, QUIC/HTTP/3.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 15 additions.</strong> One capability model (handles with rights); per-process mount namespaces; <code>restrict</code> allowlists, promises and <code>--learn</code>; CET, IBT, PKU, a written Meltdown/Spectre decision, KASLR moved here; passkeys/FIDO2, TOTP, a secure attention key, a guest session; encrypted homes, <code>explicit_bzero</code>, <code>mlock</code>; docs/THREAT_MODEL.md.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 15B additions.</strong> Reader mode, content blocking, per-site permissions, a site-isolation test, a developer view, the JavaScript decision gate with a per-tab memory budget.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 17B — Portable apps</strong> (after 17): a WASM/WASI runtime (SQLite, Lua, CPython in a box); <code>try</code> and <code>box</code>; far horizon: a Linux syscall layer in a sandbox, a VT-x hypervisor.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 18B — Resilience</strong> (with or after 18): system generations with automatic rollback; verified boot (signed kernel, hash tree, TPM 2.0 sealed key); restartable user-mode drivers; cerfs data checksums, snapshots and <code>undo</code>, scrub, online resize, TRIM, compression, quotas, xattrs, reflinks; exFAT, read-only NTFS/ext4; <code>backup</code>; local-only crash reports.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Phase 19 additions.</strong> Sound with per-app volume and capture indicator, camera, printing; an <code>arch/</code> split and RISC-V before ARM64; GPU acceleration (virtio-gpu first), video decode; a Spec package ecosystem.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Signature features</strong> (owner decision 13): record/replay, flight recorder with causal tracing, <code>why</code>, <code>try</code>, typed tables and a structured shell, chaos mode, file transactions and <code>undo</code>, capability types in Spec with generated manifests, typed ports, <code>fuzzd</code>, glass-box mode, crash-surviving services, a reproducible self-verifying system, a live capability graph. Suggested first five: flight recorder, chaos mode, typed tables, <code>why</code>, replay.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Spec-0 early</strong> (phase 16 in parallel): integers, functions, <code>if</code>/<code>while</code>, structs, pointers, a <code>syscall</code> intrinsic, x86-64 and ELF out; then slices, enums and <code>match</code>, <code>Result</code>, <code>comptime</code> generics, linear handles, capability types; stage 0 in C++, stage 1 in Spec; a language specification and conformance tests before a second backend.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Depth items with no home yet:</strong> fair-share and real-time scheduling classes, hyper-thread awareness, per-process CPU/energy accounting, &gt;32 cores; RCU-style name cache; per-user memory accounting, memory compression; kernel lockdown, read-only-after-init, constant-time crypto comparisons; per-core canary and retpolines; a syscall surface review table in docs/SYSCALLS.md.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Budgets to add to SPEC §20.1:</strong> pipe ≥ 2 GB/s; fork+exec+exit ≤ 150 µs; port round trip ≤ 2 µs; page-cache hit read ≤ 1 µs; cerfs <code>fsync</code> (measure); idle desktop memory ≤ 64 MiB; input-to-photon ≤ 2 frames; flight recorder ≤ 2 %; record mode ≤ 3×.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Project health:</strong> CI matrix (BIOS/UEFI × KVM/TCG/VirtualBox × debug/<code>DEBUG=0</code>), a release-gate checklist, <code>-Werror</code> and a static analyser, reproducible builds, the build tree off the Windows drive, fuzz corpora in the repo, a licence policy before any port, an SBOM per ISO.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Docs to write</strong> (owner, 2026-10-12): INDEX, INVARIANTS, HANDOFF, DEFINITION_OF_DONE, RESEARCH + <code>docs/research/</code>, IDEAS first; then ARCHITECTURE, PLAYBOOKS, TESTING, DEBUGGING, LESSONS, ABI/CERFS/ PANE_PROTOCOL, DESIGN, GLOSSARY, BUILD, RELEASE, THREAT_MODEL, HARDWARE, <code>spec-lang/</code>; generate parts of FEATURES from source; a docs consistency check in CI.</li>
+</ul>
+<h2 id="waiting-on-the-owner">Waiting on the owner</h2>
+<p>Details in <code>docs/DECISIONS.md</code>, entries 2026-10-03 and 2026-10-13 (decisions 8–15: ACPI source, capability model, release numbering, text shaping, WASI runtime, signature features, 11B/11C before 12 or after, which docs first).</p>
+<ul>
+<li><span class="box todo" aria-label="to do"></span>TLS/cryptography source: port Mbed TLS (recommended), port BearSSL, or write in-tree. Before phase 15.</li>
+<li><span class="box todo" aria-label="to do"></span>libc: in-tree or port mlibc. Before phase 17 (phase 7 wrote the minimal in-tree one).</li>
+<li><span class="box todo" aria-label="to do"></span>TCP/IP: in-tree or port lwIP. Before phase 14.</li>
+<li><span class="box todo" aria-label="to do"></span>Confirm the v2 phase order and non-goals.</li>
+</ul>
+<hr />
+<h2 id="owner-added-requirements-beyond-the-spec">Owner-added requirements (beyond the spec)</h2>
+<ul>
+<li><span class="box todo" aria-label="to do"></span><strong>Sleek desktop, "Linux and Windows combined."</strong> Ongoing across the desktop phases. Waiting on the owner's reference screenshots to lock the theme, panel, and window chrome. Keep shadows, rounded corners, animations, coherent dark theme (<code>docs/SPEC.md</code> §10).</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Internet access.</strong> Now spec phase 14 (networking) and phase 15 (TLS, keyring): virtio-net and e1000 NICs (QEMU and VirtualBox both emulate e1000), a TCP/IP stack in a userland server, a connection UI in the desktop, a password manager (the keyring) for the user's own credentials.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Privacy and security first (owner, 2026-10-03).</strong> Spec §19 and the §5A rows; checklist in §19.12.</li>
+<li><span class="box todo" aria-label="to do"></span><strong>Smooth, memory- and hardware-efficient (owner, 2026-10-03).</strong> Spec §20 budgets, measured by <code>make bench</code> from phase 6.</li>
+<li><span class="box done" aria-label="done"></span><strong>Smoothness on VirtualBox.</strong> Handled as far as the kernel can (console shadow buffer, plain-store framebuffer copies, spin-idle). Fundamentally limited by the Hyper-V backend; <code>run-cerberus.cmd</code> (QEMU+KVM) is the smooth path. Revisit once the compositor has its own thread (phase 6).</li>
+<li><span class="box todo" aria-label="to do"></span><strong>All-in-one toolbox — DECLINED as framed.</strong> "Get into wifis and find passwords" is unauthorized network access and credential theft; not built, regardless of host OS. The legitimate version, which will be built: connect to networks with credentials the user has, a password manager for the user's own secrets, and network diagnostics for machines they own or are authorized to test. Awaiting the owner to confirm that scope.</li>
+</ul>
+<hr />
+<h2 id="known-issues-to-clean-up">Known issues to clean up</h2>
+<ul>
+<li><span class="box todo" aria-label="to do"></span>Backtraces can't name a function that faults in its own prologue (inherent to RBP walking).</li>
+<li><span class="box todo" aria-label="to do"></span>Terminal has no selection or escape sequences (Ember, the real terminal, is phase 13); scrollback done in 0.0.5b.</li>
+<li><span class="box todo" aria-label="to do"></span><code>make</code> on the Windows-mounted tree occasionally warns "Clock skew detected" (drvfs timestamps). Harmless.</li>
+<li><span class="box todo" aria-label="to do"></span>Remove the phase-2/3 diagnostics (<code>timermode</code>, <code>gui</code>, <code>irqs</code> shell commands) once no longer needed, or fold them into a proper <code>Gauge</code>/<code>test</code> surface. (<code>gui_diag_line</code> and its timer hook were removed on 2026-10-03.)</li>
+</ul>
+<hr />
+<h2 id="how-to-work-quick-reference">How to work (quick reference)</h2>
+<ul>
+<li>Build and test run in WSL2 Ubuntu-24.04: <code>wsl -d Ubuntu-24.04 -u root -- bash -c 'cd /mnt/d/Programs/OS &amp;&amp; make ...'</code>.</li>
+<li><code>make</code> builds, <code>make iso</code> builds the ISO, <code>make test</code> runs the integration tests headless in QEMU (KVM), <code>make fuzz</code> runs the fuzz harnesses, <code>make dist</code> snapshots to <code>dist/</code>.</li>
+<li>Run for real: double-click <code>run-cerberus.cmd</code> (QEMU window via WSLg), or boot <code>dist/cerberus.iso</code> in a VirtualBox VM.</li>
+<li>Long builds: run detached (<code>setsid nohup … &amp;</code>) and poll a log; the Bash tool caps at 10 minutes.</li>
+<li>Write source files with the editor, not shell heredocs (quotes break the Bash tool). Don't put <code>$var</code> inside <code>wsl … bash -c '…'</code> (arrives empty).</li>
+<li>Before touching a VM, check <code>VBoxManage showvminfo &lt;vm&gt; --machinereadable | grep VMState</code> so you don't kill the owner's session.</li>
+<li>Commit per phase: <code>phaseN: …</code>.</li>
+<li>Every change follows <code>docs/SPEC.md</code> §21; every doc edit follows §22.</li>
+<li>Never dereference a user pointer, never create a writable+executable mapping, never log user content, never add a dependency or a network connection the owner did not approve (<code>docs/SPEC.md</code> §19).</li>
+</ul></article>
+
+  </div>
+</main>
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
+<footer>
+  <div class="wrap">
+    <span>Cerberus OS &middot; v0.0.5i &middot; this page was generated from the repository's docs on 2026-10-13</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/roadmap/">Roadmap</a>
+      <a href="/docs/">Docs</a>
+      <a href="https://github.com/ArsenalRX/CerberusOS">Source</a>
+    </nav>
+  </div>
+</footer>
+<script src="/site.js"></script>
+</body>
+</html>

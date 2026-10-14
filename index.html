@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cerberus OS — a 64-bit operating system written from scratch</title>
   <meta name="description" content="Cerberus is a 64-bit operating system written from scratch: its own kernel, file system, drivers and desktop. Private, fast, and small enough to understand." />
-  <meta property="og:title" content="Cerberus OS" />
-  <meta property="og:description" content="A 64-bit operating system written from scratch. Its own kernel, file system, drivers and desktop." />
+  <meta property="og:title" content="Cerberus OS — a 64-bit operating system written from scratch" />
+  <meta property="og:description" content="Cerberus is a 64-bit operating system written from scratch: its own kernel, file system, drivers and desktop. Private, fast, and small enough to understand." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://accerberus.github.io/" />
-  <meta property="og:image" content="https://accerberus.github.io/img/hero.png" />
+  <meta property="og:image" content="https://accerberus.github.io/img/screenshots/settings.png" />
   <link rel="canonical" href="https://accerberus.github.io/" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#06070f" />
@@ -17,376 +17,65 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --bg: #06070f;
-      --surface: rgba(255,255,255,0.03);
-      --surface-hover: rgba(255,255,255,0.05);
-      --border: rgba(255,255,255,0.08);
-      --border-bright: rgba(80,170,255,0.4);
-      --accent: #38b6ff;
-      --accent-strong: #0a84ff;
-      --violet: #8b5cf6;
-      --grad: linear-gradient(95deg, #3ad4ff, #3b8bff 45%, #9b6bff);
-      --green: #35d07f;
-      --text: #aab1c5;
-      --text-bright: #f1f3f9;
-      --text-dim: #6a7189;
-      --font: 'Inter', -apple-system, 'Segoe UI', sans-serif;
-      --font-mono: 'JetBrains Mono', Consolas, monospace;
-      --max: 1120px;
-    }
-
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 16px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-    /* the same navy-to-violet sweep as the Cerberus wallpaper */
-    /* three slow-drifting lights: the wallpaper's navy and violet, turned up */
-    .aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
-    .aurora i { position: absolute; border-radius: 50%; will-change: transform; animation: drift 26s ease-in-out infinite alternate; }
-    .aurora i:nth-child(1) { width: 1100px; height: 800px; right: -300px; top: -320px; background: radial-gradient(closest-side, rgba(20,100,255,0.55), transparent); }
-    .aurora i:nth-child(2) { width: 900px; height: 800px; left: -420px; top: 30%; background: radial-gradient(closest-side, rgba(120,60,240,0.38), transparent); animation-duration: 32s; animation-direction: alternate-reverse; }
-    .aurora i:nth-child(3) { width: 900px; height: 700px; right: -200px; bottom: -380px; background: radial-gradient(closest-side, rgba(0,150,255,0.30), transparent); animation-duration: 38s; }
-    @keyframes drift { to { transform: translate3d(-90px, 70px, 0) scale(1.12); } }
-    .progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 20; background: var(--grad); transform-origin: 0 50%; transform: scaleX(0); }
-    /* faint grid that fades out below the hero */
-    body::after {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 1000px; z-index: -1; pointer-events: none;
-      background-image:
-        linear-gradient(rgba(120,180,255,0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(120,180,255,0.06) 1px, transparent 1px);
-      background-size: 56px 56px;
-      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000, transparent 75%);
-      mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000, transparent 75%);
-    }
-    a { color: inherit; text-decoration: none; }
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
-
-    /* nav */
-    .nav { position: sticky; top: 14px; z-index: 10; padding: 0 16px; margin-top: 14px; }
-    .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px;  height: 56px; padding: 0 12px 0 22px; border-radius: 16px;
-      border: 1px solid var(--border); background: rgba(9,11,24,0.62);
-      backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.05) inset; }
-    .wordmark { font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: var(--text-bright); display: inline-flex; align-items: baseline; gap: 5px; }
-    .wordmark i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 16px var(--accent), 0 0 4px #fff; }
-    .nav-links { display: flex; align-items: center; gap: 26px; font-size: 14px; padding-right: 10px; }
-    .nav-links a:not(.btn) { color: var(--text); transition: color .15s; }
-    .nav-links a:not(.btn):hover { color: var(--text-bright); }
-
-    .menu-btn { display: none; place-items: center; width: 40px; height: 40px; border-radius: 11px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; }
-    .menu-btn span, .menu-btn span::before { display: block; width: 16px; height: 2px; border-radius: 2px; background: var(--text-bright); transition: transform .2s; }
-    .menu-btn span { position: relative; transform: translateY(-3px); }
-    .menu-btn span::before { content: ''; position: absolute; top: 6px; }
-    .nav.open .menu-btn span { transform: rotate(45deg); }
-    .nav.open .menu-btn span::before { top: 0; transform: rotate(-90deg); }
-
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 11px 20px; border-radius: 12px; backdrop-filter: blur(8px);
-      font-size: 14px; font-weight: 600;
-      border: 1px solid var(--border); color: var(--text-bright);
-      background: var(--surface);
-      transition: background .15s, border-color .15s, transform .15s;
-    }
-    .btn:hover { background: var(--surface-hover); border-color: var(--border-bright); transform: translateY(-1px); }
-    .btn.primary { position: relative; overflow: hidden; background: linear-gradient(180deg, #2aa0ff, #0a6cf0); border-color: rgba(255,255,255,0.18); box-shadow: 0 10px 40px rgba(10,132,255,0.5), 0 1px 0 rgba(255,255,255,0.35) inset; }
-    .btn.primary::after { content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; transform: skewX(-20deg); background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); transition: left .6s ease; }
-    .btn.primary:hover { background: linear-gradient(180deg, #45adff, #1c7af5); }
-    .btn.primary:hover::after { left: 130%; }
-    .btn.small { padding: 7px 14px; }
-
-    /* hero */
-    .hero { padding: 104px 0 40px; text-align: center; }
-    .pill { flex-wrap: wrap; justify-content: center;
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 6px 14px; border-radius: 999px;
-      border: 1px solid var(--border); background: var(--surface);
-      font-family: var(--font-mono); font-size: 12.5px; color: var(--text);
-    }
-    .pill b { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
-    h1 {
-      margin: 28px auto 20px; max-width: 880px;
-      font-size: clamp(42px, 7.4vw, 84px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 700;
-      color: var(--text-bright);
-    }
-    h1 span { background: var(--grad); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 8s ease-in-out infinite alternate; filter: drop-shadow(0 0 28px rgba(60,140,255,0.35)); }
-    @keyframes sheen { to { background-position: 100% 0; } }
-    .lead { max-width: 620px; margin: 0 auto 36px; font-size: 18px; }
-    .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
-    /* screenshot frames */
-    .shot {
-      position: relative; border-radius: 16px; overflow: hidden;
-      border: 1px solid var(--border-bright);
-      background: #0b0d18;
-      box-shadow: 0 40px 120px rgba(30,70,180,0.35), 0 0 0 1px rgba(255,255,255,0.03) inset;
-    }
-    .shot img { display: block; width: 100%; height: auto; }
-    .shot.empty { aspect-ratio: 16 / 10; display: grid; place-items: center; font-family: var(--font-mono); font-size: 13px; color: var(--text-dim); border-style: dashed; }
-    @property --spin { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
-    .hero-shot { position: relative; margin: 80px auto 0; max-width: 1040px; overflow: visible; border: 0; background: none; box-shadow: none; perspective: 1800px; }
-    .hero-shot::before { content: ''; position: absolute; inset: -12% -8% -6%; z-index: -1; background: radial-gradient(closest-side, rgba(20,120,255,0.55), transparent 70%); filter: blur(30px); }
-    .tilt { position: relative; padding: 1.5px; border-radius: 16px; transform: rotateX(var(--tilt, 9deg)); transform-origin: 50% 0; will-change: transform;
-      background: conic-gradient(from var(--spin), rgba(120,180,255,0.25), #3ad4ff, #9b6bff, rgba(120,180,255,0.25) 40%, rgba(120,180,255,0.25));
-      animation: spin 7s linear infinite; box-shadow: 0 60px 140px rgba(10,60,200,0.55), 0 0 60px rgba(40,140,255,0.25); }
-    .tilt img { border-radius: 14.5px; }
-    .hero-shot:hover img { transform: none; }
-    @keyframes spin { to { --spin: 360deg; } }
-
-    /* stats */
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 80px; position: relative; border: 1px solid var(--border); border-radius: 20px; background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)); backdrop-filter: blur(10px); }
-    .stats::before { content: ''; position: absolute; top: -1px; left: 12%; right: 12%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), var(--violet), transparent); }
-    .stat { padding: 28px 24px; text-align: center; border-left: 1px solid var(--border); }
-    .stat:first-child { border-left: 0; }
-    .stat strong { display: block; font-size: 40px; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; color: var(--text-bright); font-weight: 600; }
-    .stat strong small { font-size: 16px; color: var(--accent); margin-left: 3px; font-weight: 500; }
-    .stat > span { font-size: 13.5px; color: var(--text-dim); }
-
-    /* sections */
-    section { padding: 112px 0 0; }
-    .eyebrow { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
-    .eyebrow::before { content: ''; width: 28px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
-    h2 { margin: 14px 0 16px; font-size: clamp(28px, 4vw, 42px); line-height: 1.12; letter-spacing: -0.03em; color: var(--text-bright); font-weight: 600; max-width: 720px; }
-    .sub { max-width: 640px; }
-    .grid { display: grid; gap: 16px; margin-top: 44px; }
-    .g3 { grid-template-columns: repeat(3, 1fr); }
-    .g2 { grid-template-columns: repeat(2, 1fr); }
-    .card { position: relative; overflow: hidden; padding: 26px; border-radius: 18px; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)); backdrop-filter: blur(6px); transition: border-color .25s, transform .25s, box-shadow .25s; }
-    .card::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s; background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 0%), rgba(56,182,255,0.16), transparent 60%); }
-    .card:hover { border-color: var(--border-bright); transform: translateY(-3px); box-shadow: 0 20px 50px rgba(5,40,140,0.35); }
-    .card:hover::before { opacity: 1; }
-    .card > * { position: relative; }
-    .card .num { font-family: var(--font-mono); font-size: 12.5px; color: var(--accent); }
-    .card .ico { display: grid; place-items: center; width: 38px; height: 38px; margin-bottom: 14px; border-radius: 11px; color: var(--accent); border: 1px solid rgba(56,182,255,0.3); background: rgba(56,182,255,0.08); box-shadow: 0 0 24px rgba(56,182,255,0.18) inset; }
-    .card .ico svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .card .ico + h3 { margin-top: 0; font-size: 16.5px; }
-    .card code { font-family: var(--font-mono); font-size: 0.86em; padding: 1px 6px; border-radius: 5px; background: rgba(255,255,255,0.06); color: #c9d2e8; }
-
-    /* security and privacy */
-    .vow { margin-top: 44px; padding: 34px 36px; border-radius: 22px; border: 1px solid var(--border-bright); display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center;
-      background: radial-gradient(500px 200px at 0 0, rgba(20,120,255,0.3), transparent 70%), radial-gradient(400px 200px at 100% 100%, rgba(139,92,246,0.22), transparent 70%), rgba(255,255,255,0.02); }
-    .vow .zero { font-size: 84px; line-height: 1; font-weight: 700; letter-spacing: -0.05em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .vow h3 { font-size: 22px; color: var(--text-bright); font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
-    .soon { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
-    .soon div { display: grid; grid-template-columns: 84px 1fr; gap: 14px; align-items: baseline; padding: 16px 20px; border-radius: 14px; border: 1px dashed var(--border); font-size: 14.5px; }
-    .soon code { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
-    .soon b { color: var(--text-bright); font-weight: 600; }
-    .minor { margin-top: 56px; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); }
-    .card h3 { margin: 10px 0 8px; font-size: 18px; color: var(--text-bright); font-weight: 600; letter-spacing: -0.01em; }
-    .card p { font-size: 14.5px; }
-    .card.slim { padding: 20px 22px; }
-    .card.slim h3 { margin-top: 0; font-size: 15.5px; }
-    .card.slim p { font-size: 14px; }
-
-    /* roadmap */
-    .track { display: grid; grid-template-columns: repeat(20, 1fr); gap: 5px; margin-top: 44px; }
-    .track i { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.08); }
-    .track i.done { background: var(--grad); box-shadow: 0 0 14px rgba(56,182,255,0.55); }
-    .track i.next { background: rgba(90,162,255,0.35); animation: pulse 1.8s ease-in-out infinite; }
-    @keyframes pulse { 50% { opacity: .35; } }
-    .track-label { display: flex; justify-content: space-between; margin-top: 12px; font-family: var(--font-mono); font-size: 12.5px; color: var(--text-dim); }
-    .phases { margin-top: 36px; border-top: 1px solid var(--border); }
-    .phase { display: grid; grid-template-columns: 90px 220px 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--border); font-size: 14.5px; align-items: baseline; }
-    .phase code { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-dim); }
-    .phase b { color: var(--text-bright); font-weight: 600; }
-    .phase.up code { color: var(--accent); }
-
-    /* code */
-    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
-    .split ul { list-style: none; margin-top: 24px; display: grid; gap: 12px; font-size: 15px; }
-    .split li { padding-left: 22px; position: relative; }
-    .split li::before { content: ''; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-    .split li b { color: var(--text-bright); font-weight: 600; }
-    .code { border-radius: 16px; border: 1px solid var(--border-bright); background: rgba(6,9,20,0.78); backdrop-filter: blur(10px); overflow: hidden; box-shadow: 0 30px 90px rgba(5,50,170,0.35); }
-    .code header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 12.5px; color: var(--text-dim); }
-    .code pre { padding: 20px; overflow-x: auto; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.75; color: #c9d2e8; }
-    .code .k { color: var(--accent); } .code .t { color: #b79bff; } .code .c { color: var(--text-dim); } .code .p { color: var(--green); }
-    .note { margin-top: 14px; font-size: 13px; color: var(--text-dim); }
-
-    .shot img { cursor: zoom-in; transition: transform .5s ease; }
-    .shot:hover img { transform: scale(1.015); }
-
-    /* architecture stack */
-    .stack { display: grid; gap: 10px; }
-    .layer { display: grid; grid-template-columns: 120px 1fr auto; gap: 16px; align-items: center; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); font-size: 14px; }
-    .layer b { color: var(--text-bright); font-weight: 600; font-size: 15px; }
-    .layer em { font-style: normal; font-family: var(--font-mono); font-size: 11.5px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); white-space: nowrap; }
-    .layer.live { border-color: var(--border-bright); background: linear-gradient(90deg, rgba(56,182,255,0.16), rgba(139,92,246,0.10)); box-shadow: 0 0 60px rgba(20,110,255,0.3); }
-    .layer.live em { color: var(--green); border-color: rgba(53,208,127,0.35); }
-    .layer.hw { border-style: dashed; background: none; }
-
-    /* measurements */
-    .g4 { grid-template-columns: repeat(4, 1fr); }
-    .metric strong { display: block; font-size: 36px; letter-spacing: -0.03em; font-weight: 600; background: linear-gradient(100deg, #fff, var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .metric strong small { font-size: 15px; margin-left: 4px; }
-    .metric p { margin-top: 6px; font-size: 13.5px; }
-
-    /* typed terminal */
-    .term pre { min-height: 292px; white-space: pre-wrap; }
-    .term .dots { display: inline-flex; gap: 6px; }
-    .term .dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.14); }
-    .caret { display: inline-block; width: 8px; height: 15px; margin-left: 2px; vertical-align: -2px; border: 1px solid #c9d2e8; animation: blink 1s steps(1) infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
-    .keys { display: grid; gap: 12px; margin-top: 28px; font-size: 14.5px; }
-    .keys div { display: flex; align-items: center; gap: 14px; }
-    .keys span { min-width: 108px; display: inline-flex; gap: 5px; align-items: center; color: var(--text-dim); }
-    kbd { font-family: var(--font-mono); font-size: 12px; padding: 4px 9px; border-radius: 7px; color: var(--text-bright); background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-bottom-width: 2px; }
-
-    /* closing band */
-    .closing { margin-top: 128px; padding: 72px 32px; text-align: center; border-radius: 24px; border: 1px solid var(--border-bright); position: relative; overflow: hidden;
-      background: radial-gradient(600px 300px at 50% 0, rgba(60,110,240,0.35), transparent 70%), radial-gradient(500px 300px at 20% 100%, rgba(122,92,255,0.25), transparent 70%), rgba(255,255,255,0.02); }
-    .closing h2 { margin: 0 auto 14px; }
-    .closing p { max-width: 520px; margin: 0 auto 30px; }
-    .closing .wordmark { font-size: 28px; margin-bottom: 26px; }
-    .closing .wordmark i { width: 11px; height: 11px; }
-
-    /* lightbox */
-    .lightbox { position: fixed; inset: 0; z-index: 50; display: none; place-items: center; padding: 24px; background: rgba(3,4,10,0.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); cursor: zoom-out; }
-    .lightbox.open { display: grid; }
-    .lightbox img { max-width: 100%; max-height: 100%; border-radius: 12px; border: 1px solid var(--border-bright); box-shadow: 0 40px 140px rgba(30,70,180,0.5); }
-
-    footer { margin-top: 96px; border-top: 1px solid var(--border); padding: 32px 0 48px; font-size: 13.5px; color: var(--text-dim); }
-    footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; }
-    footer a:hover { color: var(--text-bright); }
-    footer nav { display: flex; gap: 22px; }
-
-    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
-    .reveal.in { opacity: 1; transform: none; }
-    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } .track i.next, .aurora i, h1 span { animation: none; } html { scroll-behavior: auto; } }
-
-    @media (max-width: 860px) {
-      .menu-btn { display: grid; }
-      .nav-links { display: none; position: absolute; top: 64px; left: 16px; right: 16px; flex-direction: column; align-items: stretch; gap: 0; padding: 8px; border-radius: 16px; border: 1px solid var(--border); background: #0a0c19; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
-      .nav.open .nav-links { display: flex; }
-      .nav-links a:not(.btn) { padding: 13px 14px; border-radius: 10px; font-size: 15.5px; }
-      .nav-links a:not(.btn):active { background: var(--surface-hover); }
-      .hero { padding-top: 64px; }
-      .g3, .g2, .split, .soon { grid-template-columns: 1fr; }
-      .vow { grid-template-columns: 1fr; gap: 12px; padding: 26px 24px; }
-      .tilt { transform: none; }
-      .g4 { grid-template-columns: repeat(2, 1fr); }
-      .layer { grid-template-columns: 1fr auto; }
-      .layer span { grid-column: 1 / -1; grid-row: 2; }
-      .closing { margin-top: 88px; padding: 52px 22px; }
-      .split { gap: 32px; }
-      .stats { grid-template-columns: repeat(2, 1fr); }
-      .stat:nth-child(3) { border-left: 0; }
-      .stat:nth-child(n+3) { border-top: 1px solid var(--border); }
-      .phase { grid-template-columns: 70px 1fr; }
-      .phase span { grid-column: 2; }
-      section { padding-top: 80px; }
-      .track { gap: 3px; }
-    }
-  </style>
+  <link rel="stylesheet" href="/site.css" />
 </head>
-<body>
+<body class="home">
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="progress" id="progress"></div>
-
 <header class="nav">
   <div class="wrap">
-    <a class="wordmark" href="#top" aria-label="Cerberus OS home">Cerberus<i></i></a>
+    <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
     <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
-    <nav class="nav-links">
-      <a href="#today">Today</a>
-      <a href="#security">Security</a>
-      <a href="#design">Design</a>
-      <a href="#desktop">Desktop</a>
-      <a href="#roadmap">Roadmap</a>
-      <a href="#spec">Spec</a>
-    </nav>
+    <nav class="nav-links"><a href="/" class="on">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a><a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a></nav>
   </div>
 </header>
-
 <main id="top">
   <div class="wrap">
 
     <div class="hero">
-      <span class="pill"><b></b>v0.0.5f &middot; phases 0&ndash;11 done &middot; phase 12 in progress</span>
+      <span class="pill"><b></b>v0.0.5i &middot; phases 0&ndash;11 done &middot; phase 12 next &middot; 0.0.5j built, release pending</span>
       <h1>An operating system, <span>written from scratch.</span></h1>
       <p class="lead">Cerberus is a 64-bit OS with its own kernel, its own file system, its own drivers and its own desktop. Nothing here is Linux, BSD or Windows underneath.</p>
       <div class="cta">
         <a class="btn primary" href="#today">See what works</a>
-        <a class="btn" href="#roadmap">Roadmap</a>
+        <a class="btn" href="/roadmap/">Roadmap</a>
+        <a class="btn" href="https://github.com/ArsenalRX/CerberusOS">Source on GitHub</a>
       </div>
-
-      <!-- SCREENSHOT SLOT 1: img/hero.png (the main desktop shot) -->
-      <figure class="shot hero-shot reveal">
-        <div class="tilt"><img src="img/hero.png" alt="The Cerberus desktop with the Settings window open and an animated rainbow border around it" width="1280" height="800" /></div>
-      </figure>
-
-      <div class="stats reveal">
-        <div class="stat"><strong><span data-count="24">24</span><small>ns</small></strong><span>context switch</span></div>
-        <div class="stat"><strong><span data-count="32">32</span><small>ns</small></strong><span>system call</span></div>
-        <div class="stat"><strong>0<small>%</small></strong><span>CPU on an idle desktop</span></div>
-        <div class="stat"><strong><span data-count="74">74</span></strong><span>system calls</span></div>
-      </div>
+      <figure class="shot hero-shot reveal"><div class="tilt"><img src="/img/screenshots/settings.png" alt="Settings: a custom accent colour, the Aurora wallpaper and the Chase window border" width="1280" height="800" /></div></figure>
+      <div class="stats reveal"><div class="stat"><strong><span data-count="24">24</span><small>ns</small></strong><span>context switch</span></div><div class="stat"><strong><span data-count="36">36</span><small>ns</small></strong><span>system call</span></div><div class="stat"><strong><span data-count="0">0</span><small>%</small></strong><span>CPU on an idle desktop</span></div><div class="stat"><strong><span data-count="74">74</span><small></small></strong><span>system calls</span></div></div>
     </div>
 
     <section id="why">
       <span class="eyebrow">Why</span>
       <h2>Three goals, in this order.</h2>
       <div class="grid g3">
-        <article class="card reveal">
-          <span class="num">01</span>
-          <h3>Private and secure by design</h3>
-          <p>No telemetry. Nothing leaves the machine unless you ask. Memory is never writable and executable at once, and every system-call argument is treated as hostile.</p>
-        </article>
-        <article class="card reveal">
-          <span class="num">02</span>
-          <h3>Fast and small</h3>
-          <p>A message between two programs takes well under a microsecond. Every performance budget is measured and recorded, so a regression is visible.</p>
-        </article>
-        <article class="card reveal">
-          <span class="num">03</span>
-          <h3>Understandable</h3>
-          <p>One small system, with a written specification and the reasoning behind every decision.</p>
-        </article>
+        <article class="card reveal"><span class="num">01</span><h3>Private and secure by design</h3><p>No telemetry. Nothing leaves the machine unless you ask. Memory is never writable and executable at once, and every system-call argument is treated as hostile.</p></article>
+        <article class="card reveal"><span class="num">02</span><h3>Fast and small</h3><p>A message between two programs takes well under a microsecond. Every performance budget is measured and recorded, so a regression is visible.</p></article>
+        <article class="card reveal"><span class="num">03</span><h3>Understandable</h3><p>One small system, with a written specification and the reasoning behind every decision, all published in <a href="/docs/">the docs</a>.</p></article>
       </div>
     </section>
 
     <section id="today">
       <span class="eyebrow">What works today</span>
       <h2>A real system, from the boot sector to the window shadows.</h2>
-      <p class="sub">It runs in QEMU and VirtualBox today, brings up every CPU core, and runs protected user programs.</p>
-      <div class="grid g3">
-        <article class="card slim reveal"><h3>Boot</h3><p>BIOS and UEFI through Limine. ACPI, APIC, HPET. All cores started.</p></article>
-        <article class="card slim reveal"><h3>Memory</h3><p>Per-process address spaces, demand paging, copy-on-write fork, guard pages.</p></article>
-        <article class="card slim reveal"><h3>Scheduler</h3><p>Preemptive, four priority levels, per-CPU run queues with work stealing.</p></article>
-        <article class="card slim reveal"><h3>User programs</h3><p>Ring-3 processes from position-independent ELF files, with ASLR and a small C library.</p></article>
-        <article class="card slim reveal"><h3>Threads and IPC</h3><p>Ports, shared memory, signals, futexes, and event queues so servers sleep instead of polling.</p></article>
-        <article class="card slim reveal"><h3>Files</h3><p>A VFS, a page cache, and cerfs: a journaled, checksummed file system that survives power cuts.</p></article>
-        <article class="card slim reveal"><h3>Drivers</h3><p>AHCI, NVMe, virtio-blk, IDE, PCI with MSI, PS/2 input, framebuffer, ACPI power.</p></article>
-        <article class="card slim reveal"><h3>Desktop</h3><p>A compositor with anti-aliased text, a floating taskbar with app search, a terminal, a system monitor and Settings.</p></article>
-        <article class="card slim reveal"><h3>Hardening</h3><p>W^X everywhere, SMEP/SMAP/UMIP, stack protectors, and fuzzers on every parser.</p></article>
-      </div>
+      <p class="sub">It runs in QEMU and VirtualBox today, brings up every CPU core, and runs protected user programs. Each card is the first line of its section in <a href="/docs/features/">the feature inventory</a>, which lists everything.</p>
+      <div class="grid g3"><article class="card slim reveal"><h3>Boot and hardware</h3><p>Boots from the hybrid ISO on BIOS and UEFI (Limine); straight into the kernel, no menu wait.</p><a class="more" href="/docs/features/#boot-and-hardware">All of it &rarr;</a></article><article class="card slim reveal"><h3>Files</h3><p>VFS: one tree, mounts, ./.., symbolic links, permissions, mount flags (ro, noexec, nodev, nosuid), name cache.</p><a class="more" href="/docs/features/#files">All of it &rarr;</a></article><article class="card slim reveal"><h3>Programs and IPC</h3><p>Ring-3 processes from position-independent ELF files; ASLR; fork, execve, waitpid; 74 system calls (docs/SYSCALLS.md); a small libc.</p><a class="more" href="/docs/features/#programs-and-ipc">All of it &rarr;</a></article><article class="card slim reveal"><h3>Kernel shell</h3><p>Commands grouped by help; help &lt;command&gt;, help tests.</p><a class="more" href="/docs/features/#kernel-shell-the-terminal-window-also-com1">All of it &rarr;</a></article><article class="card slim reveal"><h3>Desktop</h3><p>Move by the title bar; resize at any edge or corner (cursor changes); minimise / maximise / close buttons (Windows style); stacking; focus follows clicks.</p><a class="more" href="/docs/features/#desktop-kernel-hosted-preview-of-pane">All of it &rarr;</a></article><article class="card slim reveal"><h3>Security and privacy</h3><p>W^X everywhere, SMEP/SMAP/UMIP, stack protectors, zeroed memory, heap free-list encoding, guard pages, user-copy routines only, ASLR, CSPRNG.</p><a class="more" href="/docs/features/#security-and-privacy-in-place-see-docs-status-md-for-the-full-list">All of it &rarr;</a></article></div>
+      <p class="note" style="margin-top:28px"><b>Not there yet:</b> Networking, user accounts and login, sound, USB, printing, real hardware, an installer, the Spec compiler, images or any file type but text in the built-in apps.</p>
+    </section>
+
+    <section id="new">
+      <span class="eyebrow">What's new</span>
+      <h2>Version 0.0.5i, released 2026-10-05.</h2>
+      <p class="sub">The release notes, straight from the changelog.</p>
+      <div class="news reveal"><div class="card"><h4 class="performance">Performance</h4><ul><li>The first touch of a page (a minor page fault) takes 1.4 µs instead of 2.1 µs: frames are zeroed ahead of time by a background thread (B-015).</li></ul></div><div class="card"><h4 class="added">Added</h4><ul><li><code>sigprocmask</code>: a thread can block signals; a blocked signal waits until it is unblocked. SIGKILL cannot be blocked. New threads and children inherit the mask.</li><li><code>port_try_send</code>: as <code>port_send</code>, but EAGAIN instead of waiting when the queue is full.</li><li>The keyboard's Caps Lock and Num Lock lights follow the keys.</li></ul></div></div>
+      <div class="cta" style="justify-content:flex-start;margin-top:24px"><a class="btn small" href="/roadmap/#v0.0.5i">The full release notes</a><a class="btn small" href="/roadmap/#releases">Every release</a></div>
     </section>
 
     <section id="security">
       <span class="eyebrow">Security and privacy</span>
       <h2>Nothing leaves the machine unless you ask.</h2>
       <p class="sub">In Cerberus, security rules are requirements with tests, not afterthoughts. Every one of them below is enforced in the current build.</p>
-
-      <div class="vow reveal">
-        <span class="zero">0</span>
-        <div>
-          <h3>Zero telemetry.</h3>
-          <p>Cerberus collects nothing and reports nothing. No usage data, no account to sign in to, no background phone-home.</p>
-        </div>
-      </div>
-
+      <div class="vow reveal"><span class="zero">0</span><div><h3>Zero telemetry.</h3><p>Cerberus collects nothing and reports nothing. No usage data, no account to sign in to, no background phone-home. Today it has no network stack at all.</p></div></div>
       <div class="grid g3" style="margin-top:16px">
         <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><h3>Never writable and executable</h3><p>No memory can be both at once. Every request for such a mapping is refused, in the kernel and in every program.</p></article>
         <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Every argument is hostile</h3><p>Each system-call argument is checked. Bad pointers, lengths that wrap and unknown flags get an error, never kernel code.</p></article>
@@ -395,10 +84,9 @@
         <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 20h14M7 20l1-11h8l1 11M9 9V6a3 3 0 0 1 6 0v3"/></svg></span><h3>Nothing left behind</h3><p>Memory is zeroed before a program gets it, and a new disk block never shows what a deleted file left in it.</p></article>
         <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg></span><h3>Identity that cannot be faked</h3><p>A program receiving a message learns the sender's process and user from the kernel, not from the message.</p></article>
         <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg></span><h3>Disks are not trusted</h3><p>cerfs checks every field and checksums its metadata. A damaged disk gives an error, never a crash.</p></article>
-        <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 12h3l2-6 4 12 2-6h5"/></svg></span><h3>Attacked on every release</h3><p>Fuzzers hammer the program loader, the archive reader, the file system and the system-call interface.</p></article>
+        <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 12h3l2-6 4 12 2-6h5"/></svg></span><h3>Attacked on every release</h3><p>Fuzzers hammer the program loader, the archive reader, the file system and the system-call interface; 53 integration tests run on every build.</p></article>
         <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><circle cx="15" cy="9" r="1"/><circle cx="9" cy="15" r="1"/></svg></span><h3>Real randomness</h3><p>A ChaCha20 generator in the kernel, seeded from the CPU's hardware generator and interrupt timing.</p></article>
       </div>
-
       <p class="minor">Planned, and already written into the specification</p>
       <div class="soon reveal">
         <div><code>phase 12</code><span><b>Private windows.</b> Screenshots, screen recording and clipboard history need your permission per app, denied by default.</span></div>
@@ -406,6 +94,7 @@
         <div><code>phase 15</code><span><b>Sandboxed apps.</b> Each app declares what it needs and can be denied network, files or devices.</span></div>
         <div><code>phase 18</code><span><b>Your disk, your updates.</b> Optional full-disk encryption, and signed updates that never install on their own.</span></div>
       </div>
+      <p class="minor">Open bugs, from the ledger</p><div class="work reveal"><div><b><a href="/docs/bugs/#b-010-eventtest-misses-its-1-ms-wake-up-limit-on-virtualbox">B-010</a></b> <code>eventtest</code> misses its 1 ms wake-up limit on VirtualBox</div></div>
     </section>
 
     <section id="design">
@@ -414,12 +103,12 @@
           <span class="eyebrow">Architecture</span>
           <h2>A hybrid kernel, in clear layers.</h2>
           <p>Anything that needs sub-microsecond speed or special processor instructions stays in the kernel. Everything else runs as an ordinary, protected program.</p>
-          <p style="margin-top:14px">Each layer only talks to the one below it through well-defined, checked doors.</p>
+          <p style="margin-top:14px">Each layer only talks to the one below it through well-defined, checked doors. The plain-language tour is in <a href="/docs/about/">About Cerberus</a>.</p>
         </div>
         <div class="stack reveal">
           <div class="layer"><b>Applications</b><span>Terminal, file manager, editor</span><em>phase 13</em></div>
           <div class="layer"><b>Servers</b><span>Pane (windows), netd (network)</span><em>phases 12, 14</em></div>
-          <div class="layer live"><b>Kernel</b><span>Memory, scheduling, system calls, files, drivers, messaging</span><em>working today</em></div>
+          <div class="layer live"><b>Kernel</b><span>Memory, scheduling, system calls, files, drivers, messaging, and a preview desktop</span><em>working today</em></div>
           <div class="layer hw"><b>Hardware</b><span>Processor cores, memory, disk, screen</span><em>x86-64</em></div>
         </div>
       </div>
@@ -428,13 +117,8 @@
     <section id="measured">
       <span class="eyebrow">Measured</span>
       <h2>Every budget is measured and written down.</h2>
-      <p class="sub">Figures from the current build on QEMU/KVM with 4 cores. Each one is checked against a written budget.</p>
-      <div class="grid g4">
-        <article class="card metric reveal"><strong>68<small>ms</small></strong><p>for 100,000 messages through a port, none lost or reordered</p></article>
-        <article class="card metric reveal"><strong>~50<small>&micro;s</small></strong><p>for a blocked server to wake after a message is sent</p></article>
-        <article class="card metric reveal"><strong>81<small>ns</small></strong><p>for a kernel heap allocation and free</p></article>
-        <article class="card metric reveal"><strong>141<small>&micro;s</small></strong><p>to composite a desktop frame</p></article>
-      </div>
+      <p class="sub">The newest block in <a href="/docs/bench/">the benchmark record</a> (0.0.5i — 2026-10-05 (polish round 3: the pre-zeroed frame pool)), on QEMU/KVM with 4 cores. Each number is checked against a written budget.</p>
+      <div class="grid g4"><article class="card metric reveal"><strong>1,394<small>ns</small></strong><p>first touch of a memory page (minor page fault)</p></article><article class="card metric reveal"><strong>10<small>µs</small></strong><p>to wake an interactive thread</p></article><article class="card metric reveal"><strong>76<small>ns</small></strong><p>for a kernel heap allocation and free</p></article><article class="card metric reveal"><strong>356<small>µs</small></strong><p>to composite a desktop frame</p></article></div>
     </section>
 
     <section id="desktop">
@@ -442,52 +126,30 @@
         <div>
           <span class="eyebrow">The desktop</span>
           <h2>The desktop, so far.</h2>
-          <p>A floating taskbar, a launcher with app search, and a Settings window that changes the look live. Today it is a preview that runs inside the kernel; phase 12 moves it into its own protected program.</p>
+          <p>A floating taskbar, a launcher with app search, a calendar with reminders, a lock screen, virtual desktops, and a Settings window that changes the look live. Today it is a preview that runs inside the kernel; phase 12 moves it into its own protected program.</p>
           <div class="keys">
             <div><span><kbd>Super</kbd></span>Open the launcher</div>
             <div><span><kbd>Super</kbd><kbd>T</kbd></span>Open a terminal</div>
             <div><span><kbd>Alt</kbd><kbd>Tab</kbd></span>Switch windows</div>
-            <div><span><kbd>Super</kbd><kbd>M</kbd></span>Maximise a window</div>
-            <div><span><kbd>Alt</kbd><kbd>F4</kbd></span>Close a window</div>
+            <div><span><kbd>Super</kbd><kbd>&larr;</kbd><kbd>&rarr;</kbd></span>Snap a window to half the screen</div>
+            <div><span><kbd>Super</kbd><kbd>1</kbd>&hellip;<kbd>4</kbd></span>Switch virtual desktop</div>
+            <div><span><kbd>Super</kbd><kbd>L</kbd></span>Lock the screen</div>
+            <div><span><kbd>Print</kbd></span>Save a screenshot</div>
           </div>
         </div>
-        <div class="code term reveal" id="term">
-          <header><span class="dots"><i></i><i></i><i></i></span><span>Terminal</span></header>
-          <pre aria-label="The Cerberus shell listing its built-in self-tests"><span id="typed"></span><span class="caret"></span></pre>
-        </div>
+        <figure class="shot reveal"><img src="/img/screenshots/settings.png" alt="Settings: a custom accent colour, the Aurora wallpaper and the Chase window border" width="1280" height="800" loading="lazy" /><figcaption>Settings: a custom accent colour, the Aurora wallpaper and the Chase window border</figcaption></figure>
       </div>
-      <div class="grid g4">
-        <article class="card slim reveal"><h3>Make it yours</h3><p>Nine accent colours, three wallpapers (Nebula, Aurora, Ember), and square, soft or round window corners.</p></article>
-        <article class="card slim reveal"><h3>RGB window borders</h3><p>Static, breathing, flashing, rainbow or chase, with your choice of colour, thickness, speed and glow.</p></article>
-        <article class="card slim reveal"><h3>Launcher with search</h3><p>Type to filter the app list and press Enter to open the first match. Power off and Restart live there too.</p></article>
-        <article class="card slim reveal"><h3>Any resolution</h3><p>Switch from 800x600 up to 1920x1080 in Settings, or with <code>resolution</code> in the shell.</p></article>
-      </div>
-      <div class="grid g2" style="margin-top:16px">
-        <!-- SCREENSHOT SLOT 2: img/shot-1.png -->
-        <figure class="shot reveal"><img src="img/shot-1.png" alt="The Cerberus launcher menu with its search field and app list" width="1280" height="800" loading="lazy" /></figure>
-        <!-- SCREENSHOT SLOT 3: img/shot-2.png -->
-        <figure class="shot reveal"><img src="img/shot-2.png" alt="The Cerberus terminal and System Monitor windows" width="1280" height="800" loading="lazy" /></figure>
-      </div>
+      <div class="grid g3" style="margin-top:16px"><figure class="shot reveal"><img src="/img/screenshots/calendar.png" alt="The calendar with a reminder, opened from the taskbar clock" width="1280" height="800" loading="lazy" /><figcaption>The calendar with a reminder, opened from the taskbar clock</figcaption></figure><figure class="shot reveal"><img src="/img/screenshots/launcher.png" alt="The launcher with app search and the floating taskbar" width="1280" height="800" loading="lazy" /><figcaption>The launcher with app search and the floating taskbar</figcaption></figure><figure class="shot reveal"><img src="/img/screenshots/snap.png" alt="Dragging a window to the screen edge: the snap outline" width="1280" height="800" loading="lazy" /><figcaption>Dragging a window to the screen edge: the snap outline</figcaption></figure></div>
+      <p class="note">Everything the desktop can do, key by key, is in <a href="/docs/features/#desktop-kernel-hosted-preview-of-pane">the feature inventory</a>.</p>
     </section>
 
     <section id="roadmap">
       <span class="eyebrow">Roadmap</span>
       <h2>Built in numbered phases. 0 to 11 are done.</h2>
       <p class="sub">Each phase ends in a tested release, and no phase starts until the one before it passes its acceptance tests.</p>
-      <div class="track reveal" aria-hidden="true">
-        <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="next"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-      </div>
-      <div class="track-label"><span>phase 0</span><span>phase 12 in progress</span><span>phase 19</span></div>
-      <div class="phases">
-        <div class="phase up reveal"><code>12 &middot; now</code><b>Pane, the window server</b><span>The desktop leaves the kernel. Programs cannot read each other's windows or keystrokes.</span></div>
-        <div class="phase reveal"><code>13</code><b>Facet and the first apps</b><span>An app toolkit, then a file manager, text editor, settings, image viewer and calculator.</span></div>
-        <div class="phase reveal"><code>14</code><b>Networking</b><span>Network drivers, an in-tree TCP/IP stack, DHCP, DNS, sockets.</span></div>
-        <div class="phase reveal"><code>15</code><b>Users, TLS and sandboxing</b><span>Accounts, encrypted connections, per-application permissions, then a web browser of its own.</span></div>
-        <div class="phase reveal"><code>16</code><b>Spec, the language</b><span>The compiler, the standard library, and the first system components written in it.</span></div>
-        <div class="phase reveal"><code>17</code><b>POSIX layer and packages</b><span>So existing software can be ported.</span></div>
-        <div class="phase reveal"><code>18</code><b>Installer and disk encryption</b><span>A bootable USB that installs Cerberus next to, or instead of, another system.</span></div>
-        <div class="phase reveal"><code>19</code><b>Real hardware</b><span>USB, audio, Wi-Fi on a few chosen chipsets, kernel ASLR, suspend and resume.</span></div>
-      </div>
+      <div class="track reveal" aria-hidden="true"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="next"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div>
+      <div class="track-label"><span>phase 0</span><span>phase 12 next</span><span>phase 19</span></div>
+      <div class="phases"><div class="phase-row up reveal"><code>12 &middot; next</code><b>Pane: window server as a userland process</b><span>Move the compositor out of the kernel behind the port protocol (<code>docs/SPEC.md</code> §9); per-window shm buffers, <code>libpane</code>.</span></div><div class="phase-row reveal"><code>13</code><b>Facet toolkit, shell, applications</b><span>Widget toolkit, desktop shell, and the apps in §12 (Ember terminal, Crate files, Slate editor, Gauge, Dial, Tally, Frame, Daub, Chronos, Warren, lsh, CLI utils).</span></div><div class="phase-row reveal"><code>14</code><b>Networking</b><span>virtio-net + e1000; <code>netd</code> userland stack (Ethernet, ARP, IPv4, ICMP, UDP, TCP, DHCP, DNS, loopback); socket syscalls 70–83; default-deny inbound firewall; per-app network permission…</span></div><div class="phase-row reveal"><code>15</code><b>Security model, users, encrypted transport</b><span>Users and groups, Argon2id password hashes, credentials, <code>authd</code> broker (no setuid), login and lock screens, <code>restrict</code> sandbox, permission prompts, keyring, TLS client with certificate store, audit log.</span></div><div class="phase-row reveal"><code>15B</code><b>Our own web browser</b><span>(owner, 2026-10-04).</span></div><div class="phase-row reveal"><code>16</code><b>Spec native backend</b><span>(was phase 14).</span></div><div class="phase-row reveal"><code>17</code><b>Software platform</b><span>Dynamic linking with full RELRO, POSIX-subset libc (<code>docs/LIBC.md</code>), ptys and job control, full signals, signed package manager <code>pkg</code>; proof ports: zlib, Lua, tinycc, make.</span></div><div class="phase-row reveal"><code>18</code><b>Installer, updates, storage encryption, recovery</b><span>Live-ISO installer (GPT, cerfs + FAT32 EFI), optional full-disk encryption, signed updates with a fallback kernel, recovery boot entry and repairing <code>fsck.cerfs</code>, service manager with per-service sandbox.</span></div><div class="phase-row reveal"><code>19</code><b>Stretch</b><span>(was phase 15).</span></div></div>
       <div class="cta" style="margin-top:36px"><a class="btn" href="/roadmap/">Read the full roadmap</a></div>
     </section>
 
@@ -526,135 +188,28 @@
 
     <div class="closing reveal">
       <span class="wordmark">Cerberus<i></i></span>
-      <h2>Phase 12 is under way.</h2>
-      <p>Pane, the window server, moves the desktop out of the kernel and into its own protected program.</p>
+      <h2>Next: phase 12, Pane.</h2>
+      <p>Move the compositor out of the kernel behind the port protocol (<code>docs/SPEC.md</code> §9); per-window shm buffers, <code>libpane</code>.</p>
       <div class="cta">
         <a class="btn primary" href="/roadmap/">Read the full roadmap</a>
-        <a class="btn" href="/roadmap/#releases">Release history</a>
+        <a class="btn" href="/docs/status/">What is verified right now</a>
       </div>
     </div>
 
   </div>
 </main>
-
 <div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
-
 <footer>
   <div class="wrap">
-    <span>Cerberus OS &middot; v0.0.5f</span>
+    <span>Cerberus OS &middot; v0.0.5i &middot; this page was generated from the repository's docs on 2026-10-13</span>
     <nav>
-      <a href="#roadmap">Roadmap</a>
-      <a href="#top">Back to top</a>
+      <a href="/">Home</a>
+      <a href="/roadmap/">Roadmap</a>
+      <a href="/docs/">Docs</a>
+      <a href="https://github.com/ArsenalRX/CerberusOS">Source</a>
     </nav>
   </div>
 </footer>
-
-<script>
-  // a missing screenshot becomes a labelled empty slot instead of a broken image
-  document.querySelectorAll('.shot img').forEach(function (img) {
-    function empty() {
-      var slot = img.parentNode;
-      slot.classList.add('empty');
-      slot.textContent = 'screenshot: ' + img.getAttribute('src');
-    }
-    if (img.complete && !img.naturalWidth) empty(); else img.addEventListener('error', empty);
-  });
-
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
-
-  // the hero screenshot starts tilted back and lies flat as you scroll to it
-  var tiltEl = document.querySelector('.tilt');
-  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  window.tilt = function () {
-    if (!tiltEl) return;
-    tiltEl.style.setProperty('--tilt', (calm ? 0 : Math.max(0, 9 - scrollY / 45)).toFixed(2) + 'deg');
-  };
-
-  // thin reading-progress line under the top edge
-  var progress = document.getElementById('progress');
-  function onScroll() {
-    var max = document.documentElement.scrollHeight - innerHeight;
-    progress.style.transform = 'scaleX(' + (max > 0 ? scrollY / max : 0) + ')';
-    if (window.tilt) tilt();
-  }
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-  // cards light up under the pointer
-  document.addEventListener('pointermove', function (e) {
-    var card = e.target.closest && e.target.closest('.card');
-    if (!card) return;
-    var r = card.getBoundingClientRect();
-    card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-    card.style.setProperty('--my', (e.clientY - r.top) + 'px');
-  });
-
-  // the headline numbers count up once
-  new IntersectionObserver(function (entries, obs) {
-    if (!entries[0].isIntersecting) return;
-    obs.disconnect();
-    if (calm) return;
-    document.querySelectorAll('[data-count]').forEach(function (el) {
-      var end = +el.dataset.count, t0 = performance.now();
-      (function tick(now) {
-        var p = Math.min(1, (now - t0) / 1100);
-        el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
-        if (p < 1) requestAnimationFrame(tick);
-      })(t0);
-    });
-  }, { threshold: 0.6 }).observe(document.querySelector('.stats'));
-
-  // phone menu
-  var nav = document.querySelector('.nav'), menu = document.getElementById('menu');
-  function setMenu(open) { nav.classList.toggle('open', open); menu.setAttribute('aria-expanded', open); }
-  menu.addEventListener('click', function () { setMenu(!nav.classList.contains('open')); });
-  nav.querySelectorAll('.nav-links a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
-
-  // click a screenshot to view it full size
-  var lightbox = document.getElementById('lightbox');
-  document.querySelectorAll('.shot img').forEach(function (img) {
-    img.addEventListener('click', function () {
-      lightbox.firstElementChild.src = img.src;
-      lightbox.classList.add('open');
-    });
-  });
-  lightbox.addEventListener('click', function () { lightbox.classList.remove('open'); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lightbox.classList.remove('open'); });
-
-  // the shell types its own self-test list once the terminal scrolls into view
-  var session = [
-    ['cerberus> ', 'help', [
-      'tests:',
-      '  test pmm     physical frame allocator',
-      '  test vmm     virtual memory: W^X, demand paging',
-      '  test heap    kernel heap: 100,000 alloc/free pairs',
-      '  test sched   threads, preemption, locks, latency',
-      '  test smp     all CPUs: TLB shootdown, work stealing',
-      '  test vfs     file tree: permissions, mounts, symlinks',
-      '  test timer   APIC timer advances at 100 Hz'
-    ]],
-    ['cerberus> ', 'run /bin/ipctest', []]
-  ];
-  var typed = document.getElementById('typed');
-  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function play(step) {
-    if (step >= session.length) return;
-    var prompt = session[step][0], cmd = session[step][1], out = session[step][2];
-    typed.textContent += prompt;
-    var i = 0;
-    (function key() {
-      if (i < cmd.length) { typed.textContent += cmd[i++]; return setTimeout(key, still ? 0 : 70); }
-      if (!out.length) return;
-      typed.textContent += '\n' + out.join('\n') + '\n';
-      setTimeout(function () { play(step + 1); }, still ? 0 : 900);
-    })();
-  }
-  new IntersectionObserver(function (entries, obs) {
-    if (entries[0].isIntersecting) { obs.disconnect(); play(0); }
-  }, { threshold: 0.4 }).observe(document.getElementById('term'));
-</script>
+<script src="/site.js"></script>
 </body>
 </html>

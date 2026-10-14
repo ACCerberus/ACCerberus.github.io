@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Cerberus and Spec — Cerberus OS</title>
+  <meta name="description" content="A plain-language tour of Cerberus and the Spec language, for anyone." />
+  <meta property="og:title" content="About Cerberus and Spec — Cerberus OS" />
+  <meta property="og:description" content="A plain-language tour of Cerberus and the Spec language, for anyone." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://accerberus.github.io/docs/about/" />
+  <meta property="og:image" content="https://accerberus.github.io/img/screenshots/settings.png" />
+  <link rel="canonical" href="https://accerberus.github.io/docs/about/" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#06070f" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2306070f'/><circle cx='50' cy='50' r='20' fill='%235aa2ff'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/site.css" />
+</head>
+<body class="narrow">
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="progress" id="progress"></div>
+<header class="nav">
+  <div class="wrap">
+    <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
+    <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
+    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a><a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a></nav>
+  </div>
+</header>
+<main id="top">
+  <div class="wrap">
+
+    <div class="head">
+      <span class="eyebrow">Docs &middot; ABOUT.md</span>
+      <div class="docmeta"><span>3,347 words</span><span>updated with every commit</span><a href="https://github.com/ArsenalRX/CerberusOS/blob/main/docs/ABOUT.md">View the source on GitHub</a></div>
+      <nav class="toc"><b>On this page</b><ul><li><a href="#cerberus-in-one-minute">Cerberus in one minute</a></li><li><a href="#how-cerberus-works">How Cerberus works</a></li><li><a href="#the-spec-programming-language">The Spec programming language</a></li><li><a href="#what-it-can-do-today-0-0-5g">What it can do today (0.0.5g)</a></li><li><a href="#where-it-s-going">Where it's going</a></li><li><a href="#faq-for-explaining-it">FAQ for explaining it</a></li><li><a href="#glossary">Glossary</a></li></ul></nav>
+    </div>
+    <article class="prose"><h1 id="about-cerberus-and-spec">About Cerberus and Spec</h1>
+<p><strong>What this file is for.</strong> A plain-language description of the Cerberus operating system and its programming language, Spec, that the owner can use to explain the project to friends, family and technical people. It summarises docs/STATUS.md (what is verified), docs/ROADMAP.md (what is planned) and docs/SPEC.md (the full design, which wins if they disagree). It claims nothing that STATUS.md does not verify; planned things are marked as planned.</p>
+<p><strong>When to update it.</strong> At every release, and whenever a phase is finished, re-ordered or re-scoped, so that "What it can do today" and "Where it's going" stay true. Keep the language names from docs/DECISIONS.md (Spec, <code>specc</code>, <code>.spec</code>), never the older name used in SPEC.md.</p>
+<p>Last updated: <strong>2026-10-05</strong>, at release <strong>0.0.5g</strong>. (The system was called Lumen until 2026-10-04.)</p>
+<hr />
+<p>Cerberus is a new operating system for 64-bit PCs, written from scratch: its own kernel, its own desktop, and eventually its own programming language, Spec. The goal is a system that puts the privacy and security of the person using it first, feels smooth, and uses the hardware efficiently. It is early: today it boots and runs in virtual machines, not yet as your everyday computer.</p>
+<h2 id="cerberus-in-one-minute">Cerberus in one minute</h2>
+<ul>
+<li><strong>What it is.</strong> An operating system: the basic software that starts when a computer is switched on and lets every other program run. Windows, macOS and Linux are operating systems. Cerberus is a new one, for 64-bit x86 processors (the kind in most PCs and laptops).</li>
+<li><strong>Written from scratch.</strong> It is not based on Linux, Windows or any other system's code. Only the bootloader (Limine) comes from elsewhere.</li>
+<li><strong>A hybrid kernel.</strong> The core is a "hybrid kernel": a few speed-critical jobs run inside the core, and the rest run as separate, protected programs (explained below).</li>
+<li><strong>Its own desktop and language.</strong> It has a graphical desktop with windows and a taskbar, and a planned programming language, Spec, designed together with the system.</li>
+<li><strong>Who makes it.</strong> A personal project by one developer, the project owner, built with an AI coding assistant (Claude Code) working from a written design document.</li>
+<li><strong>Where it stands.</strong> The current release is <strong>0.0.5g</strong> (2026-10-05). It runs in the VirtualBox and QEMU virtual machines from a single ISO file, on old BIOS or modern UEFI, and can keep files on a virtual hard disk. It cannot yet connect to the internet or be installed on a real PC.</li>
+</ul>
+<h2 id="how-cerberus-works">How Cerberus works</h2>
+<p>Think of a computer as a building. The <strong>hardware</strong> is the building itself: rooms (memory), workers (processor cores), doors and windows (keyboard, screen, disk). The <strong>operating system</strong> is the building management: it decides who gets which room, which worker does which job, and who may use which door. <strong>Programs</strong> are the tenants: they do the interesting work, but they must ask management for everything.</p>
+<pre><code> +-----------------------------------------------------------+
+ |  Applications     Terminal, file manager, editor, ...     |  planned (phase 13)
+ +-----------------------------------------------------------+
+ |  Servers          Pane (windows), netd (network), ...     |  planned (12, 14)
+ +-----------------------------------------------------------+
+ |  Kernel           memory, scheduling, system calls,       |  working today
+ |                   files core, drivers, messaging          |
+ +-----------------------------------------------------------+
+ |  Hardware         processor cores, memory, disk, screen   |
+ +-----------------------------------------------------------+</code></pre>
+<p>Each layer only talks to the one below it through well-defined, checked doors. Today the kernel layer works, user programs run on top of it, and a preview desktop runs inside the kernel; the server and application layers are what the coming phases build.</p>
+<h3 id="booting">Booting</h3>
+<p>When the (virtual) machine starts, a small program called the <strong>bootloader</strong> (Limine) loads the Cerberus kernel into memory and hands over control. The kernel then finds the processor, the memory, the timers, the interrupt controllers and the real-time clock on its own, starts every processor core, and brings up the desktop. This takes about a second.</p>
+<h3 id="the-kernel-and-hybrid-kernel">The kernel and "hybrid kernel"</h3>
+<p>The <strong>kernel</strong> is the part of the operating system with full control of the machine. Everything else runs with limited rights and has to ask the kernel for help.</p>
+<p>Operating systems make a basic choice here. A <em>monolithic</em> kernel (like Linux) puts nearly everything inside the kernel: fast, but a bug anywhere can bring down the whole system. A <em>microkernel</em> keeps the kernel tiny and runs almost everything as separate programs: safer, but often slower. Cerberus is <strong>hybrid</strong>: the rule (SPEC §6.2) is that anything needing sub-microsecond speed or special processor instructions stays in the kernel (memory management, scheduling, system calls, the core of the file system, disk and input drivers, messaging between programs), and everything else becomes a separate protected program, a <strong>server</strong>, reached through messages. The window server (Pane) and the network stack (netd) are planned to be such servers. Keeping the trusted core small is also a security choice.</p>
+<h3 id="memory">Memory</h3>
+<p>Every program gets its <strong>own private memory space</strong>. It cannot see or touch the memory of other programs or of the kernel; if it tries, it is stopped. Memory is handed out in 4 KiB <strong>pages</strong>, and a page is only really given to a program when the program first touches it ("demand paging"), so memory is not wasted on things never used.</p>
+<p>When a program makes a copy of itself (<code>fork</code>), the copy does not duplicate all of its memory straight away. Both share the same pages until one of them writes, and only then is that one page copied. This is called <strong>copy-on-write</strong> and makes starting programs cheap. Memory is wiped before it is reused, so no program can read what another left behind.</p>
+<h3 id="running-programs">Running programs</h3>
+<p>A computer appears to do many things at once. In reality each processor core switches between jobs many times a second. The <strong>scheduler</strong> decides who runs next: Cerberus has four priority levels, time slices, and lets idle cores take work from busy ones. A unit of work is a <strong>thread</strong>; a running program (a <strong>process</strong>) has one or more threads. Cerberus uses every processor core it finds (tested with four).</p>
+<p>Programs run in <strong>user mode</strong>, a restricted processor mode. Only the kernel runs in <strong>kernel mode</strong> with full rights. When a program needs something only the kernel can do (open a file, get memory, start another program), it makes a <strong>system call</strong>: a controlled request through a single door, where every argument is checked. Cerberus has 14 system calls today and a small C library for programs. A program that crashes is stopped and reported; the rest of the system carries on.</p>
+<h3 id="the-desktop">The desktop</h3>
+<p>The desktop is drawn by a <strong>compositor</strong>: each window draws its own picture, and the compositor combines them into the final screen image, adding shadows, rounded corners and the mouse cursor, and redrawing only what changed.</p>
+<p>Today's desktop is a <strong>preview that runs inside the kernel</strong>: a wallpaper, a taskbar with a launcher menu, clock and memory use, and four built-in windows (Terminal, System Monitor, Memory Map, About) that can be moved, resized, minimised, maximised and closed. In <strong>phase 12</strong> it moves out of the kernel into <strong>Pane</strong>, a separate window server program, so that no graphics code runs with full rights. In <strong>phase 13</strong> comes <strong>Facet</strong>, a toolkit of buttons, text boxes, menus and dialogs with dark and light themes, and the applications built with it: terminal, file manager, text editor, settings, calculator, image viewer, paint program and more.</p>
+<h3 id="files-and-disks">Files and disks</h3>
+<p>Think of a library: the <strong>virtual file system</strong> is the front desk that every request goes through, whichever shelf the book is on. Behind it are several "shelves":</p>
+<ul>
+<li><code>/</code> holds the system's own programs, unpacked from an archive at boot and kept <strong>read-only</strong>;</li>
+<li><code>/tmp</code> lives in memory and is gone at shutdown;</li>
+<li><code>/dev</code> holds devices that look like files (<code>/dev/null</code>, <code>/dev/random</code>, each disk as <code>/dev/disk/sda</code>);</li>
+<li>a disk can be attached ("mounted") on any folder, usually <code>/mnt</code>.</li>
+</ul>
+<p>Disks use <strong>cerfs</strong>, Cerberus's own format. cerfs keeps a <strong>journal</strong>: a log of each change written before the change itself, so a crash or power cut never leaves the disk in a broken state (after a restart, a finished log entry is replayed and an unfinished one is ignored). Every piece of bookkeeping on the disk carries a checksum, and the disk is treated as untrusted: a damaged disk gives an error, not a crash. This is tested by cutting the power mid-write and by feeding the system thousands of deliberately damaged disks.</p>
+<p>The front desk also enforces <strong>permissions</strong> (who may read, change or run each file) and keeps recently used file contents and names in memory (the <strong>page cache</strong> and <strong>name cache</strong>), so reading a file a second time does not touch the disk. Cerberus has drivers for SATA disks (fast) and older IDE disks. Opening files from a program's own memory map and a graphical file manager come later (phases 11 and 13).</p>
+<h3 id="networking-planned">Networking (planned)</h3>
+<p>Cerberus has no networking yet, so nothing can leave the machine. <strong>Phase 14</strong> adds network card drivers and <strong>netd</strong>, a network server running as a separate, unprivileged program: addresses (DHCP), name lookup (DNS), TCP and UDP, and tools such as <code>ping</code> and <code>fetch</code>. A <strong>firewall blocks all incoming connections by default</strong>, and each application needs permission to use the network. Secure connections (HTTPS) come in phase 15.</p>
+<p>Cerberus will have <strong>its own web browser</strong>, written from scratch (phase 15B, decided 2026-10-04). It comes after networking and secure connections, which it needs. The first version renders HTML and CSS without JavaScript, runs in a sandbox, and treats every web page as hostile input.</p>
+<h3 id="security-and-privacy">Security and privacy</h3>
+<p>The owner's first priority is that the person using the machine can trust it. The principles (SPEC §19): give each program only what it needs, deny by default, check every piece of data that crosses a boundary, refuse when a check fails, and never send anything off the machine unless the user asked. <strong>No telemetry, ever.</strong></p>
+<p>In place today, each shown by a test:</p>
+<ul>
+<li>Programs cannot read or write the kernel's memory or each other's.</li>
+<li>Every system-call argument is checked; bad pointers are refused safely.</li>
+<li>No memory is ever both writable and executable (W^X); memory is wiped before reuse.</li>
+<li>Randomised program layout (ASLR), so attackers cannot predict addresses.</li>
+<li>Guard pages under every stack and stack-smashing detection.</li>
+<li>A hardened memory allocator that refuses double frees and foreign pointers.</li>
+<li>Processor protections (SMEP, SMAP, UMIP) where the CPU offers them.</li>
+<li>A cryptographic random number generator (ChaCha20).</li>
+<li>Automatic fuzz testing (millions of random inputs) of the program loader, the archive reader and the system calls.</li>
+</ul>
+<p>Planned: file permissions (phase 9); only the window server may read the keyboard and screen (phase 10); programs cannot spy on each other's windows, screenshots and clipboard history need permission (phase 12); firewall and per-app network permission (phase 14); user accounts, Argon2id password hashes, lock screen, app sandboxing, an encrypted keyring and HTTPS (phase 15); signed packages (phase 17); optional full-disk encryption and signed updates (phase 18); kernel address randomisation (phase 19).</p>
+<p>Today the desktop and kernel shell still run with full rights, and there are no users, permissions or files yet.</p>
+<h3 id="performance">Performance</h3>
+<p>Smoothness is treated as a requirement with measured budgets, not as a later clean-up. Under QEMU with four cores, switching between threads takes about 23 nanoseconds (budget 2,000), a system call about 34 nanoseconds (budget 300), and the idle desktop uses 0% of the CPU. Two numbers are over budget and on the fix list: the first touch of a memory page (2.0–2.9 microseconds against 2), and full-screen redraws on VirtualBox (about 23 ms, which is why window dragging feels laggy there). Goals for later: boot to a usable desktop in under 3 seconds, small apps starting in under 200 ms, and a desktop frame drawn in under 8 ms.</p>
+<h2 id="the-spec-programming-language">The Spec programming language</h2>
+<p><strong>Spec</strong> is a systems programming language designed alongside Cerberus. It is meant for writing Cerberus's applications, and eventually parts of Cerberus itself. The idea behind building both: a language made together with its operating system can express things a general-purpose language cannot, such as system calls as typed parts of the language, kernel handles the compiler checks, and hardware register layouts verified when the program is compiled.</p>
+<p><strong>Honest status: the Spec compiler has not been started.</strong> The <code>spec/</code> folder holds only empty folders. It is <strong>phase 16</strong> on the roadmap.</p>
+<h3 id="design-goals-and-main-features-spec-13-1">Design goals and main features (SPEC §13.1)</h3>
+<ul>
+<li><strong>Statically typed and compiled</strong> to native x86-64 machine code for Cerberus; no garbage collector.</li>
+<li><strong>Regions</strong> (the distinctive feature): memory allocated inside a <code>region</code> block is all freed at its closing brace, and the compiler stops any reference from escaping it. This gives predictable memory management without a garbage collector or full ownership tracking.</li>
+<li><strong>Traits and generics</strong>, resolved at compile time.</li>
+<li><strong>Closures</strong> (functions as values), <strong>modules</strong> with <code>pub</code> visibility, and <strong>pattern matching</strong> that the compiler checks covers every case.</li>
+<li><strong>Mutable references</strong> with a simple rule: only one writable reference at a time.</li>
+<li><strong>Compile-time evaluation</strong> (<code>const fn</code>, <code>static assert</code>).</li>
+<li><strong>System calls as typed constructs</strong>, turned directly into the processor instruction, with no C layer in between.</li>
+<li><strong>Capability types</strong>: kernel handles such as an open file (<code>Fd</code>) cannot be copied by accident or used after closing.</li>
+<li><strong>Hardware register layouts</strong> (<code>mmio struct</code>): the compiler refuses a write to a read-only register.</li>
+<li><strong>Arrays and slices</strong> with bounds checks (and an explicit escape hatch), and inline assembly.</li>
+</ul>
+<p>The design document shows fragments of the planned syntax, for example:</p>
+<pre><code>trait Show { fn show(self) -&gt; str }
+impl Show for Point { ... }
+fn dump[T: Show](v: T)
+
+region r { let x = r.alloc(...); }
+
+syscall write(fd: Fd, buf: &amp;[u8]) -&gt; Result[usize, Errno]
+
+mmio struct AhciPort {
+    0x00: clb: u32 rw,
+    0x10: is: u32 rw1c,
+}</code></pre>
+<p>The full syntax is not final and will be settled when the compiler is built.</p>
+<h3 id="how-the-compiler-works-spec-13-2">How the compiler works (SPEC §13.2)</h3>
+<p>The compiler, <code>specc</code>, turns a <code>.spec</code> source file into a Cerberus program in stages: it splits the text into words (lexer), builds a tree of the program (parser), resolves names and modules, checks types, regions, capabilities, pattern coverage and references, specialises generic code, translates it to an internal form called SIR, optimises it (constant folding, dead-code removal, inlining and more), assigns processor registers, picks x86-64 instructions, and finally writes an ELF program file Cerberus can run.</p>
+<h3 id="tooling-spec-13-4">Tooling (SPEC §13.4)</h3>
+<ul>
+<li><code>specc</code>, the compiler, with optimisation levels, debug info, and options to show each stage's output.</li>
+<li><code>specfmt</code>, a formatter that gives all code one standard layout.</li>
+<li>A standard library (text, lists, maps, files, processes, threads, time, maths, JSON, GUI bindings, raw system calls).</li>
+<li><strong>Excellent error messages</strong> as a requirement: file, line and column, the source line with the problem marked, an explanation of the rule, and a suggested fix where one is obvious.</li>
+</ul>
+<p>Phase 16 is done when <code>specc hello.spec -o hello</code> makes a program that runs on Cerberus and a Spec application with windows runs on the desktop.</p>
+<h2 id="what-it-can-do-today-0-0-5g">What it can do today (0.0.5g)</h2>
+<ul>
+<li>Boots in VirtualBox and QEMU from one ISO, with BIOS or UEFI, in about a second, and uses every processor core.</li>
+<li>Manages memory with private spaces per program, demand paging and copy-on-write.</li>
+<li>Runs many threads and programs at once; runs real user programs in a protected mode and survives their crashes.</li>
+<li>Shows a desktop preview: wallpaper, taskbar, launcher menu with search, movable and resizable windows that snap to the screen's edges, an Alt+Tab switcher, a calendar with reminders and notifications, a Settings window (any accent colour, six wallpapers, RGB window borders, resolutions up to ultrawide, time zone), and keyboard shortcuts (Alt+Tab, Alt+F4, Super, Super+D, Super+arrows, Print Screen).</li>
+<li>Keeps files and folders, in memory and on disks formatted with cerfs (which survives a power cut), with permissions and the usual tools (<code>ls</code>, <code>cat</code>, <code>cp</code>, <code>mv</code>, <code>rm</code>, <code>mkdir</code>, <code>mount</code>, <code>mkfs.cerfs</code> ...).</li>
+<li>Lets programs work together: threads inside a program, messages between programs through named ports (which can carry files and shared memory), signals, and servers that sleep until something happens.</li>
+<li>Has a built-in terminal shell that runs programs by name, with output redirection, system information and self-tests; the terminal scrolls back 1,000 lines.</li>
+<li>Has the security protections listed above, checked by 42 automated tests and fuzzing.</li>
+</ul>
+<p>It cannot yet use the network, play sound, use USB, have user accounts, install to a disk, or run Windows or Linux software.</p>
+<h2 id="where-it-s-going">Where it's going</h2>
+<ul>
+<li><strong>Done so far:</strong> phases 0–11 (boot, memory, scheduling, user programs, multi-core, files and disks, drivers, programs talking to each other) and desktop polish with smooth text.</li>
+<li><strong>Phase 12:</strong> Pane, the window server as a separate program.</li>
+<li><strong>Phase 13:</strong> the Facet toolkit, desktop shell and applications.</li>
+<li><strong>Phase 14:</strong> networking and the internet.</li>
+<li><strong>Phase 15:</strong> users, passwords, sandboxing, HTTPS.</li>
+<li><strong>Phase 16:</strong> the Spec language.</li>
+<li><strong>Phase 17:</strong> running ported C programs, a package manager.</li>
+<li><strong>Phase 18:</strong> an installer like Windows Setup (erase a disk, or install alongside Windows with a boot menu to choose), disk encryption, updates, recovery.</li>
+<li><strong>Phase 19:</strong> stretch goals: USB, sound, real PCs, IPv6, ARM64.</li>
+<li><strong>Phase 15B:</strong> our own web browser (HTML and CSS first; JavaScript later).</li>
+</ul>
+<h2 id="faq-for-explaining-it">FAQ for explaining it</h2>
+<p><strong>Is it Linux?</strong> No. Cerberus is written from scratch. It does not use Linux or Windows code, and it cannot run their programs as they are.</p>
+<p><strong>Can it run Windows or Linux apps?</strong> Not now. Phase 17 aims to let ordinary C programs (for example Lua and a small C compiler) be rebuilt from their source code for Cerberus. Running Windows or Linux programs directly is not a goal.</p>
+<p><strong>Can I install it on my PC?</strong> Not yet. It runs in virtual machines. Installing to a disk, including next to Windows with a boot menu, is phase 18; real-hardware support is a phase 19 goal.</p>
+<p><strong>Why build an operating system?</strong> To understand and control every layer, to build a system around privacy and security from the start instead of adding them later, and to explore what a language designed together with its operating system can do.</p>
+<p><strong>Is it safe to use for real data?</strong> No. There are no user accounts, no file permissions and no saved files yet. Do not put real data in it before phase 15.</p>
+<p><strong>Does it collect data about me?</strong> No, and it never will: no telemetry, no analytics, no background connections you did not ask for. Today it has no network at all.</p>
+<h2 id="glossary">Glossary</h2>
+<ul>
+<li><strong>Operating system (OS):</strong> the software that manages the hardware and lets programs run.</li>
+<li><strong>Kernel:</strong> the core of the OS, with full control of the machine.</li>
+<li><strong>Hybrid kernel:</strong> a kernel that keeps speed-critical services inside and runs others as separate protected programs.</li>
+<li><strong>Bootloader:</strong> the small program that loads the kernel at power-on (Cerberus uses Limine).</li>
+<li><strong>Process:</strong> a running program with its own private memory.</li>
+<li><strong>Thread:</strong> one line of work inside a process; a process can have many.</li>
+<li><strong>Scheduler:</strong> the part of the kernel that decides which thread runs on which core, and when.</li>
+<li><strong>User mode / kernel mode:</strong> the restricted processor mode programs run in, and the full-rights mode only the kernel uses.</li>
+<li><strong>System call:</strong> a program's checked request to the kernel.</li>
+<li><strong>Page:</strong> a 4 KiB block of memory, the unit the kernel hands out.</li>
+<li><strong>Compositor:</strong> the part that combines all windows into the screen image.</li>
+<li><strong>Window server:</strong> the program that owns the screen and input and manages windows (Pane, planned).</li>
+<li><strong>File system:</strong> how files and folders are stored on a disk (cerfs, planned).</li>
+<li><strong>Journal:</strong> a log of changes that keeps a disk consistent after a crash.</li>
+<li><strong>Driver:</strong> code that operates a piece of hardware.</li>
+<li><strong>Firewall:</strong> a filter that decides which network traffic is allowed.</li>
+<li><strong>ASLR:</strong> address space layout randomisation; placing program parts at random addresses so attacks are harder.</li>
+<li><strong>W^X:</strong> "write xor execute"; memory is never both writable and runnable.</li>
+<li><strong>Fuzzing:</strong> testing by feeding huge amounts of random or malformed input.</li>
+<li><strong>Compiler:</strong> a program that turns source code into a runnable program (<code>specc</code>, planned).</li>
+<li><strong>Virtual machine:</strong> software (VirtualBox, QEMU) that imitates a PC, so Cerberus can run safely inside Windows.</li>
+</ul></article>
+
+  </div>
+</main>
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
+<footer>
+  <div class="wrap">
+    <span>Cerberus OS &middot; v0.0.5i &middot; this page was generated from the repository's docs on 2026-10-13</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/roadmap/">Roadmap</a>
+      <a href="/docs/">Docs</a>
+      <a href="https://github.com/ArsenalRX/CerberusOS">Source</a>
+    </nav>
+  </div>
+</footer>
+<script src="/site.js"></script>
+</body>
+</html>

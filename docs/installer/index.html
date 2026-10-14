@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installer, USB media and dual boot — research notes — Cerberus OS</title>
+  <meta name="description" content="Research notes for the installer, USB media and dual boot (phase 18)." />
+  <meta property="og:title" content="Installer, USB media and dual boot — research notes — Cerberus OS" />
+  <meta property="og:description" content="Research notes for the installer, USB media and dual boot (phase 18)." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://accerberus.github.io/docs/installer/" />
+  <meta property="og:image" content="https://accerberus.github.io/img/screenshots/settings.png" />
+  <link rel="canonical" href="https://accerberus.github.io/docs/installer/" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#06070f" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2306070f'/><circle cx='50' cy='50' r='20' fill='%235aa2ff'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/site.css" />
+</head>
+<body class="narrow">
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="progress" id="progress"></div>
+<header class="nav">
+  <div class="wrap">
+    <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
+    <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
+    <nav class="nav-links"><a href="/">Home</a><a href="/#today">Today</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a><a href="/docs/">Docs</a><a href="https://github.com/ArsenalRX/CerberusOS">GitHub</a></nav>
+  </div>
+</header>
+<main id="top">
+  <div class="wrap">
+
+    <div class="head">
+      <span class="eyebrow">Docs &middot; INSTALLER.md</span>
+      <div class="docmeta"><span>1,140 words</span><span>updated with every commit</span><a href="https://github.com/ArsenalRX/CerberusOS/blob/main/docs/INSTALLER.md">View the source on GitHub</a></div>
+      <nav class="toc"><b>On this page</b><ul><li><a href="#what-phase-18-already-plans">What phase 18 already plans</a></li><li><a href="#how-other-installers-ask-the-question">How other installers ask the question</a></li><li><a href="#bootable-usb-stick-from-windows">Bootable USB stick from Windows</a></li><li><a href="#boot-menu-and-dual-boot-uefi">Boot menu and dual boot (UEFI)</a></li><li><a href="#safety-rules">Safety rules</a></li><li><a href="#what-has-to-exist-first">What has to exist first</a></li><li><a href="#sources">Sources</a></li></ul></nav>
+    </div>
+    <article class="prose"><h1 id="installer-usb-media-and-dual-boot-research-notes">Installer, USB media and dual boot — research notes</h1>
+<p><strong>What this file is for.</strong> Research and a proposed design for the owner's request of 2026-10-04: a simple installer like Windows Setup that asks which drive to install on, either erases the old system or keeps it, and a boot menu that lets the user pick Cerberus, Windows, and so on. It feeds phase 18 (docs/SPEC.md §5, docs/TO_FINISH.md). Nothing here is decided until the owner approves phase 18's contents.</p>
+<p><strong>When to update it.</strong> When phase 18 is planned or started, and whenever a finding below turns out to be wrong.</p>
+<hr />
+<h2 id="what-phase-18-already-plans">What phase 18 already plans</h2>
+<p>Live-ISO installer (GPT, cerfs + a FAT32 EFI partition, copy the system, install Limine, create a user), optional full-disk encryption, signed updates with a fallback kernel, a recovery boot entry, <code>fsck.cerfs</code>. Its acceptance test installs to a <strong>blank</strong> disk. Not planned yet: keeping an existing system (dual boot), a boot menu entry for Windows, UEFI boot entries, and making a bootable USB stick.</p>
+<h2 id="how-other-installers-ask-the-question">How other installers ask the question</h2>
+<ul>
+<li><strong>Windows Setup</strong> ("Custom: install Windows only"): lists every disk's partitions and unallocated space with Delete / New / Format / Extend. Choosing unallocated space makes Setup create the partitions it needs; deleting everything is the "wipe" path.</li>
+<li><strong>Ubuntu</strong>: "Install alongside Windows / Erase disk / Manual". It refuses "alongside" while BitLocker is on.</li>
+<li><strong>Calamares</strong> (many Linux distributions): Erase disk / Replace a partition / Install alongside / Manual.</li>
+<li><strong>Fedora Anaconda</strong>: use all space / use free space / shrink or remove.</li>
+</ul>
+<p><strong>Proposed for Cerberus</strong> (simpler than all of these):</p>
+<ol>
+<li><strong>Pick a disk.</strong> Each disk shows model, size, bus, its partitions and the operating systems found on it (Windows: <code>\EFI\Microsoft\Boot\bootmgfw.efi</code> on the EFI partition, or an NTFS volume). The USB stick Cerberus booted from is not offered.</li>
+<li><strong>Pick what to do:</strong><ul>
+<li><strong>Erase this disk and install Cerberus</strong> — a fresh partition table.</li>
+<li><strong>Install Cerberus alongside the existing system</strong> — uses unallocated space (at least about 8 GiB) and the existing EFI partition.</li>
+</ul></li>
+<li><strong>Review the plan</strong>: a list of every change ("create partition 5, FAT32, 512 MiB", "add \EFI\Cerberus\ to the existing EFI partition", "add boot entry 'Cerberus'"). Erasing asks the user to type the disk's name.</li>
+<li>User account, progress bar, reboot.</li>
+</ol>
+<p>Cerberus will <strong>not shrink Windows' partition itself</strong>. Resizing NTFS is large and risky work. If there is too little free space, the installer explains how to shrink the volume in Windows Disk Management and stops. No manual partition editor at first.</p>
+<h2 id="bootable-usb-stick-from-windows">Bootable USB stick from Windows</h2>
+<p>The ISO is already a hybrid image: it has an MBR with Limine's BIOS loader and an EFI partition. Writing it to a stick byte for byte should boot on both BIOS and UEFI machines. <strong>Not yet tried on real hardware.</strong></p>
+<ul>
+<li><strong>Rufus</strong>: use <strong>"DD image" mode</strong>. Its default "ISO image" mode copies files and installs its own loader. It does not know Limine, so BIOS boot would fail.</li>
+<li><strong>balenaEtcher</strong>: always writes byte for byte, so it is the simplest instruction.</li>
+<li>Proposed: document both, with screenshots. A Cerberus-made Windows tool is a later nice-to-have, not part of phase 18.</li>
+<li><strong>Consequence:</strong> Cerberus has no USB driver (phase 19), so the live installer must load everything it installs into memory at boot (as Limine modules, as <code>initrd.tar</code> is loaded today) and never read the stick afterwards.</li>
+</ul>
+<h2 id="boot-menu-and-dual-boot-uefi">Boot menu and dual boot (UEFI)</h2>
+<ul>
+<li><strong>Limine is the menu.</strong> It cannot read cerfs, only FAT and ISO9660. The kernel therefore lives on a small FAT32 <strong>Cerberus boot partition</strong> (about 512 MiB); cerfs holds the system and home. Windows' EFI partition (often only 100 MB) gets only the loader.</li>
+<li><strong>The existing EFI partition is shared, never formatted.</strong> Cerberus adds <code>\EFI\Cerberus\BOOTX64.EFI</code> and <code>\EFI\Cerberus\limine.conf</code> and does not overwrite <code>\EFI\BOOT\BOOTX64.EFI</code> when Windows is present.</li>
+<li><strong>Menu entries</strong> (Limine config syntax): ``<code> timeout: 5 remember_last_entry: yes /Cerberus protocol: limine path: guid(&lt;cerberus-boot-partition-uuid&gt;):/cerberus.elf module_path: guid(&lt;cerberus-boot-partition-uuid&gt;):/initrd.tar /Cerberus (previous kernel) /Cerberus recovery /Windows protocol: efi path: guid(&lt;efi-partition-uuid&gt;):/EFI/Microsoft/Boot/bootmgfw.efi </code>``</li>
+</ul>
+<ul>
+<li><strong>Firmware boot entry.</strong> For the PC to start Limine, the installer writes a UEFI variable <code>Boot####</code> ("Cerberus" → <code>\EFI\Cerberus\BOOTX64.EFI</code>) and puts it first in <code>BootOrder</code> (checkbox "start Cerberus's menu by default"; the old order is backed up). This needs UEFI runtime services in the kernel, which is new work.</li>
+<li><strong>Pitfalls the installer must handle:</strong><ul>
+<li><strong>BitLocker</strong>: changing the boot order can make Windows ask for its 48-digit recovery key. Detect BitLocker and refuse "alongside" until the user has suspended it and has the key.</li>
+<li><strong>Secure Boot</strong>: Cerberus's loader is unsigned. The user must turn Secure Boot off; signing comes later.</li>
+<li><strong>Fast Startup / hibernation</strong> leaves Windows' disk "in use". Tell the user to turn Fast Startup off before shrinking.</li>
+<li><strong>Windows updates</strong> sometimes move Windows Boot Manager back to first place. The firmware's boot menu (F12 or similar) still lists Cerberus; the recovery entry gets "repair boot entry".</li>
+<li><strong>Matching boot mode</strong>: Windows on a GPT disk means UEFI, so no BIOS dual boot on such disks.</li>
+</ul></li>
+</ul>
+<p>Legacy BIOS/MBR machines: erase installs work (Limine's BIOS installer); dual boot beside an MBR Windows is possible (<code>protocol: bios</code>) but second-class. The original MBR is backed up first.</p>
+<h2 id="safety-rules">Safety rules</h2>
+<ul>
+<li>Nothing is written to any disk before the final confirmation; the live system mounts nothing read-write.</li>
+<li>Pre-checks abort on any doubt: BitLocker, hibernated Windows, too little space, damaged partition table, wrong boot mode.</li>
+<li>Write order: new partitions → partition table → EFI files → firmware boot entry last. Every action is logged to the Cerberus boot partition.</li>
+<li>Test: a QEMU disk with a fake Windows layout. After installing, every byte outside the plan must be unchanged.</li>
+</ul>
+<h2 id="what-has-to-exist-first">What has to exist first</h2>
+<ul>
+<li>Phase 9: cerfs and <code>mkfs.cerfs</code>.</li>
+<li>Phase 10: disk drivers (AHCI, virtio-blk). <strong>NVMe must be added</strong> before installing on a real PC, because most current PCs use NVMe disks. It is not in phase 10 yet.</li>
+<li>In phase 18: partition-table reader/writer (GPT and MBR), FAT32 writer, OS detection, the dry-run plan, Limine installation, UEFI variables, the installer screens.</li>
+<li>Real-hardware testing is phase 19.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Limine configuration and usage: <a href="https://codeberg.org/Limine/Limine/raw/branch/v11.x/CONFIG.md,">https://codeberg.org/Limine/Limine/raw/branch/v11.x/CONFIG.md,</a> <a href="https://codeberg.org/Limine/Limine/raw/branch/v11.x/USAGE.md">https://codeberg.org/Limine/Limine/raw/branch/v11.x/USAGE.md</a></li>
+<li>UEFI boot manager variables: <a href="https://uefi.org/specs/UEFI/2.10/03_Boot_Manager.html">https://uefi.org/specs/UEFI/2.10/03_Boot_Manager.html</a></li>
+<li>Ubuntu and BitLocker: <a href="https://documentation.ubuntu.com/desktop/en/latest/reference/bitlocker-during-ubuntu-installation">https://documentation.ubuntu.com/desktop/en/latest/reference/bitlocker-during-ubuntu-installation</a></li>
+<li>Windows Setup partitions: <a href="https://www.ctrl.blog/entry/how-to-esp-windows-setup">https://www.ctrl.blog/entry/how-to-esp-windows-setup</a></li>
+<li>Fedora disk reclaim: <a href="https://www.fedoraproject.org/wiki/Changes/Anaconda_Reclaim_Disk_Space">https://www.fedoraproject.org/wiki/Changes/Anaconda_Reclaim_Disk_Space</a></li>
+<li>BitLocker recovery triggers: <a href="https://learn.microsoft.com/zh-cn/archive/blogs/askcore/issues-resulting-in-bitlocker-recovery-mode-and-their-resolution">https://learn.microsoft.com/zh-cn/archive/blogs/askcore/issues-resulting-in-bitlocker-recovery-mode-and-their-resolution</a></li>
+</ul></article>
+
+  </div>
+</main>
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
+<footer>
+  <div class="wrap">
+    <span>Cerberus OS &middot; v0.0.5i &middot; this page was generated from the repository's docs on 2026-10-13</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/roadmap/">Roadmap</a>
+      <a href="/docs/">Docs</a>
+      <a href="https://github.com/ArsenalRX/CerberusOS">Source</a>
+    </nav>
+  </div>
+</footer>
+<script src="/site.js"></script>
+</body>
+</html>
