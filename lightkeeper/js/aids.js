@@ -1,10 +1,10 @@
 /** Aids to Navigation: load from the backend, cluster on the map, list + select in the panel. */
 
-import { api } from './api.js?v=2.1.1-5';
-import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.1.1-5';
-import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.1-5';
-import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.1-5';
-import { lite, whenChecked, DESKTOP } from './netcheck.js?v=2.1.1-5';
+import { api } from './api.js?v=2.1.1-6';
+import { $, el, fmt, toast, panelSkeleton, debounce, setStatus, store } from './ui.js?v=2.1.1-6';
+import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.1-6';
+import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.1-6';
+import { lite, whenChecked, DESKTOP } from './netcheck.js?v=2.1.1-6';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
 const PAGE = 200;
@@ -27,6 +27,9 @@ export function setDistrict(id) {
 export const getDistrict = () => state.district;
 const inDistrict = (aid) => !state.district || aid.district_id === state.district;
 const selectionListeners = new Set();
+// Aids picked for a trip are saved in this browser, so a reload or a website update never loses them.
+let pendingSelected = (store.get('selectedAids', []) || []).filter((id) => Number.isFinite(id));
+const saveSelected = () => store.set('selectedAids', Array.from(state.selected.keys()).concat(pendingSelected));
 const GRID_DEG = 0.25;
 const grid = new Map();           // "row,col" -> aids[]  (rebuilt on loadAll)
 function indexAids() {
@@ -36,6 +39,10 @@ function indexAids() {
     let bucket = grid.get(key);
     if (!bucket) { bucket = []; grid.set(key, bucket); }
     bucket.push(a);
+  }
+  if (pendingSelected.length) {                 // restore saved picks once their aids are loaded
+    const ready = pendingSelected.filter((id) => state.byId.has(id));
+    if (ready.length) { pendingSelected = pendingSelected.filter((id) => !state.byId.has(id)); queueMicrotask(() => selectMany(ready, true)); }
   }
   queueMicrotask(() => document.dispatchEvent(new Event('aids-loaded')));   // after the caller stores the list
 }
@@ -195,6 +202,7 @@ export function selectMany(ids, on) {
     if (rowEl) { rowEl.classList.toggle('sel', on); rowEl.querySelector('input').checked = on; }
   }
   state.countEl && (state.countEl.textContent = `${fmt.int(visibleAids().length)} in view · ${state.selected.size} selected`);
+  saveSelected();
   selectionListeners.forEach((fn) => fn(getSelected()));
 }
 export function clearSelection() { selectMany(Array.from(state.selected.keys()), false); }

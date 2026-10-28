@@ -3,7 +3,7 @@
     "version": "2.1.1",
     "date": "2026-10-28",
     "title": "Your district, slow-connection mode, nicer cards",
-    "summary": "Version 2.1.1 — 10 changes since 2.1.0.",
+    "summary": "Version 2.1.1 — 12 changes since 2.1.0.",
     "changes": [
       "The district picker at the top works on computers (clicking it did nothing in some browsers) and shows the saved district after a reload.",
       "First launch opens on your district, picked from your connection's rough location; change it any time at the top.",
@@ -13,8 +13,10 @@
       "Dams show reliably: the USACE National Inventory of Dams is now a source (height, river, year built, purpose), and the Dams button tells you to zoom in or if dams could not load.",
       "Tapping a notice in the BNM tab flies to the light and keeps it in view beside the card (above it on phones).",
       "The Locate button is now Center.",
-      "The district follows the map: with a district picked, scrolling into another district switches to it without moving the map (All districts stays put).",
-      "No browser right-click menu (Back, Save as, Inspect) over the app; the map's own right-click menu still works and text boxes keep copy/paste."
+      "The district follows the map: wherever you scroll (zoomed in to regional level), that district is picked and its aids, places and notices fill in, without the map jumping.",
+      "No browser right-click menu (Back, Save as, Inspect) over the app; the map's own right-click menu still works and text boxes keep copy/paste.",
+      "Aids you select for a trip are kept through reloads and restarts.",
+      "The website checks for a new version every 2 minutes and updates itself (\"Updating to version …\"), keeping your selected aids, trip form, district and map view; updates no longer re-download the Light List."
     ],
     "known_issues": [
       "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",

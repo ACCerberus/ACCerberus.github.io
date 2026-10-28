@@ -1,26 +1,27 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js?v=2.1.1-5';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.1-5';
-import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn, setLiteTiles } from './map.js?v=2.1.1-5';
-import { reportBug } from './settings.js?v=2.1.1-5';
-import * as aids from './aids.js?v=2.1.1-5';
-import * as poi from './poi.js?v=2.1.1-5';
-import * as measure from './measure.js?v=2.1.1-5';
-import * as trip from './trip.js?v=2.1.1-5';
-import * as water from './water.js?v=2.1.1-5';
-import * as weather from './weather.js?v=2.1.1-5';
-import * as settings from './settings.js?v=2.1.1-5';
-import * as hover from './hover.js?v=2.1.1-5';
-import * as context from './context.js?v=2.1.1-5';
-import * as places from './places.js?v=2.1.1-5';
-import * as phone from './phone.js?v=2.1.1-5';
-import * as whatsnew from './whatsnew.js?v=2.1.1-5';
-import * as discrep from './discrepancies.js?v=2.1.1-5';
-import * as notices from './notices.js?v=2.1.1-5';
-import * as netcheck from './netcheck.js?v=2.1.1-5';
-import { ipLocation, districtFor } from './geodistrict.js?v=2.1.1-5';
-import { hideDetail, clearRoute } from './detail.js?v=2.1.1-5';
+import { api } from './api.js?v=2.1.1-6';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.1-6';
+import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn, setLiteTiles } from './map.js?v=2.1.1-6';
+import { reportBug } from './settings.js?v=2.1.1-6';
+import * as aids from './aids.js?v=2.1.1-6';
+import * as poi from './poi.js?v=2.1.1-6';
+import * as measure from './measure.js?v=2.1.1-6';
+import * as trip from './trip.js?v=2.1.1-6';
+import * as water from './water.js?v=2.1.1-6';
+import * as weather from './weather.js?v=2.1.1-6';
+import * as settings from './settings.js?v=2.1.1-6';
+import * as hover from './hover.js?v=2.1.1-6';
+import * as context from './context.js?v=2.1.1-6';
+import * as places from './places.js?v=2.1.1-6';
+import * as phone from './phone.js?v=2.1.1-6';
+import * as whatsnew from './whatsnew.js?v=2.1.1-6';
+import * as discrep from './discrepancies.js?v=2.1.1-6';
+import * as notices from './notices.js?v=2.1.1-6';
+import * as netcheck from './netcheck.js?v=2.1.1-6';
+import { ipLocation, districtFor } from './geodistrict.js?v=2.1.1-6';
+import { initUpdater } from './web/updater.js?v=2.1.1-6';
+import { hideDetail, clearRoute } from './detail.js?v=2.1.1-6';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 
@@ -86,6 +87,7 @@ function boot() {
   // District first (saved, or guessed from the connection's location on first launch), then the aids.
   initDistricts().finally(() => aids.loadAll({ silent: true }));
   initNetMode();
+  initUpdater();        // checks for a newer website build every 2 minutes
   document.addEventListener('keydown', shortcuts);
   // Light List tables stream in from this site; the adapter reports progress through this event.
   window.addEventListener('lk:progress', (e) => (e.detail.done ? hideProgress() : showProgress(e.detail.text, e.detail.fraction)));
@@ -123,10 +125,10 @@ async function initDistricts() {
     aids.setDistrict(d ? d.id : null);
     if (!following && d?.bounds?.length) { const [w, s, e, n] = d.bounds[0]; fitWSEN(w, s, e, n); }
   });
-  // Follow the map: with a district picked, scrolling into another district switches to it (the map doesn't jump).
-  // "All districts" stays put, and a country-wide view (zoomed far out) never switches.
+  // Follow the map: wherever you scroll (zoomed in to regional level), the district there is picked for you and its
+  // aids, places and notices fill in. The map doesn't jump; zoomed far out, nothing changes.
   map.on('moveend', debounce(() => {
-    if (!sel.value || map.getZoom() < 7) return;
+    if (map.getZoom() < 7) return;
     const c = map.getCenter();
     const inside = (d) => (d.bounds || []).some(([w, s, e, n]) => c.lng >= w && c.lng <= e && c.lat >= s && c.lat <= n);
     const cur = state.districts.find((x) => String(x.id) === sel.value);
