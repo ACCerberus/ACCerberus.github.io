@@ -1,0 +1,12 @@
+{
+  "name": "LightKeeper",
+  "short_name": "LightKeeper",
+  "description": "USCG Light List, boat ramps, lodging, tides, river gages and weather on one map. By Evan Isakson.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f1923",
+  "theme_color": "#0f1923",
+  "icons": [{ "src": "./img/lighthouse.png", "sizes": "256x256", "type": "image/png", "purpose": "any" }]
+}

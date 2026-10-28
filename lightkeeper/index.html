@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LightKeeper 2.0.0</title>
+<meta name="description" content="LightKeeper: the USCG Light List on a map with boat ramps, lodging, tides, river gages, dams and NWS weather. Web edition by Evan Isakson.">
+<meta name="theme-color" content="#0f1923">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" href="./img/lighthouse.png">
+<link rel="apple-touch-icon" href="./img/lighthouse.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.css">
+<link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.Default.css">
+<link rel="stylesheet" href="./css/app.css">
+<link rel="stylesheet" href="./css/web.css">
+</head>
+<body data-version="2.0.0">
+
+<header id="topbar">
+  <div class="brand">
+    <img src="./img/lighthouse.png" alt="">
+    <span class="brand-name">Light<b>Keeper</b></span>
+    <span class="brand-ver" title="LightKeeper by Evan Isakson">v2.0.0 web</span>
+  </div>
+  <div class="search" id="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="search" type="search" placeholder="Search aids, ramps, hotels, places…" autocomplete="off" spellcheck="false">
+    <ul id="search-results" hidden></ul>
+  </div>
+  <div class="topbar-right">
+    <select id="district-select" title="Jump to a USCG district"></select>
+    <div class="seg" id="basemap-seg" role="group" aria-label="Base map">
+      <button data-base="osm" class="on">Map</button>
+      <button data-base="sat">Satellite</button>
+      <button data-base="topo">Topo</button>
+    </div>
+    <div class="chips" id="layer-chips">
+      <button class="chip" data-layer="ramps" title="Show boat ramps and marinas">Boat Ramps</button>
+      <button class="chip" data-layer="hotels" title="Show lodging">Hotels</button>
+      <button class="chip" data-layer="parks" title="Show parks with boat ramps">Parks</button>
+      <button class="chip" id="chip-charts" data-overlay="charts" title="NOAA electronic navigational charts overlay">Charts</button>
+    </div>
+  </div>
+</header>
+
+<nav id="rail" aria-label="Sections">
+  <button data-panel="aids" class="on" title="Aids to Navigation (A)">
+    <svg viewBox="0 0 24 24"><path d="M12 2 9 9h6zM9 9v11M15 9v11M6 20h12M8 13h8"/></svg><span>Aids</span>
+  </button>
+  <button data-panel="trip" title="Trip planner (T)">
+    <svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8 17c4 0 4-10 8-10"/></svg><span>Trip</span>
+  </button>
+  <button data-panel="measure" title="Measure distance (M)">
+    <svg viewBox="0 0 24 24"><path d="m3 17 14-14 4 4L7 21zM9 11l2 2M12 8l2 2M15 5l2 2"/></svg><span>Measure</span>
+  </button>
+  <button data-panel="water" title="Tides, gages and dams (W)">
+    <svg viewBox="0 0 24 24"><path d="M12 3c-3 4-6 7-6 11a6 6 0 0 0 12 0c0-4-3-7-6-11z"/></svg><span>Water</span>
+  </button>
+  <button data-panel="weather" title="Weather forecast (F)">
+    <svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.3 1.5A3.5 3.5 0 0 1 17 18z"/></svg><span>Weather</span>
+  </button>
+  <div class="rail-spacer"></div>
+  <button data-panel="whatsnew" title="What's new in this version">
+    <svg viewBox="0 0 24 24"><path d="M12 3v2M12 19v2M4.2 7l1.8 1M18 16l1.8 1M4.2 17l1.8-1M18 8l1.8-1"/><circle cx="12" cy="12" r="5"/></svg><span>v<span id="rail-ver"></span></span>
+  </button>
+  <button data-panel="settings" title="Settings (S)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>Settings</span>
+  </button>
+  <button id="rail-bug" title="Report a bug">
+    <svg viewBox="0 0 24 24"><path d="M8 7a4 4 0 0 1 8 0v1H8zM6 11h12v5a6 6 0 0 1-12 0zM3 13h3M18 13h3M4 20l3-2M20 20l-3-2M9 4l1 2M15 4l-1 2"/></svg><span>Bug</span>
+  </button>
+  <button id="rail-collapse" title="Hide panel">
+    <svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg>
+  </button>
+</nav>
+
+<aside id="panel">
+  <section class="view on" id="view-aids"></section>
+  <section class="view" id="view-trip"></section>
+  <section class="view" id="view-measure"></section>
+  <section class="view" id="view-water"></section>
+  <section class="view" id="view-weather"></section>
+  <section class="view" id="view-whatsnew"></section>
+  <section class="view" id="view-places"></section>
+  <section class="view" id="view-settings"></section>
+</aside>
+
+<main id="map" aria-label="Map"></main>
+
+<div id="detail" class="card" hidden></div>
+
+<div id="progress" hidden>
+  <div class="progress-row"><span id="progress-text">Working…</span><button id="progress-close" title="Hide">×</button></div>
+  <div class="progress-track"><div id="progress-fill"></div></div>
+</div>
+
+<nav id="tabbar" aria-label="Sections" hidden>
+  <button data-panel="aids"><svg viewBox="0 0 24 24"><path d="M12 2 9 9h6zM9 9v11M15 9v11M6 20h12M8 13h8"/></svg><span>Aids</span></button>
+  <button data-panel="places"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Places</span></button>
+  <button data-panel="water"><svg viewBox="0 0 24 24"><path d="M12 3c-3 4-6 7-6 11a6 6 0 0 0 12 0c0-4-3-7-6-11z"/></svg><span>Water</span></button>
+  <button data-panel="weather"><svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.3 1.5A3.5 3.5 0 0 1 17 18z"/></svg><span>Weather</span></button>
+  <button data-panel="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>More</span></button>
+</nav>
+
+<footer id="statusbar">
+  <span id="sb-coords">—</span>
+  <span id="sb-district"></span>
+  <span id="sb-aids"></span>
+  <span id="sb-zoom"></span>
+  <span id="sb-online" class="online">Online</span>
+</footer>
+
+<div id="toasts" aria-live="polite"></div>
+
+<script src="./vendor/leaflet/leaflet.js"></script>
+<script src="./vendor/markercluster/leaflet.markercluster.js"></script>
+<script type="module" src="./js/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('[lightkeeper] service worker:', err.message)));
+  }
+</script>
+</body>
+</html>

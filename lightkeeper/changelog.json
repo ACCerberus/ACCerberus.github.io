@@ -1,0 +1,26 @@
+[
+  {
+    "version": "2.0.0",
+    "date": "2026-10-27",
+    "title": "LightKeeper 2 — a fresh start",
+    "summary": "LightKeeper was rebuilt from the ground up with a simpler layout, a native window instead of a browser tab, and much faster downloads.",
+    "changes": [
+      "Opens in its own window — no browser needed.",
+      "One sidebar with six sections: Aids, Trip, Measure, Water, Weather and Settings. One detail card for everything you click.",
+      "The whole USCG Light List (all nine districts, about 54,000 aids) downloads in under a minute on first launch, and every later launch checks for changes in seconds and tells you what moved, changed or was added or removed.",
+      "Boat ramps, hotels and parks are properly named. Click one to see its address, phone number and website when they exist.",
+      "Right-click anywhere on the map for tides, currents, river gages, dam releases, weather, water temperature, flood alerts, nearby ramps and lodging, or to start measuring.",
+      "Hover the map for a subtle hint; turn on 'nearest stations' in the Water panel to see the closest tide, gage and dam stations as you move.",
+      "Trip planner: tick aids, set days, speed and hours, and get a day-by-day plan with launch and recovery ramps, lodging, weather, tides and a PDF export.",
+      "Measure tool with distance in NM, miles or km and true course per leg. Drag points to move them, right-click to remove.",
+      "Water panel: NOAA tide and current predictions, USGS river gages (level, flow, temperature), USACE dam pool, inflow and outflow.",
+      "Backup sources: if the National Weather Service or NOAA tides are down, forecasts and tides come from Open-Meteo so you still get data.",
+      "Works offline: the Light List, places, station lists and every map tile you have viewed are cached in your AppData folder. After first launch the app also pre-caches the US base map, satellite imagery around every aid, and ramps and lodging per district in the background.",
+      "NOAA ENC chart overlay (Charts button) with caching.",
+      "District picker filters the map to one district or shows all.",
+      "Zoom all the way to street level on every base map.",
+      "Settings: vessel speed and fuel, offline map downloads, backup export/import of your settings and saved trips, optional Mapbox key.",
+      "Fixed: secure connections to map and chart services on PCs whose Windows certificate store is out of date."
+    ]
+  }
+]

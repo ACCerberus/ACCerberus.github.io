@@ -3,210 +3,84 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cerberus OS — a 64-bit operating system written from scratch</title>
-  <meta name="description" content="Cerberus is a 64-bit operating system written from scratch: its own kernel, file system, drivers and desktop. Private, fast, and small enough to understand." />
-  <meta property="og:title" content="Cerberus OS — a 64-bit operating system written from scratch" />
-  <meta property="og:description" content="Cerberus is a 64-bit operating system written from scratch: its own kernel, file system, drivers and desktop. Private, fast, and small enough to understand." />
+  <title>LightKeeper — the USCG Light List on one map</title>
+  <meta name="description" content="LightKeeper puts the USCG Light List on a map with boat ramps, lodging, tides, river gages, dams and NWS weather. Use it in the browser or download the Windows app, which plans trips and works offline. By Evan Isakson." />
+  <meta property="og:title" content="LightKeeper — the USCG Light List on one map" />
+  <meta property="og:description" content="Every aid in the USCG Light List with the boat ramps, lodging, tides, gages and weather around it. Web edition and Windows app by Evan Isakson." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://accerberus.github.io/" />
-  <meta property="og:image" content="https://accerberus.github.io/img/screenshots/settings.png" />
   <link rel="canonical" href="https://accerberus.github.io/" />
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#06070f" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2306070f'/><circle cx='50' cy='50' r='20' fill='%235aa2ff'/></svg>" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/site.css" />
+  <meta name="theme-color" content="#0f1923" />
+  <link rel="icon" href="/lightkeeper/img/lighthouse.png" />
+  <link rel="stylesheet" href="/lightkeeper/css/landing.css" />
 </head>
-<body class="home">
-<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
-<div class="progress" id="progress"></div>
+<body>
 <header class="nav">
   <div class="wrap">
-    <a class="wordmark" href="/" aria-label="Cerberus OS home">Cerberus<i></i></a>
-    <button class="menu-btn" id="menu" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
-    <nav class="nav-links"><a href="/" class="on">Home</a><a href="/#today">Today</a><a href="/#security">Security</a><a href="/roadmap/">Roadmap</a><a href="/roadmap/#releases">Releases</a></nav>
+    <a class="brand" href="/"><img src="/lightkeeper/img/lighthouse.png" alt="" /><span>Light<b>Keeper</b></span></a>
+    <nav>
+      <a href="/lightkeeper/">Open the app</a>
+      <a href="/lightkeeper/about.html">Data &amp; notices</a>
+      <a class="hide-sm" href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Windows download</a>
+    </nav>
   </div>
 </header>
-<main id="top">
+<main>
   <div class="wrap">
 
     <div class="hero">
-      <span class="pill"><b></b>v0.0.6a &middot; phases 0&ndash;11 done &middot; phase 12 next &middot; 0.0.6b in development</span>
-      <h1>An operating system, <span>written from scratch.</span></h1>
-      <p class="lead">Cerberus is a 64-bit OS with its own kernel, its own file system, its own drivers and its own desktop. Nothing here is Linux, BSD or Windows underneath.</p>
+      <span class="eyebrow">LightKeeper 2.0 · by Evan Isakson</span>
+      <h1>The USCG Light List, <span>on one map.</span></h1>
+      <p class="lead">A planning tool for Coast Guard Aids-to-Navigation work: all 54,000 aids of the Light List with the boat ramps, lodging, tides, river gages, dams and weather around them. Runs in your browser, on a phone too, and as a Windows app that plans whole trips and works with no connection.</p>
       <div class="cta">
-        <a class="btn primary" href="#today">See what works</a>
-        <a class="btn" href="/roadmap/">Roadmap</a>
+        <a class="btn primary" href="/lightkeeper/">Open LightKeeper</a>
+        <a class="btn" href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Download for Windows (works offline)</a>
       </div>
-      <figure class="shot hero-shot reveal"><div class="tilt"><img src="/img/screenshots/settings.png" alt="Settings: a custom accent colour, the Aurora wallpaper and the Chase window border" width="1280" height="800" /></div></figure>
-      <div class="stats reveal"><div class="stat"><strong><span data-count="21">21</span><small>ns</small></strong><span>context switch</span></div><div class="stat"><strong><span data-count="30">30</span><small>ns</small></strong><span>system call</span></div><div class="stat"><strong><span data-count="0">0</span><small>%</small></strong><span>CPU on an idle desktop</span></div><div class="stat"><strong><span data-count="74">74</span><small></small></strong><span>system calls</span></div></div>
     </div>
 
-    <section id="why">
-      <span class="eyebrow">Why</span>
-      <h2>Three goals, in this order.</h2>
-      <div class="grid g3">
-        <article class="card reveal"><span class="num">01</span><h3>Private and secure by design</h3><p>No telemetry. Nothing leaves the machine unless you ask. Memory is never writable and executable at once, and every system-call argument is treated as hostile.</p></article>
-        <article class="card reveal"><span class="num">02</span><h3>Fast and small</h3><p>A message between two programs takes well under a microsecond. Every performance budget is measured and recorded, so a regression is visible.</p></article>
-        <article class="card reveal"><span class="num">03</span><h3>Understandable</h3><p>One small system, with a written specification and the reasoning behind every decision written down.</p></article>
+    <section id="features">
+      <span class="eyebrow">What it does</span>
+      <h2>One map, one detail card, everything named.</h2>
+      <div class="grid">
+        <article class="card"><h3>Every aid, every district</h3><p>Lights, buoys, daybeacons and bridges from the official NAVCEN Light List, refreshed weekly, searchable by name, Light List number or waterway, filtered by district.</p></article>
+        <article class="card"><h3>Ramps, lodging and parks</h3><p>Boat ramps, marinas, hotels and parks with a ramp, each properly named with an address and a phone number you can tap. Never a hostel.</p></article>
+        <article class="card"><h3>Water and weather</h3><p>Tide and current predictions with charts, USGS gage level, flow and temperature, dams, water temperature at any point and the NWS forecast.</p></article>
+        <article class="card"><h3>Charts and measurement</h3><p>NOAA electronic navigational charts as an overlay, street, satellite and topo base maps to street level, and a measure tool with distance and true bearing.</p></article>
+        <article class="card"><h3>Trip planner <span class="tag">desktop</span></h3><p>Days split along the waterway, launch and recovery ramps chained, lodging picked last, exported as a PDF work plan.</p></article>
+        <article class="card"><h3>Works offline <span class="tag">desktop</span></h3><p>The Windows app caches the Light List, map tiles, imagery, stations and places under AppData, so it runs on the ramp with no signal.</p></article>
       </div>
     </section>
 
-    <section id="today">
-      <span class="eyebrow">What works today</span>
-      <h2>A real system, from the boot sector to the window shadows.</h2>
-      <p class="sub">It runs in QEMU and VirtualBox today, brings up every CPU core, and runs protected user programs. Each card is the first line of its section in the feature inventory.</p>
-      <div class="grid g3"><article class="card slim reveal"><h3>Boot and hardware</h3><p>Boots from the hybrid ISO on BIOS and UEFI (Limine); straight into the kernel, no menu wait.</p></article><article class="card slim reveal"><h3>Files</h3><p>VFS: one tree, mounts, ./.., symbolic links, permissions, mount flags (ro, noexec, nodev, nosuid), name cache.</p></article><article class="card slim reveal"><h3>Programs and IPC</h3><p>Ring-3 processes from position-independent ELF files; ASLR; fork, execve, waitpid; 74 system calls (docs/SYSCALLS.md); a small libc.</p></article><article class="card slim reveal"><h3>Kernel shell</h3><p>Commands grouped by help; help &lt;command&gt;, help tests.</p></article><article class="card slim reveal"><h3>Desktop</h3><p>Move by the title bar; resize at any edge or corner (cursor changes); minimise / maximise / close buttons (Windows style); stacking; focus follows clicks.</p></article><article class="card slim reveal"><h3>Pane, the window server as a program</h3><p>pane in the shell (or pane --demo for four demo windows): the kernel desktop hands over the screen, /bin/pane composites windows from programs, Ctrl+Alt+Q (or the…</p></article><article class="card slim reveal"><h3>Security and privacy</h3><p>W^X everywhere, SMEP/SMAP/UMIP, stack protectors, zeroed memory, heap free-list encoding, guard pages, user-copy routines only, ASLR, CSPRNG.</p></article></div>
-      <p class="note" style="margin-top:28px"><b>Not there yet:</b> Networking, user accounts and login, sound, USB, printing, real hardware, an installer, the Spec compiler, images or any file type but text in the built-in apps.</p>
-    </section>
-
-    <section id="new">
-      <span class="eyebrow">What's new</span>
-      <h2>Version 0.0.6a, released 2026-10-13.</h2>
-      <p class="sub">The release notes, straight from the changelog.</p>
-      <div class="news reveal"><div class="card"><h4 class="fixed">Fixed</h4><ul><li>VirtualBox: the mouse pointer follows the host's pointer again instead of jumping only when a button is clicked (B-016). The desktop now asks the guest device for the pointer position on every tick.</li></ul></div></div>
-      <div class="cta" style="justify-content:flex-start;margin-top:24px"><a class="btn small" href="/roadmap/#v0.0.6a">The full release notes</a><a class="btn small" href="/roadmap/#releases">Every release</a></div>
-    </section>
-
-    <section id="security">
-      <span class="eyebrow">Security and privacy</span>
-      <h2>Nothing leaves the machine unless you ask.</h2>
-      <p class="sub">In Cerberus, security rules are requirements with tests, not afterthoughts. Every one of them below is enforced in the current build.</p>
-      <div class="vow reveal"><span class="zero">0</span><div><h3>Zero telemetry.</h3><p>Cerberus collects nothing and reports nothing. No usage data, no account to sign in to, no background phone-home. Today it has no network stack at all.</p></div></div>
-      <div class="grid g3" style="margin-top:16px">
-        <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><h3>Never writable and executable</h3><p>No memory can be both at once. Every request for such a mapping is refused, in the kernel and in every program.</p></article>
-        <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Every argument is hostile</h3><p>Each system-call argument is checked. Bad pointers, lengths that wrap and unknown flags get an error, never kernel code.</p></article>
-        <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"/></svg></span><h3>Walls in the processor</h3><p>SMEP, SMAP and UMIP are on wherever the CPU has them: the kernel can neither run nor casually touch program memory.</p></article>
-        <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h10l-3-3M20 17H10l3 3M4 17h2M18 7h2"/></svg></span><h3>A different layout every run</h3><p>A program's code, stack and mapped memory land at different addresses each time it starts.</p></article>
-        <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 20h14M7 20l1-11h8l1 11M9 9V6a3 3 0 0 1 6 0v3"/></svg></span><h3>Nothing left behind</h3><p>Memory is zeroed before a program gets it, and a new disk block never shows what a deleted file left in it.</p></article>
-        <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg></span><h3>Identity that cannot be faked</h3><p>A program receiving a message learns the sender's process and user from the kernel, not from the message.</p></article>
-        <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg></span><h3>Disks are not trusted</h3><p>cerfs checks every field and checksums its metadata. A damaged disk gives an error, never a crash.</p></article>
-        <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 12h3l2-6 4 12 2-6h5"/></svg></span><h3>Attacked on every release</h3><p>Fuzzers hammer the program loader, the archive reader, the file system and the system-call interface; 54 integration tests run on every build.</p></article>
-        <article class="card reveal"><span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><circle cx="15" cy="9" r="1"/><circle cx="9" cy="15" r="1"/></svg></span><h3>Real randomness</h3><p>A ChaCha20 generator in the kernel, seeded from the CPU's hardware generator and interrupt timing.</p></article>
+    <section id="editions">
+      <span class="eyebrow">Two editions</span>
+      <h2>Use it in the browser, or install it.</h2>
+      <div class="grid g2">
+        <article class="card"><h3>Web edition</h3><p>Runs entirely in your browser from this site; there is no LightKeeper server. The Light List is rebuilt here every week, places, tides, gages and forecasts come straight from the public services, and everything you look at is cached on your device so the app keeps working offline for areas you have visited.</p><a class="more" href="/lightkeeper/">Open LightKeeper &rarr;</a></article>
+        <article class="card"><h3>Windows app</h3><p>Everything the web edition does, plus the trip planner, USACE dam pool and release data, NOAA chart and satellite tiles downloaded for whole districts, backups and optional routing keys. All data is cached under AppData, so it runs with no connection at all.</p><a class="more" href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Download the latest release &rarr;</a></article>
       </div>
-      <p class="minor">Planned, and already written into the specification</p>
-      <div class="soon reveal">
-        <div><code>phase 12</code><span><b>Private windows.</b> Screenshots, screen recording and clipboard history need your permission per app, denied by default.</span></div>
-        <div><code>phase 14</code><span><b>Quiet network.</b> Incoming connections blocked by default, and nothing sent at boot except DHCP.</span></div>
-        <div><code>phase 15</code><span><b>Sandboxed apps.</b> Each app declares what it needs and can be denied network, files or devices.</span></div>
-        <div><code>phase 18</code><span><b>Your disk, your updates.</b> Optional full-disk encryption, and signed updates that never install on their own.</span></div>
-      </div>
-      <p class="minor">Open bugs, from the ledger</p><div class="work reveal"><div><b>B-016</b> On VirtualBox the pointer only moved when a button was clicked</div><div><b>B-010</b> <code>eventtest</code> misses its 1 ms wake-up limit on VirtualBox</div></div>
+      <p class="note" style="margin-top:22px">Not for navigation. Data from USCG NAVCEN, OpenStreetMap, NOAA, USGS, the National Weather Service, Open-Meteo and Esri; see <a href="/lightkeeper/about.html">data sources and notices</a>.</p>
     </section>
 
-    <section id="design">
-      <div class="split">
-        <div>
-          <span class="eyebrow">Architecture</span>
-          <h2>A hybrid kernel, in clear layers.</h2>
-          <p>Anything that needs sub-microsecond speed or special processor instructions stays in the kernel. Everything else runs as an ordinary, protected program.</p>
-          <p style="margin-top:14px">Each layer only talks to the one below it through well-defined, checked doors.</p>
-        </div>
-        <div class="stack reveal">
-          <div class="layer"><b>Applications</b><span>Terminal, file manager, editor</span><em>phase 13</em></div>
-          <div class="layer"><b>Servers</b><span>Pane (windows), netd (network)</span><em>phases 12, 14</em></div>
-          <div class="layer live"><b>Kernel</b><span>Memory, scheduling, system calls, files, drivers, messaging, and a preview desktop</span><em>working today</em></div>
-          <div class="layer hw"><b>Hardware</b><span>Processor cores, memory, disk, screen</span><em>x86-64</em></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="measured">
-      <span class="eyebrow">Measured</span>
-      <h2>Every budget is measured and written down.</h2>
-      <p class="sub">The newest block of the benchmark record (0.0.5j — 2026-10-13 (hard links; polish round 4)), on QEMU/KVM with 4 cores. Each number is checked against a written budget.</p>
-      <div class="grid g4"><article class="card metric reveal"><strong>1,161<small>ns</small></strong><p>first touch of a memory page (minor page fault)</p></article><article class="card metric reveal"><strong>10<small>µs</small></strong><p>to wake an interactive thread</p></article><article class="card metric reveal"><strong>67<small>ns</small></strong><p>for a kernel heap allocation and free</p></article><article class="card metric reveal"><strong>300<small>µs</small></strong><p>to composite a desktop frame</p></article></div>
-    </section>
-
-    <section id="desktop">
-      <div class="split">
-        <div>
-          <span class="eyebrow">The desktop</span>
-          <h2>The desktop, so far.</h2>
-          <p>A floating taskbar, a launcher with app search, a calendar with reminders, a lock screen, virtual desktops, and a Settings window that changes the look live. Today it is a preview that runs inside the kernel; phase 12 moves it into its own protected program.</p>
-          <div class="keys">
-            <div><span><kbd>Super</kbd></span>Open the launcher</div>
-            <div><span><kbd>Super</kbd><kbd>T</kbd></span>Open a terminal</div>
-            <div><span><kbd>Alt</kbd><kbd>Tab</kbd></span>Switch windows</div>
-            <div><span><kbd>Super</kbd><kbd>&larr;</kbd><kbd>&rarr;</kbd></span>Snap a window to half the screen</div>
-            <div><span><kbd>Super</kbd><kbd>1</kbd>&hellip;<kbd>4</kbd></span>Switch virtual desktop</div>
-            <div><span><kbd>Super</kbd><kbd>L</kbd></span>Lock the screen</div>
-            <div><span><kbd>Print</kbd></span>Save a screenshot</div>
-          </div>
-        </div>
-        <figure class="shot reveal"><img src="/img/screenshots/settings.png" alt="Settings: a custom accent colour, the Aurora wallpaper and the Chase window border" width="1280" height="800" loading="lazy" /><figcaption>Settings: a custom accent colour, the Aurora wallpaper and the Chase window border</figcaption></figure>
-      </div>
-      <div class="grid g3" style="margin-top:16px"><figure class="shot reveal"><img src="/img/screenshots/calendar.png" alt="The calendar with a reminder, opened from the taskbar clock" width="1280" height="800" loading="lazy" /><figcaption>The calendar with a reminder, opened from the taskbar clock</figcaption></figure><figure class="shot reveal"><img src="/img/screenshots/launcher.png" alt="The launcher with app search and the floating taskbar" width="1280" height="800" loading="lazy" /><figcaption>The launcher with app search and the floating taskbar</figcaption></figure><figure class="shot reveal"><img src="/img/screenshots/snap.png" alt="Dragging a window to the screen edge: the snap outline" width="1280" height="800" loading="lazy" /><figcaption>Dragging a window to the screen edge: the snap outline</figcaption></figure></div>
-    </section>
-
-    <section id="roadmap">
-      <span class="eyebrow">Roadmap</span>
-      <h2>Built in numbered phases. 0 to 11 are done.</h2>
-      <p class="sub">Each phase ends in a tested release, and no phase starts until the one before it passes its acceptance tests.</p>
-      <div class="track reveal" aria-hidden="true"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="next"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div>
-      <div class="track-label"><span>phase 0</span><span>phase 12 next</span><span>phase 19</span></div>
-      <div class="phases"><div class="phase-row up reveal"><code>12 &middot; next</code><b>Pane: window server as a userland process</b><span>Move the compositor out of the kernel behind the port protocol (<code>docs/SPEC.md</code> §9); per-window shm buffers, <code>libpane</code>.</span></div><div class="phase-row reveal"><code>13</code><b>Facet toolkit, shell, applications</b><span>Widget toolkit, desktop shell, and the apps in §12 (Ember terminal, Crate files, Slate editor, Gauge, Dial, Tally, Frame, Daub, Chronos, Warren, lsh, CLI utils).</span></div><div class="phase-row reveal"><code>14</code><b>Networking</b><span>virtio-net + e1000; <code>netd</code> userland stack (Ethernet, ARP, IPv4, ICMP, UDP, TCP, DHCP, DNS, loopback); socket syscalls 70–83; default-deny inbound firewall; per-app network permission…</span></div><div class="phase-row reveal"><code>15</code><b>Security model, users, encrypted transport</b><span>Users and groups, Argon2id password hashes, credentials, <code>authd</code> broker (no setuid), login and lock screens, <code>restrict</code> sandbox, permission prompts, keyring, TLS client with certificate store, audit log.</span></div><div class="phase-row reveal"><code>15B</code><b>Our own web browser</b><span>.</span></div><div class="phase-row reveal"><code>16</code><b>Spec native backend</b><span>(was phase 14).</span></div><div class="phase-row reveal"><code>17</code><b>Software platform</b><span>Dynamic linking with full RELRO, POSIX-subset libc (<code>docs/LIBC.md</code>), ptys and job control, full signals, signed package manager <code>pkg</code>; proof ports: zlib, Lua, tinycc, make.</span></div><div class="phase-row reveal"><code>18</code><b>Installer, updates, storage encryption, recovery</b><span>Live-ISO installer (GPT, cerfs + FAT32 EFI), optional full-disk encryption, signed updates with a fallback kernel, recovery boot entry and repairing <code>fsck.cerfs</code>, service manager with per-service sandbox.</span></div><div class="phase-row reveal"><code>19</code><b>Stretch</b><span>(was phase 15).</span></div></div>
-      <div class="cta" style="margin-top:36px"><a class="btn" href="/roadmap/">Read the full roadmap</a></div>
-    </section>
-
-    <section id="spec">
-      <div class="split">
-        <div>
-          <span class="eyebrow">Spec</span>
-          <h2>A language designed with its operating system.</h2>
-          <p>Spec is the systems language planned for writing Cerberus's own programs. Compiled to native code, statically typed, no garbage collector.</p>
-          <ul>
-            <li><b>Regions.</b> Memory allocated in a region is freed at its closing brace.</li>
-            <li><b>Typed system calls.</b> Part of the language, with no C layer between.</li>
-            <li><b>Capability types.</b> A handle cannot be copied by accident or used after it is closed.</li>
-            <li><b>Checked register layouts.</b> The compiler refuses a write to a read-only register.</li>
-          </ul>
-        </div>
-        <div class="reveal">
-          <div class="code">
-            <header><span>ahci.spec</span><span>planned syntax</span></header>
-<pre><span class="k">trait</span> <span class="t">Show</span> { <span class="k">fn</span> show(self) -> <span class="t">str</span> }
-<span class="k">fn</span> dump[<span class="t">T</span>: <span class="t">Show</span>](v: <span class="t">T</span>)
-
-<span class="k">region</span> r { <span class="k">let</span> x = r.alloc(...); }
-
-<span class="k">syscall</span> write(fd: <span class="t">Fd</span>, buf: &amp;[<span class="t">u8</span>]) -> <span class="t">Result</span>[<span class="t">usize</span>, <span class="t">Errno</span>]
-
-<span class="k">mmio struct</span> <span class="t">AhciPort</span> {
-    0x00: clb: <span class="t">u32</span> rw,
-    0x10: is:  <span class="t">u32</span> rw1c,
-}</pre>
-          </div>
-          <p class="note">The compiler has not been started (phase 16) and the syntax is not final. Until then the system is freestanding C++20.</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="closing reveal">
-      <span class="wordmark">Cerberus<i></i></span>
-      <h2>Next: phase 12, Pane.</h2>
-      <p>Move the compositor out of the kernel behind the port protocol (<code>docs/SPEC.md</code> §9); per-window shm buffers, <code>libpane</code>.</p>
+    <div class="closing">
+      <h2>Open LightKeeper.</h2>
+      <p>Works in any modern browser, including on phones. The Windows app adds trip planning and works offline.</p>
       <div class="cta">
-        <a class="btn primary" href="/roadmap/">Read the full roadmap</a>
-        <a class="btn" href="/roadmap/#releases">Release history</a>
+        <a class="btn primary" href="/lightkeeper/">Open LightKeeper</a>
+        <a class="btn" href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Download for Windows (works offline)</a>
       </div>
     </div>
 
   </div>
 </main>
-<div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot preview"><img alt="" /></div>
 <footer>
   <div class="wrap">
-    <span>Cerberus OS &middot; v0.0.6a &middot; this page was generated from the repository's docs on 2026-10-13</span>
+    <span>LightKeeper v2.0.0 &middot; &copy; 2026 Evan Isakson &middot; all rights reserved</span>
     <nav>
-      <a href="/">Home</a>
-      <a href="/roadmap/">Roadmap</a>
-      <a href="/roadmap/#releases">Releases</a>
+      <a href="/lightkeeper/">Web app</a>
+      <a href="/lightkeeper/about.html">Data &amp; notices</a>
+      <a href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Windows download</a>
     </nav>
   </div>
 </footer>
-<script src="/site.js"></script>
 </body>
 </html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About LightKeeper — data sources and notices</title>
+  <meta name="description" content="What LightKeeper is, where its data comes from (USCG NAVCEN, OpenStreetMap, NOAA, USGS, NWS, Open-Meteo, Esri) and the notices that apply." />
+  <link rel="canonical" href="https://accerberus.github.io/lightkeeper/about.html" />
+  <meta name="theme-color" content="#0f1923" />
+  <link rel="icon" href="./img/lighthouse.png" />
+  <link rel="stylesheet" href="./css/landing.css" />
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="./img/lighthouse.png" alt="" /><span>Light<b>Keeper</b></span></a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="./">Open the app</a>
+      <a class="on" href="./about.html">Data &amp; notices</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+
+    <div class="hero">
+      <span class="eyebrow">About LightKeeper</span>
+      <h1>The Light List, <span>on one map.</span></h1>
+      <p class="lead">LightKeeper is a planning tool for US Coast Guard Aids-to-Navigation work: every aid in the USCG Light List on a map, with the boat ramps, lodging, tides, river gages, dams and weather you need around them. Built by Evan Isakson.</p>
+      <div class="cta">
+        <a class="btn primary" href="./">Open LightKeeper</a>
+        <a class="btn" href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Download for Windows (works offline)</a>
+      </div>
+    </div>
+
+    <section id="editions">
+      <span class="eyebrow">Two editions</span>
+      <h2>Use it in the browser, or install it.</h2>
+      <div class="grid g2">
+        <article class="card"><h3>Web edition</h3><p>Runs entirely in your browser from this site: nothing is sent to a LightKeeper server, because there is none. The Light List is rebuilt here every week; places, tides, gages and forecasts are fetched straight from the public services below and cached in your browser, so the app keeps working offline for areas you have already looked at. Works on phones.</p></article>
+        <article class="card"><h3>Desktop app (Windows)</h3><p>Everything the web edition does, plus the trip planner (days split along the waterway, launch and recovery ramps chained, lodging picked last, PDF work plans), USACE dam pool and release data, NOAA chart and satellite tiles downloaded for whole districts, backups and optional routing keys. All data is cached under AppData so it runs with no connection at all.</p><a class="more" href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Download the latest release &rarr;</a></article>
+      </div>
+    </section>
+
+    <section id="sources">
+      <span class="eyebrow">Data sources</span>
+      <h2>Where every number comes from.</h2>
+      <p class="sub">LightKeeper does not host or alter any of this data; it shows what each service publishes and names the source on every detail card.</p>
+      <div class="sources">
+        <div><b>USCG NAVCEN</b><span>Light List (all nine districts) from the Navigation Center's weekly GeoJSON files. Public domain. The web edition's copy is rebuilt every week by an automated job; the build time is shown in Settings.</span></div>
+        <div><b>OpenStreetMap</b><span>Boat ramps, marinas, lodging, parks and dams via the <a href="https://overpass-api.de/">Overpass API</a> and <a href="https://nominatim.org/">Nominatim</a> geocoding. &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, ODbL. Hostels are never shown.</span></div>
+        <div><b>NOAA CO-OPS</b><span>Tide and current station lists, tide predictions (MLLW), current predictions and water temperature from the Center for Operational Oceanographic Products and Services.</span></div>
+        <div><b>NOAA ENC</b><span>The Charts overlay draws NOAA electronic navigational charts from the NOAA Maritime Chart Service. NOAA retired its raster charts (RNC) in 2025, and NGA Digital Nautical Charts (DNC) are not publicly available, so ENC is the only chart layer. <b>Not for navigation.</b></span></div>
+        <div><b>USGS NWIS</b><span>River gage height, discharge and water temperature (instantaneous values service).</span></div>
+        <div><b>National Weather Service</b><span>Forecasts, active alerts and the latest observations from api.weather.gov.</span></div>
+        <div><b>Open-Meteo</b><span>Backup forecast and marine (sea level, sea surface temperature) data when NOAA or the NWS cannot answer. <a href="https://open-meteo.com/">Open-Meteo</a>, CC BY 4.0.</span></div>
+        <div><b>Map tiles</b><span>Street map &copy; OpenStreetMap contributors; satellite imagery: Esri, Maxar, Earthstar Geographics (Esri World Imagery); topographic map &copy; <a href="https://opentopomap.org/">OpenTopoMap</a>, CC-BY-SA. Tiles you view are cached in your browser only.</span></div>
+        <div><b>USACE CWMS</b><span>Dam pool elevation, tailwater and releases. Available in the desktop app only; the service cannot be reached from a web page.</span></div>
+      </div>
+    </section>
+
+    <section id="notices">
+      <span class="eyebrow">Notices</span>
+      <h2>Please read before you rely on it.</h2>
+      <div class="legal">
+        <p><b>Not for navigation.</b> LightKeeper is a planning aid. Positions, characteristics, tide and current predictions, water levels, chart imagery and forecasts come from third-party services, may be out of date or wrong, and must be checked against official publications and conditions on the water.</p>
+        <p><b>Privacy.</b> The web edition has no server of its own and collects nothing. Your browser talks directly to the services above when you use the corresponding feature; what you look at is cached only on your device, and you can clear it from Settings.</p>
+        <p><b>Proprietary software.</b> LightKeeper &copy; 2026 Evan Isakson. All rights reserved. The LightKeeper application, its code and its design are proprietary and are provided for your own use as-is, without warranty of any kind; they may not be copied, modified, redistributed or sold without written permission. Third-party data remains under its own licence as noted above.</p>
+      </div>
+    </section>
+
+    <div class="closing">
+      <h2>Open LightKeeper.</h2>
+      <p>The web edition works on any modern browser, including phones. The Windows app adds trip planning and works offline.</p>
+      <div class="cta">
+        <a class="btn primary" href="./">Open LightKeeper</a>
+        <a class="btn" href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Download for Windows (works offline)</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <span>LightKeeper v2.0.0 &middot; &copy; 2026 Evan Isakson &middot; all rights reserved</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="./">Web app</a>
+      <a href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Windows download</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

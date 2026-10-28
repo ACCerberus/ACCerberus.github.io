@@ -1,0 +1,123 @@
+/* LightKeeper web edition — additions to app.css: notices, places list, and phone mode
+   (bottom tab bar, sheets, 44 px touch targets, ≥ 13 px text). */
+
+:root { --tab-h: 60px; --safe-b: env(safe-area-inset-bottom, 0px); }
+
+.box.notice { border-color: rgba(79, 157, 255, .45); background: rgba(79, 157, 255, .08); }
+.box.notice h4 { color: var(--accent); }
+.phone-only { display: none; }
+#tabbar { display: none; }
+
+#sheet-handle { display: none; }
+
+/* ── Phone mode ── */
+body.phone {
+  grid-template-rows: var(--top-h) 1fr;
+  grid-template-columns: 1fr;
+  grid-template-areas: "top" "map";
+  font-size: 14px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+body.phone #rail, body.phone #statusbar, body.phone #basemap-seg, body.phone #layer-chips, body.phone .brand-name, body.phone .brand-ver,
+body.phone #hover-hint, body.phone .desktop-only, body.phone #rail-collapse { display: none !important; }
+body.phone .phone-only { display: block; }
+body.phone #topbar { gap: 10px; padding: 0 12px; }
+body.phone .brand { min-width: 0; }
+body.phone .brand img { width: 28px; height: 28px; }
+body.phone .search { max-width: none; }
+body.phone #search { height: 40px; font-size: 15px; }
+body.phone #search-results { position: fixed; top: calc(var(--top-h) + 4px); left: 8px; right: 8px; max-height: 60vh; }
+body.phone #search-results li { min-height: 44px; font-size: 14px; }
+body.phone #search-results .kind, body.phone #search-results .sub { font-size: 13px; }
+body.phone .topbar-right { margin-left: 0; gap: 8px; }
+body.phone #district-select { height: 40px; max-width: 128px; font-size: 13px; }
+body.phone #map { grid-area: map; }
+
+/* Bottom tab bar */
+body.phone #tabbar {
+  display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 1150;
+  height: calc(var(--tab-h) + var(--safe-b)); padding: 0 4px var(--safe-b);
+  background: var(--bg-1); border-top: 1px solid var(--line);
+}
+body.phone #tabbar button {
+  flex: 1; min-width: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  border: 0; background: transparent; color: var(--text-3); font-size: 13px; font-weight: 500;
+}
+body.phone #tabbar button svg { width: 22px; height: 22px; }
+body.phone #tabbar button.on { color: var(--accent); }
+
+/* Panels as bottom sheets */
+body.phone #panel {
+  position: fixed; left: 0; right: 0; bottom: calc(var(--tab-h) + var(--safe-b)); top: auto;
+  height: min(58vh, calc(100vh - var(--top-h) - var(--tab-h) - var(--safe-b)));
+  width: auto; border-right: 0; border-top: 1px solid var(--line); border-radius: 16px 16px 0 0;
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, .5); z-index: 1120;
+}
+body.phone.panel-hidden #panel { display: none; }
+body.phone #sheet-handle { display: flex; align-items: center; justify-content: center; position: relative; height: 28px; flex-shrink: 0; touch-action: none; cursor: grab; }
+body.phone #sheet-handle .grip { width: 44px; height: 5px; border-radius: 3px; background: var(--line); }
+body.phone #sheet-handle .sheet-close { position: absolute; right: 6px; top: 0; width: 44px; height: 44px; border: 0; background: transparent; color: var(--text-3); font-size: 24px; line-height: 1; }
+body.phone .view-head { padding: 4px 16px 10px; }
+body.phone .view-head h2 { font-size: 17px; }
+body.phone .view-head p, body.phone .view-head h2 .count { font-size: 13px; }
+body.phone .view-body { padding: 12px 14px 16px; gap: 12px; }
+body.phone .view-foot { padding: 10px 14px calc(10px + var(--safe-b)); }
+
+/* Detail card as a bottom sheet */
+body.phone #detail {
+  left: 0; right: 0; bottom: calc(var(--tab-h) + var(--safe-b)); width: auto;
+  max-height: min(62vh, calc(100vh - var(--top-h) - var(--tab-h) - var(--safe-b)));
+  border-radius: 16px 16px 0 0; border-left: 0; border-right: 0; border-bottom: 0; z-index: 1130;
+}
+body.phone #detail .d-head { padding: 14px 16px 8px; }
+body.phone #detail .d-head h3 { font-size: 17px; }
+body.phone #detail .d-close { width: 44px; height: 44px; margin: -10px -12px -10px auto; font-size: 26px; }
+body.phone #detail .d-body { padding: 0 16px calc(14px + var(--safe-b)); gap: 10px; }
+body.phone #detail .d-line { font-size: 14px; }
+body.phone #detail .d-line a { padding: 4px 0; display: inline-block; }
+body.phone #detail .d-src { font-size: 13px; }
+body.phone #detail .d-actions .btn, body.phone #detail .d-actions .btn.sm { min-height: 44px; padding: 0 14px; font-size: 14px; }
+
+/* Touch targets and legible text */
+body.phone .btn, body.phone .btn.sm { min-height: 44px; height: auto; font-size: 14px; padding: 8px 14px; }
+body.phone .pill, body.phone .chip { min-height: 44px; padding: 8px 14px; font-size: 14px; display: inline-flex; align-items: center; }
+body.phone .item { min-height: 48px; padding: 10px 12px; gap: 12px; }
+body.phone .item .title { font-size: 14px; }
+body.phone .item .sub, body.phone .item .right, body.phone .small, body.phone .muted.small, body.phone .box h4, body.phone .kv,
+body.phone .field label, body.phone .badge, body.phone .stat span, body.phone .pl-sub, body.phone .pl-role, body.phone .wx-sub, body.phone .alert, body.phone .aid-table { font-size: 13px; }
+body.phone .item .sub, body.phone .item .title { white-space: normal; }
+body.phone .item input[type=checkbox] { width: 22px; height: 22px; }
+body.phone .field input, body.phone .field select { height: 44px; font-size: 15px; }
+body.phone .switch { min-height: 44px; }
+body.phone .switch input { width: 48px; height: 28px; }
+body.phone .switch input::after { width: 22px; height: 22px; top: 3px; left: 3px; }
+body.phone .switch input:checked::after { left: 23px; }
+body.phone .leaflet-control-zoom a { width: 44px !important; height: 44px !important; line-height: 44px !important; font-size: 20px !important; }
+body.phone .leaflet-bottom.leaflet-right { bottom: calc(var(--tab-h) + var(--safe-b) + 8px); }
+body.phone .leaflet-control-attribution { font-size: 13px; max-width: 70vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.phone .leaflet-tooltip { font-size: 13px; }
+body.phone .measure-label { font-size: 13px; }
+
+/* Map menu, progress and toasts */
+body.phone #ctx-menu { width: min(300px, calc(100vw - 24px)); padding: 6px; }
+body.phone #ctx-menu button { min-height: 44px; font-size: 15px; padding: 8px 12px; }
+body.phone #progress { left: 12px; right: 12px; width: auto; bottom: calc(var(--tab-h) + var(--safe-b) + 12px); }
+body.phone .modal { width: min(440px, calc(100vw - 24px)); }
+body.phone .modal p { font-size: 14px; }
+body.phone .progress-row { font-size: 13px; }
+body.phone #toasts { bottom: calc(var(--tab-h) + var(--safe-b) + 14px); width: calc(100vw - 24px); }
+body.phone .toast { font-size: 14px; text-align: center; }
+
+/* Landscape phones: shorter sheets so the map stays visible */
+@media (max-height: 480px) {
+  body.phone #panel { height: calc(100vh - var(--top-h) - var(--tab-h) - var(--safe-b)); border-radius: 0; }
+  body.phone #detail { max-height: calc(100vh - var(--top-h) - var(--tab-h) - var(--safe-b) - 8px); }
+  body.phone .view-head { padding: 0 16px 6px; }
+}
+
+/* Tide / current tables inside the detail card: let the High/Low column breathe */
+#detail .aid-table td:first-child { width: auto; white-space: nowrap; padding-right: 10px; }
+
+/* Cluster count badges: legible on phones */
+body.phone .marker-cluster-small div, body.phone .marker-cluster-medium div, body.phone .marker-cluster-large div { font-size: 13px; }

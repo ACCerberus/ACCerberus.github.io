@@ -1,0 +1,48 @@
+name: LightKeeper data
+
+# Refreshes lightkeeper/data/*.json once a week (and on demand): the USCG NAVCEN Light List and NOAA station
+# lists (tools/build_aids.py, a minute) and the OpenStreetMap places crawl (tools/build_pois.py, slow: one
+# Overpass request at a time). Commits the result when anything changed. The web app and the desktop app's
+# warm cache read these static files.
+
+on:
+  schedule:
+    - cron: "15 9 * * 1"   # Mondays 09:15 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lightkeeper-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build Light List data
+        run: python tools/build_aids.py
+
+      - name: Crawl OpenStreetMap places (keeps previous files for districts that fail)
+        continue-on-error: true
+        run: python tools/build_pois.py
+
+      - name: Commit changes
+        run: |
+          git add lightkeeper/data
+          if git diff --cached --quiet; then
+            echo "No Light List changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "[data] Light List update"
+          git push
