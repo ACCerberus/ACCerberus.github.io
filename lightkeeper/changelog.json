@@ -3,7 +3,7 @@
     "version": "2.1.3",
     "date": "2026-10-28",
     "title": "Trip planner",
-    "summary": "Version 2.1.3 — 10 changes since 2.1.2.",
+    "summary": "Version 2.1.3 — 9 changes since 2.1.2.",
     "changes": [
       "Trip planner finished: pick lights on the map, then LightKeeper orders them along the water, picks the launch and recovery ramps (tonight's recovery is tomorrow's launch), splits the days and picks a hotel near the ramp.",
       "Each day is a timeline: drive to the ramp, launch, every light with the leg in NM and miles, run time, arrival and stop time, recovery, day done, and the drive to the hotel with minutes.",
@@ -13,8 +13,7 @@
       "First launch asks which district you want to view; after that LightKeeper opens on the last district you used.",
       "Fixed tide lookups in trip plans.",
       "The trip planner now runs on the website too, right in the browser (no download needed). Export prints the plan; use Save as PDF in the print window.",
-      "Phones: a simple trip flow - tap Pick lights, tap lights on the map, Plan - then one day at a time. Trip has its own tab; Weather moved to More.",
-      "Phones: Boat Ramps, Hotels, Parks and Dams switches in a row under the search bar; slide it sideways."
+      "Phones: a simple trip flow - tap Pick lights, tap lights on the map, Plan - then one day at a time. Trip has its own tab; Weather moved to More."
     ],
     "known_issues": [
       "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
