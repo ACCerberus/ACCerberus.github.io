@@ -4,13 +4,13 @@
  *  settings from localStorage. Desktop-only endpoints (tile cache, pre-cache, backup, open file) answer
  *  `{ok:false}` quietly. */
 
-import * as aids from './web/aids.js?v=2.0.7-6';
-import * as poi from './web/poi.js?v=2.0.7-6';
-import * as water from './web/water.js?v=2.0.7-6';
-import * as weather from './web/weather.js?v=2.0.7-6';
-import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.0.7-6';
+import * as aids from './web/aids.js?v=2.0.8';
+import * as poi from './web/poi.js?v=2.0.8';
+import * as water from './web/water.js?v=2.0.8';
+import * as weather from './web/weather.js?v=2.0.8';
+import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.0.8';
 
-export const VERSION = '2.0.7';
+export const VERSION = '2.0.8';
 const LS_SETTINGS = 'lk2.web.settings';
 const LS_TRIPS = 'lk2.web.trips';
 const DESKTOP_ONLY = { ok: false, error: 'Available in the desktop app', desktop_only: true };

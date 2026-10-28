@@ -1,9 +1,10 @@
 /** Places layers: boat ramps / marinas, lodging, parks with ramps. Toggled by the top-bar chips. */
 
-import { api } from './api.js?v=2.0.7-6';
-import { $$, toast, debounce, store } from './ui.js?v=2.0.7-6';
-import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.7-6';
-import { showPoi } from './detail.js?v=2.0.7-6';
+import { api } from './api.js?v=2.0.8';
+import { $$, toast, debounce, store } from './ui.js?v=2.0.8';
+import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.8';
+import { showPoi } from './detail.js?v=2.0.8';
+import { getDistrict, districtAt } from './aids.js?v=2.0.8';
 
 const LAYERS = {
   ramps: { path: '/api/poi/ramps', capM: 150000 },
@@ -12,6 +13,12 @@ const LAYERS = {
 };
 const on = new Set((store.get('poiLayers', ['ramps', 'hotels', 'parks']) || []).filter((n) => n in LAYERS));   // all on by default
 const items = { ramps: new Map(), hotels: new Map(), parks: new Map() };
+// With one district picked, only that district's places show (the district of the nearest aid decides).
+const inPickedDistrict = (p) => {
+  const d = getDistrict(); if (!d) return true;
+  const at = districtAt(p.lat, p.lon);
+  return at === undefined || at === d;          // undefined: aids still loading, keep it for now
+};
 let generation = 0;
 
 export function init() {
@@ -20,6 +27,7 @@ export function init() {
     chip.addEventListener('click', () => toggle(chip.dataset.layer));
   }
   map.on('moveend', debounce(refreshAll, 700));
+  document.addEventListener('district-changed', () => { for (const n of on) { layers[n].clearLayers(); items[n].clear(); } refreshAll(); });
   document.addEventListener('places-updated', () => { for (const n of on) { layers[n].clearLayers(); items[n].clear(); } refreshAll(); });
   refreshAll();
 }
@@ -95,7 +103,8 @@ async function refresh(name) {
   try {
     const data = await api.get(LAYERS[name].path, { lat: c.lat.toFixed(5), lon: c.lng.toFixed(5), radius_m: viewportRadiusM(LAYERS[name].capM), fast: 1 });
     if (gen !== generation && !on.has(name)) return;
-    for (const poi of data.items || []) {
+    const shown = (data.items || []).filter(inPickedDistrict);
+    for (const poi of shown) {
       if (items[name].has(poi.id)) continue;
       const m = L.marker([poi.lat, poi.lon], { icon: poiIcon(poi.kind), title: poi.name });
       m.bindTooltip(poi.name, { direction: 'top', offset: [0, -12] });
@@ -113,7 +122,7 @@ async function refresh(name) {
       return;
     }
     if (chip) chip.title = chip.dataset.tip;
-    setCount(chip, (data.items || []).length);
+    setCount(chip, shown.length);
   } catch (err) {
     toast(`${name}: ${err.message}`, 'warn');
   } finally {

@@ -2,9 +2,9 @@
  *  the map menu. Detected from the viewport (a browser cannot read the phone model); the screen size and pixel
  *  ratio are logged and shown in Settings → About. */
 
-import { $, $$, showPanel, onPanelChange } from './ui.js?v=2.0.7-6';
-import { map } from './map.js?v=2.0.7-6';
-import { onDetailOpen, hideDetail } from './detail.js?v=2.0.7-6';
+import { $, $$, showPanel, onPanelChange } from './ui.js?v=2.0.8';
+import { map } from './map.js?v=2.0.8';
+import { onDetailOpen, hideDetail } from './detail.js?v=2.0.8';
 
 const PHONE_QUERY = '(max-width: 820px), (pointer: coarse) and (max-width: 1024px), (max-height: 500px) and (max-width: 1024px)';
 const LONG_PRESS_MS = 500;
@@ -24,7 +24,7 @@ export function init() {
   else window.addEventListener('resize', () => { if (!state.decided && innerWidth > 0) apply(mq.matches); }, { once: false });
   mq.addEventListener('change', (e) => { if (innerWidth > 0) apply(e.matches); });
 
-  $$('#tabbar button').forEach((b) => b.addEventListener('click', () => {
+  $$('#tabbar button[data-panel]').forEach((b) => b.addEventListener('click', () => {
     if (activePanel() === b.dataset.panel && !document.body.classList.contains('panel-hidden')) document.body.classList.add('panel-hidden');
     else showPanel(b.dataset.panel);
     syncTabs();
@@ -34,6 +34,14 @@ export function init() {
   onDetailOpen(() => { if (state.phone) { document.body.classList.add('panel-hidden'); syncTabs(); } });
   initSheetHandle();
   initLongPress();
+  blockPageZoom();
+}
+
+/** iOS Safari ignores user-scalable=no; stop its pinch/double-tap page zoom everywhere except the map. */
+function blockPageZoom() {
+  const offMap = (e) => !e.target.closest?.('#map');
+  for (const type of ['gesturestart', 'gesturechange']) document.addEventListener(type, (e) => { if (offMap(e)) e.preventDefault(); }, { passive: false });
+  document.addEventListener('touchmove', (e) => { if (e.touches.length > 1 && offMap(e)) e.preventDefault(); }, { passive: false });
 }
 
 function apply(on) {
@@ -58,7 +66,7 @@ function apply(on) {
 function syncTabs() {
   const name = activePanel();
   const hidden = document.body.classList.contains('panel-hidden');
-  $$('#tabbar button').forEach((b) => b.classList.toggle('on', !hidden && b.dataset.panel === name));
+  $$('#tabbar button[data-panel]').forEach((b) => b.classList.toggle('on', !hidden && b.dataset.panel === name));
 }
 
 /* ── Sheet drag handle: drag up for full height, drag down to shrink or close ── */

@@ -1,9 +1,9 @@
 /** Aids to Navigation: load from the backend, cluster on the map, list + select in the panel. */
 
-import { api } from './api.js?v=2.0.7-6';
-import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.0.7-6';
-import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.0.7-6';
-import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.0.7-6';
+import { api } from './api.js?v=2.0.8';
+import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.0.8';
+import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.0.8';
+import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.0.8';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
 const PAGE = 200;
@@ -19,6 +19,7 @@ export function setDistrict(id) {
   state.shown = PAGE;
   refreshMarkers();
   renderList();
+  document.dispatchEvent(new CustomEvent('district-changed', { detail: state.district }));
 }
 export const getDistrict = () => state.district;
 const inDistrict = (aid) => !state.district || aid.district_id === state.district;
@@ -34,6 +35,26 @@ function indexAids() {
     bucket.push(a);
   }
 }
+/** District of the aid nearest to a point (searching up to maxDeg away), or null if no aid is that close.
+ *  Places use it so picking a district hides other districts' ramps, hotels and parks. */
+export function districtAt(lat, lon, maxDeg = 3) {
+  if (!grid.size) return undefined;                          // aids not loaded yet: unknown
+  const span = Math.ceil(maxDeg / GRID_DEG);
+  const r0 = Math.floor(lat / GRID_DEG); const c0 = Math.floor(lon / GRID_DEG);
+  let best = null; let bestD = Infinity;
+  for (let ring = 0; ring <= span; ring++) {
+    for (let r = r0 - ring; r <= r0 + ring; r++) for (let c = c0 - ring; c <= c0 + ring; c++) {
+      if (Math.max(Math.abs(r - r0), Math.abs(c - c0)) !== ring) continue;   // only the new ring
+      for (const a of grid.get(`${r},${c}`) || []) {
+        const d = (a.latitude - lat) ** 2 + ((a.longitude - lon) * Math.cos(lat * Math.PI / 180)) ** 2;
+        if (d < bestD) { bestD = d; best = a; }
+      }
+    }
+    if (best && Math.sqrt(bestD) <= ring * GRID_DEG) break;   // nothing in a farther ring can be closer
+  }
+  return best && Math.sqrt(bestD) <= maxDeg ? best.district_id : null;
+}
+
 function aidsInBounds(b) {
   const r0 = Math.floor(b.getSouth() / GRID_DEG); const r1 = Math.floor(b.getNorth() / GRID_DEG);
   const c0 = Math.floor(b.getWest() / GRID_DEG); const c1 = Math.floor(b.getEast() / GRID_DEG);
@@ -53,7 +74,7 @@ export function init(view) {
   state.view = view;
   const { body } = panelSkeleton(view, 'Aids <span class="count" id="aids-count"></span>', 'USCG Light List — click an aid for details, tick it to add to a trip.');
   state.countEl = $('#aids-count');
-  const search = el('input', { type: 'search', placeholder: 'Filter aids in view by name, LL#, waterway…', oninput: debounce((e) => { state.q = e.target.value.trim().toLowerCase(); state.shown = PAGE; renderList(); }, 150) });
+  const search = el('input', { type: 'search', placeholder: 'Search all aids by name, LL#, waterway…', oninput: debounce((e) => { state.q = e.target.value.trim().toLowerCase(); state.shown = PAGE; renderList(); }, 150) });
   const pills = el('div', { class: 'pills' }, TYPES.map((t) => el('button', {
     class: 'pill on', dataset: { type: t }, html: `<span class="dot" style="background:${AID_COLORS[t]}"></span>${fmt.title(t)}s`,
     onclick: (e) => { const b = e.currentTarget; b.classList.toggle('on'); b.classList.contains('on') ? state.types.add(t) : state.types.delete(t); refreshMarkers(); renderList(); },
@@ -113,6 +134,7 @@ function refreshMarkers() {
 function visibleAids() {
   const b = map.getBounds();
   const q = state.q;
+  if (q) return state.all.filter((a) => matches(a, q));      // a search covers every aid, in any district or area
   return aidsInBounds(b).filter((a) => inDistrict(a) && (state.types.has(a.aid_type) || a.aid_type === 'other')
     && b.contains([a.latitude, a.longitude])
     && (!q || matches(a, q)));
@@ -123,10 +145,10 @@ const matches = (a, q) => (a.aidname || '').toLowerCase().includes(q) || (a.aidn
 function renderList() {
   if (!state.listEl) return;
   const visible = visibleAids().sort((a, b) => a.aidname.localeCompare(b.aidname));
-  state.countEl.textContent = `${fmt.int(visible.length)} in view · ${state.selected.size} selected`;
+  state.countEl.textContent = `${fmt.int(visible.length)} ${state.q ? 'found in all districts' : 'in view'} · ${state.selected.size} selected`;
   state.listEl.innerHTML = '';
   if (!visible.length) {
-    state.listEl.append(el('div', { class: 'empty' }, [el('b', { text: state.all.length ? 'No aids in view' : 'No aids loaded yet' }), state.all.length ? 'Zoom or pan the map, or pick a district above.' : 'The Light List downloads automatically on first run.']));
+    state.listEl.append(el('div', { class: 'empty' }, [el('b', { text: !state.all.length ? 'No aids loaded yet' : state.q ? 'No aids match' : 'No aids in view' }), state.all.length ? 'Zoom or pan the map, or pick a district above.' : 'The Light List downloads automatically on first run.']));
     return;
   }
   const frag = document.createDocumentFragment();
@@ -137,7 +159,7 @@ function renderList() {
 
 function row(aid) {
   const sel = state.selected.has(aid.objectid);
-  return el('div', { class: `item${sel ? ' sel' : ''}`, dataset: { id: aid.objectid }, onclick: () => openAid(aid.objectid) }, [
+  return el('div', { class: `item${sel ? ' sel' : ''}`, dataset: { id: aid.objectid }, onclick: () => openAid(aid.objectid, { fly: !!state.q }) }, [
     el('input', { type: 'checkbox', checked: sel, onclick: (e) => { e.stopPropagation(); toggleSelect(aid.objectid); } }),
     el('span', { class: 'ico', style: `background:${AID_COLORS[aid.aid_type] || AID_COLORS.other}` }),
     el('div', { class: 'main' }, [

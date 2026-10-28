@@ -423,3 +423,49 @@ body.panel-hidden #progress { left: calc(var(--rail-w) + 14px); }
   #topbar, #rail, #panel, #statusbar, #progress, #toasts, #detail { display: none !important; }
   body { display: block; background: #fff; color: #000; }
 }
+
+/* Loading-map overlay (fast zoom) */
+#map-veil { position: absolute; inset: 0; z-index: 700; display: flex; align-items: center; justify-content: center;
+  background: rgba(11, 18, 24, .35); backdrop-filter: blur(2px); pointer-events: none; }
+.veil-box { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 10px; background: var(--bg-1); border: 1px solid var(--line); box-shadow: var(--shadow); font-weight: 500; }
+.veil-spin { width: 16px; height: 16px; border: 2px solid var(--accent); border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
+
+/* ── Aid card: light preview, glance tiles, sections, live tiles, action bar ── */
+#detail .d-title { min-width: 0; }
+.light-preview { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: #0b1218; border: 1px solid var(--line); display: grid; place-items: center; }
+.lp-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px 2px var(--c), 0 0 18px 5px color-mix(in srgb, var(--c) 40%, transparent); transition: background-color 60ms, box-shadow 60ms; }
+.lp-dot.off { background: #26313d; box-shadow: none; }
+.light-preview.unlit .lp-dot { width: 10px; height: 10px; background: transparent; border: 2px solid var(--c); box-shadow: none; }
+
+.ac-tiles { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 6px; }
+.ac-tile { min-width: 0; padding: 8px 9px; border-radius: 8px; background: var(--bg-2); border: 1px solid var(--line); }
+.ac-v { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+.ac-v.none { color: var(--text-3); font-weight: 500; }
+.ac-k { margin-top: 2px; font-size: 10px; text-transform: uppercase; letter-spacing: .4px; color: var(--text-3); }
+
+.d-sec { display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+.d-sec h4 { margin: 0; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .6px; color: var(--text-3); }
+.d-sec .kv { margin: 0; }
+.ac-coords { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
+
+.lt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.live-tile { position: relative; display: flex; gap: 8px; align-items: flex-start; min-width: 0; padding: 8px 10px; border-radius: 8px; background: var(--bg-2); border: 1px solid var(--line); }
+.lt-ico svg { width: 16px; height: 16px; margin-top: 1px; color: var(--accent); }
+.lt-main { flex: 1; min-width: 0; padding-right: 10px; }
+.lt-label { font-size: 10px; text-transform: uppercase; letter-spacing: .4px; color: var(--text-3); }
+.lt-value { margin-top: 1px; font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+.lt-value a { color: var(--accent); }
+.lt-sub { margin-top: 2px; font-size: 11px; color: var(--text-3); overflow-wrap: anywhere; }
+.live-tile.na .lt-value { color: var(--text-3); font-weight: 500; }
+.fresh { position: absolute; top: 9px; right: 9px; width: 7px; height: 7px; border-radius: 50%; background: var(--bg-3); }
+.fresh.ok { background: var(--green); box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 22%, transparent); }
+.fresh.old { background: var(--yellow); }
+.fresh.na { background: var(--text-3); opacity: .6; }
+.skel { display: block; width: 75%; height: 12px; margin: 3px 0; border-radius: 4px;
+  background: linear-gradient(90deg, var(--bg-3) 25%, #2e4053 50%, var(--bg-3) 75%); background-size: 200% 100%; animation: shimmer 1.2s linear infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+#detail .d-bar { flex-shrink: 0; display: flex; gap: 6px; padding: 10px 14px; border-top: 1px solid var(--line); background: var(--bg-1); }
+#detail .d-bar .btn { flex: 1 1 auto; white-space: nowrap; }
+#detail .d-bar .btn.icon { flex: 0 0 auto; width: 32px; padding: 0; display: inline-grid; place-items: center; }
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; } .lp-dot { transition: none; } }

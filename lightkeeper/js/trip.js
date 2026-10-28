@@ -1,10 +1,10 @@
 /** Trip planner: selected aids → plan request → per-day results on the panel and the map. */
 
-import { api } from './api.js?v=2.0.7-6';
-import { $, el, fmt, toast, panelSkeleton, debounce, store, showProgress, hideProgress, dialog } from './ui.js?v=2.0.7-6';
-import { map, layers, dayIcon, poiIcon, fitBounds, DAY_COLORS } from './map.js?v=2.0.7-6';
-import { showPoi, showDetail, aidRecord } from './detail.js?v=2.0.7-6';
-import { getSelected, onSelectionChange, toggleSelect, openAid } from './aids.js?v=2.0.7-6';
+import { api } from './api.js?v=2.0.8';
+import { $, el, fmt, toast, panelSkeleton, debounce, store, showProgress, hideProgress, dialog } from './ui.js?v=2.0.8';
+import { map, layers, dayIcon, poiIcon, fitBounds, DAY_COLORS } from './map.js?v=2.0.8';
+import { showPoi, showDetail, aidRecord } from './detail.js?v=2.0.8';
+import { getSelected, onSelectionChange, toggleSelect, openAid } from './aids.js?v=2.0.8';
 
 const LODGING = ['hotel', 'motel', 'resort', 'campground'];
 const state = { body: null, selEl: null, form: {}, plan: null, savedId: null, depart: null, resultEl: null, savedEl: null };

@@ -1,22 +1,22 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js?v=2.0.7-6';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.0.7-6';
-import { createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.0.7-6';
-import { reportBug } from './settings.js?v=2.0.7-6';
-import * as aids from './aids.js?v=2.0.7-6';
-import * as poi from './poi.js?v=2.0.7-6';
-import * as measure from './measure.js?v=2.0.7-6';
-import * as trip from './trip.js?v=2.0.7-6';
-import * as water from './water.js?v=2.0.7-6';
-import * as weather from './weather.js?v=2.0.7-6';
-import * as settings from './settings.js?v=2.0.7-6';
-import * as hover from './hover.js?v=2.0.7-6';
-import * as context from './context.js?v=2.0.7-6';
-import * as places from './places.js?v=2.0.7-6';
-import * as phone from './phone.js?v=2.0.7-6';
-import * as whatsnew from './whatsnew.js?v=2.0.7-6';
-import { hideDetail, clearRoute } from './detail.js?v=2.0.7-6';
+import { api } from './api.js?v=2.0.8';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.0.8';
+import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.0.8';
+import { reportBug } from './settings.js?v=2.0.8';
+import * as aids from './aids.js?v=2.0.8';
+import * as poi from './poi.js?v=2.0.8';
+import * as measure from './measure.js?v=2.0.8';
+import * as trip from './trip.js?v=2.0.8';
+import * as water from './water.js?v=2.0.8';
+import * as weather from './weather.js?v=2.0.8';
+import * as settings from './settings.js?v=2.0.8';
+import * as hover from './hover.js?v=2.0.8';
+import * as context from './context.js?v=2.0.8';
+import * as places from './places.js?v=2.0.8';
+import * as phone from './phone.js?v=2.0.8';
+import * as whatsnew from './whatsnew.js?v=2.0.8';
+import { hideDetail, clearRoute } from './detail.js?v=2.0.8';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 
@@ -49,6 +49,9 @@ function boot() {
   }));
   $('#rail-collapse').addEventListener('click', () => document.body.classList.toggle('panel-hidden'));
   $('#rail-bug').addEventListener('click', reportBug);
+  const locate = () => locateMe({ fallback: null, notify: (msg, kind) => toast(msg, kind, 4000) });
+  $$('#rail-locate, #tab-locate').forEach((b) => b.addEventListener('click', locate));
+  window.addEventListener('lk-locate', locate);
   $$('#basemap-seg button').forEach((b) => b.addEventListener('click', () => setBase(b.dataset.base)));
   $('#chip-charts').addEventListener('click', () => setCharts(!chartsOn()));
   $('#rail-ver').textContent = document.body.dataset.version;
@@ -180,6 +183,7 @@ function shortcuts(e) {
   if (e.target.matches('input, textarea, select')) return;
   const keys = { a: 'aids', t: 'trip', m: 'measure', s: 'settings' };
   if (keys[e.key]) showPanel(keys[e.key]);
+  else if (e.key === 'l') window.dispatchEvent(new Event('lk-locate'));
   else if (e.key === '/') { e.preventDefault(); $('#search').focus(); }
   else if (e.key === 'Escape') { hideDetail(); clearRoute(); }
 }

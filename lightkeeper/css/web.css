@@ -67,13 +67,15 @@ body.phone .view-foot { padding: 10px 14px calc(10px + var(--safe-b)); }
 /* Detail card as a bottom sheet */
 body.phone #detail {
   left: 0; right: 0; bottom: calc(var(--tab-h) + var(--safe-b)); width: auto;
-  max-height: min(62vh, calc(100vh - var(--top-h) - var(--tab-h) - var(--safe-b)));
+  max-height: min(40vh, calc(100vh - var(--top-h) - var(--tab-h) - var(--safe-b)));
   border-radius: 16px 16px 0 0; border-left: 0; border-right: 0; border-bottom: 0; z-index: 1130;
 }
-body.phone #detail .d-head { padding: 14px 16px 8px; }
+body.phone #detail .d-head { padding: 10px 16px 6px; }
 body.phone #detail .d-head h3 { font-size: 17px; }
 body.phone #detail .d-close { width: 44px; height: 44px; margin: -10px -12px -10px auto; font-size: 26px; }
-body.phone #detail .d-body { padding: 0 16px calc(14px + var(--safe-b)); gap: 10px; }
+body.phone #detail .d-body { padding: 0 16px calc(14px + var(--safe-b)); gap: 8px; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; min-height: 0; }
+/* Small sheet, scroll for the rest: a little grab bar says there is more */
+body.phone #detail::before { content: ''; display: block; width: 36px; height: 4px; border-radius: 2px; background: var(--line); margin: 6px auto 0; flex-shrink: 0; }
 body.phone #detail .d-line { font-size: 14px; }
 body.phone #detail .d-line a { padding: 4px 0; display: inline-block; }
 body.phone #detail .d-src { font-size: 13px; }
@@ -122,3 +124,16 @@ body.phone .toast { font-size: 14px; text-align: center; }
 /* Cluster count badges: legible on phones */
 body.phone .marker-cluster-small div, body.phone .marker-cluster-medium div, body.phone .marker-cluster-large div { font-size: 13px; }
 
+
+/* Only the map zooms: pinching the hotbar, panels or top bar must not zoom the whole page.
+   Scrolling still works; Leaflet handles pinch on the map itself. */
+html, body { touch-action: pan-x pan-y; }
+#map, #map .leaflet-container { touch-action: none; }
+
+/* Aid card on phones: thumb-size action bar above the tab bar, slightly bigger tile text */
+body.phone #detail .d-body { padding-bottom: 12px; }
+body.phone #detail .d-bar { padding: 8px 12px; }
+body.phone #detail .d-bar .btn.icon { width: 44px; }
+body.phone #detail .ac-v { font-size: 15px; }
+body.phone #detail .lt-value { font-size: 14px; }
+body.phone #detail .lt-sub { font-size: 12px; }

@@ -1,7 +1,7 @@
 /** Leaflet map setup: base layers (loaded straight from the public tile servers), NOAA ENC chart overlay,
  *  layer groups, icons. */
 
-import { $$, store } from './ui.js?v=2.0.7-6';
+import { $$, store } from './ui.js?v=2.0.8';
 
 const DEFAULT_VIEW = { center: [39.5, -98.35], zoom: 4 };
 
@@ -48,7 +48,7 @@ let charts = null;
 /** Create the map once and restore the last view. */
 export function createMap() {
   const saved = store.get('view', DEFAULT_VIEW);
-  map = L.map('map', { zoomControl: true, preferCanvas: true, worldCopyJump: true, attributionControl: true, maxZoom: MAX_ZOOM })
+  map = L.map('map', { zoomControl: true, preferCanvas: true, renderer: L.canvas({ tolerance: TAP_TOLERANCE }), worldCopyJump: true, attributionControl: true, maxZoom: MAX_ZOOM })
     .setView(saved.center, saved.zoom);
   map.zoomControl.setPosition('topright');
   setBase(store.get('base', 'osm'));
@@ -71,10 +71,28 @@ export function createMap() {
   return map;
 }
 
+// "Loading map" overlay: shown only when tiles take longer than 250 ms (e.g. after a fast zoom), never stuck past 12 s.
+let pendingLayers = 0; let veilTimer = null; let veilCap = null;
+function veil(show) {
+  const el = document.getElementById('map-veil'); if (!el) return;
+  clearTimeout(veilTimer);
+  if (show) { veilTimer = setTimeout(() => { el.hidden = false; }, 250); clearTimeout(veilCap); veilCap = setTimeout(() => { el.hidden = true; }, 12000); }
+  else el.hidden = true;
+}
+function trackLoading(layer) {
+  const list = layer instanceof L.LayerGroup ? layer.getLayers() : [layer];
+  for (const l of list) {
+    l.on('loading', () => { pendingLayers += 1; veil(true); });
+    l.on('load', () => { pendingLayers = Math.max(0, pendingLayers - 1); if (!pendingLayers) veil(false); });
+  }
+}
 export function setBase(name) {
   if (!bases[name]) name = 'osm';
   if (currentBase) map.removeLayer(currentBase);
-  currentBase = bases[name]().addTo(map);
+  pendingLayers = 0; veil(false);
+  currentBase = bases[name]();
+  trackLoading(currentBase);
+  currentBase.addTo(map);
   currentBase.eachLayer ? currentBase.eachLayer((l) => l.bringToBack()) : currentBase.bringToBack();
   currentBaseName = name;
   store.set('base', name);
@@ -106,11 +124,15 @@ export function aidIcon(aid, selected = false) {
   return L.divIcon({ className: '', html: `<div class="m ${type}${selected ? ' sel' : ''}"></div>`, iconSize: [14, 14], iconAnchor: [7, 7] });
 }
 /** Canvas circle style for aid markers — far cheaper than DOM icons for tens of thousands of aids. */
+// Touch screens get bigger dots and an invisible tap margin, so one tap opens the aid.
+const TOUCH = matchMedia('(pointer: coarse)').matches;
+const AID_R = TOUCH ? 8 : 5;
+const TAP_TOLERANCE = TOUCH ? 14 : 3;
 export function aidStyle(aid, selected = false) {
   const color = AID_COLORS[aid.aid_type] || AID_COLORS.other;
   return selected
-    ? { radius: 7, color: '#4f9dff', weight: 3, fillColor: color, fillOpacity: 1 }
-    : { radius: 5, color: 'rgba(255,255,255,.8)', weight: 1.5, fillColor: color, fillOpacity: 1 };
+    ? { radius: AID_R + 2, color: '#4f9dff', weight: 3, fillColor: color, fillOpacity: 1 }
+    : { radius: AID_R, color: 'rgba(255,255,255,.8)', weight: TOUCH ? 2 : 1.5, fillColor: color, fillOpacity: 1 };
 }
 export function poiIcon(kind) {
   return L.divIcon({ className: '', html: `<div class="m-poi ${kind}">${POI_GLYPH[kind] || '•'}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] });
@@ -136,3 +158,31 @@ export function viewportRadiusM(capM = 200000) {
 export function flyTo(lat, lon, zoom = 14) { map.flyTo([lat, lon], Math.max(map.getZoom(), zoom), { duration: 0.6 }); }
 export function fitBounds(latlngs, pad = 40) { if (latlngs.length) map.fitBounds(L.latLngBounds(latlngs), { padding: [pad, pad], maxZoom: 16 }); }
 export function fitWSEN(w, s, e, n) { map.fitBounds([[s, w], [n, e]], { padding: [20, 20] }); }
+
+/* ── My location ── */
+const LOCATE_ZOOM = 14;
+let locateLayer = null;
+/** Center the map on the user's position and mark it. fallback() may return an approximate {lat, lon} (desktop: by IP). */
+export function locateMe({ fallback = null, notify = () => {} } = {}) {
+  if (!locateLayer) locateLayer = L.layerGroup().addTo(map);
+  const show = (lat, lon, accuracyM, approx) => {
+    locateLayer.clearLayers();
+    if (accuracyM) L.circle([lat, lon], { radius: accuracyM, color: '#4f9dff', weight: 1, fillOpacity: 0.08, interactive: false }).addTo(locateLayer);
+    L.circleMarker([lat, lon], { radius: 8, color: '#fff', weight: 3, fillColor: '#4f9dff', fillOpacity: 1 })
+      .bindTooltip(approx ? 'Approximate location' : 'You are here', { direction: 'top', offset: [0, -10] }).addTo(locateLayer);
+    map.flyTo([lat, lon], approx ? Math.min(LOCATE_ZOOM, 11) : Math.max(map.getZoom(), LOCATE_ZOOM), { duration: 0.8 });
+    if (approx) notify('Showing your approximate location (turn on location services for an exact fix)', 'info');
+  };
+  const tryFallback = async (why) => {
+    const p = fallback ? await fallback().catch(() => null) : null;
+    if (p?.lat != null) show(p.lat, p.lon, p.accuracy_m || 0, true);
+    else notify(why, 'err');
+  };
+  if (!navigator.geolocation) { tryFallback('Location is not available on this device'); return; }
+  notify('Finding your location…', 'info');
+  navigator.geolocation.getCurrentPosition(
+    (pos) => show(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy, false),
+    (err) => tryFallback(err.code === 1 ? 'Location permission is off — allow it in your browser or device settings' : 'Could not get your location'),
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 },
+  );
+}

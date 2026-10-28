@@ -7,10 +7,10 @@
  *  7 days, reverse geocodes forever, assembled place lists 5 minutes.
  */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.0.7-6';
-import { cached, idbGet, idbSet, DAY, MIN } from './store.js?v=2.0.7-6';
-import { districts as districtList, manifest, staticJson } from './aids.js?v=2.0.7-6';
-import { haversineMi, isInUs, validateCoords, normalizePhone, first, formatAddress, METERS_PER_MILE } from './util.js?v=2.0.7-6';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.0.8';
+import { cached, idbGet, idbSet, DAY, MIN } from './store.js?v=2.0.8';
+import { districts as districtList, manifest, staticJson } from './aids.js?v=2.0.8';
+import { haversineMi, isInUs, validateCoords, normalizePhone, first, formatAddress, METERS_PER_MILE } from './util.js?v=2.0.8';
 
 const SOURCE_OSM = 'OpenStreetMap';
 const SOURCE_NOMINATIM = 'Nominatim';
@@ -94,7 +94,8 @@ const point = (item) => { const lat = Number(item?.lat); const lon = Number(item
 const nearestRec = (records, lat, lon, maxMi) => { let best = null; let bestD = maxMi; for (const r of records) { const d = haversineMi(lat, lon, r.lat, r.lon); if (d < bestD) { best = r; bestD = d; } } return best; };
 const rankKey = (r) => [QUALITY_RANK[r.quality] ?? 3, r.name_source === 'osm' ? 0 : 1, r.distance_mi || 0];
 const rank = (records) => records.slice().sort((a, b) => { const ka = rankKey(a); const kb = rankKey(b); for (let i = 0; i < 3; i++) if (ka[i] !== kb[i]) return ka[i] - kb[i]; return 0; });
-const cacheKey = (prefix, lat, lon, radius) => `poi:${prefix}:${lat.toFixed(2)},${lon.toFixed(2)}:${radius}`;
+// v2: entries cached before 2.0.8 could name a ramp after its street; the new prefix skips them.
+const cacheKey = (prefix, lat, lon, radius) => `poi2:${prefix}:${lat.toFixed(2)},${lon.toFixed(2)}:${radius}`;
 
 /* ── OSM tag interpretation ── */
 const osmName = (tags) => { for (const k of NAME_TAGS) { const n = cleanName(tags[k]); if (n) return n; } return ''; };
@@ -314,7 +315,8 @@ function nominatimRecord(row, origin) {
   const cls = row.class || ''; const typ = row.type || '';
   const extratags = row.extratags || {};
   const addr = row.address || {};
-  let name = cleanName(row.name || String(row.display_name || '').split(',')[0]);
+  // Only the feature's own name counts: display_name starts with the street for unnamed features.
+  let name = cleanName(row.name || extratags.name || '');
   if (isHostel(name, { tourism: cls === 'tourism' ? typ : '' })) return null;
   const kind = nominatimKind(cls, typ, name);
   const nameSource = name ? 'osm' : 'derived';
@@ -331,7 +333,7 @@ export async function searchPlaces(q, lat, lon) {
   q = String(q || '').trim().slice(0, 200);
   if (q.length < SEARCH_MIN_QUERY_LEN) return [];
   const origin = validateCoords(lat, lon) ? [lat, lon] : null;
-  const key = `poi:search:${q.toLowerCase()}:${origin ? `${lat.toFixed(2)},${lon.toFixed(2)}` : '0,0'}`;
+  const key = `poi2:search:${q.toLowerCase()}:${origin ? `${lat.toFixed(2)},${lon.toFixed(2)}` : '0,0'}`;
   try {
     const { value } = await cached(key, POI_LIST_TTL, async () => {
       const params = { q, format: 'jsonv2', limit: SEARCH_RESULT_LIMIT, addressdetails: 1, extratags: 1, countrycodes: 'us' };
@@ -479,6 +481,7 @@ async function nominatimPlaces(kinds, lat, lon, radiusM) {
       if (!rec) continue;
       const kind = TYPE_KIND[row.type] || rec.kind;
       if (!kinds.includes(kind)) continue;
+      if (rec.name_source !== 'osm' && rec.name.startsWith(KIND_LABEL.place)) rec.name = label(kind) + rec.name.slice(KIND_LABEL.place.length);
       rec.kind = kind;
       found.push(rec);
     }

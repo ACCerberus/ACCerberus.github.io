@@ -1,5 +1,62 @@
 [
   {
+    "version": "2.0.8",
+    "date": "2026-10-27",
+    "title": "Locate, smarter ramp search, search everything",
+    "summary": "Version 2.0.8 — 6 changes since 2.0.7.",
+    "changes": [
+      "New \"Locate\" button (or press L) takes the map to where you are; if location services are off it shows your approximate area instead.",
+      "Picking a district now shows only that district's aids, boat ramps, hotels and parks; choose All districts to see everything.",
+      "Nearest boat ramp on aid cards searches 5, 10, 15 then 25 miles, and if nothing is that close it tells you and keeps looking farther out. It also never says \"none\" when a ramp is on the map right next to the aid.",
+      "Searching the Aids list finds any aid in any district, not just the ones on screen, and jumps the map to it.",
+      "A \"Loading map\" overlay shows while tiles catch up after a fast zoom.",
+      "Picking a district downloads just that district's places, with a size and time estimate."
+    ],
+    "known_issues": [
+      "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
+      "Dam cards can be slow and may show dashes for pool, inflow and outflow; matching dams to Army Corps live data is being fixed.",
+      "River gage details can take 10–40 seconds when the USGS service is slow.",
+      "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",
+      "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
+      "Mobile and Ohio Valley sector cards have no published 24-hour number."
+    ],
+    "todo": [
+      "Add the rest of the districts' boat ramps, hotels, marinas, campgrounds and parks: Northeast (D1), East (D5), Southeast (D7), Heartland (D8), Great Lakes (D9), Southwest (D11), Oceania (D14), Arctic (D17). Northwest (D13) is done.",
+      "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
+      "Match every dam to its Army Corps live data so pool, inflow and outflow always fill in.",
+      "Finish the trip planner (day splits, ramp and lodging picks)."
+    ]
+  },
+  {
+    "version": "2.0.7",
+    "date": "2026-10-27",
+    "title": "Speed and clarity",
+    "summary": "Version 2.0.7 — 7 changes since 2.0.6.",
+    "changes": [
+      "Fixed: after updating, the window could show the previous version (for example the title said 2.0.6 while the page said 2.0.5) because the old copy was still running in the background. A newer version now closes the older one when it starts.",
+      "Boat Ramps, Hotels and Parks are on by default (each can be turned off); each button shows a spinner while loading and then how many were found, or none here.",
+      "Fixed: boat ramps without a name were labeled with the street name; they now read like Boat Ramp – Clover Island Drive, Kennewick.",
+      "Removed the Water and Weather tabs: clicking an aid shows its weather and water temperature, and tides, currents, gages and dams are on the right-click menu.",
+      "Dam cards spell out whether the dam is releasing water and how much, the water level above the dam (pool) and below it (tailwater), the drop across the dam, inflow, storage and when it was updated, with a link to the dam's website.",
+      "Map tiles load up to four times faster when moving to a new area: they now download over four parallel connections instead of one.",
+      "Aid cards open instantly, even while boat ramps, hotels and parks are still loading; extra details fill in as they arrive."
+    ],
+    "known_issues": [
+      "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
+      "Dam cards can be slow and may show dashes for pool, inflow and outflow; matching dams to Army Corps live data is being fixed.",
+      "River gage details can take 10–40 seconds when the USGS service is slow.",
+      "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",
+      "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
+      "Mobile and Ohio Valley sector cards have no published 24-hour number."
+    ],
+    "todo": [
+      "Add the rest of the districts' boat ramps, hotels, marinas, campgrounds and parks: Northeast (D1), East (D5), Southeast (D7), Heartland (D8), Great Lakes (D9), Southwest (D11), Oceania (D14), Arctic (D17). Northwest (D13) is done.",
+      "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
+      "Match every dam to its Army Corps live data so pool, inflow and outflow always fill in.",
+      "Finish the trip planner (day splits, ramp and lodging picks)."
+    ]
+  },
+  {
     "version": "2.0.6",
     "date": "2026-10-27",
     "title": "Faster places and map",
