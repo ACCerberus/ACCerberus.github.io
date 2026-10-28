@@ -1,15 +1,15 @@
 /** The one detail card. Everything clickable on the map funnels into showDetail(). */
 
-import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.2';
-import { photoUrl, satView } from './photo.js?v=2.1.2';
-import { lite } from './netcheck.js?v=2.1.2';
-import { flyTo, map } from './map.js?v=2.1.2';
-import { api } from './api.js?v=2.1.2';
-import * as units from './units.js?v=2.1.2';
-import { layers, poiIcon, AID_COLORS } from './map.js?v=2.1.2';
-import { loadedItems } from './poi.js?v=2.1.2';
-import { logForAid, ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.2';
-import { haversineNM } from './geo.js?v=2.1.2';
+import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.2-2';
+import { photoUrl, satView } from './photo.js?v=2.1.2-2';
+import { lite } from './netcheck.js?v=2.1.2-2';
+import { flyTo, map } from './map.js?v=2.1.2-2';
+import { api } from './api.js?v=2.1.2-2';
+import * as units from './units.js?v=2.1.2-2';
+import { layers, poiIcon, AID_COLORS } from './map.js?v=2.1.2-2';
+import { loadedItems } from './poi.js?v=2.1.2-2';
+import { logForAid, ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.2-2';
+import { haversineNM } from './geo.js?v=2.1.2-2';
 
 const card = () => $('#detail');
 let current = null;
@@ -97,6 +97,7 @@ export function showDetail(record) {
  *  Tapping it switches between the two. Skipped in Lite mode (slow connection). */
 function hero(record, { photo = true, small = false } = {}) {
   if (record.lat == null || lite()) return null;
+  if (small && document.body.classList.contains('phone')) return null;   // phones: aid cards skip it, screen space is short
   const cap = el('span', { class: 'd-hero-cap', text: 'Satellite · Esri' });
   const box = el('div', { class: `d-hero${small ? ' small' : ''}`, title: 'Tap to switch photo / satellite' }, [
     satView(record.lat, record.lon, small ? 16 : 17), el('span', { class: 'd-hero-pin' }), cap,

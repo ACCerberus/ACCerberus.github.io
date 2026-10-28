@@ -2,7 +2,7 @@
  *  Slow link (or Lite picked in Settings) -> save data: only your district's aids load, and the map keeps
  *  fewer tiles around it. Settings > Connection shows the result and lets the user force Lite or Full. */
 
-import { store } from './ui.js?v=2.1.2';
+import { store } from './ui.js?v=2.1.2-2';
 
 export const DESKTOP = import.meta.url.includes('/static/js/');
 const TEST_URL = DESKTOP ? 'https://cerberusac.dev/lightkeeper/img/icon-512.png' : new URL('../img/icon-512.png', import.meta.url).href;
