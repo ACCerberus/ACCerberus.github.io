@@ -3,14 +3,16 @@
     "version": "2.0.8",
     "date": "2026-10-27",
     "title": "Locate, smarter ramp search, search everything",
-    "summary": "Version 2.0.8 — 6 changes since 2.0.7.",
+    "summary": "Version 2.0.8 — 8 changes since 2.0.7.",
     "changes": [
       "New \"Locate\" button (or press L) takes the map to where you are; if location services are off it shows your approximate area instead.",
       "Picking a district now shows only that district's aids, boat ramps, hotels and parks; choose All districts to see everything.",
       "Nearest boat ramp on aid cards searches 5, 10, 15 then 25 miles, and if nothing is that close it tells you and keeps looking farther out. It also never says \"none\" when a ramp is on the map right next to the aid.",
-      "Searching the Aids list finds any aid in any district, not just the ones on screen, and jumps the map to it.",
+      "Route to ramp opens Google Maps from the ramp to the aid, and the route clears when you close the aid card.",
+      "One search box at the top finds aids by name or Light List number anywhere in the picked district, plus ramps and hotels; aid results show instantly.",
       "A \"Loading map\" overlay shows while tiles catch up after a fast zoom.",
-      "Picking a district downloads just that district's places, with a size and time estimate."
+      "Picking a district downloads just that district's places, with a size and time estimate.",
+      "Ramps without a real name are named after the park they sit in (e.g. \"Sacajawea Historical State Park Boat Ramp\"), never just \"Boat Ramp\"."
     ],
     "known_issues": [
       "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",

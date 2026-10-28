@@ -74,7 +74,7 @@
 </main>
 <footer>
   <div class="wrap">
-    <span>LightKeeper v2.0.8 &middot; &copy; 2026 Evan Isakson &middot; all rights reserved</span>
+    <span>LightKeeper v2.0.8 &middot; &copy; 2026 ArsenalRX Dev &middot; all rights reserved</span>
     <nav>
       <a href="/lightkeeper/">Web app</a>
       <a href="/lightkeeper/about.html">Data &amp; notices</a>
@@ -82,19 +82,6 @@
     </nav>
   </div>
 </footer>
-<script>
-document.addEventListener('click', (e) => {
-  const a = e.target.closest('a[href="#download"]');
-  if (!a) return;
-  e.preventDefault();
-  if (document.getElementById('soon')) return;
-  const o = document.createElement('div');
-  o.id = 'soon';
-  o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:9999';
-  o.innerHTML = '<div style="background:#141f2b;border:1px solid #2b3a4c;border-radius:12px;padding:20px 24px;max-width:360px;color:#e6edf5;font:14px Inter,system-ui,sans-serif;text-align:center"><h3 style="margin:0 0 8px">Windows app coming soon</h3><p style="margin:0 0 14px;color:#a9b7c6">The desktop download is not available yet. The web edition here has the map, aids, places, tides and weather.</p><button style="background:#4f9dff;color:#fff;border:0;border-radius:8px;padding:8px 18px;font:inherit;cursor:pointer">OK</button></div>';
-  o.addEventListener('click', (ev) => { if (ev.target === o || ev.target.tagName === 'BUTTON') o.remove(); });
-  document.body.append(o);
-});
-</script>
+<script src="/download.js" defer></script>
 </body>
 </html>

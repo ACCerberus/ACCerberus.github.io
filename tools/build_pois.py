@@ -8,7 +8,8 @@ Requests go out one at a time with a pause between them, alternating mirrors, wi
 on 429 / 504 / timeouts. Records are built with the same naming / address / phone / no-hostel / dedup
 rules as the app (poi.py) and written as a JSON list to:
 
-  lightkeeper/data/pois-D<id>.json     (loaded by the web app and by the desktop warm cache)
+  lightkeeper/data/DISTRICT_<id>_<Name>_Places.json   e.g. DISTRICT_13_Northwest_Places.json
+                                       (loaded by the web app and by the desktop app; the manifest lists each file)
 
 A district whose crawl fails keeps its previous file. Standard library only (Python 3.11+).
 
@@ -100,7 +101,7 @@ CLOSED_NAME_WORDS = ("closed", "demolished", "decommissioned", "under constructi
                      "permanently closed", "out of business", "shut down")
 LIFECYCLE_PREFIXES = ("disused:", "abandoned:", "demolished:", "razed:", "was:")
 PRIVATE_ACCESS = ("private", "no")
-GENERIC_NAME_WORDS = frozenset(("boat", "ramp", "launch", "launching", "slipway", "marina", "dock", "landing",
+GENERIC_NAME_WORDS = frozenset(("public", "ramps", "launches", "boating", "site", "area", "facility", "a", "boat", "ramp", "launch", "launching", "slipway", "marina", "dock", "landing",
                                 "access", "hotel", "motel", "inn", "suites", "resort", "lodge", "campground", "camp",
                                 "park", "rv", "the", "and", "of", "at", "by", "on"))
 _NAME_NORMALIZE_RE = re.compile(r"[^a-z0-9 ]+")
@@ -154,7 +155,9 @@ def _first(tags: dict, *keys: str) -> str:
 
 def _clean_name(raw: Any) -> str:
     name = str(raw or "").strip()
-    return "" if len(name) < POI_MIN_NAME_LEN or name.isdigit() else name
+    if len(name) < POI_MIN_NAME_LEN or name.isdigit():
+        return ""
+    return name if _name_tokens(name) else ""   # "Boat Ramp" alone is not a name; build one instead
 
 
 def _coord_name(label: str, lat: float, lon: float) -> str:
@@ -546,18 +549,24 @@ def write_district(path: Path, records: list[dict]) -> int:
     return len(data)
 
 
+def places_filename(district: dict) -> str:
+    """DISTRICT_13_Northwest_Places.json: number, name (spaces → underscores), _Places."""
+    name = re.sub(r"[^A-Za-z0-9]+", "_", str(district.get("name", ""))).strip("_")
+    return f"DISTRICT_{district['id']}_{name}_Places.json" if name else f"DISTRICT_{district['id']}_Places.json"
+
+
 def update_manifest(data_dir: Path) -> None:
     """Record which district place files exist (the web app only requests files listed here)."""
     path = data_dir / "manifest.json"
     manifest = json.loads(path.read_text("utf-8")) if path.exists() else {}
     places: dict[str, dict[str, Any]] = {}
-    for file in sorted(data_dir.glob("pois-D*.json")):
-        did = file.stem.split("-D", 1)[1]
+    for file in sorted(data_dir.glob("DISTRICT_*_Places.json")):
+        did = file.stem.split("_")[1]
         try:
             count = len(json.loads(file.read_text("utf-8")))
         except (ValueError, OSError):
             continue
-        places[did] = {"count": count, "size": file.stat().st_size}
+        places[did] = {"file": file.name, "count": count, "size": file.stat().st_size}
     manifest["places"] = places
     manifest["places_checked_at"] = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     path.write_bytes(json.dumps(manifest, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
@@ -584,7 +593,7 @@ def main() -> int:
     failed: list[int] = []
     for district in districts:
         t0 = time.time()
-        path = args.data / f"pois-D{district['id']}.json"
+        path = args.data / places_filename(district)
         try:
             records = crawl_district(district, args.data, client, args.cell, args.radius)
         except Exception as exc:  # noqa: BLE001 - keep the previous file for this district

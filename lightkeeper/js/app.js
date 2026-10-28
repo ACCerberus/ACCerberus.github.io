@@ -1,22 +1,22 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js?v=2.0.8';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.0.8';
-import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.0.8';
-import { reportBug } from './settings.js?v=2.0.8';
-import * as aids from './aids.js?v=2.0.8';
-import * as poi from './poi.js?v=2.0.8';
-import * as measure from './measure.js?v=2.0.8';
-import * as trip from './trip.js?v=2.0.8';
-import * as water from './water.js?v=2.0.8';
-import * as weather from './weather.js?v=2.0.8';
-import * as settings from './settings.js?v=2.0.8';
-import * as hover from './hover.js?v=2.0.8';
-import * as context from './context.js?v=2.0.8';
-import * as places from './places.js?v=2.0.8';
-import * as phone from './phone.js?v=2.0.8';
-import * as whatsnew from './whatsnew.js?v=2.0.8';
-import { hideDetail, clearRoute } from './detail.js?v=2.0.8';
+import { api } from './api.js?v=2.0.8-2';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.0.8-2';
+import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.0.8-2';
+import { reportBug } from './settings.js?v=2.0.8-2';
+import * as aids from './aids.js?v=2.0.8-2';
+import * as poi from './poi.js?v=2.0.8-2';
+import * as measure from './measure.js?v=2.0.8-2';
+import * as trip from './trip.js?v=2.0.8-2';
+import * as water from './water.js?v=2.0.8-2';
+import * as weather from './weather.js?v=2.0.8-2';
+import * as settings from './settings.js?v=2.0.8-2';
+import * as hover from './hover.js?v=2.0.8-2';
+import * as context from './context.js?v=2.0.8-2';
+import * as places from './places.js?v=2.0.8-2';
+import * as phone from './phone.js?v=2.0.8-2';
+import * as whatsnew from './whatsnew.js?v=2.0.8-2';
+import { hideDetail, clearRoute } from './detail.js?v=2.0.8-2';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 
@@ -111,23 +111,33 @@ function initSearch() {
     if (it.type === 'aid') aids.openAid(it.aid.objectid, { fly: true });
     else { flyTo(it.poi.lat, it.poi.lon, 13); poi.showSearchResult(it.poi); }
   };
-  const run = debounce(async () => {
-    const q = input.value.trim();
-    if (q.length < 2) { close(); return; }
-    const c = map.getCenter();
-    const [a, p] = await Promise.allSettled([
-      api.get('/api/aids', { q, limit: 8 }),
-      api.get('/api/poi/search', { q, lat: c.lat.toFixed(4), lon: c.lng.toFixed(4) }),
-    ]);
-    items = [];
-    for (const aid of a.value?.aids || []) items.push({ type: 'aid', aid, label: aid.aidname, kind: aid.aid_type, sub: aid.lightlistnumber ? `LL# ${aid.lightlistnumber}` : aid.waterway });
-    for (const place of p.value?.items || []) items.push({ type: 'poi', poi: place, label: place.name, kind: place.kind, sub: place.address });
+  let seq = 0;
+  const render = (aidRows, placeRows, placesPending) => {
+    items = [
+      ...aidRows.map((aid) => ({ type: 'aid', aid, label: aid.aidname, kind: aid.aid_type, sub: aid.lightlistnumber ? `LL# ${aid.lightlistnumber}` : aid.waterway })),
+      ...placeRows.map((place) => ({ type: 'poi', poi: place, label: place.name, kind: place.kind, sub: place.address })),
+    ];
     list.innerHTML = '';
-    if (!items.length) { list.append(el('li', { class: 'muted', text: 'No matches' })); list.hidden = false; return; }
     items.forEach((it, i) => list.append(el('li', { onclick: () => pick(it), onmouseenter: () => { active = i; highlight(); } }, [
       el('span', { class: 'kind', text: fmt.title(it.kind || '') }), el('span', { text: it.label }), it.sub ? el('span', { class: 'sub', text: it.sub }) : null,
     ])));
+    if (placesPending) list.append(el('li', { class: 'muted loading-dots', text: 'Searching places' }));
+    else if (!items.length) list.append(el('li', { class: 'muted', text: 'No matches' }));
     list.hidden = false;
+  };
+  // Aids answer from the local list in milliseconds, so they show at once; places are added when they arrive.
+  const run = debounce(async () => {
+    const q = input.value.trim();
+    if (q.length < 2) { close(); return; }
+    const my = ++seq;
+    const c = map.getCenter();
+    const placesP = api.get('/api/poi/search', { q, lat: c.lat.toFixed(4), lon: c.lng.toFixed(4) }).then((r) => r.items || []).catch(() => []);
+    const aidRows = await api.get('/api/aids', { q, limit: 8, ...(aids.getDistrict() ? { districts: aids.getDistrict() } : {}) }).then((r) => r.aids || []).catch(() => []);
+    if (my !== seq) return;
+    render(aidRows, [], true);
+    const placeRows = await placesP;
+    if (my !== seq) return;
+    render(aidRows, placeRows, false);
   }, 250);
   const highlight = () => $$('li', list).forEach((li, i) => li.classList.toggle('active', i === active));
   input.addEventListener('input', run);

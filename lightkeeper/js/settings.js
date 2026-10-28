@@ -1,11 +1,11 @@
 /** Settings (web edition): vessel, Light List data status, storage, about + device diagnostics.
  *  Offline map download, pre-cache, API keys and backup files live in the desktop app. */
 
-import { api, VERSION } from './api.js?v=2.0.8';
-import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog } from './ui.js?v=2.0.8';
-import { setBase, getBase } from './map.js?v=2.0.8';
+import { api, VERSION } from './api.js?v=2.0.8-2';
+import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog } from './ui.js?v=2.0.8-2';
+import { setBase, getBase } from './map.js?v=2.0.8-2';
 
-export const DOWNLOAD_URL = 'https://github.com/ArsenalRX/lightkeeper-releases/releases/latest';
+export const DOWNLOAD_INFO = '/download.json';   // the site's download switch (see /download.js)
 const state = { body: null, settings: {}, districtsEl: null };
 
 export function getSettings() { return state.settings; }
@@ -51,7 +51,7 @@ async function render() {
 
   b.append(section('Desktop app', [
     el('p', { class: 'muted small', style: 'margin:0', text: 'The Windows app adds trip planning (ramp chaining, lodging, PDF work plans), USACE dam releases, offline map tiles and satellite imagery for whole districts, backups and optional routing keys. Everything is cached under AppData so it works with no connection.' }),
-    el('button', { class: 'btn sm primary', text: 'Windows app — coming soon', onclick: () => dialog('Windows app coming soon', [el('p', { text: 'The desktop download is not available yet. The web edition here has the map, aids, places, tides and weather.' })], { okText: 'OK' }) }),
+    windowsButton(),
   ]));
 
   b.append(section('Storage', [
@@ -65,7 +65,7 @@ async function render() {
   storageLine();
 
   b.append(section('About', [
-    el('div', { class: 'small' }, [el('b', { text: `LightKeeper v${VERSION}` }), ' — USCG ATON trip planning tool by Evan Isakson. © 2026 Evan Isakson. All rights reserved.']),
+    el('div', { class: 'small' }, [el('b', { text: `LightKeeper v${VERSION}` }), ' — USCG ATON trip planning tool by Evan Isakson. © 2026 ArsenalRX Dev. All rights reserved.']),
     el('div', { class: 'muted small', text: 'Data: USCG NAVCEN Light List · OpenStreetMap / Overpass / Nominatim · NOAA CO-OPS · NOAA ENC · USGS NWIS · National Weather Service · Open-Meteo · Esri World Imagery · OpenTopoMap.' }),
     el('div', { class: 'muted small', text: `Device: ${deviceLine()}` }),
     el('div', { class: 'row', style: 'margin-top:6px' }, [
@@ -129,3 +129,19 @@ export function reportBug() {
 
 /** Kept for app.js compatibility; there is no tile download queue in the browser. */
 export function renderTiles() {}
+
+/** "Windows app" button: downloads the exe from this site when /download.json is enabled, otherwise says coming soon. */
+function windowsButton() {
+  const soon = () => dialog('Windows app coming soon', [el('p', { text: 'The desktop download is not available yet. The web edition here has the map, aids, places, tides and weather.' })], { okText: 'OK' });
+  let info = null;
+  const btn = el('button', { class: 'btn sm primary', text: 'Windows app — coming soon', onclick: () => {
+    if (!info?.enabled) { soon(); return; }
+    const a = el('a', { href: info.file, download: `LightKeeper-${info.version}.exe` });
+    document.body.append(a); a.click(); a.remove();
+  } });
+  fetch(DOWNLOAD_INFO, { cache: 'no-store' }).then((r) => r.json()).then((d) => {
+    info = d;
+    if (d?.enabled) btn.textContent = `Download for Windows (v${d.version})`;
+  }).catch(() => {});
+  return btn;
+}

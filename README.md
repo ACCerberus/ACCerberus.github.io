@@ -8,7 +8,7 @@ browser edition and the public data files the apps read. By Evan Isakson.
 |---|---|
 | `index.html` | Landing page |
 | `lightkeeper/` | The web app (ES modules, no build step), `about.html`, bundled Leaflet + Inter |
-| `lightkeeper/data/` | `aids-D<id>.json` (Light List per district), `districts.json`, `stations-tide.json`, `stations-current.json`, `pois-D<id>.json` (places), `manifest.json` |
+| `lightkeeper/data/` | `aids-D<id>.json` (Light List per district), `districts.json`, `stations-tide.json`, `stations-current.json`, `DISTRICT_<id>_<Name>_Places.json` (places, e.g. `DISTRICT_13_Northwest_Places.json`), `manifest.json` |
 | `tools/build_aids.py` | Rebuilds the Light List tables and NOAA station lists (stdlib only) |
 | `tools/build_pois.py` | Crawls OpenStreetMap (Overpass) for ramps, lodging and parks per district (stdlib only, slow) |
 | `.github/workflows/lightkeeper-data.yml` | Weekly job that runs both scripts and commits changed data files |
@@ -49,5 +49,12 @@ Both scripts leave a district's previous file in place when its download fails.
 ## Notices
 
 Not for navigation. LightKeeper © 2026 Evan Isakson, all rights reserved; the application, its
-code and design are proprietary. Third-party data stays under its own licence (see
+code and design are proprietary. Third-party data stays under its own license (see
 `lightkeeper/about.html`).
+
+## Turning on the Windows download
+
+The "Windows app" buttons read `/download.json`. While `"enabled": false` they show "coming soon".
+To publish a build: copy the exe to `downloads/LightKeeper.exe`, set `"enabled": true` and the
+`"version"` in `download.json`, then commit. The buttons then download the exe straight from this
+site (no GitHub page). GitHub Pages allows files up to 100 MB; the exe is about 27 MB.

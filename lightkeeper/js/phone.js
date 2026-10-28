@@ -2,9 +2,9 @@
  *  the map menu. Detected from the viewport (a browser cannot read the phone model); the screen size and pixel
  *  ratio are logged and shown in Settings → About. */
 
-import { $, $$, showPanel, onPanelChange } from './ui.js?v=2.0.8';
-import { map } from './map.js?v=2.0.8';
-import { onDetailOpen, hideDetail } from './detail.js?v=2.0.8';
+import { $, $$, showPanel, onPanelChange } from './ui.js?v=2.0.8-2';
+import { map } from './map.js?v=2.0.8-2';
+import { onDetailOpen, hideDetail } from './detail.js?v=2.0.8-2';
 
 const PHONE_QUERY = '(max-width: 820px), (pointer: coarse) and (max-width: 1024px), (max-height: 500px) and (max-width: 1024px)';
 const LONG_PRESS_MS = 500;
@@ -31,7 +31,13 @@ export function init() {
   }));
   // One sheet at a time on a phone: a panel replaces the detail card and vice versa.
   onPanelChange(() => { if (state.phone) hideDetail(); syncTabs(); });
-  onDetailOpen(() => { if (state.phone) { document.body.classList.add('panel-hidden'); syncTabs(); } });
+  let openedAt = 0;
+  onDetailOpen(() => { openedAt = Date.now(); if (state.phone) { document.body.classList.add('panel-hidden'); syncTabs(); } });
+  // Tapping empty map closes the aid card (and its ramp route). The tap that opened a card also reaches the map, so skip it.
+  map.on('click', () => {
+    if (!state.phone || Date.now() - openedAt < 400 || $('#map').classList.contains('measuring')) return;
+    hideDetail();
+  });
   initSheetHandle();
   initLongPress();
   blockPageZoom();

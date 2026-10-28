@@ -66,7 +66,7 @@
       <div class="legal">
         <p><b>Not for navigation.</b> LightKeeper is a planning aid. Positions, characteristics, tide and current predictions, water levels, chart imagery and forecasts come from third-party services, may be out of date or wrong, and must be checked against official publications and conditions on the water.</p>
         <p><b>Privacy.</b> The web edition has no server of its own and collects nothing. Your browser talks directly to the services above when you use the corresponding feature; what you look at is cached only on your device, and you can clear it from Settings.</p>
-        <p><b>Proprietary software.</b> LightKeeper &copy; 2026 Evan Isakson. All rights reserved. The LightKeeper application, its code and its design are proprietary and are provided for your own use as-is, without warranty of any kind; they may not be copied, modified, redistributed or sold without written permission. Third-party data remains under its own licence as noted above.</p>
+        <p><b>Proprietary software.</b> LightKeeper &copy; 2026 ArsenalRX Dev. All rights reserved. The LightKeeper application, its code and its design are proprietary and are provided for your own use as-is, without warranty of any kind; they may not be copied, modified, redistributed or sold without written permission. Third-party data remains under its own license as noted above.</p>
       </div>
     </section>
 
@@ -83,7 +83,7 @@
 </main>
 <footer>
   <div class="wrap">
-    <span>LightKeeper v2.0.8 &middot; &copy; 2026 Evan Isakson &middot; all rights reserved</span>
+    <span>LightKeeper v2.0.8 &middot; &copy; 2026 ArsenalRX Dev &middot; all rights reserved</span>
     <nav>
       <a href="/">Home</a>
       <a href="./">Web app</a>
@@ -91,19 +91,6 @@
     </nav>
   </div>
 </footer>
-<script>
-document.addEventListener('click', (e) => {
-  const a = e.target.closest('a[href="#download"]');
-  if (!a) return;
-  e.preventDefault();
-  if (document.getElementById('soon')) return;
-  const o = document.createElement('div');
-  o.id = 'soon';
-  o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:9999';
-  o.innerHTML = '<div style="background:#141f2b;border:1px solid #2b3a4c;border-radius:12px;padding:20px 24px;max-width:360px;color:#e6edf5;font:14px Inter,system-ui,sans-serif;text-align:center"><h3 style="margin:0 0 8px">Windows app coming soon</h3><p style="margin:0 0 14px;color:#a9b7c6">The desktop download is not available yet. The web edition here has the map, aids, places, tides and weather.</p><button style="background:#4f9dff;color:#fff;border:0;border-radius:8px;padding:8px 18px;font:inherit;cursor:pointer">OK</button></div>';
-  o.addEventListener('click', (ev) => { if (ev.target === o || ev.target.tagName === 'BUTTON') o.remove(); });
-  document.body.append(o);
-});
-</script>
+<script src="/download.js" defer></script>
 </body>
 </html>

@@ -9,6 +9,11 @@ on:
   schedule:
     - cron: "15 9 * * 1"   # Mondays 09:15 UTC
   workflow_dispatch:
+    inputs:
+      districts:
+        description: "District ids to crawl for places, comma-separated (blank = all). Example: 13"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -33,7 +38,9 @@ jobs:
 
       - name: Crawl OpenStreetMap places (keeps previous files for districts that fail)
         continue-on-error: true
-        run: python tools/build_pois.py
+        env:
+          DISTRICTS: ${{ inputs.districts }}
+        run: python tools/build_pois.py --districts "$DISTRICTS"
 
       - name: Commit changes
         run: |
@@ -44,5 +51,5 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "[data] Light List update"
+          git commit -m "[data] Light List and places update"
           git push

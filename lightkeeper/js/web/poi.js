@@ -7,10 +7,10 @@
  *  7 days, reverse geocodes forever, assembled place lists 5 minutes.
  */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.0.8';
-import { cached, idbGet, idbSet, DAY, MIN } from './store.js?v=2.0.8';
-import { districts as districtList, manifest, staticJson } from './aids.js?v=2.0.8';
-import { haversineMi, isInUs, validateCoords, normalizePhone, first, formatAddress, METERS_PER_MILE } from './util.js?v=2.0.8';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.0.8-2';
+import { cached, idbGet, idbSet, DAY, MIN } from './store.js?v=2.0.8-2';
+import { districts as districtList, manifest, staticJson } from './aids.js?v=2.0.8-2';
+import { haversineMi, isInUs, validateCoords, normalizePhone, first, formatAddress, METERS_PER_MILE } from './util.js?v=2.0.8-2';
 
 const SOURCE_OSM = 'OpenStreetMap';
 const SOURCE_NOMINATIM = 'Nominatim';
@@ -65,7 +65,7 @@ const PUBLIC_OPERATOR_WORDS = ['usace', 'corps of engineers', 'army corps', 'sta
 const CLOSED_NAME_WORDS = ['closed', 'demolished', 'decommissioned', 'under construction', 'coming soon', 'permanently closed', 'out of business', 'shut down'];
 const LIFECYCLE_PREFIXES = ['disused:', 'abandoned:', 'demolished:', 'razed:', 'was:'];
 const PRIVATE_ACCESS = ['private', 'no'];
-const GENERIC_NAME_WORDS = new Set(['boat', 'ramp', 'launch', 'launching', 'slipway', 'marina', 'dock', 'landing', 'access', 'hotel', 'motel', 'inn', 'suites', 'resort', 'lodge', 'campground', 'camp', 'park', 'rv', 'the', 'and', 'of', 'at', 'by', 'on']);
+const GENERIC_NAME_WORDS = new Set(['public', 'ramps', 'launches', 'boating', 'site', 'area', 'facility', 'a', 'boat', 'ramp', 'launch', 'launching', 'slipway', 'marina', 'dock', 'landing', 'access', 'hotel', 'motel', 'inn', 'suites', 'resort', 'lodge', 'campground', 'camp', 'park', 'rv', 'the', 'and', 'of', 'at', 'by', 'on']);
 
 const RAMP_SELECTORS = [
   '["leisure"="slipway"]', '["amenity"="boat_ramp"]', '["leisure"="marina"]', '["waterway"="slipway"]', '["waterway"="boat_ramp"]',
@@ -85,7 +85,8 @@ const LODGING_SELECTORS = [
 
 /* ── Small helpers ── */
 const clamp = (v, [lo, , hi]) => { const n = Number(v); return Number.isFinite(n) ? Math.max(lo, Math.min(Math.trunc(n), hi)) : lo; };
-const cleanName = (raw) => { const n = String(raw ?? '').trim(); return n.length < POI_MIN_NAME_LEN || /^\d+$/.test(n) ? '' : n; };
+// A name made only of generic words ("Boat Ramp", "Public Boat Launch") is treated as no name, so a real one gets built.
+const cleanName = (raw) => { const n = String(raw ?? '').trim(); return n.length < POI_MIN_NAME_LEN || /^\d+$/.test(n) || !nameTokens(n).size ? '' : n; };
 const nameTokens = (name) => new Set(name.toLowerCase().replace(/[^a-z0-9 ]+/g, '').split(/\s+/).filter((w) => w && !GENERIC_NAME_WORDS.has(w)));
 const coordName = (label, lat, lon) => `${label} (${lat.toFixed(NAME_COORD_DECIMALS)}, ${lon.toFixed(NAME_COORD_DECIMALS)})`;
 const label = (kind) => KIND_LABEL[kind] || KIND_LABEL.place;
@@ -309,6 +310,13 @@ function nominatimKind(cls, typ, name) {
   if (cls === 'tourism' && TOURISM_TO_KIND[typ]) return lodgingKind(name, { tourism: typ });
   return NOMINATIM_KINDS[`${cls}/${typ}`] || 'place';
 }
+const PARK_ADDRESS_KEYS = ['leisure', 'park', 'nature_reserve', 'national_park', 'protected_area', 'tourism'];
+const PARK_WORDS_RE = /\b(park|recreation|campground|reserve|refuge|wildlife area|access area|marina)\b/i;
+function enclosingPark(addr) {
+  for (const k of PARK_ADDRESS_KEYS) { const v = String(addr?.[k] || '').trim(); if (v && PARK_WORDS_RE.test(v)) return v; }
+  return '';
+}
+
 function nominatimRecord(row, origin) {
   const pt = point(row);
   if (!pt || !isInUs(...pt)) return null;
@@ -320,7 +328,11 @@ function nominatimRecord(row, origin) {
   if (isHostel(name, { tourism: cls === 'tourism' ? typ : '' })) return null;
   const kind = nominatimKind(cls, typ, name);
   const nameSource = name ? 'osm' : 'derived';
-  if (!name) name = derivedName(label(kind), { ...extratags, 'addr:street': addr.road || '', 'addr:city': town(addr) }, ...pt, []);
+  if (!name) {
+    // A ramp inside a park is named after the park, not after the nearest road or trail.
+    const park = enclosingPark(addr);
+    name = derivedName(label(kind), { ...extratags, 'addr:street': addr.road || '', 'addr:city': town(addr) }, ...pt, park ? [{ name: park, lat: pt[0], lon: pt[1] }] : []);
+  }
   const tags = { ...extratags, name, 'addr:street': addr.road || '', 'addr:city': town(addr) };
   return newRecord(`nominatim:${row.osm_type}:${row.osm_id}`, kind, name, nameSource, pt[0], pt[1], {
     address: formatAddress(addr.house_number, addr.road, town(addr), addr.state, addr.postcode),
@@ -381,15 +393,16 @@ export async function enrich(items, maxLookups = ENRICH_MAX_LOOKUPS) {
   return items;
 }
 
-/* ── Shipped places (lightkeeper/data/pois-D<id>.json, crawled weekly by tools/build_pois.py) ── */
+/* ── Shipped places (lightkeeper/data/DISTRICT_<id>_<Name>_Places.json, crawled weekly by tools/build_pois.py) ── */
 const SHIPPED_TTL = DAY;
 const shippedMemo = new Map();
 async function shippedDistrict(id) {
   if (!shippedMemo.has(id)) {
     shippedMemo.set(id, (async () => {
       const m = await manifest().catch(() => null);
-      if (!m?.places?.[id]) return [];   // not published for this district (yet)
-      const list = await staticJson(`pois-D${id}.json`, SHIPPED_TTL).catch(() => []);
+      const entry = m?.places?.[id];
+      if (!entry?.file) return [];       // not published for this district (yet)
+      const list = await staticJson(entry.file, SHIPPED_TTL).catch(() => []);
       return Array.isArray(list) ? list : [];
     })());
   }

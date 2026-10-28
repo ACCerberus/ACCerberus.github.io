@@ -1,19 +1,19 @@
 /** The one detail card. Everything clickable on the map funnels into showDetail(). */
 
-import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.0.8';
-import { flyTo, map } from './map.js?v=2.0.8';
-import { api } from './api.js?v=2.0.8';
-import * as units from './units.js?v=2.0.8';
-import { layers, poiIcon, AID_COLORS } from './map.js?v=2.0.8';
-import { loadedItems } from './poi.js?v=2.0.8';
-import { haversineNM } from './geo.js?v=2.0.8';
+import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.0.8-2';
+import { flyTo, map } from './map.js?v=2.0.8-2';
+import { api } from './api.js?v=2.0.8-2';
+import * as units from './units.js?v=2.0.8-2';
+import { layers, poiIcon, AID_COLORS } from './map.js?v=2.0.8-2';
+import { loadedItems } from './poi.js?v=2.0.8-2';
+import { haversineNM } from './geo.js?v=2.0.8-2';
 
 const card = () => $('#detail');
 let current = null;
 const openListeners = new Set();
 export function onDetailOpen(fn) { openListeners.add(fn); }
 
-export function hideDetail() { card().hidden = true; current = null; }
+export function hideDetail() { card().hidden = true; current = null; layers.route?.clearLayers(); }   // closing the card also removes its ramp route
 
 /**
  * record = { title, kind, subtitle, lat, lon, address, phone, website, facts: [[label, value]], actions: [{label, primary, onClick}], source }
@@ -238,7 +238,15 @@ function liveTile(icon, label, loadingText) {
   };
 }
 
+/** Open Google Maps with the ramp as the start and the aid as the end, so both show on one map. */
+function openGoogleRoute(ramp, aid) {
+  const url = `https://www.google.com/maps/dir/?api=1&origin=${ramp.lat},${ramp.lon}&destination=${aid.latitude},${aid.longitude}`;
+  const a = el('a', { href: url, target: '_blank', rel: 'noopener' });
+  document.body.append(a); a.click(); a.remove();
+}
+
 export function aidRecord(aid, extraActions = []) {
+  layers.route?.clearLayers();                 // a new aid card starts without the previous aid's route
   const link = (text, onClick) => el('a', { href: '#', text, onclick: (e) => { e.preventDefault(); onClick(); } });
   const coords = el('span', { class: 'ac-coords' }, [
     el('span', { text: fmt.coord(aid.latitude, aid.longitude) }),
@@ -246,7 +254,7 @@ export function aidRecord(aid, extraActions = []) {
   ]);
   const ctx = { ramp: null };
   const rampBtn = el('button', { class: 'btn sm', text: 'Route to ramp', disabled: true, title: 'Finding the nearest boat ramp…',
-    onclick: () => { if (ctx.ramp) drawWaterRoute(aid, ctx.ramp); } });
+    onclick: () => { if (ctx.ramp) { drawWaterRoute(aid, ctx.ramp); openGoogleRoute(ctx.ramp, aid); } } });
   const bar = el('div', { class: 'd-bar' }, [
     rampBtn,
     ...extraActions.map((a) => el('button', { class: `btn sm${a.primary ? ' primary' : ''}`, text: a.label, onclick: a.onClick })),
@@ -256,7 +264,7 @@ export function aidRecord(aid, extraActions = []) {
   const render = (body) => {
     body.append(glanceTiles(aid));
     const now = el('div', { class: 'lt-grid' }, [weatherTile(aid), waterTempTile(aid)]);
-    const nearby = nearestRampTile(aid, (r) => { ctx.ramp = r; rampBtn.disabled = false; rampBtn.title = `Draw the water route to ${r.name}`; });
+    const nearby = nearestRampTile(aid, (r) => { ctx.ramp = r; rampBtn.disabled = false; rampBtn.title = `Draw the water route to ${r.name} and open it in Google Maps`; });
     for (const s of [
       section('Conditions now', [], now),
       section('Nearby', [], nearby),

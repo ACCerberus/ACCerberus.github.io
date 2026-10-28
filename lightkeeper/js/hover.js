@@ -1,9 +1,9 @@
 /** Subtle hover hint next to the pointer: "Right-click for more", plus the nearest tide / current / gage / dam
  *  when some are loaded nearby. Shown after the cursor rests; hidden as soon as it moves again. */
 
-import { el, fmt } from './ui.js?v=2.0.8';
-import { map } from './map.js?v=2.0.8';
-import { nearestStations, hoverEnabled } from './water.js?v=2.0.8';
+import { el, fmt } from './ui.js?v=2.0.8-2';
+import { map } from './map.js?v=2.0.8-2';
+import { nearestStations, hoverEnabled } from './water.js?v=2.0.8-2';
 
 const GLYPH = { tide: '≋', current: '➤', gage: '◉', dam: '▲' };
 const REST_MS = 450;

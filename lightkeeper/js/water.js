@@ -1,11 +1,11 @@
 /** Water: NOAA tide/current stations, USGS gages and USACE dams in view; readings on click. */
 
-import { api } from './api.js?v=2.0.8';
-import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.0.8';
-import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.0.8';
-import { showDetail, poiRecord } from './detail.js?v=2.0.8';
-import { haversineMi } from './geo.js?v=2.0.8';
-import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.0.8';
+import { api } from './api.js?v=2.0.8-2';
+import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.0.8-2';
+import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.0.8-2';
+import { showDetail, poiRecord } from './detail.js?v=2.0.8-2';
+import { haversineMi } from './geo.js?v=2.0.8-2';
+import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.0.8-2';
 
 const TYPES = [['tide', 'Tides'], ['current', 'Currents'], ['gage', 'USGS gages'], ['dam', 'Dams']];
 const MIN_ZOOM = 7;

@@ -35,8 +35,8 @@
 <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.Default.css">
-<link rel="stylesheet" href="./css/app.css?v=2.0.8">
-<link rel="stylesheet" href="./css/web.css?v=2.0.8">
+<link rel="stylesheet" href="./css/app.css?v=2.0.8-2">
+<link rel="stylesheet" href="./css/web.css?v=2.0.8-2">
 </head>
 <body data-version="2.0.8">
 
@@ -48,7 +48,7 @@
   </div>
   <div class="search" id="search-wrap">
     <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-    <input id="search" type="search" placeholder="Search aids, ramps, hotels, places…" autocomplete="off" spellcheck="false">
+    <input id="search" type="search" placeholder="Search aids (name or LL#), ramps, hotels…" autocomplete="off" spellcheck="false">
     <ul id="search-results" hidden></ul>
   </div>
   <div class="topbar-right">
@@ -141,7 +141,7 @@
 
 <script src="./vendor/leaflet/leaflet.js"></script>
 <script src="./vendor/markercluster/leaflet.markercluster.js"></script>
-<script type="module" src="./js/app.js?v=2.0.8"></script>
+<script type="module" src="./js/app.js?v=2.0.8-2"></script>
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('[lightkeeper] service worker:', err.message)));

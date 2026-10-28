@@ -1,9 +1,9 @@
 /** Aids to Navigation: load from the backend, cluster on the map, list + select in the panel. */
 
-import { api } from './api.js?v=2.0.8';
-import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.0.8';
-import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.0.8';
-import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.0.8';
+import { api } from './api.js?v=2.0.8-2';
+import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.0.8-2';
+import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.0.8-2';
+import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.0.8-2';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
 const PAGE = 200;
@@ -74,7 +74,6 @@ export function init(view) {
   state.view = view;
   const { body } = panelSkeleton(view, 'Aids <span class="count" id="aids-count"></span>', 'USCG Light List — click an aid for details, tick it to add to a trip.');
   state.countEl = $('#aids-count');
-  const search = el('input', { type: 'search', placeholder: 'Search all aids by name, LL#, waterway…', oninput: debounce((e) => { state.q = e.target.value.trim().toLowerCase(); state.shown = PAGE; renderList(); }, 150) });
   const pills = el('div', { class: 'pills' }, TYPES.map((t) => el('button', {
     class: 'pill on', dataset: { type: t }, html: `<span class="dot" style="background:${AID_COLORS[t]}"></span>${fmt.title(t)}s`,
     onclick: (e) => { const b = e.currentTarget; b.classList.toggle('on'); b.classList.contains('on') ? state.types.add(t) : state.types.delete(t); refreshMarkers(); renderList(); },
@@ -84,7 +83,7 @@ export function init(view) {
     el('button', { class: 'btn sm', text: 'Clear selection', onclick: clearSelection }),
   ]);
   state.listEl = el('div', { class: 'list' });
-  body.append(el('div', { class: 'field' }, [search]), pills, tools, state.listEl);
+  body.append(pills, tools, state.listEl);   // searching lives in the top bar (one search box for aids and places)
   map.on('moveend', debounce(() => { state.shown = PAGE; renderList(); }, 200));
   layers.aids.on('click', (e) => openAid(e.layer.options.aidId));
 }
@@ -134,18 +133,19 @@ function refreshMarkers() {
 function visibleAids() {
   const b = map.getBounds();
   const q = state.q;
-  if (q) return state.all.filter((a) => matches(a, q));      // a search covers every aid, in any district or area
+  if (q) return state.all.filter((a) => inDistrict(a) && matches(a, q));   // anywhere on the map, but only in the picked district
   return aidsInBounds(b).filter((a) => inDistrict(a) && (state.types.has(a.aid_type) || a.aid_type === 'other')
     && b.contains([a.latitude, a.longitude])
     && (!q || matches(a, q)));
 }
 const matches = (a, q) => (a.aidname || '').toLowerCase().includes(q) || (a.aidname || '').toLowerCase().replace(/\./g, '').includes(q)
-  || String(a.lightlistnumber || '').startsWith(q) || (a.waterway || '').toLowerCase().includes(q);
+  || String(a.lightlistnumber || '').toLowerCase().startsWith(q) || String(a.intl_llnr || '').toLowerCase().startsWith(q)
+  || (a.waterway || '').toLowerCase().includes(q);
 
 function renderList() {
   if (!state.listEl) return;
   const visible = visibleAids().sort((a, b) => a.aidname.localeCompare(b.aidname));
-  state.countEl.textContent = `${fmt.int(visible.length)} ${state.q ? 'found in all districts' : 'in view'} · ${state.selected.size} selected`;
+  state.countEl.textContent = `${fmt.int(visible.length)} ${state.q ? (state.district ? `found in D${state.district}` : 'found in all districts') : 'in view'} · ${state.selected.size} selected`;
   state.listEl.innerHTML = '';
   if (!visible.length) {
     state.listEl.append(el('div', { class: 'empty' }, [el('b', { text: !state.all.length ? 'No aids loaded yet' : state.q ? 'No aids match' : 'No aids in view' }), state.all.length ? 'Zoom or pan the map, or pick a district above.' : 'The Light List downloads automatically on first run.']));
