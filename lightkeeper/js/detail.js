@@ -1,11 +1,11 @@
 /** The one detail card. Everything clickable on the map funnels into showDetail(). */
 
-import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.0.7-2';
-import { flyTo, map } from './map.js?v=2.0.7-2';
-import { api } from './api.js?v=2.0.7-2';
-import * as units from './units.js?v=2.0.7-2';
-import { layers, poiIcon } from './map.js?v=2.0.7-2';
-import { haversineNM } from './geo.js?v=2.0.7-2';
+import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.0.7-3';
+import { flyTo, map } from './map.js?v=2.0.7-3';
+import { api } from './api.js?v=2.0.7-3';
+import * as units from './units.js?v=2.0.7-3';
+import { layers, poiIcon } from './map.js?v=2.0.7-3';
+import { haversineNM } from './geo.js?v=2.0.7-3';
 
 const card = () => $('#detail');
 let current = null;
@@ -108,10 +108,16 @@ export function aidRecord(aid, extraActions = []) {
   return { title: aid.aidname, kind: aid.aid_type, subtitle: aid.lightlistnumber ? `LL# ${aid.lightlistnumber}` : '', lat: aid.latitude, lon: aid.longitude, facts, actions: extraActions, source: 'USCG Light List (NAVCEN)' };
 }
 
+const liveCache = new Map();   // per-aid results of the live lookups, so re-rendering a card never refetches
+function once(key, fn) {
+  if (!liveCache.has(key)) liveCache.set(key, fn().catch((e) => { liveCache.delete(key); throw e; }));
+  return liveCache.get(key);
+}
+
 /** A cell that fills itself with the closest ramp; clicking it draws a water-only route to it. */
 function nearestRampCell(aid) {
   const cell = el('span', { class: 'loading-dots', text: 'finding' });
-  api.get('/api/poi/ramps', { lat: aid.latitude, lon: aid.longitude, radius_m: 30000, fast: 1 }, { timeoutMs: 20000 }).then((res) => {
+  once(`ramp:${aid.objectid}`, () => api.get('/api/poi/ramps', { lat: aid.latitude, lon: aid.longitude, radius_m: 30000, fast: 1 }, { timeoutMs: 20000 })).then((res) => {
     const ramps = (res.items || []).map((r) => ({ ...r, nm: haversineNM(aid.latitude, aid.longitude, r.lat, r.lon) })).sort((a, b) => a.nm - b.nm);
     cell.innerHTML = '';
     if (!ramps.length) { cell.className = 'muted'; cell.textContent = 'none within 20 mi'; return; }
@@ -129,7 +135,7 @@ function nearestRampCell(aid) {
 function weatherCell(aid) {
   const cell = el('span', { class: 'loading-dots', text: 'checking' });
   const q = { lat: aid.latitude.toFixed(4), lon: aid.longitude.toFixed(4) };
-  api.get('/api/weather/observation', q, { timeoutMs: 12000 }).then(async (o) => {
+  once(`obs:${aid.objectid}`, () => api.get('/api/weather/observation', q, { timeoutMs: 12000 })).then(async (o) => {
     cell.className = '';
     if (o?.ok !== false && o?.station) {
       const parts = [o.temp_f != null ? `${Math.round(o.temp_f)}°F` : null, o.conditions,
@@ -149,7 +155,7 @@ function weatherCell(aid) {
 /** Closest, most recent water temperature (USGS / NOAA / Open-Meteo), with distance when it is far. */
 function waterTempCell(aid) {
   const cell = el('span', { class: 'loading-dots', text: 'checking' });
-  api.get('/api/water/temp', { lat: aid.latitude.toFixed(4), lon: aid.longitude.toFixed(4) }, { timeoutMs: 15000 }).then((d) => {
+  once(`temp:${aid.objectid}`, () => api.get('/api/water/temp', { lat: aid.latitude.toFixed(4), lon: aid.longitude.toFixed(4) }, { timeoutMs: 15000 })).then((d) => {
     const p = d?.primary;
     if (!p) { cell.className = 'muted'; cell.textContent = 'no reading found nearby'; return; }
     cell.className = '';

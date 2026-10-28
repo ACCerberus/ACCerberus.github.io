@@ -1,12 +1,12 @@
 /** Places layers: boat ramps / marinas, lodging, parks with ramps. Toggled by the top-bar chips. */
 
-import { api } from './api.js?v=2.0.7-2';
-import { $$, toast, debounce, store } from './ui.js?v=2.0.7-2';
-import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.7-2';
-import { showPoi } from './detail.js?v=2.0.7-2';
+import { api } from './api.js?v=2.0.7-3';
+import { $$, toast, debounce, store } from './ui.js?v=2.0.7-3';
+import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.7-3';
+import { showPoi } from './detail.js?v=2.0.7-3';
 
-const MIN_ZOOM = 8;
 const LAYERS = {
+  // capM caps the search radius, so a zoomed-out view never asks Overpass for a whole state.
   ramps: { path: '/api/poi/ramps', capM: 150000 },
   hotels: { path: '/api/poi/hotels', capM: 100000 },
   parks: { path: '/api/poi/parks', capM: 150000 },
@@ -40,11 +40,7 @@ function toggle(name) {
   if (on.has(name)) { on.delete(name); layers[name].clearLayers(); items[name].clear(); setCount(document.querySelector(`#layer-chips .chip[data-layer="${name}"]`), null); }
   else {
     on.add(name);
-    if (map.getZoom() < MIN_ZOOM) {
-      // Places are loaded per view; zoom in so something can actually show up (moveend reloads).
-      toast(`Zooming in to show ${LABEL[name]}`, 'info', 2000);
-      map.setView(map.getCenter(), MIN_ZOOM + 1);
-    } else refresh(name);
+    refresh(name);
   }
   store.set('poiLayers', Array.from(on));
   $$('#layer-chips .chip[data-layer]').forEach((c) => c.classList.toggle('on', on.has(c.dataset.layer)));
@@ -82,7 +78,7 @@ function refreshAll() { for (const name of on) refresh(name); }
 
 async function refresh(name) {
   const chip = document.querySelector(`#layer-chips .chip[data-layer="${name}"]`);
-  if (!on.has(name) || map.getZoom() < MIN_ZOOM) return;
+  if (!on.has(name)) return;
   const gen = ++generation;
   const c = map.getCenter();
   chip?.classList.add('busy');

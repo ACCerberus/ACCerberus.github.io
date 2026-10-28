@@ -14,6 +14,7 @@
       "Fixed: a marina found through the backup map source could be labeled as a boat ramp."
     ],
     "known_issues": [
+      "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
       "Dam cards can be slow and may show dashes for pool, inflow and outflow; matching dams to Army Corps live data is being fixed.",
       "River gage details can take 10–40 seconds when the USGS service is slow.",
       "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",

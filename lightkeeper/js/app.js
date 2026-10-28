@@ -1,22 +1,22 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js?v=2.0.7-2';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.0.7-2';
-import { createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.0.7-2';
-import { reportBug } from './settings.js?v=2.0.7-2';
-import * as aids from './aids.js?v=2.0.7-2';
-import * as poi from './poi.js?v=2.0.7-2';
-import * as measure from './measure.js?v=2.0.7-2';
-import * as trip from './trip.js?v=2.0.7-2';
-import * as water from './water.js?v=2.0.7-2';
-import * as weather from './weather.js?v=2.0.7-2';
-import * as settings from './settings.js?v=2.0.7-2';
-import * as hover from './hover.js?v=2.0.7-2';
-import * as context from './context.js?v=2.0.7-2';
-import * as places from './places.js?v=2.0.7-2';
-import * as phone from './phone.js?v=2.0.7-2';
-import * as whatsnew from './whatsnew.js?v=2.0.7-2';
-import { hideDetail, clearRoute } from './detail.js?v=2.0.7-2';
+import { api } from './api.js?v=2.0.7-3';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.0.7-3';
+import { createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.0.7-3';
+import { reportBug } from './settings.js?v=2.0.7-3';
+import * as aids from './aids.js?v=2.0.7-3';
+import * as poi from './poi.js?v=2.0.7-3';
+import * as measure from './measure.js?v=2.0.7-3';
+import * as trip from './trip.js?v=2.0.7-3';
+import * as water from './water.js?v=2.0.7-3';
+import * as weather from './weather.js?v=2.0.7-3';
+import * as settings from './settings.js?v=2.0.7-3';
+import * as hover from './hover.js?v=2.0.7-3';
+import * as context from './context.js?v=2.0.7-3';
+import * as places from './places.js?v=2.0.7-3';
+import * as phone from './phone.js?v=2.0.7-3';
+import * as whatsnew from './whatsnew.js?v=2.0.7-3';
+import { hideDetail, clearRoute } from './detail.js?v=2.0.7-3';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 

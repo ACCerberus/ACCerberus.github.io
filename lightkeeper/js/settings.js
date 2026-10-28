@@ -1,9 +1,9 @@
 /** Settings (web edition): vessel, Light List data status, storage, about + device diagnostics.
  *  Offline map download, pre-cache, API keys and backup files live in the desktop app. */
 
-import { api, VERSION } from './api.js?v=2.0.7-2';
-import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog } from './ui.js?v=2.0.7-2';
-import { setBase, getBase } from './map.js?v=2.0.7-2';
+import { api, VERSION } from './api.js?v=2.0.7-3';
+import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog } from './ui.js?v=2.0.7-3';
+import { setBase, getBase } from './map.js?v=2.0.7-3';
 
 export const DOWNLOAD_URL = 'https://github.com/ArsenalRX/lightkeeper-releases/releases/latest';
 const state = { body: null, settings: {}, districtsEl: null };

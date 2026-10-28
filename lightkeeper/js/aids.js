@@ -1,9 +1,9 @@
 /** Aids to Navigation: load from the backend, cluster on the map, list + select in the panel. */
 
-import { api } from './api.js?v=2.0.7-2';
-import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.0.7-2';
-import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.0.7-2';
-import { showDetail, aidRecord, hideDetail } from './detail.js?v=2.0.7-2';
+import { api } from './api.js?v=2.0.7-3';
+import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.0.7-3';
+import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.0.7-3';
+import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.0.7-3';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
 const PAGE = 200;
@@ -166,12 +166,23 @@ export function clearSelection() { selectMany(Array.from(state.selected.keys()),
 
 /* ── Detail ── */
 export async function openAid(id, { fly = false } = {}) {
-  let aid = state.byId.get(id);
-  try { aid = { ...aid, ...(await api.get(`/api/aids/${id}`)) }; } catch { /* slim record is enough */ }
-  if (!aid) return;
-  if (fly) flyTo(aid.latitude, aid.longitude, 14);
-  const sel = state.selected.has(id);
-  const actions = document.body.classList.contains('phone') ? [] : [{ label: sel ? 'Remove from trip' : 'Add to trip', primary: !sel, onClick: () => { toggleSelect(id); openAid(id); } }];
-  showDetail(aidRecord(aid, actions));
+  const slim = state.byId.get(id);
+  if (!slim) return;
+  if (fly) flyTo(slim.latitude, slim.longitude, 14);
+  const actions = () => {
+    if (document.body.classList.contains('phone')) return [];   // no trip planning on phones
+    const sel = state.selected.has(id);
+    return [{ label: sel ? 'Remove from trip' : 'Add to trip', primary: !sel, onClick: () => { toggleSelect(id); openAid(id); } }];
+  };
+  // Show the card immediately from the record already in memory; never wait on the network to open it.
+  const cached = fullCache.get(id);
+  showDetail(aidRecord(cached || slim, actions()));
+  if (cached) return;
+  try {
+    const full = { ...slim, ...(await api.get(`/api/aids/${id}`)) };
+    fullCache.set(id, full);
+    if (currentDetail()?.title === slim.aidname) showDetail(aidRecord(full, actions()));
+  } catch { /* the slim record is enough */ }
 }
+const fullCache = new Map();
 export function closeDetail() { hideDetail(); }
