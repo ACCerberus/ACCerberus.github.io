@@ -170,3 +170,7 @@ body.phone .disc-field input, body.phone .disc-field select, body.phone .disc-fi
 body.phone .disc-tools .btn { flex: 1 1 calc(50% - 6px); }
 body.phone .disc-views button { min-height: 42px; padding: 10px 0; line-height: 1.2; font-size: 14px; }
 body.phone .disc-bnm-actions .btn { min-height: 40px; }
+
+/* BNM count on the phone tab */
+#tabbar button[data-panel="bnm"] { position: relative; }
+#tabbar .rail-badge { top: 2px; right: calc(50% - 22px); }

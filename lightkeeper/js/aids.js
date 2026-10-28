@@ -1,9 +1,9 @@
 /** Aids to Navigation: load from the backend, cluster on the map, list + select in the panel. */
 
-import { api } from './api.js?v=2.1.0';
-import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.1.0';
-import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.0';
-import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.0';
+import { api } from './api.js?v=2.1.0-3';
+import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.1.0-3';
+import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.0-3';
+import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.0-3';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
 const PAGE = 200;
@@ -34,6 +34,7 @@ function indexAids() {
     if (!bucket) { bucket = []; grid.set(key, bucket); }
     bucket.push(a);
   }
+  queueMicrotask(() => document.dispatchEvent(new Event('aids-loaded')));   // after the caller stores the list
 }
 /** District of the aid nearest to a point (searching up to maxDeg away), or null if no aid is that close.
  *  Places use it so picking a district hides other districts' ramps, hotels and parks. */

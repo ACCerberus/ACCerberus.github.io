@@ -2,10 +2,14 @@
  *  Desktop: stored in the app database; Excel export opens in Excel; Email opens a draft with the sheet attached.
  *  Web/phone: stored in this browser; Excel downloads; Email shares the sheet to the phone's Mail app. */
 
-import { api } from './api.js?v=2.1.0';
-import { el, toast, panelSkeleton, onPanelChange, showPanel, debounce } from './ui.js?v=2.1.0';
+import { api } from './api.js?v=2.1.0-3';
+import { el, toast, panelSkeleton, onPanelChange, showPanel, debounce } from './ui.js?v=2.1.0-3';
 
 const TYPES = ['Extinguished', 'Improper characteristic', 'Off station', 'Missing', 'Overgrown', 'Vandalized', 'Damaged', 'Other'];
+// The tracker is built but hidden from users until it's ready: set to true to show the rail button,
+// the aid card's "Log discrepancy" button, the D shortcut and the Settings section.
+export const ENABLED = false;
+
 const state = { items: [], filter: 'open', listEl: null, countEl: null, filterEls: {}, view: 'log', bnm: [], bnmAll: false, bnmEl: null, bnmMsg: '', viewEls: {}, logBox: null };
 const BNM_DISTRICT = 13;      // Northwest first; other districts are on the To do list
 const changeListeners = new Set();

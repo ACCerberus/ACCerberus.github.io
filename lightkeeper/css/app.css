@@ -493,3 +493,19 @@ body.panel-hidden #progress { left: calc(var(--rail-w) + 14px); }
 .disc-bnm-item .title { display: flex; gap: 6px; align-items: center; font-size: 12.5px; }
 .bnm-text { font-size: 12.5px; color: var(--text-2); white-space: pre-line; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 .disc-bnm-actions { display: flex; gap: 6px; align-items: center; justify-content: flex-end; }
+
+/* BNM tab and the notice banner on aid cards */
+.bnm-head { align-items: center; gap: 8px; justify-content: space-between; margin-bottom: 6px; }
+.bnm-item { cursor: pointer; box-shadow: inset 3px 0 0 #ff9a3c; }
+.bnm-item:hover, .bnm-item:focus-visible { background: rgba(255, 154, 60, .08); outline: none; }
+.bnm-item .title { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.bnm-banner { display: grid; gap: 6px; margin-bottom: 10px; }
+.bnm-note { border: 1px solid rgba(255, 154, 60, .55); background: rgba(255, 154, 60, .12); border-radius: 8px; padding: 8px 10px; }
+.bnm-what b { color: #ff9a3c; }
+.bnm-text { margin-top: 4px; white-space: pre-line; max-height: 7.5em; overflow: auto; }
+.bnm-marker { pointer-events: auto; }
+.bnm-marker span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 3px solid #ff9a3c;
+  background: rgba(255, 154, 60, .18); color: #ff9a3c; font: 800 15px/1 system-ui, sans-serif; text-shadow: 0 0 3px #000;
+  box-shadow: 0 0 0 0 rgba(255, 154, 60, .7); animation: bnm-pulse 2s infinite; }
+@keyframes bnm-pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 154, 60, .7); } 70% { box-shadow: 0 0 0 12px rgba(255, 154, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 154, 60, 0); } }
+@media (prefers-reduced-motion: reduce) { .bnm-marker span { animation: none; } }

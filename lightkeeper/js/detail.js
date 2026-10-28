@@ -1,13 +1,13 @@
 /** The one detail card. Everything clickable on the map funnels into showDetail(). */
 
-import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.0';
-import { flyTo, map } from './map.js?v=2.1.0';
-import { api } from './api.js?v=2.1.0';
-import * as units from './units.js?v=2.1.0';
-import { layers, poiIcon, AID_COLORS } from './map.js?v=2.1.0';
-import { loadedItems } from './poi.js?v=2.1.0';
-import { logForAid } from './discrepancies.js?v=2.1.0';
-import { haversineNM } from './geo.js?v=2.1.0';
+import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.0-3';
+import { flyTo, map } from './map.js?v=2.1.0-3';
+import { api } from './api.js?v=2.1.0-3';
+import * as units from './units.js?v=2.1.0-3';
+import { layers, poiIcon, AID_COLORS } from './map.js?v=2.1.0-3';
+import { loadedItems } from './poi.js?v=2.1.0-3';
+import { logForAid, ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.0-3';
+import { haversineNM } from './geo.js?v=2.1.0-3';
 
 const card = () => $('#detail');
 let current = null;
@@ -246,6 +246,10 @@ function openGoogleRoute(ramp, aid) {
   document.body.append(a); a.click(); a.remove();
 }
 
+// Active Broadcast Notices for an aid (set by notices.js, which shows the BNM tab), drawn at the top of its card.
+const aidNotices = { lookup: () => [], banner: null };
+export function setAidNotices(lookup, banner) { aidNotices.lookup = lookup; aidNotices.banner = banner; }
+
 export function aidRecord(aid, extraActions = []) {
   layers.route?.clearLayers();                 // a new aid card starts without the previous aid's route
   const link = (text, onClick) => el('a', { href: '#', text, onclick: (e) => { e.preventDefault(); onClick(); } });
@@ -259,11 +263,13 @@ export function aidRecord(aid, extraActions = []) {
   const bar = el('div', { class: 'd-bar' }, [
     rampBtn,
     ...extraActions.map((a) => el('button', { class: `btn sm${a.primary ? ' primary' : ''}`, text: a.label, onclick: a.onClick })),
-    el('button', { class: 'btn sm', text: 'Log discrepancy', title: 'Add this aid to the discrepancy tracker', onclick: () => logForAid(aid) }),
+    DISCREP_ON && el('button', { class: 'btn sm', text: 'Log discrepancy', title: 'Add this aid to the discrepancy tracker', onclick: () => logForAid(aid) }),
     el('button', { class: 'btn sm icon', title: 'Copy coordinates', html: SVG.copy, onclick: () => copy(fmt.coord(aid.latitude, aid.longitude)) }),
     el('button', { class: 'btn sm icon', title: 'Zoom to this aid', html: ICONS.xy, onclick: () => flyTo(aid.latitude, aid.longitude, 15) }),
   ]);
   const render = (body) => {
+    const notes = aidNotices.lookup(aid);
+    if (notes.length && aidNotices.banner) body.append(aidNotices.banner(notes));
     body.append(glanceTiles(aid));
     const now = el('div', { class: 'lt-grid' }, [weatherTile(aid), waterTempTile(aid)]);
     const nearby = nearestRampTile(aid, (r) => { ctx.ramp = r; rampBtn.disabled = false; rampBtn.title = `Draw the water route to ${r.name} and open it in Google Maps`; });

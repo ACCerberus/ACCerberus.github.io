@@ -40,7 +40,7 @@ CACHE_SEC = 600
 TIMEOUT = 15
 MONTHS = ("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC")
 TITLE_RE = re.compile(r"^(?P<cat>[A-Z]+)/(?:(?P<area>.*?)/)?(?:(?P<topic>[A-Z]+)/)?(?P<orig>[A-Z][A-Z .]*?)\s+BNM\s+(?P<num>\d{1,4}-\d{2})\s*$")
-LLNR_RE = re.compile(r"\(?\bLLNR\s*:?\s*(\d+(?:\.\d+)?)\)?", re.I)
+LLNR_RE = re.compile(r"\(?\bLLNR\s*[:\-#]?\s*(\d+(?:\.\d+)?)\)?", re.I)      # (LLNR 15080), (LLNR-15115)
 CANCEL_AT_RE = re.compile(r"CANCEL AT\s*//\s*(\d{6}Z\s+[A-Z]{3}\s+\d{2})\s*//", re.I)
 CANCELS_RE = re.compile(r"CANCEL\s+([A-Z][A-Z .]*?\s+BNM\s+\d{1,4}-\d{2})(?:\s+DTG\s+(\d{6}Z\s+[A-Z]{3}\s+\d{2}))?", re.I)
 # Words in the message -> tracker discrepancy type (first match wins).
@@ -49,6 +49,7 @@ DISCREPANCY_WORDS = (
     ("IMPROPER CHARACTERISTIC", "Improper characteristic"), ("OFF STATION", "Off station"), ("OFF-STATION", "Off station"),
     ("MISSING", "Missing"), ("OVERGROWN", "Overgrown"), ("OBSCURED", "Overgrown"), ("VANDALIZED", "Vandalized"),
     ("DESTROYED", "Damaged"), ("DAMAGED", "Damaged"), ("LEANING", "Damaged"), ("SINKING", "Damaged"), ("SUNK", "Damaged"),
+    ("DECOMMISSIONED", "Decommissioned"), ("DISCONTINUED", "Discontinued"), ("RELOCATED", "Relocated"),
 )
 
 
@@ -91,6 +92,8 @@ def parse_item(title: str, description: str, pub: str, link: str) -> dict | None
     discrepancy = next((label for word, label in DISCREPANCY_WORDS if word in upper), "")
     hint = ""
     hm = re.search(r"(?:^|[.\n]\s*|\d\.\s*)([A-Z0-9][A-Z0-9 '&.\-]+?)\s*\(LLNR", upper)
+    if not hm:      # no LLNR given: "CHETCO RIVER BRAVO BAR WARNING SIGN IS EXTINGUISHED."
+        hm = re.search(r"^(?:\d\.\s*)?([A-Z0-9][A-Z0-9 '&.\-]+?)\s+(?:IS|ARE|HAS BEEN|HAVE BEEN)\s", upper)
     if hm:
         hint = re.sub(r"^(?:[A-Z]\.\s+)?(?:(?:THE|A|AN)\s+)?", "", hm.group(1).strip()).title()
     orig = re.sub(r"\s+", " ", m.group("orig").strip())

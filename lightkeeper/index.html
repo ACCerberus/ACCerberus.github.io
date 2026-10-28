@@ -36,8 +36,8 @@
 <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.Default.css">
-<link rel="stylesheet" href="./css/app.css?v=2.1.0">
-<link rel="stylesheet" href="./css/web.css?v=2.1.0">
+<link rel="stylesheet" href="./css/app.css?v=2.1.0-3">
+<link rel="stylesheet" href="./css/web.css?v=2.1.0-3">
 </head>
 <body data-version="2.1.0">
 
@@ -85,7 +85,10 @@
   <button data-panel="weather" title="Weather forecast (F)" hidden>
     <svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.3 1.5A3.5 3.5 0 0 1 17 18z"/></svg><span>Weather</span>
   </button>
-  <button data-panel="discrep" title="Discrepancy tracker (D)">
+  <button data-panel="bnm" title="Broadcast Notices to Mariners (B)">
+    <svg viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v4M12 17h.01"/></svg><span>BNM</span><b class="rail-badge" id="bnm-count" hidden></b>
+  </button>
+  <button data-panel="discrep" title="Discrepancy tracker (D)" hidden>
     <svg viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v4M12 17h.01"/></svg><span>Discrep</span><b class="rail-badge" id="discrep-count" hidden></b>
   </button>
   <button id="rail-locate" title="Go to my location (L)">
@@ -112,6 +115,7 @@
   <section class="view" id="view-measure"></section>
   <section class="view" id="view-water"></section>
   <section class="view" id="view-weather"></section>
+  <section class="view" id="view-bnm"></section>
   <section class="view" id="view-discrep"></section>
   <section class="view" id="view-whatsnew"></section>
   <section class="view" id="view-places"></section>
@@ -131,6 +135,7 @@
   <button data-panel="aids"><svg viewBox="0 0 24 24"><path d="M12 2 9 9h6zM9 9v11M15 9v11M6 20h12M8 13h8"/></svg><span>Aids</span></button>
   <button data-panel="places"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Places</span></button>
   <button data-panel="weather"><svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.3 1.5A3.5 3.5 0 0 1 17 18z"/></svg><span>Weather</span></button>
+  <button data-panel="bnm"><svg viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v4M12 17h.01"/></svg><span>BNM</span><b class="rail-badge" id="bnm-count-tab" hidden></b></button>
   <button id="tab-locate" aria-label="Go to my location"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="8"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg><span>Locate</span></button>
   <button data-panel="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>More</span></button>
 </nav>
@@ -147,7 +152,7 @@
 
 <script src="./vendor/leaflet/leaflet.js"></script>
 <script src="./vendor/markercluster/leaflet.markercluster.js"></script>
-<script type="module" src="./js/app.js?v=2.1.0"></script>
+<script type="module" src="./js/app.js?v=2.1.0-3"></script>
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('[lightkeeper] service worker:', err.message)));

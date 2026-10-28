@@ -1,9 +1,9 @@
 /** NWS weather in the browser (port of weather.py): forecast periods + active alerts, nearest observation,
  *  Open-Meteo as the backup forecast. Same response shapes as the desktop endpoints. */
 
-import { getJson, qs } from './http.js?v=2.1.0';
-import { cached, MIN, HOUR } from './store.js?v=2.1.0';
-import { validateCoords, isInUs, haversineMi, compassPoint, round, METERS_PER_MILE } from './util.js?v=2.1.0';
+import { getJson, qs } from './http.js?v=2.1.0-3';
+import { cached, MIN, HOUR } from './store.js?v=2.1.0-3';
+import { validateCoords, isInUs, haversineMi, compassPoint, round, METERS_PER_MILE } from './util.js?v=2.1.0-3';
 
 const NWS_API_URL = 'https://api.weather.gov';
 const NWS_HEADERS = { Accept: 'application/geo+json' };
