@@ -1,27 +1,27 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js?v=2.1.2-3';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.2-3';
-import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn, setLiteTiles } from './map.js?v=2.1.2-3';
-import { reportBug } from './settings.js?v=2.1.2-3';
-import * as aids from './aids.js?v=2.1.2-3';
-import * as poi from './poi.js?v=2.1.2-3';
-import * as measure from './measure.js?v=2.1.2-3';
-import * as trip from './trip.js?v=2.1.2-3';
-import * as water from './water.js?v=2.1.2-3';
-import * as weather from './weather.js?v=2.1.2-3';
-import * as settings from './settings.js?v=2.1.2-3';
-import * as hover from './hover.js?v=2.1.2-3';
-import * as context from './context.js?v=2.1.2-3';
-import * as places from './places.js?v=2.1.2-3';
-import * as phone from './phone.js?v=2.1.2-3';
-import * as whatsnew from './whatsnew.js?v=2.1.2-3';
-import * as discrep from './discrepancies.js?v=2.1.2-3';
-import * as notices from './notices.js?v=2.1.2-3';
-import * as netcheck from './netcheck.js?v=2.1.2-3';
-import { ipLocation, districtFor } from './geodistrict.js?v=2.1.2-3';
-import { initUpdater } from './web/updater.js?v=2.1.2-3';
-import { hideDetail, clearRoute } from './detail.js?v=2.1.2-3';
+import { api } from './api.js?v=2.1.2-4';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.2-4';
+import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn, setLiteTiles } from './map.js?v=2.1.2-4';
+import { reportBug } from './settings.js?v=2.1.2-4';
+import * as aids from './aids.js?v=2.1.2-4';
+import * as poi from './poi.js?v=2.1.2-4';
+import * as measure from './measure.js?v=2.1.2-4';
+import * as trip from './trip.js?v=2.1.2-4';
+import * as water from './water.js?v=2.1.2-4';
+import * as weather from './weather.js?v=2.1.2-4';
+import * as settings from './settings.js?v=2.1.2-4';
+import * as hover from './hover.js?v=2.1.2-4';
+import * as context from './context.js?v=2.1.2-4';
+import * as places from './places.js?v=2.1.2-4';
+import * as phone from './phone.js?v=2.1.2-4';
+import * as whatsnew from './whatsnew.js?v=2.1.2-4';
+import * as discrep from './discrepancies.js?v=2.1.2-4';
+import * as notices from './notices.js?v=2.1.2-4';
+import * as netcheck from './netcheck.js?v=2.1.2-4';
+import { ipLocation, districtFor } from './geodistrict.js?v=2.1.2-4';
+import { initUpdater } from './web/updater.js?v=2.1.2-4';
+import { hideDetail, clearRoute } from './detail.js?v=2.1.2-4';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 
@@ -144,14 +144,17 @@ async function initDistricts() {
   updateViewStatus();
   // First launch only (no district ever picked): open on the district nearest this connection's location.
   if (saved === null && state.districts.length && !store.get('districtGuessed', false)) {
-    const at = await ipLocation();
-    store.set('districtGuessed', true);      // only once the lookup has finished (a reload mid-way tries again)
-    const d = at && districtFor(state.districts, at[0], at[1]);
-    if (d && store.get('district', null) === null) {
-      sel.value = String(d.id);
-      sel.dispatchEvent(new Event('change'));
-      toast(`Showing D${d.id} ${d.name}, picked from your location. Change it at the top.`, 'ok', 6000);
-    }
+    const guess = ipLocation().then((at) => {
+      store.set('districtGuessed', true);      // only once the lookup has finished (a reload mid-way tries again)
+      const d = at && districtFor(state.districts, at[0], at[1]);
+      if (d && store.get('district', null) === null) {
+        sel.value = String(d.id);
+        sel.dispatchEvent(new Event('change'));
+        toast(`Showing D${d.id} ${d.name}, picked from your location. Change it at the top.`, 'ok', 6000);
+      }
+    });
+    // Aids start loading after at most 2.5 s; a slower answer still picks the district when it arrives.
+    await Promise.race([guess, new Promise((r) => setTimeout(r, 2500))]);
   }
 }
 

@@ -49,12 +49,13 @@ FEEDS = {
     17: _T(443, 444, 445),                        # Arctic: Southeast Alaska, Western Alaska & Arctic
 }
 CACHE_SEC = 600
+MAX_OPEN_DAYS = 180     # a notice with no CANCEL AT whose cancellation never showed up stops counting after this
 TIMEOUT = 15
 MONTHS = ("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC")
 TITLE_RE = re.compile(r"^(?P<cat>[A-Z]+)/(?:(?P<area>.*?)/)?(?:(?P<topic>[A-Z]+)/)?(?P<orig>[A-Z][A-Z0-9 .\-]*?)\s+BNM\s+(?P<num>\d{1,4}-\d{2})\s*$")   # orig: SEC SCR, CGD-NE, CCGD13
 LLNR_RE = re.compile(r"\(?\bLLNR\s*[:\-#]?\s*(\d+(?:\.\d+)?)\)?", re.I)      # (LLNR 15080), (LLNR-15115)
 CANCEL_AT_RE = re.compile(r"CANCEL AT\s*//\s*(\d{6}Z\s+[A-Z]{3}\s+\d{2})\s*//", re.I)
-CANCELS_RE = re.compile(r"CANCEL\s+([A-Z][A-Z .]*?\s+BNM\s+\d{1,4}-\d{2})(?:\s+DTG\s+(\d{6}Z\s+[A-Z]{3}\s+\d{2}))?", re.I)
+CANCELS_RE = re.compile(r"CANCEL\s+([A-Z][A-Z0-9 .\-]*?\s+BNM\s+\d{1,4}-\d{2})(?:\s+DTG\s+(\d{6}Z\s+[A-Z]{3}\s+\d{2}))?", re.I)
 # Words in the message -> tracker discrepancy type (first match wins).
 DISCREPANCY_WORDS = (
     ("EXTINGUISHED", "Extinguished"), ("IMPROPERLY CHARACTERIZED", "Improper characteristic"), ("IMCH", "Improper characteristic"),
@@ -134,11 +135,29 @@ def parse_feed(xml_bytes: bytes) -> list[dict]:
 
 
 def mark_active(items: list[dict], now: datetime | None = None) -> list[dict]:
-    """A SAFETY notice is active until a cancellation names it or its CANCEL AT time passes."""
+    """A SAFETY notice is active until a cancellation names it or its CANCEL AT time passes.
+
+    Many offices title a cancellation with the number of the notice it cancels ("CANCELLATION/CGD-SW BNM 9132-26")
+    and word the text loosely ("Cancel BNM SEC NY 0538-26"), so a cancellation's own id counts as cancelled too.
+    A notice with no CANCEL AT stops counting MAX_OPEN_DAYS after it was broadcast: the feeds only keep recent
+    items, so an older cancellation can no longer be seen.
+    """
     now = now or datetime.now(timezone.utc)
-    cancelled = {i["cancels"] for i in items if i["category"] == "CANCELLATION" and i["cancels"]}
+    cancelled = set()
+    for i in items:
+        if i["category"] == "CANCELLATION":
+            cancelled.add(i["id"])
+            if i["cancels"]:
+                cancelled.add(i["cancels"])
     for i in items:
         expires = dtg_to_datetime(i["cancel_at"], now) if i["cancel_at"] else None
+        if expires is None and i.get("published"):
+            try:
+                age = (now - datetime.fromisoformat(i["published"])).days
+            except ValueError:
+                age = 0
+            if age > MAX_OPEN_DAYS:
+                expires = now
         i["active"] = i["category"] in ("SAFETY", "UPDATE") and i["id"] not in cancelled and (expires is None or expires > now)
     return items
 
@@ -184,7 +203,10 @@ if Blueprint is not None:
     @bp.get("/api/bnm")
     def api_bnm():
         from config import cfg
-        district = int(request.args.get("district", "13") or 13)
+        try:
+            district = int(request.args.get("district", "13") or 13)
+        except ValueError:
+            return jsonify({"ok": False, "district": None, "items": [], "error": "district must be a district number"})
         if district not in FEEDS:
             return jsonify({"ok": False, "district": district, "items": [],
                             "error": f"No broadcast notice feeds known for district {district}"})

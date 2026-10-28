@@ -4,13 +4,13 @@
  *  settings from localStorage. Desktop-only endpoints (tile cache, pre-cache, backup, open file) answer
  *  `{ok:false}` quietly. */
 
-import * as aids from './web/aids.js?v=2.1.2-3';
-import * as poi from './web/poi.js?v=2.1.2-3';
-import * as water from './web/water.js?v=2.1.2-3';
-import * as weather from './web/weather.js?v=2.1.2-3';
-import * as discrep from './web/discrepancies.js?v=2.1.2-3';
-import * as bnm from './web/bnm.js?v=2.1.2-3';
-import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.1.2-3';
+import * as aids from './web/aids.js?v=2.1.2-4';
+import * as poi from './web/poi.js?v=2.1.2-4';
+import * as water from './web/water.js?v=2.1.2-4';
+import * as weather from './web/weather.js?v=2.1.2-4';
+import * as discrep from './web/discrepancies.js?v=2.1.2-4';
+import * as bnm from './web/bnm.js?v=2.1.2-4';
+import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.1.2-4';
 
 export const VERSION = '2.1.2';
 const LS_SETTINGS = 'lk2.web.settings';
@@ -21,6 +21,18 @@ const PLAN_MESSAGE = 'Trip planning runs in the desktop app — download it from
 const read = (key, fallback) => { try { const v = localStorage.getItem(key); return v == null ? fallback : JSON.parse(v); } catch { return fallback; } };
 const write = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage unavailable */ } };
 const nowIso = () => new Date().toISOString().slice(0, 19);
+
+/** Same limits as the desktop /api/settings: an error message for an out-of-range number, else ''. */
+const SETTING_LIMITS = { speed_mph: [3, 60, 'Cruise speed (mph)'], fuel_gph: [0, 100, 'Fuel burn (gal/h)'], tank_gal: [0, 1000, 'Fuel tank (gal)'] };
+function badSetting(body = {}) {
+  for (const [key, [low, high, label]] of Object.entries(SETTING_LIMITS)) {
+    if (!(key in body)) continue;
+    const v = Number(body[key]);
+    if (body[key] === '' || body[key] === null || !(v >= low && v <= high)) return `${label} must be a number from ${low} to ${high}`;
+    body[key] = v;
+  }
+  return '';
+}
 
 function settingsGet() {
   return { speed_mph: 25, fuel_gph: 12, tank_gal: 100, units: 'mi', ...read(LS_SETTINGS, {}), has_mapbox_token: false, has_google_key: false, web: true };
@@ -63,7 +75,7 @@ async function route(method, path, params = {}, body = {}) {
     case 'version': return { version: VERSION };
     case 'status': return status();
     case 'settings':
-      if (method === 'POST') { write(LS_SETTINGS, { ...read(LS_SETTINGS, {}), ...body }); return { ok: true }; }
+      if (method === 'POST') { const bad = badSetting(body); if (bad) return { ok: false, error: bad }; write(LS_SETTINGS, { ...read(LS_SETTINGS, {}), ...body }); return { ok: true }; }
       return settingsGet();
     case 'districts':
       if (sub && rest[0] === 'enabled') return { ok: true, id: Number(sub), enabled: Boolean(body.enabled) };

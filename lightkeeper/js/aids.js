@@ -1,10 +1,10 @@
 /** Aids to Navigation: load from the backend, cluster on the map, list + select in the panel. */
 
-import { api } from './api.js?v=2.1.2-3';
-import { $, el, fmt, toast, panelSkeleton, debounce, setStatus, store } from './ui.js?v=2.1.2-3';
-import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.2-3';
-import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.2-3';
-import { lite, whenChecked, DESKTOP } from './netcheck.js?v=2.1.2-3';
+import { api } from './api.js?v=2.1.2-4';
+import { $, el, fmt, toast, panelSkeleton, debounce, setStatus, store } from './ui.js?v=2.1.2-4';
+import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.2-4';
+import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.2-4';
+import { lite, whenChecked, DESKTOP } from './netcheck.js?v=2.1.2-4';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
 const PAGE = 200;
@@ -105,7 +105,8 @@ export async function loadAll({ silent = false, full = false } = {}) {
     if (state.district && (!state.all.length || state.partial) && !state.all.some((a) => a.district_id === state.district)) {
       // Show the district you were looking at first; the rest of the country follows right after.
       const first = await api.get('/api/aids', { districts: state.district, limit: 100000 }, { timeoutMs: 60000 });
-      state.all = state.partial ? state.all.concat(first.aids || []) : (first.aids || []);
+      // A second load of the same district can overlap the first (quick panning): keep one copy of each aid.
+      state.all = state.partial ? Array.from(new Map(state.all.concat(first.aids || []).map((a) => [a.objectid, a])).values()) : (first.aids || []);
       state.byId = new Map(state.all.map((a) => [a.objectid, a]));
       indexAids();
       refreshMarkers();
@@ -192,6 +193,7 @@ function row(aid) {
 /* ── Selection ── */
 export function toggleSelect(id) { selectMany([id], !state.selected.has(id)); }
 export function selectMany(ids, on) {
+  if (!on) pendingSelected = pendingSelected.filter((id) => !ids.includes(id));
   for (const id of ids) {
     const aid = state.byId.get(id);
     if (!aid) continue;
@@ -205,7 +207,7 @@ export function selectMany(ids, on) {
   saveSelected();
   selectionListeners.forEach((fn) => fn(getSelected()));
 }
-export function clearSelection() { selectMany(Array.from(state.selected.keys()), false); }
+export function clearSelection() { pendingSelected = []; selectMany(Array.from(state.selected.keys()), false); }
 
 /* ── Detail ── */
 export async function openAid(id, { fly = false } = {}) {

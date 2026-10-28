@@ -3,13 +3,16 @@
     "version": "2.1.2",
     "date": "2026-10-28",
     "title": "BNMs for every district",
-    "summary": "Version 2.1.2 — 5 changes since 2.1.1.",
+    "summary": "Version 2.1.2 — 8 changes since 2.1.1.",
     "changes": [
       "Broadcast Notices to Mariners for every district (Northeast, East, Southeast, Heartland, Great Lakes, Southwest, Northwest, Oceania, Arctic) from each district office and its sectors. The BNM tab shows the district you're in and lists only notices about aids (not whale zones, launches or hazard operations).",
       "Northwest notices now include Sector North Bend, and notices from offices like CGD-E, CGD-NE and CCGD13 are read correctly.",
       "More problems recognized in notices: inoperative (fog signals and other equipment) and reduced intensity; notices that name no aid show the area instead of a sentence.",
       "Dam cards say \"No data available\" when the Army Corps has no current reading, instead of dashes.",
-      "Dam cards on the website show live Army Corps readings (water above and below the dam, flows, storage), like the Windows app."
+      "Dam cards on the website show live Army Corps readings (water above and below the dam, flows, storage), like the Windows app.",
+      "Notices that were already cancelled no longer show as active (about 23 across the districts), and notices with no end time stop counting after 180 days.",
+      "Place cards: the first phone number shows when a place lists several, website links always open the real site, and settings only accept sensible speed, fuel and tank values.",
+      "Boat run time on aid cards follows a new cruise speed right away; on a slow link the same district is never loaded twice, and clearing a trip selection stays cleared."
     ],
     "known_issues": [
       "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",

@@ -1,15 +1,15 @@
 /** The one detail card. Everything clickable on the map funnels into showDetail(). */
 
-import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.2-3';
-import { photoUrl, satView } from './photo.js?v=2.1.2-3';
-import { lite } from './netcheck.js?v=2.1.2-3';
-import { flyTo, map } from './map.js?v=2.1.2-3';
-import { api } from './api.js?v=2.1.2-3';
-import * as units from './units.js?v=2.1.2-3';
-import { layers, poiIcon, AID_COLORS } from './map.js?v=2.1.2-3';
-import { loadedItems } from './poi.js?v=2.1.2-3';
-import { logForAid, ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.2-3';
-import { haversineNM } from './geo.js?v=2.1.2-3';
+import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.2-4';
+import { photoUrl, satView } from './photo.js?v=2.1.2-4';
+import { lite } from './netcheck.js?v=2.1.2-4';
+import { flyTo, map } from './map.js?v=2.1.2-4';
+import { api } from './api.js?v=2.1.2-4';
+import * as units from './units.js?v=2.1.2-4';
+import { layers, poiIcon, AID_COLORS } from './map.js?v=2.1.2-4';
+import { loadedItems } from './poi.js?v=2.1.2-4';
+import { logForAid, ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.2-4';
+import { haversineNM } from './geo.js?v=2.1.2-4';
 
 const card = () => $('#detail');
 let current = null;
@@ -279,6 +279,7 @@ function sunLine(aid) {
 
 /** Cruise speed from Settings (mph), read once. */
 let cruise = null;
+document.addEventListener('settings-changed', () => { cruise = null; });
 const cruiseMph = () => (cruise ||= api.get('/api/settings').then((s) => Number(s.speed_mph) || 25).catch(() => 25));
 const runTime = (nm, mph) => { const m = Math.max(1, Math.round((nm * 1.15078) / mph * 60)); return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`; };
 
@@ -512,6 +513,14 @@ export async function showPoi(poi, extraActions = []) {
   }
 }
 
+/** A safe link for a place's website tag: http(s) only; "www.x.com" / "x.com" get https://; anything else is dropped. */
+function safeUrl(raw) {
+  const v = String(raw || '').trim().split(/\s*;\s*/)[0];
+  if (!v) return '';
+  const url = /^https?:\/\//i.test(v) ? v : /^[a-z0-9-]+(\.[a-z0-9-]+)+(\/.*)?$/i.test(v) ? `https://${v}` : '';
+  try { return url && ['http:', 'https:'].includes(new URL(url).protocol) ? url : ''; } catch { return ''; }
+}
+
 export function poiRecord(poi, extraActions = []) {
   const t = poi.tags || {};
   const facts = [];
@@ -534,7 +543,7 @@ export function poiRecord(poi, extraActions = []) {
   if (t.surface) chips.push(['', t.surface]);
   const photo = ['ramp', 'marina', 'hotel', 'motel', 'resort', 'campground', 'park', 'dam'].includes(poi.kind);
   const hours = t.opening_hours ? (t.opening_hours === '24/7' ? 'Open 24 hours' : `Hours: ${t.opening_hours}`) : '';
-  return { id: poi.id, title: poi.name, kind: poi.kind, lat: poi.lat, lon: poi.lon, address: poi.address, phone: poi.phone || t.phone || t['contact:phone'], website: poi.website || t.website || t['contact:website'],
+  return { id: poi.id, title: poi.name, kind: poi.kind, lat: poi.lat, lon: poi.lon, address: poi.address, phone: poi.phone || t.phone || t['contact:phone'], website: safeUrl(poi.website || t.website || t['contact:website']),
     hours, chips, facts, actions: extraActions, source: poi.source, quality: poi.quality, photo };
 }
 

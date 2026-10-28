@@ -1,11 +1,11 @@
 /** Settings (web edition): vessel, Light List data status, storage, about + device diagnostics.
  *  Offline map download, pre-cache, API keys and backup files live in the desktop app. */
 
-import { api, VERSION } from './api.js?v=2.1.2-3';
-import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog, showPanel } from './ui.js?v=2.1.2-3';
-import { ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.2-3';
-import { setBase, getBase } from './map.js?v=2.1.2-3';
-import * as netcheck from './netcheck.js?v=2.1.2-3';
+import { api, VERSION } from './api.js?v=2.1.2-4';
+import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog, showPanel } from './ui.js?v=2.1.2-4';
+import { ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.2-4';
+import { setBase, getBase } from './map.js?v=2.1.2-4';
+import * as netcheck from './netcheck.js?v=2.1.2-4';
 
 export const DOWNLOAD_INFO = '/download.json';   // the site's download switch (see /download.js)
 const state = { body: null, settings: {}, districtsEl: null };
@@ -105,7 +105,12 @@ function num(label, value, min, max) {
 }
 
 async function saveSettings(patch) {
-  try { await api.post('/api/settings', patch); Object.assign(state.settings, patch); toast('Saved', 'ok'); }
+  try {
+    const res = await api.post('/api/settings', patch);
+    if (res?.ok === false) { toast(res.error || 'Not saved', 'warn'); return; }
+    Object.assign(state.settings, patch); toast('Saved', 'ok');
+    document.dispatchEvent(new Event('settings-changed'));
+  }
   catch (err) { toast(`Save failed: ${err.message}`, 'err'); }
 }
 

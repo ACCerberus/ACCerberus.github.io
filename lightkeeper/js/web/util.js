@@ -1,6 +1,6 @@
 /** Browser-edition helpers shared by the data adapters (mirrors geo.py + small bits of poi.py). */
 
-import { haversineMi } from '../geo.js?v=2.1.2-3';
+import { haversineMi } from '../geo.js?v=2.1.2-4';
 
 export const METERS_PER_MILE = 1609.344;
 export const METERS_TO_FEET = 3.28084;
@@ -41,6 +41,8 @@ export const inBbox = (lat, lon, [s, w, n, e]) => lat >= s && lat <= n && lon >=
 /** US phone → '+1 ###-###-####' or ''. */
 export function normalizePhone(raw) {
   if (!raw) return '';
+  const parts = String(raw).split(/[;,/]|\bor\b/).filter((x) => x.trim());
+  if (parts.length > 1) return parts.map(normalizePhone).find(Boolean) || '';   // OSM lists several numbers: the first that parses
   let digits = String(raw).replace(/\D/g, '');
   if (digits.length === 11 && digits.startsWith('1')) digits = digits.slice(1);
   if (digits.length !== 10) return '';
