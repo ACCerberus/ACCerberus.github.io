@@ -7,10 +7,10 @@
  *  7 days, reverse geocodes forever, assembled place lists 5 minutes.
  */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.0.7-5';
-import { cached, idbGet, idbSet, DAY, MIN } from './store.js?v=2.0.7-5';
-import { districts as districtList, manifest, staticJson } from './aids.js?v=2.0.7-5';
-import { haversineMi, isInUs, validateCoords, normalizePhone, first, formatAddress, METERS_PER_MILE } from './util.js?v=2.0.7-5';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.0.7-6';
+import { cached, idbGet, idbSet, DAY, MIN } from './store.js?v=2.0.7-6';
+import { districts as districtList, manifest, staticJson } from './aids.js?v=2.0.7-6';
+import { haversineMi, isInUs, validateCoords, normalizePhone, first, formatAddress, METERS_PER_MILE } from './util.js?v=2.0.7-6';
 
 const SOURCE_OSM = 'OpenStreetMap';
 const SOURCE_NOMINATIM = 'Nominatim';
@@ -453,12 +453,23 @@ async function photonPlaces(kinds, lat, lon, radiusM) {
   return withinRadius(found, lat, lon, radiusM);
 }
 
+const categoryMemo = new Map();   // "term|viewbox" -> request: hotels and parks share "campground", reloads share all
+function nominatimCategory(q, viewbox) {
+  const key = `${q}|${viewbox}`;
+  if (!categoryMemo.has(key)) {
+    const req = nominatimGet('search', { q, format: 'jsonv2', bounded: 1, viewbox, limit: 40, countrycodes: 'us', addressdetails: 1, extratags: 1 });
+    categoryMemo.set(key, req);
+    req.then(() => setTimeout(() => categoryMemo.delete(key), POI_LIST_TTL), () => categoryMemo.delete(key));
+  }
+  return categoryMemo.get(key);
+}
+
 /** Nominatim bounded category search ("boat ramp", "hotel", …) — 1 request per second through the shared queue. */
 async function nominatimPlaces(kinds, lat, lon, radiusM) {
   const deg = radiusM / 111320;
   const viewbox = `${lon - deg},${lat + deg},${lon + deg},${lat - deg}`;
   const terms = [...new Set(kinds.map((k) => NOMINATIM_TERMS[k]).filter(Boolean))];
-  const results = await Promise.allSettled(terms.map((q) => nominatimGet('search', { q, format: 'jsonv2', bounded: 1, viewbox, limit: 40, countrycodes: 'us', addressdetails: 1, extratags: 1 })));
+  const results = await Promise.allSettled(terms.map((q) => nominatimCategory(q, viewbox)));
   if (!results.some((r) => r.status === 'fulfilled')) throw new Error('Nominatim unavailable');
   const found = [];
   for (const r of results) {
@@ -499,6 +510,7 @@ async function liveHotels(lat, lon, radius) {
 
 /* ── One answer within PLACES_BUDGET_MS: first non-empty source wins, Overpass keeps refreshing the cache ── */
 const PLACES_BUDGET_MS = 6000;
+const PLACES_GRACE_MS = 10000;
 const LIVE_TTL = 7 * DAY;
 const QUICK_TTL = POI_LIST_TTL;
 const liveRuns = new Map();          // key -> the running Overpass load for an area (one at a time)
@@ -513,17 +525,23 @@ function startLive(key, loader) {
   return liveRuns.get(key);
 }
 
-/** Resolve with the first non-empty list, or after every source settled / the budget ran out. */
-function firstNonEmpty(sources, budgetMs) {
+/** Resolve with the first non-empty list, or once every source settled. If the budget runs out while sources are
+ *  still working and none has answered, keep waiting up to `graceMs` more rather than calling it unavailable. */
+function firstNonEmpty(sources, budgetMs, graceMs) {
   return new Promise((resolve) => {
     let pending = sources.length;
     let anyOk = false;
-    const timer = setTimeout(() => resolve({ items: [], anyOk }), budgetMs);
+    let finished = false;
+    const finish = (items) => { if (!finished) { finished = true; clearTimeout(timer); resolve({ items, anyOk }); } };
+    let timer = setTimeout(function onBudget() {
+      if (anyOk || pending === 0) finish([]);                // a source answered "nothing here" in time
+      else timer = setTimeout(() => finish([]), graceMs);   // all still working (e.g. the Nominatim queue): wait a bit more
+    }, budgetMs);
     for (const p of sources) {
       p.then((items) => {
         anyOk = true;
-        if (items?.length) { clearTimeout(timer); resolve({ items, anyOk }); }
-      }, () => {}).finally(() => { if (--pending === 0) { clearTimeout(timer); resolve({ items: [], anyOk }); } });
+        if (items?.length) finish(items);
+      }, () => {}).finally(() => { if (--pending === 0) finish([]); });
     }
   });
 }
@@ -552,7 +570,7 @@ async function gather({ kinds, lat, lon, radiusM, liveKey, live, pick }) {
     livePromise.then(fromLive),
     photonPlaces(kinds, lat, lon, radiusM),
     nominatimPlaces(kinds, lat, lon, radiusM),
-  ], PLACES_BUDGET_MS);
+  ], PLACES_BUDGET_MS, PLACES_GRACE_MS);
   if (answer.items.length) {
     const items = rank(dedup(answer.items));
     await idbSet(quickKey, items);
