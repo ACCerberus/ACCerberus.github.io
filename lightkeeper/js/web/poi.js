@@ -7,10 +7,10 @@
  *  7 days, reverse geocodes forever, assembled place lists 5 minutes.
  */
 
-import { overpass, nominatimGet } from './http.js?v=2.0.7-4';
-import { cached, idbGet, idbSet, DAY, MIN } from './store.js?v=2.0.7-4';
-import { districts as districtList, manifest, staticJson } from './aids.js?v=2.0.7-4';
-import { haversineMi, isInUs, validateCoords, normalizePhone, first, formatAddress, METERS_PER_MILE } from './util.js?v=2.0.7-4';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.0.7-5';
+import { cached, idbGet, idbSet, DAY, MIN } from './store.js?v=2.0.7-5';
+import { districts as districtList, manifest, staticJson } from './aids.js?v=2.0.7-5';
+import { haversineMi, isInUs, validateCoords, normalizePhone, first, formatAddress, METERS_PER_MILE } from './util.js?v=2.0.7-5';
 
 const SOURCE_OSM = 'OpenStreetMap';
 const SOURCE_NOMINATIM = 'Nominatim';
@@ -409,23 +409,73 @@ function withinRadius(records, lat, lon, radiusM) {
   return out;
 }
 
-/** Live Overpass results for a key when a fresh copy exists; otherwise start the query in the background
- *  (7-day cache) so the next refresh of the same view includes it. */
-const liveInflight = new Map();
-async function liveCached(key, loader) {
-  const hit = await idbGet(key);
-  if (hit && Date.now() - hit.at < 7 * DAY) return hit.value;
-  if (!liveInflight.has(key)) {
-    liveInflight.set(key, loader().then(async (v) => { await idbSet(key, v); return v; }).catch((err) => { console.debug('[lightkeeper] live places refresh failed:', err?.message); return null; }).finally(() => liveInflight.delete(key)));
+/* ── Fallback sources when Overpass is busy (same order as the desktop poi.py) ── */
+const PHOTON_URL = 'https://photon.komoot.io/api/';
+const PHOTON_TIMEOUT_MS = 3000;
+const PHOTON_TAGS = {
+  ramp: ['leisure:slipway'], marina: ['leisure:marina'],
+  hotel: ['tourism:hotel', 'tourism:guest_house'], motel: ['tourism:motel'], resort: ['tourism:resort'],
+  campground: ['tourism:camp_site'], park: ['leisure:park', 'boundary:national_park'],
+};
+const TYPE_KIND = {
+  hotel: 'hotel', motel: 'motel', resort: 'resort', guest_house: 'hotel', camp_site: 'campground', caravan_site: 'campground',
+  slipway: 'ramp', boat_ramp: 'ramp', marina: 'marina', park: 'park', national_park: 'park',
+};
+const NOMINATIM_TERMS = { ramp: 'boat ramp', marina: 'marina', hotel: 'hotel', motel: 'motel', campground: 'campground', park: 'park' };
+const OSM_TYPE = { N: 'node', W: 'way', R: 'relation' };
+
+/** Photon (komoot): OSM search with tag filters, every tag query in parallel, 3 s each. Throws only if all fail. */
+async function photonPlaces(kinds, lat, lon, radiusM) {
+  const deg = radiusM / 111320;
+  const bbox = `${lon - deg},${lat - deg},${lon + deg},${lat + deg}`;
+  const jobs = [];
+  for (const kind of kinds) {
+    for (const tag of PHOTON_TAGS[kind] || []) {
+      jobs.push(getJson(`${PHOTON_URL}?${qs({ q: kind, osm_tag: tag, bbox, limit: 50, lat: lat.toFixed(4), lon: lon.toFixed(4) })}`, { timeoutMs: PHOTON_TIMEOUT_MS }));
+    }
   }
-  return null;
-}
-function mergeLists(primary, extra) {
-  const seen = new Set(primary.map((r) => r.id));
-  return primary.concat((extra || []).filter((r) => !seen.has(r.id)));
+  const results = await Promise.allSettled(jobs);
+  if (!results.some((r) => r.status === 'fulfilled')) throw new Error('Photon unavailable');
+  const found = [];
+  for (const r of results) {
+    for (const f of r.status === 'fulfilled' ? r.value?.features || [] : []) {
+      const pr = f.properties || {};
+      const [plon, plat] = f.geometry?.coordinates || [];
+      const name = cleanName(pr.name);
+      if (!name || !validateCoords(plat, plon) || !isInUs(plat, plon) || isHostel(name, { tourism: pr.osm_value || '' })) continue;
+      const kind = TYPE_KIND[pr.osm_value];   // the place's own tag decides its kind
+      if (!kind || !kinds.includes(kind)) continue;
+      const address = formatAddress(pr.housenumber, pr.street, pr.city || pr.town || pr.village || pr.locality, pr.state, pr.postcode);
+      found.push(newRecord(`osm:${OSM_TYPE[pr.osm_type] || 'node'}:${pr.osm_id}`, kind, name, 'osm', plat, plon,
+        { address, quality: address ? 'likely' : 'unverified', source: 'OpenStreetMap (Photon)', origin: [lat, lon] }));
+    }
+  }
+  return withinRadius(found, lat, lon, radiusM);
 }
 
-/* ── Fetch pipelines ── */
+/** Nominatim bounded category search ("boat ramp", "hotel", …) — 1 request per second through the shared queue. */
+async function nominatimPlaces(kinds, lat, lon, radiusM) {
+  const deg = radiusM / 111320;
+  const viewbox = `${lon - deg},${lat + deg},${lon + deg},${lat - deg}`;
+  const terms = [...new Set(kinds.map((k) => NOMINATIM_TERMS[k]).filter(Boolean))];
+  const results = await Promise.allSettled(terms.map((q) => nominatimGet('search', { q, format: 'jsonv2', bounded: 1, viewbox, limit: 40, countrycodes: 'us', addressdetails: 1, extratags: 1 })));
+  if (!results.some((r) => r.status === 'fulfilled')) throw new Error('Nominatim unavailable');
+  const found = [];
+  for (const r of results) {
+    for (const row of r.status === 'fulfilled' && Array.isArray(r.value) ? r.value : []) {
+      // nominatimRecord names an unnamed feature "Boat Ramp – <road>, <town>", never after the bare street.
+      const rec = nominatimRecord(row, [lat, lon]);
+      if (!rec) continue;
+      const kind = TYPE_KIND[row.type] || rec.kind;
+      if (!kinds.includes(kind)) continue;
+      rec.kind = kind;
+      found.push(rec);
+    }
+  }
+  return withinRadius(found, lat, lon, radiusM);
+}
+
+/* ── Live Overpass loads (full naming, dedup, park linking) ── */
 async function liveRampsAndParks(lat, lon, radiusM) {
   const origin = [lat, lon];
   const [rampEls, parkEls] = await Promise.all([
@@ -439,25 +489,6 @@ async function liveRampsAndParks(lat, lon, radiusM) {
   await enrich(rampRecs, FETCH_GEOCODE_LOOKUPS);
   return { ramps: rampRecs, parks: linked };
 }
-
-async function loadRampsAndParks(lat, lon, radiusM) {
-  const key = cacheKey('ramps+parks', lat, lon, radiusM);
-  const shipped = await shippedPlaces(lat, lon);
-  if (!shipped.length) {
-    const { value } = await cached(key, POI_LIST_TTL, () => liveRampsAndParks(lat, lon, radiusM));
-    return value;
-  }
-  const near = withinRadius(shipped, lat, lon, radiusM);
-  let ramps = rank(near.filter((r) => RAMP_KINDS.includes(r.kind)));
-  let parks = rank(near.filter((r) => r.kind === 'park'));
-  const live = await liveCached(`live:${key}`, () => liveRampsAndParks(lat, lon, radiusM));
-  if (live) { ramps = rank(dedup(mergeLists(ramps, live.ramps))); parks = rank(dedup(mergeLists(parks, live.parks))); }
-  return { ramps: ramps.slice(0, MAX_LAUNCHES_TOTAL), parks: parks.slice(0, MAX_LAUNCHES_TOTAL) };
-}
-
-export async function fetchRamps(lat, lon, radiusM) { return (await loadRampsAndParks(lat, lon, clamp(radiusM ?? LAUNCH_RADIUS[1], LAUNCH_RADIUS))).ramps; }
-export async function fetchParks(lat, lon, radiusM) { return (await loadRampsAndParks(lat, lon, clamp(radiusM ?? LAUNCH_RADIUS[1], LAUNCH_RADIUS))).parks; }
-
 async function liveHotels(lat, lon, radius) {
   const origin = [lat, lon];
   const elements = await overpassElements(LODGING_SELECTORS, lat, lon, radius, OVERPASS_LODGING_LIMIT);
@@ -466,19 +497,88 @@ async function liveHotels(lat, lon, radius) {
   return hotels;
 }
 
-export async function fetchHotels(lat, lon, radiusM, types) {
-  const radius = clamp(radiusM ?? HOTEL_RADIUS[1], HOTEL_RADIUS);
-  const wanted = new Set((types || []).map((t) => String(t).trim().toLowerCase()).filter(Boolean));
-  const key = cacheKey('hotels', lat, lon, radius);
-  const shipped = await shippedPlaces(lat, lon);
-  let hotels;
-  if (!shipped.length) hotels = (await cached(key, POI_LIST_TTL, () => liveHotels(lat, lon, radius))).value;
-  else {
-    hotels = rank(withinRadius(shipped, lat, lon, radius).filter((r) => LODGING_KINDS.includes(r.kind)));
-    const live = await liveCached(`live:${key}`, () => liveHotels(lat, lon, radius));
-    if (live) hotels = rank(dedup(mergeLists(hotels, live)));
+/* ── One answer within PLACES_BUDGET_MS: first non-empty source wins, Overpass keeps refreshing the cache ── */
+const PLACES_BUDGET_MS = 6000;
+const LIVE_TTL = 7 * DAY;
+const QUICK_TTL = POI_LIST_TTL;
+const liveRuns = new Map();          // key -> the running Overpass load for an area (one at a time)
+
+/** Start (or join) the Overpass load for an area; its result lands in IndexedDB for the next request. */
+function startLive(key, loader) {
+  if (!liveRuns.has(key)) {
+    const run = loader().then(async (v) => { await idbSet(key, v); return v; });
+    run.catch(() => {}).finally(() => liveRuns.delete(key));
+    liveRuns.set(key, run);
   }
-  return hotels.filter((h) => (wanted.size ? wanted.has(h.kind) : LODGING_KINDS.includes(h.kind))).slice(0, MAX_HOTELS_TOTAL);
+  return liveRuns.get(key);
+}
+
+/** Resolve with the first non-empty list, or after every source settled / the budget ran out. */
+function firstNonEmpty(sources, budgetMs) {
+  return new Promise((resolve) => {
+    let pending = sources.length;
+    let anyOk = false;
+    const timer = setTimeout(() => resolve({ items: [], anyOk }), budgetMs);
+    for (const p of sources) {
+      p.then((items) => {
+        anyOk = true;
+        if (items?.length) { clearTimeout(timer); resolve({ items, anyOk }); }
+      }, () => {}).finally(() => { if (--pending === 0) { clearTimeout(timer); resolve({ items: [], anyOk }); } });
+    }
+  });
+}
+
+/**
+ * Places of `kinds` around a point.
+ *   1. pre-built district file (instant), merged with the last Overpass answer — Overpass refreshes in the background
+ *   2. otherwise Overpass, Photon and Nominatim at once; the first non-empty answer inside the budget wins
+ *   3. otherwise the last cached answer for the area, or [] when a source answered "nothing here"
+ * Throws (→ the chip shows "unavailable") only when every source failed and nothing is cached.
+ */
+async function gather({ kinds, lat, lon, radiusM, liveKey, live, pick }) {
+  const fromLive = (v) => rank((pick(v) || []).filter((r) => kinds.includes(r.kind)));
+  const shipped = rank(withinRadius(await shippedPlaces(lat, lon), lat, lon, radiusM).filter((r) => kinds.includes(r.kind)));
+  const cachedLive = await idbGet(liveKey);
+  const liveFresh = Boolean(cachedLive && Date.now() - cachedLive.at < LIVE_TTL);
+  const livePromise = liveFresh ? null : startLive(liveKey, live);
+  if (shipped.length) return rank(dedup(shipped.concat(cachedLive ? fromLive(cachedLive.value) : [])));
+  if (liveFresh) return fromLive(cachedLive.value);
+
+  const quickKey = `quick:${liveKey}:${kinds.join(',')}`;
+  const quickHit = await idbGet(quickKey);
+  if (quickHit && Date.now() - quickHit.at < QUICK_TTL && quickHit.value.length) return quickHit.value;
+
+  const answer = await firstNonEmpty([
+    livePromise.then(fromLive),
+    photonPlaces(kinds, lat, lon, radiusM),
+    nominatimPlaces(kinds, lat, lon, radiusM),
+  ], PLACES_BUDGET_MS);
+  if (answer.items.length) {
+    const items = rank(dedup(answer.items));
+    await idbSet(quickKey, items);
+    return items;
+  }
+  const stale = cachedLive ? fromLive(cachedLive.value) : (quickHit?.value || []);
+  if (stale.length) return stale;
+  if (answer.anyOk) return [];
+  throw new Error('Map data sources are not responding; showing cached places if any');
+}
+
+export async function fetchRamps(lat, lon, radiusM) {
+  const r = clamp(radiusM ?? LAUNCH_RADIUS[1], LAUNCH_RADIUS);
+  const items = await gather({ kinds: RAMP_KINDS, lat, lon, radiusM: r, liveKey: `live:${cacheKey('ramps+parks', lat, lon, r)}`, live: () => liveRampsAndParks(lat, lon, r), pick: (v) => v?.ramps });
+  return items.slice(0, MAX_LAUNCHES_TOTAL);
+}
+export async function fetchParks(lat, lon, radiusM) {
+  const r = clamp(radiusM ?? LAUNCH_RADIUS[1], LAUNCH_RADIUS);
+  const items = await gather({ kinds: ['park', 'campground'], lat, lon, radiusM: r, liveKey: `live:${cacheKey('ramps+parks', lat, lon, r)}`, live: () => liveRampsAndParks(lat, lon, r), pick: (v) => v?.parks });
+  return items.map((p) => ({ ...p, kind: 'park' })).slice(0, MAX_LAUNCHES_TOTAL);
+}
+export async function fetchHotels(lat, lon, radiusM, types) {
+  const r = clamp(radiusM ?? HOTEL_RADIUS[1], HOTEL_RADIUS);
+  const wanted = new Set((types || []).map((t) => String(t).trim().toLowerCase()).filter(Boolean));
+  const items = await gather({ kinds: LODGING_KINDS, lat, lon, radiusM: r, liveKey: `live:${cacheKey('hotels', lat, lon, r)}`, live: () => liveHotels(lat, lon, r), pick: (v) => v });
+  return items.filter((h) => (wanted.size ? wanted.has(h.kind) : LODGING_KINDS.includes(h.kind))).slice(0, MAX_HOTELS_TOTAL);
 }
 
 export { METERS_PER_MILE };

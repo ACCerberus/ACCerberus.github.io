@@ -1,12 +1,11 @@
 /** Places layers: boat ramps / marinas, lodging, parks with ramps. Toggled by the top-bar chips. */
 
-import { api } from './api.js?v=2.0.7-4';
-import { $$, toast, debounce, store } from './ui.js?v=2.0.7-4';
-import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.7-4';
-import { showPoi } from './detail.js?v=2.0.7-4';
+import { api } from './api.js?v=2.0.7-5';
+import { $$, toast, debounce, store } from './ui.js?v=2.0.7-5';
+import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.7-5';
+import { showPoi } from './detail.js?v=2.0.7-5';
 
 const LAYERS = {
-  // capM caps the search radius, so a zoomed-out view never asks Overpass for a whole state.
   ramps: { path: '/api/poi/ramps', capM: 150000 },
   hotels: { path: '/api/poi/hotels', capM: 100000 },
   parks: { path: '/api/poi/parks', capM: 150000 },
@@ -21,6 +20,7 @@ export function init() {
     chip.addEventListener('click', () => toggle(chip.dataset.layer));
   }
   map.on('moveend', debounce(refreshAll, 700));
+  document.addEventListener('places-updated', () => { for (const n of on) { layers[n].clearLayers(); items[n].clear(); } refreshAll(); });
   refreshAll();
 }
 
@@ -55,19 +55,23 @@ function setCount(chip, n, progress = '') {
   badge.textContent = progress ? ` · ${progress}` : n == null ? '' : n ? ` · ${n}` : ' · none here';
 }
 
-// The web edition queries Overpass straight from the browser (no 4 s server budget), so the percent runs on an
-// 8 s scale and holds at 95% until the data actually arrives.
-const PLACES_BUDGET_MS = 8000;
+// The web edition answers within its own 6 s budget (pre-built data, Overpass, Photon, Nominatim — first non-empty
+// wins), so the percent runs on that scale and holds at 95% until the answer arrives.
+const PLACES_BUDGET_MS = 6000;
+const UNAVAILABLE_TIP = 'Map data sources are not responding; showing cached places if any';
+const RETRY_UNAVAILABLE_MS = 15000;
+const retryTimers = {};
 
 /** Show " · 37%" on the chip while its request is in flight. Returns a stop function. */
 function startPercent(chip) {
   if (!chip) return () => {};
   const t0 = performance.now();
   let stopped = false;
+  let shown = 0;
   const tick = () => {
     if (stopped) return;
-    const pct = Math.min(95, Math.round(((performance.now() - t0) / PLACES_BUDGET_MS) * 100));
-    setCount(chip, null, `${pct}%`);
+    shown = Math.max(shown, Math.min(95, Math.round(((performance.now() - t0) / PLACES_BUDGET_MS) * 100)));  // never goes backwards
+    setCount(chip, null, `${shown}%`);
     setTimeout(tick, 120);
   };
   tick();
@@ -76,9 +80,14 @@ function startPercent(chip) {
 
 function refreshAll() { for (const name of on) refresh(name); }
 
+const inflight = {};      // layer -> true while a request is running
+const again = {};         // layer -> the map moved during that request; run once more afterwards
+
 async function refresh(name) {
   const chip = document.querySelector(`#layer-chips .chip[data-layer="${name}"]`);
   if (!on.has(name)) return;
+  if (inflight[name]) { again[name] = true; return; }   // one request per layer; keeps the percent steady
+  inflight[name] = true;
   const gen = ++generation;
   const c = map.getCenter();
   chip?.classList.add('busy');
@@ -95,14 +104,24 @@ async function refresh(name) {
       items[name].set(poi.id, { poi, marker: m });
     }
     stopProgress();
-    if (data.ok === false) { setCount(chip, null); if (chip) chip.title = data.error || 'Places unavailable right now'; return; }
+    if (chip && !chip.dataset.tip) chip.dataset.tip = chip.title;
+    if (data.ok === false) {
+      setCount(chip, null, 'unavailable');
+      if (chip) chip.title = UNAVAILABLE_TIP;
+      clearTimeout(retryTimers[name]);   // keep trying quietly in the background
+      retryTimers[name] = setTimeout(() => { if (on.has(name)) refresh(name); }, RETRY_UNAVAILABLE_MS);
+      return;
+    }
+    if (chip) chip.title = chip.dataset.tip;
     setCount(chip, (data.items || []).length);
   } catch (err) {
     toast(`${name}: ${err.message}`, 'warn');
   } finally {
     stopProgress();
     chip?.classList.remove('busy');
+    inflight[name] = false;
     changed();
+    if (again[name]) { again[name] = false; refresh(name); }
   }
 }
 
