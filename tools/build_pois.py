@@ -189,11 +189,44 @@ def _rank_key(rec: dict):
 
 # ── OSM tag interpretation (poi.py rules) ─────────────────────────────────────
 
+KEEP_UPPER = frozenset(("RV", "KOA", "USACE", "USFS", "BLM", "NPS", "PUD", "WDFW", "ODFW", "IDFG", "DNR", "USA", "US",
+                        "II", "III", "IV", "LLC", "YMCA", "BNSF", "TVA", "SR", "HWY", "NW", "NE", "SW", "SE"))
+LOWER_WORDS = frozenset(("a", "an", "and", "at", "by", "for", "in", "of", "on", "or", "the", "to"))
+
+
+def _cap(word: str) -> str:
+    """Capitalize one word; Mc and O' keep their inner capital (McNary, O'Brien). Mac is left alone (Machine)."""
+    low = word.lower()
+    if low.startswith("mc") and len(low) > 3:
+        return "Mc" + low[2].upper() + low[3:]
+    if low.startswith("o'") and len(low) > 2:
+        return "O'" + low[2].upper() + low[3:]
+    return low[:1].upper() + low[1:]
+
+
+def tidy_name(name: str) -> str:
+    """Collapse runs of spaces; turn an ALL CAPS name into Title Case (acronyms like RV or USACE stay upper)."""
+    name = " ".join(str(name).split())
+    letters = [c for c in name if c.isalpha()]
+    if len(letters) >= 5 and all(c.isupper() for c in letters):
+        words = []
+        for i, w in enumerate(name.split(" ")):
+            core = w.strip("().,'&-/")
+            if core.upper() in KEEP_UPPER:
+                words.append(w.upper())
+            elif i > 0 and core.lower() in LOWER_WORDS:
+                words.append(w.lower())
+            else:
+                words.append("-".join(_cap(part) for part in w.split("-")))
+        name = " ".join(words)
+    return name
+
+
 def osm_name(tags: dict) -> str:
     for key in NAME_TAGS:
         name = _clean_name(tags.get(key))
         if name:
-            return name
+            return tidy_name(name)
     return ""
 
 
@@ -361,6 +394,40 @@ def park_record(el: dict) -> dict | None:
     return rec
 
 
+# ── Dams (named OSM dams, written to DISTRICT_<id>_<Name>_Dams.json for the web app's Dams layer) ──────────
+
+DAM_SELECTORS = ('["waterway"="dam"]["name"]',)
+DAM_GENERIC_WORDS = frozenset(("dam", "dike", "dyke", "levee", "weir", "no", "number", "the", "of"))
+
+
+def _is_dam_element(tags: dict) -> bool:
+    return tags.get("waterway") == "dam"
+
+
+def dam_record(el: dict) -> dict | None:
+    """Same shape as the web app's osmDamPoi(), so the file can be drawn as-is."""
+    tags = el.get("tags") or {}
+    name = osm_name(tags)
+    words = set(_NAME_NORMALIZE_RE.sub("", name.lower()).split())
+    if not name or not (words - DAM_GENERIC_WORDS) or is_closed(tags, name):
+        return None                                   # "Dam" alone or a removed dam: skip
+    center = el if el.get("lat") is not None else (el.get("center") or {})
+    try:
+        lat, lon = float(center["lat"]), float(center["lon"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    if not valid_coords(lat, lon) or not is_in_us(lat, lon):
+        return None
+    return {
+        "id": f"osm:{el.get('type')}:{el.get('id')}", "kind": "dam", "name": name, "name_source": "osm",
+        "lat": round(lat, 4), "lon": round(lon, 4), "address": osm_address(tags),
+        "phone": clean_phone(_first(tags, "phone", "contact:phone")),
+        "website": _first(tags, "website", "contact:website", "url"), "operator": tags.get("operator", ""),
+        "tags": {"osm_id": f"{el.get('type')}/{el.get('id')}", "waterway": _first(tags, "waterway:name", "river")},
+        "quality": "verified", "source": SOURCE_OSM,
+    }
+
+
 # ── Dedup / linking (poi.py rules) ────────────────────────────────────────────
 
 def _names_match(a: str, b: str) -> bool:
@@ -475,7 +542,7 @@ class Overpass:
 
 def cell_query(lat: float, lon: float, radius_m: int) -> str:
     around = f"(around:{radius_m},{lat:.4f},{lon:.4f})"
-    body = "\n".join(f"  nwr{sel}{around};" for sel in RAMP_SELECTORS_FAST + LODGING_SELECTORS_FAST + PARK_SELECTORS)
+    body = "\n".join(f"  nwr{sel}{around};" for sel in RAMP_SELECTORS_FAST + LODGING_SELECTORS_FAST + PARK_SELECTORS + DAM_SELECTORS)
     return f"[out:json][timeout:{QUERY_TIMEOUT_S}][maxsize:268435456];\n(\n{body}\n);\nout center;"
 
 
@@ -515,6 +582,7 @@ def crawl_district(district: dict, data_dir: Path, client: Overpass, cell: float
     ramps: list[dict] = []
     lodging: list[dict] = []
     parks: list[dict] = []
+    dams: dict[str, dict] = {}
     for n, (lat, lon) in enumerate(cells, 1):
         t0 = time.time()
         elements = client.query(cell_query(lat, lon, radius_m))
@@ -525,12 +593,16 @@ def crawl_district(district: dict, data_dir: Path, client: Overpass, cell: float
         ramps += sorted(cell_ramps, key=_rank_key)[:PER_CELL_CAP["ramp"] + PER_CELL_CAP["marina"]]
         lodging += sorted(cell_lodging, key=_rank_key)[:PER_CELL_CAP["lodging"]]
         parks += sorted(cell_parks, key=_rank_key)[:PER_CELL_CAP["park"]]
+        for rec in (dam_record(e) for e in elements if _is_dam_element(e.get("tags") or {})):
+            if rec:
+                dams.setdefault(rec["id"], rec)
         print(f"  cell {n}/{len(cells)} ({lat:.2f},{lon:.2f}): {len(elements)} elements → "
               f"{len(cell_ramps)} ramps, {len(cell_lodging)} lodging, {len(cell_parks)} parks ({time.time() - t0:.0f}s)", flush=True)
     ramps = dedup(ramps)
     lodging = dedup(lodging)
     parks = link_parks(ramps, dedup(parks))
-    return sorted(ramps + lodging + parks, key=lambda r: (r["kind"], r["name"]))
+    places = sorted(ramps + lodging + parks, key=lambda r: (r["kind"], r["name"]))
+    return places, sorted(dams.values(), key=lambda r: r["name"])
 
 
 def write_district(path: Path, records: list[dict]) -> int:
@@ -555,6 +627,11 @@ def places_filename(district: dict) -> str:
     return f"DISTRICT_{district['id']}_{name}_Places.json" if name else f"DISTRICT_{district['id']}_Places.json"
 
 
+def dams_filename(district: dict) -> str:
+    """DISTRICT_13_Northwest_Dams.json (same naming as the places file)."""
+    return places_filename(district).replace("_Places.json", "_Dams.json")
+
+
 def update_manifest(data_dir: Path) -> None:
     """Record which district place files exist (the web app only requests files listed here)."""
     path = data_dir / "manifest.json"
@@ -568,6 +645,15 @@ def update_manifest(data_dir: Path) -> None:
             continue
         places[did] = {"file": file.name, "count": count, "size": file.stat().st_size}
     manifest["places"] = places
+    dams: dict[str, dict[str, Any]] = {}
+    for file in sorted(data_dir.glob("DISTRICT_*_Dams.json")):
+        did = file.stem.split("_")[1]
+        try:
+            count = len(json.loads(file.read_text("utf-8")))
+        except (ValueError, OSError):
+            continue
+        dams[did] = {"file": file.name, "count": count, "size": file.stat().st_size}
+    manifest["dams"] = dams
     manifest["places_checked_at"] = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     path.write_bytes(json.dumps(manifest, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
 
@@ -595,7 +681,7 @@ def main() -> int:
         t0 = time.time()
         path = args.data / places_filename(district)
         try:
-            records = crawl_district(district, args.data, client, args.cell, args.radius)
+            records, dam_records = crawl_district(district, args.data, client, args.cell, args.radius)
         except Exception as exc:  # noqa: BLE001 - keep the previous file for this district
             failed.append(district["id"])
             print(f"D{district['id']:02d}: crawl failed, keeping previous file ({exc})", flush=True)
@@ -604,6 +690,9 @@ def main() -> int:
         for r in records:
             kinds[r["kind"]] = kinds.get(r["kind"], 0) + 1
         written = write_district(path, records)
+        dams_path = args.data / dams_filename(district)
+        write_district(dams_path, dam_records)
+        print(f"D{district['id']:02d}: {len(dam_records):,} named dams -> {dams_path.name}", flush=True)
         print(f"D{district['id']:02d}: {len(records):,} places {kinds} → {path.name} "
               f"({path.stat().st_size / 1e6:.1f} MB, {'written' if written else 'unchanged'}) in {time.time() - t0:.0f}s", flush=True)
     update_manifest(args.data)
