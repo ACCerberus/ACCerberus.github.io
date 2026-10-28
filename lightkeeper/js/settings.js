@@ -51,7 +51,7 @@ async function render() {
 
   b.append(section('Desktop app', [
     el('p', { class: 'muted small', style: 'margin:0', text: 'The Windows app adds trip planning (ramp chaining, lodging, PDF work plans), USACE dam releases, offline map tiles and satellite imagery for whole districts, backups and optional routing keys. Everything is cached under AppData so it works with no connection.' }),
-    el('a', { class: 'btn sm primary', href: DOWNLOAD_URL, target: '_blank', rel: 'noopener', text: 'Download for Windows (works offline)' }),
+    el('button', { class: 'btn sm primary', text: 'Windows app — coming soon', onclick: () => dialog('Windows app coming soon', [el('p', { text: 'The desktop download is not available yet. The web edition here has the map, aids, places, tides and weather.' })], { okText: 'OK' }) }),
   ]));
 
   b.append(section('Storage', [

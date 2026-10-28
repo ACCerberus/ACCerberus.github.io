@@ -1,7 +1,7 @@
 /** Trip planner: selected aids → plan request → per-day results on the panel and the map. */
 
 import { api } from './api.js';
-import { $, el, fmt, toast, panelSkeleton, debounce, store, showProgress, hideProgress } from './ui.js';
+import { $, el, fmt, toast, panelSkeleton, debounce, store, showProgress, hideProgress, dialog } from './ui.js';
 import { map, layers, dayIcon, poiIcon, fitBounds, DAY_COLORS } from './map.js';
 import { showPoi, showDetail, aidRecord } from './detail.js';
 import { getSelected, onSelectionChange, toggleSelect, openAid } from './aids.js';
@@ -57,7 +57,7 @@ function webNotice() {
   return el('div', { class: 'box notice' }, [
     el('h4', { text: 'Desktop feature' }),
     el('div', { class: 'small', text: 'Trip planning runs in the desktop app — download it from the LightKeeper page. You can still tick aids here and save the selection; the Windows app plans the days, ramps and lodging and exports the PDF.' }),
-    el('a', { class: 'btn sm primary', style: 'margin-top:8px', href: 'https://github.com/ArsenalRX/lightkeeper-releases/releases/latest', target: '_blank', rel: 'noopener', text: 'Download for Windows (works offline)' }),
+    el('button', { class: 'btn sm primary', style: 'margin-top:8px', text: 'Windows app — coming soon', onclick: () => dialog('Windows app coming soon', [el('p', { text: 'The desktop download is not available yet. The web edition here has the map, aids, places, tides and weather.' })], { okText: 'OK' }) }),
   ]);
 }
 

@@ -21,7 +21,7 @@
     <nav>
       <a href="/lightkeeper/">Open the app</a>
       <a href="/lightkeeper/about.html">Data &amp; notices</a>
-      <a class="hide-sm" href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Windows download</a>
+      <a class="hide-sm" href="#download">Windows app (soon)</a>
     </nav>
   </div>
 </header>
@@ -34,7 +34,7 @@
       <p class="lead">A planning tool for Coast Guard Aids-to-Navigation work: all 54,000 aids of the Light List with the boat ramps, lodging, tides, river gages, dams and weather around them. Runs in your browser, on a phone too, and as a Windows app that plans whole trips and works with no connection.</p>
       <div class="cta">
         <a class="btn primary" href="/lightkeeper/">Open LightKeeper</a>
-        <a class="btn" href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Download for Windows (works offline)</a>
+        <a class="btn" href="#download">Windows app — coming soon</a>
       </div>
     </div>
 
@@ -56,7 +56,7 @@
       <h2>Use it in the browser, or install it.</h2>
       <div class="grid g2">
         <article class="card"><h3>Web edition</h3><p>Runs entirely in your browser from this site; there is no LightKeeper server. The Light List is rebuilt here every week, places, tides, gages and forecasts come straight from the public services, and everything you look at is cached on your device so the app keeps working offline for areas you have visited.</p><a class="more" href="/lightkeeper/">Open LightKeeper &rarr;</a></article>
-        <article class="card"><h3>Windows app</h3><p>Everything the web edition does, plus the trip planner, USACE dam pool and release data, NOAA chart and satellite tiles downloaded for whole districts, backups and optional routing keys. All data is cached under AppData, so it runs with no connection at all.</p><a class="more" href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Download the latest release &rarr;</a></article>
+        <article class="card"><h3>Windows app</h3><p>Everything the web edition does, plus the trip planner, USACE dam pool and release data, NOAA chart and satellite tiles downloaded for whole districts, backups and optional routing keys. All data is cached under AppData, so it runs with no connection at all.</p><a class="more" href="#download">Download the latest release &rarr;</a></article>
       </div>
       <p class="note" style="margin-top:22px">Not for navigation. Data from USCG NAVCEN, OpenStreetMap, NOAA, USGS, the National Weather Service, Open-Meteo and Esri; see <a href="/lightkeeper/about.html">data sources and notices</a>.</p>
     </section>
@@ -66,7 +66,7 @@
       <p>Works in any modern browser, including on phones. The Windows app adds trip planning and works offline.</p>
       <div class="cta">
         <a class="btn primary" href="/lightkeeper/">Open LightKeeper</a>
-        <a class="btn" href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Download for Windows (works offline)</a>
+        <a class="btn" href="#download">Windows app — coming soon</a>
       </div>
     </div>
 
@@ -78,9 +78,23 @@
     <nav>
       <a href="/lightkeeper/">Web app</a>
       <a href="/lightkeeper/about.html">Data &amp; notices</a>
-      <a href="https://github.com/ArsenalRX/lightkeeper-releases/releases/latest">Windows download</a>
+      <a href="#download">Windows app (soon)</a>
     </nav>
   </div>
 </footer>
+<script>
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[href="#download"]');
+  if (!a) return;
+  e.preventDefault();
+  if (document.getElementById('soon')) return;
+  const o = document.createElement('div');
+  o.id = 'soon';
+  o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:9999';
+  o.innerHTML = '<div style="background:#141f2b;border:1px solid #2b3a4c;border-radius:12px;padding:20px 24px;max-width:360px;color:#e6edf5;font:14px Inter,system-ui,sans-serif;text-align:center"><h3 style="margin:0 0 8px">Windows app coming soon</h3><p style="margin:0 0 14px;color:#a9b7c6">The desktop download is not available yet. The web edition here has the map, aids, places, tides and weather.</p><button style="background:#4f9dff;color:#fff;border:0;border-radius:8px;padding:8px 18px;font:inherit;cursor:pointer">OK</button></div>';
+  o.addEventListener('click', (ev) => { if (ev.target === o || ev.target.tagName === 'BUTTON') o.remove(); });
+  document.body.append(o);
+});
+</script>
 </body>
 </html>
