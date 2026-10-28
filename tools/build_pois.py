@@ -43,13 +43,14 @@ try:  # optional: a current CA bundle when the OS store is stale (the desktop ap
         urllib.request.HTTPSHandler(context=ssl.create_default_context(cafile=certifi.where()))))
 except ImportError:
     pass
-MIRRORS = ("https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter",
-           "https://overpass.openstreetmap.fr/api/interpreter")
-CELL_DEG = 0.75
-RADIUS_M = 60000
+MIRRORS = ("https://overpass-api.de/api/interpreter", "https://overpass.private.coffee/api/interpreter",
+           "https://overpass.kumi.systems/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter")
+CELL_DEG = 0.5
+RADIUS_M = 40000
 PAUSE_S = 5.0
-RETRIES = 3
-QUERY_TIMEOUT_S = 90
+RETRIES = 2
+QUERY_TIMEOUT_S = 180
+MAX_FAILED_CELL_SHARE = 0.25    # keep a district's new file only if at most this share of cells failed
 SOURCE_OSM = "OpenStreetMap"
 EARTH_RADIUS_NM = 3440.065
 NM_TO_MI = 1.15078
@@ -574,7 +575,9 @@ def district_cells(bounds: list[list[float]], aids: list[tuple[float, float]], c
     return cells
 
 
-def crawl_district(district: dict, data_dir: Path, client: Overpass, cell: float, radius_m: int) -> list[dict]:
+def crawl_district(district: dict, data_dir: Path, client: Overpass, cell: float, radius_m: int) -> tuple[list[dict], list[dict]]:
+    """Places and named dams for one district. A cell that keeps timing out is retried once at the end;
+    the district only fails when more than MAX_FAILED_CELL_SHARE of its cells could not be read."""
     did = district["id"]
     aids = load_aid_points(data_dir, did)
     cells = district_cells(district["bounds"], aids, cell)
@@ -583,21 +586,36 @@ def crawl_district(district: dict, data_dir: Path, client: Overpass, cell: float
     lodging: list[dict] = []
     parks: list[dict] = []
     dams: dict[str, dict] = {}
-    for n, (lat, lon) in enumerate(cells, 1):
+
+    def read_cell(n: int, total: int, lat: float, lon: float) -> bool:
         t0 = time.time()
-        elements = client.query(cell_query(lat, lon, radius_m))
-        cell_parks = [r for r in (park_record(e) for e in elements if _is_park_element(e.get("tags") or {})) if r]
-        cell_parks = dedup(cell_parks)
+        try:
+            elements = client.query(cell_query(lat, lon, radius_m))
+        except RuntimeError as exc:
+            print(f"  cell {n}/{total} ({lat:.2f},{lon:.2f}) failed: {exc}", flush=True)
+            return False
+        cell_parks = dedup([r for r in (park_record(e) for e in elements if _is_park_element(e.get("tags") or {})) if r])
         cell_ramps = [r for r in (ramp_record(e, cell_parks) for e in elements if _is_ramp_element(e.get("tags") or {})) if r]
         cell_lodging = [r for r in (lodging_record(e) for e in elements if _is_lodging_element(e.get("tags") or {})) if r]
-        ramps += sorted(cell_ramps, key=_rank_key)[:PER_CELL_CAP["ramp"] + PER_CELL_CAP["marina"]]
-        lodging += sorted(cell_lodging, key=_rank_key)[:PER_CELL_CAP["lodging"]]
-        parks += sorted(cell_parks, key=_rank_key)[:PER_CELL_CAP["park"]]
+        ramps.extend(sorted(cell_ramps, key=_rank_key)[:PER_CELL_CAP["ramp"] + PER_CELL_CAP["marina"]])
+        lodging.extend(sorted(cell_lodging, key=_rank_key)[:PER_CELL_CAP["lodging"]])
+        parks.extend(sorted(cell_parks, key=_rank_key)[:PER_CELL_CAP["park"]])
         for rec in (dam_record(e) for e in elements if _is_dam_element(e.get("tags") or {})):
             if rec:
                 dams.setdefault(rec["id"], rec)
-        print(f"  cell {n}/{len(cells)} ({lat:.2f},{lon:.2f}): {len(elements)} elements → "
-              f"{len(cell_ramps)} ramps, {len(cell_lodging)} lodging, {len(cell_parks)} parks ({time.time() - t0:.0f}s)", flush=True)
+        print(f"  cell {n}/{total} ({lat:.2f},{lon:.2f}): {len(elements)} elements -> {len(cell_ramps)} ramps, "
+              f"{len(cell_lodging)} lodging, {len(cell_parks)} parks ({time.time() - t0:.0f}s)", flush=True)
+        return True
+
+    failed = [(lat, lon) for n, (lat, lon) in enumerate(cells, 1) if not read_cell(n, len(cells), lat, lon)]
+    if failed:
+        print(f"  retrying {len(failed)} failed cell(s) after a pause", flush=True)
+        time.sleep(30)
+        failed = [(lat, lon) for n, (lat, lon) in enumerate(failed, 1) if not read_cell(n, len(failed), lat, lon)]
+    if cells and len(failed) / len(cells) > MAX_FAILED_CELL_SHARE:
+        raise RuntimeError(f"{len(failed)} of {len(cells)} cells could not be read")
+    if failed:
+        print(f"  {len(failed)} cell(s) still missing; publishing the rest", flush=True)
     ramps = dedup(ramps)
     lodging = dedup(lodging)
     parks = link_parks(ramps, dedup(parks))
