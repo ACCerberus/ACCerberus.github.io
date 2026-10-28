@@ -105,9 +105,7 @@ svg:not(.tchart) { width: 20px; height: 20px; fill: none; stroke: currentColor; 
   border-radius: 999px; padding: 5px 11px; font-weight: 500;
 }
 .chip.on { border-color: var(--accent); color: var(--text); background: rgba(79, 157, 255, .15); }
-.chip.busy::after { content: ""; display: inline-block; width: 10px; height: 10px; margin-left: 6px; vertical-align: -1px;
-  border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
-.chip-count { color: var(--text-3); font-weight: 500; }
+.chip-count { color: var(--text-3); font-weight: 500; font-variant-numeric: tabular-nums; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Rail ── */

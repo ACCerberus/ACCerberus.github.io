@@ -1,9 +1,9 @@
 /** Places layers: boat ramps / marinas, lodging, parks with ramps. Toggled by the top-bar chips. */
 
-import { api } from './api.js?v=2.0.7';
-import { $$, toast, debounce, store } from './ui.js?v=2.0.7';
-import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.7';
-import { showPoi } from './detail.js?v=2.0.7';
+import { api } from './api.js?v=2.0.7-2';
+import { $$, toast, debounce, store } from './ui.js?v=2.0.7-2';
+import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.7-2';
+import { showPoi } from './detail.js?v=2.0.7-2';
 
 const MIN_ZOOM = 8;
 const LAYERS = {
@@ -52,11 +52,30 @@ function toggle(name) {
 }
 
 /** Chip label shows what is happening: spinner while loading, then a count or "none here". */
-function setCount(chip, n) {
+function setCount(chip, n, progress = '') {
   if (!chip) return;
   let badge = chip.querySelector('.chip-count');
   if (!badge) { badge = document.createElement('span'); badge.className = 'chip-count'; chip.append(badge); }
-  badge.textContent = n == null ? '' : n ? ` · ${n}` : ' · none here';
+  badge.textContent = progress ? ` · ${progress}` : n == null ? '' : n ? ` · ${n}` : ' · none here';
+}
+
+// The web edition queries Overpass straight from the browser (no 4 s server budget), so the percent runs on an
+// 8 s scale and holds at 95% until the data actually arrives.
+const PLACES_BUDGET_MS = 8000;
+
+/** Show " · 37%" on the chip while its request is in flight. Returns a stop function. */
+function startPercent(chip) {
+  if (!chip) return () => {};
+  const t0 = performance.now();
+  let stopped = false;
+  const tick = () => {
+    if (stopped) return;
+    const pct = Math.min(95, Math.round(((performance.now() - t0) / PLACES_BUDGET_MS) * 100));
+    setCount(chip, null, `${pct}%`);
+    setTimeout(tick, 120);
+  };
+  tick();
+  return () => { stopped = true; };
 }
 
 function refreshAll() { for (const name of on) refresh(name); }
@@ -67,7 +86,7 @@ async function refresh(name) {
   const gen = ++generation;
   const c = map.getCenter();
   chip?.classList.add('busy');
-  setCount(chip, null);
+  const stopProgress = startPercent(chip);
   try {
     const data = await api.get(LAYERS[name].path, { lat: c.lat.toFixed(5), lon: c.lng.toFixed(5), radius_m: viewportRadiusM(LAYERS[name].capM), fast: 1 });
     if (gen !== generation && !on.has(name)) return;
@@ -79,11 +98,13 @@ async function refresh(name) {
       m.addTo(layers[name]);
       items[name].set(poi.id, { poi, marker: m });
     }
+    stopProgress();
     if (data.ok === false) { setCount(chip, null); if (chip) chip.title = data.error || 'Places unavailable right now'; return; }
     setCount(chip, (data.items || []).length);
   } catch (err) {
     toast(`${name}: ${err.message}`, 'warn');
   } finally {
+    stopProgress();
     chip?.classList.remove('busy');
     changed();
   }
