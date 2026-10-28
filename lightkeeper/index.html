@@ -30,13 +30,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="icon" href="./img/lighthouse.png">
-<link rel="apple-touch-icon" href="./img/lighthouse.png">
+<link rel="apple-touch-icon" href="./img/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="LightKeeper">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.Default.css">
-<link rel="stylesheet" href="./css/app.css?v=2.0.9-2">
-<link rel="stylesheet" href="./css/web.css?v=2.0.9-2">
+<link rel="stylesheet" href="./css/app.css?v=2.0.9-3">
+<link rel="stylesheet" href="./css/web.css?v=2.0.9-3">
 </head>
 <body data-version="2.0.9">
 
@@ -62,6 +63,7 @@
       <button class="chip" data-layer="ramps" title="Show boat ramps and marinas">Boat Ramps</button>
       <button class="chip" data-layer="hotels" title="Show lodging">Hotels</button>
       <button class="chip" data-layer="parks" title="Show parks with boat ramps">Parks</button>
+      <button class="chip" id="chip-dams" title="Show dams (zoom in to see them)">Dams</button>
       <button class="chip" id="chip-charts" data-overlay="charts" title="NOAA electronic navigational charts overlay">Charts</button>
     </div>
   </div>
@@ -141,7 +143,7 @@
 
 <script src="./vendor/leaflet/leaflet.js"></script>
 <script src="./vendor/markercluster/leaflet.markercluster.js"></script>
-<script type="module" src="./js/app.js?v=2.0.9-2"></script>
+<script type="module" src="./js/app.js?v=2.0.9-3"></script>
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('[lightkeeper] service worker:', err.message)));

@@ -1,15 +1,29 @@
 /** Water: NOAA tide/current stations, USGS gages and USACE dams in view; readings on click. */
 
-import { api } from './api.js?v=2.0.9-2';
-import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.0.9-2';
-import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.0.9-2';
-import { showDetail, poiRecord } from './detail.js?v=2.0.9-2';
-import { haversineMi } from './geo.js?v=2.0.9-2';
-import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.0.9-2';
+import { api } from './api.js?v=2.0.9-3';
+import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.0.9-3';
+import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.0.9-3';
+import { showDetail, poiRecord } from './detail.js?v=2.0.9-3';
+import { haversineMi } from './geo.js?v=2.0.9-3';
+import { getDistrict, districtAt } from './aids.js?v=2.0.9-3';
+import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.0.9-3';
 
 const TYPES = [['tide', 'Tides'], ['current', 'Currents'], ['gage', 'USGS gages'], ['dam', 'Dams']];
 const MIN_ZOOM = 7;
-const state = { types: new Set(store.get('waterTypes', ['tide', 'gage', 'dam'])), items: new Map(), listEl: null, active: false, hover: store.get('waterHover', false) };
+const DAM_MIN_ZOOM = 9;          // the Dams button: dam markers from regional zoom in (thousands of dams per district)
+const state = { types: new Set(store.get('waterTypes', ['tide', 'gage', 'dam'])), items: new Map(), listEl: null, active: false,
+  hover: store.get('waterHover', false), dams: store.get('showDams', true) };
+
+/** The top-bar Dams button. Returns whether dams are now shown. */
+export function setDams(on) {
+  state.dams = !!on;
+  store.set('showDams', state.dams);
+  refresh();
+  return state.dams;
+}
+export const damsOn = () => state.dams;
+// With one district picked, only that district's dams show (same rule as places).
+const inPickedDistrict = (p) => { const d = getDistrict(); if (!d) return true; const at = districtAt(p.lat, p.lon); return at === undefined || at === d; };
 
 /** Nearest loaded station of each kind to a point — used by the hover card (no network). */
 export function nearestStations(lat, lon, maxMi = 60) {
@@ -43,17 +57,26 @@ export function init(view) {
     el('button', { class: 'btn', text: 'Water temp here', onclick: () => waterTemp() }),
   );
   onPanelChange((name) => { state.active = name === 'water'; if (state.active) refresh(); });
-  map.on('moveend', debounce(() => { if (state.active || state.hover) refresh(); }, 600));
-  if (state.hover) refresh();
+  map.on('moveend', debounce(() => { if (state.active || state.hover || state.dams) refresh(); }, 600));
+  document.addEventListener('district-changed', () => { if (state.dams || state.active) refresh(); });
+  if (state.hover || state.dams) refresh();
 }
 
 async function refresh() {
-  if (map.getZoom() < MIN_ZOOM) { if (state.active) renderList([], 'Zoom in to load stations'); return; }
+  // What to draw: the Water panel's choices while it (or the hover hint) is in use, plus dams when the Dams button is on.
+  const zoom = map.getZoom();
+  const types = new Set(state.active || state.hover ? state.types : []);
+  if (state.dams && zoom >= DAM_MIN_ZOOM) types.add('dam');
+  if (zoom < MIN_ZOOM || !types.size) {
+    layers.water.clearLayers(); state.items.clear();
+    if (state.active) renderList([], 'Zoom in to load stations');
+    return;
+  }
   try {
-    const data = await api.get('/api/water/stations', { bbox: viewportBbox(), types: Array.from(state.types).join(',') });
+    const data = await api.get('/api/water/stations', { bbox: viewportBbox(), types: Array.from(types).join(',') });
     layers.water.clearLayers();
     state.items.clear();
-    for (const poi of data.items || []) {
+    for (const poi of (data.items || []).filter((p) => p.kind !== 'dam' || inPickedDistrict(p))) {
       const m = L.marker([poi.lat, poi.lon], { icon: poiIcon(poi.kind), title: poi.name }).addTo(layers.water);
       m.bindTooltip(poi.name, { direction: 'top', offset: [0, -12] });
       m.on('click', () => open(poi));

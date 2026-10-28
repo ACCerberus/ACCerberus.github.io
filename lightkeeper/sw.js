@@ -5,7 +5,7 @@
  * Nominatim, Open-Meteo): never cached here — the page keeps those in IndexedDB with their own TTLs.
  */
 
-const VERSION = 'lk-2.0.9-2';
+const VERSION = 'lk-2.0.9-3';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const TILES = `${VERSION}-tiles`;
@@ -13,7 +13,7 @@ const TILE_LIMIT = 4000;
 const BASE = new URL('./', self.location).pathname;
 
 const SHELL_FILES = [
-  './', './index.html', './about.html', './manifest.webmanifest', './changelog.json', './img/lighthouse.png',
+  './', './about', './manifest.webmanifest', './changelog.json', './img/lighthouse.png', './img/apple-touch-icon.png', './img/icon-192.png', './updates',
   './css/app.css', './css/web.css', './css/landing.css',
   './js/app.js', './js/api.js', './js/ui.js', './js/map.js', './js/aids.js', './js/poi.js', './js/places.js', './js/measure.js',
   './js/trip.js', './js/water.js', './js/weather.js', './js/settings.js', './js/detail.js', './js/hover.js', './js/context.js',
@@ -63,7 +63,10 @@ async function networkFirst(req, cacheName) {
     // Ask the server every time (a cheap 304 when unchanged) so GitHub Pages' 10-minute browser cache
     // can never hand back an older build of the page or its scripts.
     const fresh = req.mode === 'navigate' ? new Request(req.url, { cache: 'no-cache', credentials: 'same-origin' }) : new Request(req, { cache: 'no-cache' });
-    const resp = await fetch(fresh);
+    let resp = await fetch(fresh);
+    // The host redirects page.html -> page. Safari refuses a page a service worker hands back if it was redirected,
+    // so pass on a clean copy of the final response instead.
+    if (resp.redirected) resp = new Response(resp.body, { status: resp.status, statusText: resp.statusText, headers: resp.headers });
     if (resp.ok) cache.put(req, resp.clone());
     return resp;
   } catch (err) {

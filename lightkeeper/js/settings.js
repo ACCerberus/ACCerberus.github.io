@@ -1,9 +1,9 @@
 /** Settings (web edition): vessel, Light List data status, storage, about + device diagnostics.
  *  Offline map download, pre-cache, API keys and backup files live in the desktop app. */
 
-import { api, VERSION } from './api.js?v=2.0.9-2';
-import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog } from './ui.js?v=2.0.9-2';
-import { setBase, getBase } from './map.js?v=2.0.9-2';
+import { api, VERSION } from './api.js?v=2.0.9-3';
+import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog } from './ui.js?v=2.0.9-3';
+import { setBase, getBase } from './map.js?v=2.0.9-3';
 
 export const DOWNLOAD_INFO = '/download.json';   // the site's download switch (see /download.js)
 const state = { body: null, settings: {}, districtsEl: null };
@@ -70,7 +70,7 @@ async function render() {
     el('div', { class: 'muted small', text: `Device: ${deviceLine()}` }),
     el('div', { class: 'row', style: 'margin-top:6px' }, [
       el('button', { class: 'btn sm', text: 'Report a bug', onclick: reportBug }),
-      el('a', { href: './about.html', class: 'btn sm', text: 'Data sources & notices' }),
+      el('a', { href: './about', class: 'btn sm', text: 'Data sources & notices' }),
     ]),
   ]));
 }

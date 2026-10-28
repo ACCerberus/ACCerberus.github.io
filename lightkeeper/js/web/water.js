@@ -4,12 +4,12 @@
  *
  *  Backup chain for tides: NOAA (requested station → ±1 day window → next-nearest station) → Open-Meteo Marine. */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.0.9-2';
-import { cached, MIN, HOUR, DAY } from './store.js?v=2.0.9-2';
-import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.0.9-2';
-import { openMeteoGet, pointKey } from './weather.js?v=2.0.9-2';
-import { reverseGeocode } from './poi.js?v=2.0.9-2';
-import { staticJson } from './aids.js?v=2.0.9-2';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.0.9-3';
+import { cached, MIN, HOUR, DAY } from './store.js?v=2.0.9-3';
+import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.0.9-3';
+import { openMeteoGet, pointKey } from './weather.js?v=2.0.9-3';
+import { reverseGeocode } from './poi.js?v=2.0.9-3';
+import { staticJson, manifest, districts as districtList } from './aids.js?v=2.0.9-3';
 
 const NOAA_MDAPI = 'https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json';
 const NOAA_DATAGETTER = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
@@ -275,7 +275,41 @@ async function osmDams([s, w, n, e]) {
   const query = `[out:json][timeout:${OVERPASS_TIMEOUT}];(node["waterway"="dam"]${box};way["waterway"="dam"]${box};relation["waterway"="dam"]${box};);out center tags;`;
   return ((await overpass(query, OVERPASS_TIMEOUT)).elements || []).map(osmDamPoi).filter(Boolean);
 }
+/* Pre-crawled named dams per district (lightkeeper/data/DISTRICT_<id>_<Name>_Dams.json): instant, no Overpass.
+   Districts without a published file still use the live Overpass query. */
+const shippedDamMemo = new Map();
+const shippedDamById = new Map();
+function shippedDams(id, file) {
+  if (!shippedDamMemo.has(id)) {
+    shippedDamMemo.set(id, staticJson(file, DAY).then((list) => {
+      const out = Array.isArray(list) ? list : [];
+      for (const d of out) shippedDamById.set(d.id, d);
+      return out;
+    }).catch(() => { shippedDamMemo.delete(id); return []; }));
+  }
+  return shippedDamMemo.get(id);
+}
+async function damsInBbox(bbox) {
+  const [s, w, n, e] = bbox;
+  const all = await districtList().catch(() => []);
+  const ids = all.filter((d) => (d.bounds || []).some(([W, S, E, N]) => !(e < W || w > E || n < S || s > N))).map((d) => d.id);
+  const m = await manifest().catch(() => null);
+  const published = ids.filter((id) => m?.dams?.[id]?.file);
+  const shipped = (await Promise.all(published.map((id) => shippedDams(id, m.dams[id].file)))).flat()
+    .filter((p) => inBbox(p.lat, p.lon, bbox));
+  if (published.length && published.length === ids.length) return shipped;
+  let live = [];
+  try { live = await osmDams(bbox); } catch { live = []; }
+  const seen = new Set(shipped.map((p) => p.id));
+  return shipped.concat(live.filter((p) => !seen.has(p.id)));
+}
 async function osmDamDetail(stationId) {
+  const known = shippedDamById.get(stationId);
+  if (known) {
+    const p = { ...known, address: known.address || await reverseAddress(known.lat, known.lon) };
+    const detail = Object.fromEntries(DAM_DETAIL_KEYS.map((k) => [k, null]));
+    return { ...detail, ok: true, poi: p, updated: '', office: '', phone: p.phone, address: p.address, website: p.website, data_available: false, note: 'Live pool and release data (USACE CWMS) is available in the desktop app.' };
+  }
   const [, osmType, osmId] = stationId.split(':');
   const data = await overpass(`[out:json][timeout:${OVERPASS_TIMEOUT}];${osmType}(${osmId});out center tags;`, OVERPASS_TIMEOUT);
   const p = (data.elements || []).map(osmDamPoi).find(Boolean);
@@ -292,7 +326,7 @@ export async function stationsInBbox(bbox, types = STATION_TYPES) {
     tide: async () => (await noaaStations('tide')).filter((p) => inBbox(p.lat, p.lon, bbox)),
     current: async () => (await noaaStations('current')).filter((p) => inBbox(p.lat, p.lon, bbox)),
     gage: () => gagesInBbox(bbox),
-    dam: () => osmDams(bbox),
+    dam: () => damsInBbox(bbox),
   };
   const results = await settle(Object.fromEntries(wanted.map((t) => [t, fetchers[t]])), []);
   return wanted.flatMap((t) => results[t]);
