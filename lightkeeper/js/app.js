@@ -1,22 +1,22 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js';
-import { createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js';
-import { reportBug } from './settings.js';
-import * as aids from './aids.js';
-import * as poi from './poi.js';
-import * as measure from './measure.js';
-import * as trip from './trip.js';
-import * as water from './water.js';
-import * as weather from './weather.js';
-import * as settings from './settings.js';
-import * as hover from './hover.js';
-import * as context from './context.js';
-import * as places from './places.js';
-import * as phone from './phone.js';
-import * as whatsnew from './whatsnew.js';
-import { hideDetail, clearRoute } from './detail.js';
+import { api } from './api.js?v=2.0.7';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.0.7';
+import { createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.0.7';
+import { reportBug } from './settings.js?v=2.0.7';
+import * as aids from './aids.js?v=2.0.7';
+import * as poi from './poi.js?v=2.0.7';
+import * as measure from './measure.js?v=2.0.7';
+import * as trip from './trip.js?v=2.0.7';
+import * as water from './water.js?v=2.0.7';
+import * as weather from './weather.js?v=2.0.7';
+import * as settings from './settings.js?v=2.0.7';
+import * as hover from './hover.js?v=2.0.7';
+import * as context from './context.js?v=2.0.7';
+import * as places from './places.js?v=2.0.7';
+import * as phone from './phone.js?v=2.0.7';
+import * as whatsnew from './whatsnew.js?v=2.0.7';
+import { hideDetail, clearRoute } from './detail.js?v=2.0.7';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 

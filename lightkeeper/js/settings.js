@@ -1,9 +1,9 @@
 /** Settings (web edition): vessel, Light List data status, storage, about + device diagnostics.
  *  Offline map download, pre-cache, API keys and backup files live in the desktop app. */
 
-import { api, VERSION } from './api.js';
-import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog } from './ui.js';
-import { setBase, getBase } from './map.js';
+import { api, VERSION } from './api.js?v=2.0.7';
+import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog } from './ui.js?v=2.0.7';
+import { setBase, getBase } from './map.js?v=2.0.7';
 
 export const DOWNLOAD_URL = 'https://github.com/ArsenalRX/lightkeeper-releases/releases/latest';
 const state = { body: null, settings: {}, districtsEl: null };
@@ -120,9 +120,9 @@ async function clearCaches() {
 /** Small modal: how to report a problem (no address hard-coded). */
 export function reportBug() {
   dialog('Found a bug?', [
-    el('p', { text: "Hit me up on Teams or email me with what happened and I'll get it fixed." }),
+    el('p', { text: 'Hit me up on Teams or send me an email with what happened and where, and I will get it fixed. — Evan R Isakson, BM2' }),
     el('p', { class: 'muted', text: `LightKeeper v${VERSION} web · ${deviceLine()} · include a screenshot if you can.` }),
-  ], { okText: 'Will do' });
+  ], { okText: 'Aye aye 🫡' });
 }
 
 /** Kept for app.js compatibility; there is no tile download queue in the browser. */

@@ -10,7 +10,7 @@
 (function () {
   var KEY = 'lk2.siteVersion';
   try {
-    fetch('./version.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
+    fetch('./version.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
       if (!v || !v.version) return;
       var seen = localStorage.getItem(KEY);
       if (seen === v.version) return;

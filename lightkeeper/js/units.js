@@ -1,6 +1,6 @@
 /** USCG district / sector contact cards, from lightkeeper/data/uscg_units.json. */
 
-import { el, dialog, ICONS } from './ui.js';
+import { el, dialog, ICONS } from './ui.js?v=2.0.7';
 
 let data = null;
 

@@ -25,6 +25,17 @@ Then open <http://localhost:8080/> (landing) or <http://localhost:8080/lightkeep
 The app talks directly to NAVCEN-derived files on this site, OpenStreetMap, NOAA, USGS, the
 National Weather Service and Open-Meteo from the browser; there is no server component.
 
+## Release a new web version
+
+```
+python tools/set_version.py 2.0.8
+```
+
+stamps the version into `lightkeeper/version.json`, every module import (`?v=`), the CSS links, the
+service-worker cache name and the pages. Browsers that ran an older version notice the change on their
+next visit, drop their Cache Storage, service worker and IndexedDB data, and reload once. A page cannot
+clear the browser's own HTTP cache; the `?v=` URLs make that cache irrelevant for the app code.
+
 ## Refresh the data by hand
 
 ```

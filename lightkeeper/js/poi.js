@@ -1,9 +1,9 @@
 /** Places layers: boat ramps / marinas, lodging, parks with ramps. Toggled by the top-bar chips. */
 
-import { api } from './api.js';
-import { $$, toast, debounce, store } from './ui.js';
-import { map, layers, poiIcon, viewportRadiusM } from './map.js';
-import { showPoi } from './detail.js';
+import { api } from './api.js?v=2.0.7';
+import { $$, toast, debounce, store } from './ui.js?v=2.0.7';
+import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.7';
+import { showPoi } from './detail.js?v=2.0.7';
 
 const MIN_ZOOM = 8;
 const LAYERS = {

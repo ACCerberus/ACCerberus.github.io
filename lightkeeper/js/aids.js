@@ -1,9 +1,9 @@
 /** Aids to Navigation: load from the backend, cluster on the map, list + select in the panel. */
 
-import { api } from './api.js';
-import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js';
-import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js';
-import { showDetail, aidRecord, hideDetail } from './detail.js';
+import { api } from './api.js?v=2.0.7';
+import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.0.7';
+import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.0.7';
+import { showDetail, aidRecord, hideDetail } from './detail.js?v=2.0.7';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
 const PAGE = 200;

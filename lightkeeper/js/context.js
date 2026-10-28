@@ -1,11 +1,11 @@
 /** Right-click menu on the map: look up tides, currents, weather, water temp, places, measure. */
 
-import { $, el, fmt, toast, showPanel } from './ui.js';
-import { map, flyTo } from './map.js';
-import * as water from './water.js';
-import * as weather from './weather.js';
-import * as measure from './measure.js';
-import * as poi from './poi.js';
+import { $, el, fmt, toast, showPanel } from './ui.js?v=2.0.7';
+import { map, flyTo } from './map.js?v=2.0.7';
+import * as water from './water.js?v=2.0.7';
+import * as weather from './weather.js?v=2.0.7';
+import * as measure from './measure.js?v=2.0.7';
+import * as poi from './poi.js?v=2.0.7';
 
 let menu;
 
