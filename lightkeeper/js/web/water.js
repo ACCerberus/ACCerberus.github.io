@@ -1,15 +1,15 @@
 /** Water conditions in the browser (port of water.py): NOAA CO-OPS tide/current stations, USGS gages,
- *  dams from OpenStreetMap (USACE CWMS has no CORS and cannot be reached from a web page), water
+ *  dams from the USACE inventory and OpenStreetMap with live USACE CWMS readings (the CWMS Data API allows web pages), water
  *  temperature and NWS flood alerts. Same response shapes as the desktop endpoints.
  *
  *  Backup chain for tides: NOAA (requested station → ±1 day window → next-nearest station) → Open-Meteo Marine. */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.1-6';
-import { cached, MIN, HOUR, DAY } from './store.js?v=2.1.1-6';
-import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.1.1-6';
-import { openMeteoGet, pointKey } from './weather.js?v=2.1.1-6';
-import { reverseGeocode } from './poi.js?v=2.1.1-6';
-import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.1-6';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.2';
+import { cached, MIN, HOUR, DAY } from './store.js?v=2.1.2';
+import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.1.2';
+import { openMeteoGet, pointKey } from './weather.js?v=2.1.2';
+import { reverseGeocode } from './poi.js?v=2.1.2';
+import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.2';
 
 const NOAA_MDAPI = 'https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json';
 const NOAA_DATAGETTER = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
@@ -340,11 +340,109 @@ async function damsInBbox(bbox) {
   for (const p of nid.concat(osm)) if (!out.some((q) => q.id === p.id || near(q, p))) out.push(p);
   return out;
 }
+/* ── USACE CWMS live readings (the CWMS Data API answers web pages directly) ──
+   The project list (office + CWMS location for ~740 dams) ships as data/cwms-dams.json; a dam on the map is matched
+   to the nearest project within 3 mi (preferring a shared name word), then its catalogued series are read. */
+const CDA = 'https://cwms-data.usace.army.mil/cwms-data';
+const CWMS_MATCH_MI = 3;
+const CWMS_SKIP = ['FCST', 'FORECAST', 'RESSIM'];
+const NAME_STOP = new Set(['dam', 'lock', 'locks', 'l', 'd', 'and', 'lake', 'reservoir', 'res', 'project', 'the', 'of', 'nr', 'near', 'at']);
+const tokens = (...names) => new Set(names.join(' ').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w && !NAME_STOP.has(w)));
+const TO_EN = { m: (v) => v * 3.28084, cms: (v) => v * 35.3147, m3: (v) => v / 1233.48 };
+let cwmsList = null;
+const cwmsProjects = () => (cwmsList ||= staticJson('cwms-dams.json', DAY).catch(() => { cwmsList = null; return []; }));
+
+async function matchCwms(p) {
+  const list = await cwmsProjects();
+  const near = list.map((c) => ({ ...c, mi: haversineMi(p.lat, p.lon, c.lat, c.lon) })).filter((c) => c.mi <= CWMS_MATCH_MI).sort((a, b) => a.mi - b.mi);
+  if (!near.length) return null;
+  const want = tokens(p.name || '');
+  return near.find((c) => [...tokens(c.n, c.l, c.c)].some((w) => want.has(w))) || near[0];
+}
+
+async function cda(path, params, ms = 12000) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const resp = await fetch(`${CDA}/${path}?${new URLSearchParams({ format: 'json', ...params })}`, { signal: ctrl.signal });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    return await resp.json();
+  } finally { clearTimeout(timer); }
+}
+
+function classifyCwms(name) {
+  const param = (name.split('.')[1] || '').toLowerCase();
+  if (param.includes('tailwater') || param.startsWith('stage-tail')) return 'tailwater_ft';
+  if (param.startsWith('elev')) return 'pool_elevation_ft';
+  if (param.startsWith('stor')) return 'storage_acft';
+  if (param.startsWith('flow-spill')) return 'spill_cfs';
+  if (param.startsWith('flow-gen') || param.startsWith('flow-power') || param.includes('turbine')) return 'generation_cfs';
+  if (param.startsWith('flow-out') || param.startsWith('flow-total') || param.includes('outflow') || param === 'flow-res out') return 'outflow_cfs';
+  if (param.startsWith('flow-in') || param.includes('inflow')) return 'inflow_cfs';
+  return null;
+}
+function seriesRank(name) {
+  const parts = name.split('.');
+  const interval = (parts[3] || '').replace(/^~/, '').toLowerCase();
+  const version = (parts[5] || '').toUpperCase();
+  const i = interval.endsWith('minutes') || interval === '1hour' ? 0 : interval.includes('hour') ? 1 : 2;
+  return [i, version.includes('REV') ? 0 : 1];
+}
+
+async function cwmsLatest(name, office) {
+  const end = new Date();
+  const begin = new Date(end - 72 * 3600 * 1000);
+  const iso = (d) => d.toISOString().replace(/\.\d+Z$/, 'Z');
+  const data = await cda('timeseries', { name, office, unit: 'EN', begin: iso(begin), end: iso(end), 'page-size': 1000 }, 8000);
+  const conv = TO_EN[String(data.units || '').toLowerCase()] || ((v) => v);
+  const rows = data.values || [];
+  for (let i = rows.length - 1; i >= 0; i -= 1) {
+    const row = rows[i];
+    const [stamp, value] = Array.isArray(row) ? row : [row['date-time'] ?? row.time, row.value];
+    if (value != null && Number.isFinite(Number(value))) return { value: conv(Number(value)), time: typeof stamp === 'number' ? new Date(stamp).toISOString() : String(stamp) };
+  }
+  return null;
+}
+
+/** Fill a dam detail with the newest CWMS readings of its matched project (best effort, ~10 s budget). */
+async function withCwms(detail, p) {
+  const c = await matchCwms(p).catch(() => null);
+  if (!c) return { ...detail, note: 'No data available: this dam has no USACE readings.' };
+  try {
+    const cat = await cda('catalog/TIMESERIES', { office: c.o, like: `^${c.c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\..*`, 'page-size': 1000 });
+    const entries = cat.entries || cat.entry || [];
+    const byKey = {};
+    for (const e of entries) {
+      const name = e?.name || '';
+      const key = classifyCwms(name);
+      if (!key || CWMS_SKIP.some((w) => name.toUpperCase().includes(w))) continue;
+      (byKey[key] ||= []).push(name);
+    }
+    const jobs = [];
+    for (const [key, names] of Object.entries(byKey)) {
+      names.sort((a, b) => { const x = seriesRank(a); const y = seriesRank(b); return x[0] - y[0] || x[1] - y[1] || a.localeCompare(b); });
+      for (const name of names.slice(0, 3)) jobs.push(cwmsLatest(name, c.o).then((r) => (r ? { key, ...r } : null)).catch(() => null));
+    }
+    const got = {};
+    for (const r of await Promise.all(jobs)) if (r && (!got[r.key] || r.time > got[r.key].time)) got[r.key] = r;
+    if (!got.outflow_cfs && got.spill_cfs && got.generation_cfs) got.outflow_cfs = { value: got.spill_cfs.value + got.generation_cfs.value, time: got.spill_cfs.time };
+    const out = { ...detail, office: c.o, location: c.c };
+    let updated = '';
+    for (const k of DAM_DETAIL_KEYS) if (got[k]) { out[k] = Math.round(got[k].value * 100) / 100; if (got[k].time > updated) updated = got[k].time; }
+    out.updated = updated;
+    out.data_available = DAM_DETAIL_KEYS.some((k) => out[k] != null);
+    out.note = out.data_available ? '' : 'No data available: no recent USACE readings for this dam.';
+    return out;
+  } catch {
+    return { ...detail, office: c.o, note: 'No data available right now (USACE data service did not answer).' };
+  }
+}
+
 async function nidDamDetail(stationId) {
   const p = nidById.get(stationId);
   if (!p) return { ok: false, error: `Unknown dam '${stationId}'` };
   const detail = Object.fromEntries(DAM_DETAIL_KEYS.map((k) => [k, null]));
-  return { ...detail, ok: true, poi: { ...p }, updated: '', office: '', phone: p.phone, address: p.address, website: p.website, data_available: false, note: 'Live pool and release data (USACE CWMS) is available in the desktop app.' };
+  return withCwms({ ...detail, ok: true, poi: { ...p }, updated: '', office: '', phone: p.phone, address: p.address, website: p.website, data_available: false, note: '' }, p);
 }
 
 async function osmDamDetail(stationId) {
@@ -352,7 +450,7 @@ async function osmDamDetail(stationId) {
   if (known) {
     const p = { ...known, address: known.address || await reverseAddress(known.lat, known.lon) };
     const detail = Object.fromEntries(DAM_DETAIL_KEYS.map((k) => [k, null]));
-    return { ...detail, ok: true, poi: p, updated: '', office: '', phone: p.phone, address: p.address, website: p.website, data_available: false, note: 'Live pool and release data (USACE CWMS) is available in the desktop app.' };
+    return withCwms({ ...detail, ok: true, poi: p, updated: '', office: '', phone: p.phone, address: p.address, website: p.website, data_available: false, note: '' }, p);
   }
   const [, osmType, osmId] = stationId.split(':');
   const data = await overpass(`[out:json][timeout:${OVERPASS_TIMEOUT}];${osmType}(${osmId});out center tags;`, OVERPASS_TIMEOUT);
@@ -360,7 +458,7 @@ async function osmDamDetail(stationId) {
   if (!p) return { ok: false, error: `Unknown dam '${stationId}'` };
   p.address = p.address || await reverseAddress(p.lat, p.lon);
   const detail = Object.fromEntries(DAM_DETAIL_KEYS.map((k) => [k, null]));
-  return { ...detail, ok: true, poi: p, updated: '', office: '', phone: p.phone, address: p.address, website: p.website, data_available: false, note: 'Live pool and release data (USACE CWMS) is available in the desktop app.' };
+  return withCwms({ ...detail, ok: true, poi: p, updated: '', office: '', phone: p.phone, address: p.address, website: p.website, data_available: false, note: '' }, p);
 }
 
 /* ── Public API ── */

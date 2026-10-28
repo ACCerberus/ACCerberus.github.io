@@ -5,7 +5,7 @@
  * Nominatim, Open-Meteo): never cached here — the page keeps those in IndexedDB with their own TTLs.
  */
 
-const VERSION = 'lk-2.1.1-6';
+const VERSION = 'lk-2.1.2';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const TILES = `${VERSION}-tiles`;
@@ -23,7 +23,7 @@ const SHELL_FILES = [
   './vendor/leaflet/images/marker-shadow.png', './vendor/leaflet/images/layers.png', './vendor/leaflet/images/layers-2x.png',
   './vendor/markercluster/leaflet.markercluster.js', './vendor/markercluster/MarkerCluster.css', './vendor/markercluster/MarkerCluster.Default.css',
   './vendor/fonts/inter-400.woff2', './vendor/fonts/inter-500.woff2', './vendor/fonts/inter-600.woff2', './vendor/fonts/inter-700.woff2',
-  './data/manifest.json', './data/districts.json', './data/uscg_units.json', './data/stations-tide.json', './data/stations-current.json',
+  './data/manifest.json', './data/cwms-dams.json', './data/districts.json', './data/uscg_units.json', './data/stations-tide.json', './data/stations-current.json',
 ];
 const TILE_HOSTS = ['tile.openstreetmap.org', 'server.arcgisonline.com', 'tile.opentopomap.org', 'gis.charttools.noaa.gov'];
 

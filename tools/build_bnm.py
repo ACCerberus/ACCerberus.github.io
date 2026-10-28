@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Publish USCG Broadcast Notices to Mariners (aids to navigation) for the web app: lightkeeper/data/bnm-D<id>.json.
 
-    python tools/build_bnm.py              # every district with feeds (Northwest only for now)
+    python tools/build_bnm.py              # every district with feeds (all nine)
 
 Runs hourly in .github/workflows/lightkeeper-bnm.yml. The parser is tools/bnm.py, the same file the desktop app uses.
 A file is rewritten only when its notices changed, so quiet hours make no commit.

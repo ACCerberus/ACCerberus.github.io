@@ -1,7 +1,7 @@
 /** Tiny SVG time-series chart for the detail card: one series, recessive grid, direct labels on
  *  highlighted points, hover readout. Returns an SVG element (append it or use outerHTML). */
 
-import { el } from './ui.js?v=2.1.1-6';
+import { el } from './ui.js?v=2.1.2';
 
 const W = 330; const PAD = { l: 34, r: 10, t: 14, b: 22 };
 

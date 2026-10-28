@@ -1,32 +1,35 @@
-/** BNM tab: the current Broadcast Notices to Mariners for the picked district. Tapping one flies to the light,
- *  opens its card and shows what's wrong at the top of the card. Any aid with an active notice shows the same
- *  banner when it's opened from the map or search. Northwest (D13) only for now; other districts are on the To do. */
+/** BNM tab: the current Broadcast Notices to Mariners for the district you're in (all nine districts). Tapping one
+ *  flies to the light, opens its card and shows what's wrong at the top of the card. Any aid with an active notice
+ *  shows the same banner when it's opened from the map or search, and gets a pulsing ring on the map. */
 
-import { api } from './api.js?v=2.1.1-6';
-import { el, panelSkeleton, onPanelChange, toast } from './ui.js?v=2.1.1-6';
-import { map } from './map.js?v=2.1.1-6';
-import { openAid, allAids, getDistrict } from './aids.js?v=2.1.1-6';
-import { setAidNotices } from './detail.js?v=2.1.1-6';
+import { api } from './api.js?v=2.1.2';
+import { el, panelSkeleton, onPanelChange, toast } from './ui.js?v=2.1.2';
+import { map } from './map.js?v=2.1.2';
+import { openAid, allAids, getDistrict } from './aids.js?v=2.1.2';
+import { setAidNotices } from './detail.js?v=2.1.2';
 
-const DISTRICTS = { 13: 'Northwest' };         // districts with BNM feeds so far
+const DISTRICTS = { 1: 'Northeast', 5: 'East', 7: 'Southeast', 8: 'Heartland', 9: 'Great Lakes', 11: 'Southwest', 13: 'Northwest', 14: 'Oceania', 17: 'Arctic' };
 const REFRESH_MS = 15 * 60 * 1000;
 let warnLayer = null;       // a warning ring over every aid with an active notice
-const state = { body: null, items: [], district: 13, msg: '', loadedAt: 0, loading: null, refreshing: false, checkedAt: 0 };
+const state = { body: null, byDistrict: new Map(), loading: new Map(), refreshing: false };
+// byDistrict: id -> { items, msg, loadedAt }
 
 const normLlnr = (v) => { const n = parseFloat(v); return Number.isFinite(n) ? String(n) : String(v || '').trim(); };
-const active = () => state.items.filter((b) => b.active);
+const current = () => getDistrict() || null;
+// Only notices about aids to navigation (not whale zones, launches or hazard operations).
+const active = (d = current()) => (state.byDistrict.get(d)?.items || []).filter((b) => b.active && (b.aton || b.llnrs.length));
 
-/** Active notices that name this aid by Light List number (within the notice's district). */
+/** Active notices that name this aid (by Light List number, or by exact name when the notice gives no number). */
 export function noticesFor(aid) {
-  if (!aid || aid.district_id !== state.district) return [];
+  if (!aid?.district_id) return [];
   const ll = aid.lightlistnumber == null ? '' : normLlnr(aid.lightlistnumber);
   const name = (aid.aidname || '').toLowerCase();
-  return active().filter((b) => (b.llnrs.length ? b.llnrs.some((n) => normLlnr(n) === ll) : (b.aid_hint || '').toLowerCase() === name));
+  return active(aid.district_id).filter((b) => (b.llnrs.length ? b.llnrs.some((n) => normLlnr(n) === ll) : (b.aid_hint || '').toLowerCase() === name));
 }
 
-/** Light List aids a notice names: by LLNR, or by exact name when the notice gives no number. */
-function aidsFor(b) {
-  const inD = allAids().filter((a) => a.district_id === state.district);
+/** Light List aids a notice names, within the notice's district. */
+function aidsFor(b, d) {
+  const inD = allAids().filter((a) => a.district_id === d);
   if (b.llnrs.length) {
     const wanted = new Set(b.llnrs.map(normLlnr));
     return inD.filter((a) => wanted.has(normLlnr(a.lightlistnumber)));
@@ -34,7 +37,6 @@ function aidsFor(b) {
   const hint = (b.aid_hint || '').toLowerCase();
   return hint ? inD.filter((a) => (a.aidname || '').toLowerCase() === hint) : [];
 }
-const aidFor = (b) => aidsFor(b)[0] || null;
 
 /** "Extinguished" etc., or the first sentence about the aid when the type isn't recognized. */
 export function whatsWrong(b) {
@@ -47,66 +49,78 @@ export function init(view) {
   const { body } = panelSkeleton(view, 'Broadcast Notices', 'Current USCG notices for aids in your district. Tap one to go to the light.');
   state.body = body;
   setAidNotices(noticesFor, noticeBanner);
-  onPanelChange((name) => { if (name === 'bnm') load(Date.now() - state.loadedAt > REFRESH_MS); });
-  document.addEventListener('district-changed', () => { render(); drawWarnings(); });
-  document.addEventListener('aids-loaded', () => { if (state.loadedAt) { render(); drawWarnings(); } });
-  load(true);
-  setInterval(() => load(true), REFRESH_MS);
+  onPanelChange((name) => { if (name === 'bnm') load(current()); });
+  document.addEventListener('district-changed', () => { render(); drawWarnings(); badges(); load(current()); });
+  document.addEventListener('aids-loaded', () => { render(); drawWarnings(); });
+  load(current());
+  setInterval(() => load(current(), true), REFRESH_MS);
 }
 
-async function load(fetchNew = false, refresh = false) {
-  if (!fetchNew && state.loadedAt) { render(); return; }
-  if (state.loading) return state.loading;
+async function load(d, fetchNew = false, refresh = false) {
+  if (!d || !DISTRICTS[d]) { render(); drawWarnings(); badges(); return null; }
+  const have = state.byDistrict.get(d);
+  if (have && !fetchNew && !refresh && Date.now() - have.loadedAt < REFRESH_MS) { render(); drawWarnings(); badges(); return null; }
+  if (state.loading.has(d)) return state.loading.get(d);
   state.refreshing = refresh;
-  if (!state.items.length) render(true);
-  else if (refresh) render();             // show the spinning Refresh button
-  state.loading = (async () => {
+  render(!have);
+  const job = (async () => {
+    const entry = have ? { ...have } : { items: [], msg: '', loadedAt: 0 };
     try {
-      const res = await api.get('/api/bnm', { district: state.district, ...(refresh ? { refresh: 1 } : {}) }, { timeoutMs: 30000 });
-      if (res.ok === false) state.msg = res.error || 'Notices are unavailable right now';
-      else { state.items = res.items || []; state.msg = res.fetched_at ? `Updated ${new Date(res.fetched_at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}` : ''; }
-      state.loadedAt = Date.now();
-      if (refresh) toast(`Notices checked: ${active().length} active`, 'ok');
+      const res = await api.get('/api/bnm', { district: d, ...(refresh ? { refresh: 1 } : {}) }, { timeoutMs: 45000 });
+      if (res.ok === false) entry.msg = res.error || 'Notices are unavailable right now';
+      else { entry.items = res.items || []; entry.msg = res.fetched_at ? `Updated ${new Date(res.fetched_at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}` : ''; }
+      entry.loadedAt = Date.now();
+      if (refresh) toast(`Notices checked: ${entry.items.filter((b) => b.active && (b.aton || b.llnrs.length)).length} active`, 'ok');
     } catch (err) {
-      state.msg = `Could not load notices: ${err.message}`;
-      if (refresh) toast(state.msg, 'warn');
+      entry.msg = `Could not load notices: ${err.message}`;
+      if (refresh) toast(entry.msg, 'warn');
     } finally {
-      state.loading = null;
+      state.loading.delete(d);
       state.refreshing = false;
     }
+    state.byDistrict.set(d, entry);
     render();
     drawWarnings();
-    const n = active().length;
-    for (const badge of document.querySelectorAll('#bnm-count, #bnm-count-tab')) { badge.hidden = !n; badge.textContent = n; }
+    badges();
   })();
-  return state.loading;
+  state.loading.set(d, job);
+  return job;
+}
+
+function badges() {
+  const n = active().length;
+  for (const badge of document.querySelectorAll('#bnm-count, #bnm-count-tab')) { badge.hidden = !n; badge.textContent = n; }
 }
 
 function render(loading = false) {
   const body = state.body;
   if (!body) return;
   body.innerHTML = '';
-  const picked = getDistrict();
-  if (picked && !DISTRICTS[picked]) {
-    body.append(el('div', { class: 'empty' }, [el('b', { text: 'Not available for this district yet' }),
-      'Broadcast Notices are live for the Northwest (D13) so far. The other districts are coming.']));
+  const d = current();
+  if (!d) {
+    body.append(el('div', { class: 'empty' }, [el('b', { text: 'Pick a district' }), 'Scroll in on the map or pick a district at the top to see its notices.']));
     return;
   }
+  if (!DISTRICTS[d]) {
+    body.append(el('div', { class: 'empty' }, [el('b', { text: 'No notices for this district' }), 'No broadcast notice feed is known for it.']));
+    return;
+  }
+  const entry = state.byDistrict.get(d);
+  const list = active(d);
   body.append(el('div', { class: 'row bnm-head' }, [
-    el('span', { class: 'muted small', text: [`${DISTRICTS[state.district]} (D${state.district})`, `${active().length} active`, state.msg].filter(Boolean).join(' · ') }),
+    el('span', { class: 'muted small', text: [`${DISTRICTS[d]} (D${d})`, entry ? `${list.length} active` : '', entry?.msg].filter(Boolean).join(' · ') }),
     state.refreshing
       ? el('button', { class: 'btn sm', disabled: true }, [el('span', { class: 'btn-spin' }), 'Refreshing'])
-      : el('button', { class: 'btn sm', text: 'Refresh', onclick: () => load(true, true) }),
+      : el('button', { class: 'btn sm', text: 'Refresh', onclick: () => load(d, true, true) }),
   ]));
-  if (loading) { body.append(el('div', { class: 'empty loading-dots', text: 'Loading notices' })); return; }
-  const list = active();
+  if (loading || !entry) { body.append(el('div', { class: 'empty loading-dots', text: 'Loading notices' })); return; }
   if (!list.length) {
     body.append(el('div', { class: 'empty' }, [el('b', { text: 'No active aid notices' }), 'Every aid in the district is reported watching properly.']));
     return;
   }
   const box = el('div', { class: 'list bnm-list' });
   for (const b of list) {
-    const aids = aidsFor(b);
+    const aids = aidsFor(b, d);
     const aid = aids[0] || null;
     const name = (aid?.aidname || b.aid_hint || b.area || b.id) + (b.llnrs.length > 1 ? ` + ${b.llnrs.length - 1} more` : '');
     box.append(el('button', { type: 'button', class: 'item bnm-item', title: aid ? 'Go to this light' : 'This notice names no aid in the Light List', onclick: () => go(b, aid) }, [
@@ -151,22 +165,22 @@ export function noticeBanner(list) {
   ])));
 }
 
-/** Warning markers on the map: an orange ring with "!" over each light that has an active notice. */
+/** Warning markers on the map: an orange ring with "!" over each light in the picked district with an active notice. */
 function drawWarnings() {
   if (!map) return;
   if (!warnLayer) warnLayer = L.layerGroup().addTo(map);
   warnLayer.clearLayers();
-  const picked = getDistrict();
-  if (picked && picked !== state.district) return;
+  const d = current();
+  if (!d) return;
   const seen = new Set();
-  for (const b of active()) {
-    for (const aid of aidsFor(b)) {
-    if (seen.has(aid.objectid)) continue;
-    seen.add(aid.objectid);
-    const icon = L.divIcon({ className: 'bnm-marker', html: '<span>!</span>', iconSize: [30, 30], iconAnchor: [15, 15] });
-    L.marker([aid.latitude, aid.longitude], { icon, zIndexOffset: 1000, keyboard: false, title: `${aid.aidname}: ${whatsWrong(b)}` })
-      .on('click', () => openAid(aid.objectid))
-      .addTo(warnLayer);
+  for (const b of active(d)) {
+    for (const aid of aidsFor(b, d)) {
+      if (seen.has(aid.objectid)) continue;
+      seen.add(aid.objectid);
+      const icon = L.divIcon({ className: 'bnm-marker', html: '<span>!</span>', iconSize: [30, 30], iconAnchor: [15, 15] });
+      L.marker([aid.latitude, aid.longitude], { icon, zIndexOffset: 1000, keyboard: false, title: `${aid.aidname}: ${whatsWrong(b)}` })
+        .on('click', () => openAid(aid.objectid))
+        .addTo(warnLayer);
     }
   }
 }

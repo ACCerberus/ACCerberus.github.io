@@ -1,12 +1,12 @@
 /** Water: NOAA tide/current stations, USGS gages and USACE dams in view; readings on click. */
 
-import { api } from './api.js?v=2.1.1-6';
-import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.1.1-6';
-import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.1.1-6';
-import { showDetail, poiRecord } from './detail.js?v=2.1.1-6';
-import { haversineMi } from './geo.js?v=2.1.1-6';
-import { getDistrict, districtAt } from './aids.js?v=2.1.1-6';
-import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.1.1-6';
+import { api } from './api.js?v=2.1.2';
+import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.1.2';
+import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.1.2';
+import { showDetail, poiRecord } from './detail.js?v=2.1.2';
+import { haversineMi } from './geo.js?v=2.1.2';
+import { getDistrict, districtAt } from './aids.js?v=2.1.2';
+import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.1.2';
 
 const TYPES = [['tide', 'Tides'], ['current', 'Currents'], ['gage', 'USGS gages'], ['dam', 'Dams']];
 const MIN_ZOOM = 7;
@@ -138,7 +138,28 @@ async function open(poi) {
       }
       if (d.stats_7d) rec.facts.push(['7-day range', `${d.stats_7d.min_ft} – ${d.stats_7d.max_ft} ft (mean ${d.stats_7d.mean_ft})`]);
     } else if (poi.kind === 'dam') {
-      rec.facts.push(['Pool elevation', d.pool_elevation_ft != null ? `${d.pool_elevation_ft} ft` : '—'], ['Tailwater', d.tailwater_ft != null ? `${d.tailwater_ft} ft` : '—'], ['Inflow', d.inflow_cfs != null ? `${fmt.int(d.inflow_cfs)} cfs` : '—'], ['Outflow (release)', d.outflow_cfs != null ? `${fmt.int(d.outflow_cfs)} cfs` : '—'], ['Storage', d.storage_acft != null ? `${fmt.int(d.storage_acft)} ac-ft` : '—'], ['Office', d.office], ['Updated', d.updated]);
+      const NA = 'No data available';
+      const live = ['pool_elevation_ft', 'tailwater_ft', 'inflow_cfs', 'outflow_cfs', 'storage_acft'].some((k) => d[k] != null);
+      if (!live) {
+        rec.facts.push(['Live data', NA], ['Operator office', d.office]);
+      } else {
+        const ft = (v) => (v != null ? `${Number(v).toFixed(1)} ft` : NA);
+        const cfs = (v) => (v != null ? `${fmt.int(Math.round(v))} cfs` : NA);
+        const releasing = d.outflow_cfs == null ? NA : d.outflow_cfs > 0 ? `Yes — ${cfs(d.outflow_cfs)} going downstream` : 'No — gates closed';
+        const head = d.pool_elevation_ft != null && d.tailwater_ft != null ? `${(d.pool_elevation_ft - d.tailwater_ft).toFixed(1)} ft drop across the dam` : '';
+        rec.facts.push(
+          ['Releasing water', releasing],
+          ['Water above dam', ft(d.pool_elevation_ft) + (d.pool_elevation_ft != null ? ' (pool / forebay)' : '')],
+          ['Water below dam', ft(d.tailwater_ft) + (d.tailwater_ft != null ? ' (tailwater)' : '')],
+          ['Difference', head],
+          ['Flowing in', cfs(d.inflow_cfs)],
+          ['Storage', d.storage_acft != null ? `${fmt.int(d.storage_acft)} ac-ft` : NA],
+          ['Operator office', d.office],
+          ['Updated', d.updated ? fmt.ago(d.updated) : ''],
+        );
+      }
+      if (d.note && !/^No data available/.test(d.note)) rec.facts.push(['Note', d.note]);
+      if (!merged.website && d.office) rec.website = `https://www.google.com/search?q=${encodeURIComponent(`${poi.name} ${d.office} USACE`)}`;
     } else if (poi.kind === 'current') {
       const pts = (d.predictions || []).map((p) => {
         let v = +p.velocity_kt; if (p.type === 'ebb' && v > 0) v = -v; if (p.type === 'slack') v = 0;

@@ -1,8 +1,8 @@
 /** Measure tool: click points on the map, see each leg's distance and true bearing plus the total. */
 
-import { $, el, panelSkeleton, onPanelChange, store } from './ui.js?v=2.1.1-6';
-import { map, layers, wpIcon } from './map.js?v=2.1.1-6';
-import { haversineNM, trueBearing, formatDistance } from './geo.js?v=2.1.1-6';
+import { $, el, panelSkeleton, onPanelChange, store } from './ui.js?v=2.1.2';
+import { map, layers, wpIcon } from './map.js?v=2.1.2';
+import { haversineNM, trueBearing, formatDistance } from './geo.js?v=2.1.2';
 
 const state = { active: false, points: [], line: null, labels: [], unit: store.get('measureUnit', 'nm'), listEl: null, totalEl: null };
 

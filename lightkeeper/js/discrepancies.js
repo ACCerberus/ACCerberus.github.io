@@ -2,8 +2,8 @@
  *  Desktop: stored in the app database; Excel export opens in Excel; Email opens a draft with the sheet attached.
  *  Web/phone: stored in this browser; Excel downloads; Email shares the sheet to the phone's Mail app. */
 
-import { api } from './api.js?v=2.1.1-6';
-import { el, toast, panelSkeleton, onPanelChange, showPanel, debounce } from './ui.js?v=2.1.1-6';
+import { api } from './api.js?v=2.1.2';
+import { el, toast, panelSkeleton, onPanelChange, showPanel, debounce } from './ui.js?v=2.1.2';
 
 const TYPES = ['Extinguished', 'Improper characteristic', 'Off station', 'Missing', 'Overgrown', 'Vandalized', 'Damaged', 'Other'];
 // The tracker is built but hidden from users until it's ready: set to true to show the rail button,
