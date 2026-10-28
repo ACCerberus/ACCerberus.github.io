@@ -1,10 +1,10 @@
 /** Aids to Navigation: load from the backend, cluster on the map, list + select in the panel. */
 
-import { api } from './api.js?v=2.1.2-4';
-import { $, el, fmt, toast, panelSkeleton, debounce, setStatus, store } from './ui.js?v=2.1.2-4';
-import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.2-4';
-import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.2-4';
-import { lite, whenChecked, DESKTOP } from './netcheck.js?v=2.1.2-4';
+import { api } from './api.js?v=2.1.3';
+import { $, el, fmt, toast, panelSkeleton, debounce, setStatus, store } from './ui.js?v=2.1.3';
+import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.3';
+import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.3';
+import { lite, whenChecked, DESKTOP } from './netcheck.js?v=2.1.3';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
 const PAGE = 200;
@@ -96,7 +96,13 @@ export function init(view) {
   state.listEl = el('div', { class: 'list' });
   body.append(pills, tools, state.listEl);   // searching lives in the top bar (one search box for aids and places)
   map.on('moveend', debounce(() => { state.shown = PAGE; renderList(); }, 200));
-  layers.aids.on('click', (e) => openAid(e.layer.options.aidId));
+  layers.aids.on('click', (e) => {
+    const id = e.layer.options.aidId;
+    // Trip planner picking (desktop: while the Trip panel is open; phone: after "Pick lights"): click adds/removes.
+    const picking = document.body.dataset.tripPick === '1' && (document.body.classList.contains('phone') || !document.body.classList.contains('panel-hidden'));
+    if (picking) { toggleSelect(id); const a = state.byId.get(id); if (a) toast(`${state.selected.has(id) ? 'Added' : 'Removed'} ${a.aidname}`, 'ok', 1500); return; }
+    openAid(id);
+  });
 }
 
 /** Load every aid (slim) from the backend and rebuild the cluster layer. */

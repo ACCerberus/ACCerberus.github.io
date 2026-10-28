@@ -20,7 +20,7 @@ body.phone {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
-body.phone #rail, body.phone #statusbar, body.phone #basemap-seg, body.phone #layer-chips, body.phone .brand-name, body.phone .brand-ver,
+body.phone #rail, body.phone #statusbar, body.phone #basemap-seg, body.phone .brand-name, body.phone .brand-ver,
 body.phone #hover-hint, body.phone .desktop-only, body.phone #rail-collapse { display: none !important; }
 body.phone .phone-only { display: block; }
 body.phone #topbar { gap: 10px; padding: var(--safe-t) 12px 0; height: calc(var(--top-h) + var(--safe-t)); box-sizing: border-box; }
@@ -174,3 +174,15 @@ body.phone .disc-bnm-actions .btn { min-height: 40px; }
 /* BNM count on the phone tab */
 #tabbar button[data-panel="bnm"] { position: relative; }
 #tabbar .rail-badge { top: 2px; right: calc(50% - 22px); }
+
+/* Phone: the place toggles (boat ramps, hotels, parks, dams) as a row you slide sideways, under the search bar */
+body.phone #layer-chips { position: fixed; top: calc(var(--top-h) + var(--safe-t) + 8px); left: 0; right: 0; z-index: 1100;
+  display: flex; gap: 8px; padding: 0 12px 4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; pointer-events: none; }
+body.phone #layer-chips::-webkit-scrollbar { display: none; }
+body.phone #layer-chips .chip { pointer-events: auto; flex: 0 0 auto; min-height: 36px; padding: 0 14px; border-radius: 999px; font-size: 13.5px; font-weight: 600;
+  background: rgba(15, 25, 35, .88); backdrop-filter: blur(6px); box-shadow: 0 2px 8px rgba(0, 0, 0, .35); display: inline-flex; align-items: center; gap: 6px; }
+body.phone #layer-chips .chip::before { content: ""; width: 30px; height: 18px; border-radius: 999px; flex: none;
+  background: radial-gradient(circle at 9px 50%, #c9d3dd 0 6px, #3a4654 7px); }
+body.phone #layer-chips .chip.on::before { background: radial-gradient(circle at 21px 50%, #fff 0 6px, var(--accent) 7px); }
+body.phone #layer-chips #chip-charts { display: none; }
+body.phone #layer-chips .chip-count { display: none; }

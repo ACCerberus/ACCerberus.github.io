@@ -1,7 +1,7 @@
 /** Pictures for the detail cards, no API keys: a photo taken near the place (Wikimedia Commons; the desktop
  *  app fetches and caches it through /api/poi/photo) and a satellite view of the exact spot (Esri World Imagery). */
 
-import { DESKTOP, lite } from './netcheck.js?v=2.1.2-4';
+import { DESKTOP, lite } from './netcheck.js?v=2.1.3';
 
 const SKIP = /logo|icon|flag|map|diagram|chart|sign|plaque|seal|coat.of.arms/i;
 const memo = new Map();

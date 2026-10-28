@@ -1,5 +1,43 @@
 [
   {
+    "version": "2.1.3",
+    "date": "2026-10-28",
+    "title": "Trip planner",
+    "summary": "Version 2.1.3 — 10 changes since 2.1.2.",
+    "changes": [
+      "Trip planner finished: pick lights on the map, then LightKeeper orders them along the water, picks the launch and recovery ramps (tonight's recovery is tomorrow's launch), splits the days and picks a hotel near the ramp.",
+      "Each day is a timeline: drive to the ramp, launch, every light with the leg in NM and miles, run time, arrival and stop time, recovery, day done, and the drive to the hotel with minutes.",
+      "Days = Auto (fewest days that fit your hours on the water), a start time, one stop time for every light, 8 hours a day by default; boat speed, fuel burn and tank come from Settings, with a warning when a day needs more fuel than the tank holds.",
+      "Swap a ramp or hotel with one tap (\"Other ramps\" / \"Other hotels\"); the day re-times right away and the ramp chain is kept.",
+      "The trip PDF shows each leg in NM and miles.",
+      "First launch asks which district you want to view; after that LightKeeper opens on the last district you used.",
+      "Fixed tide lookups in trip plans.",
+      "The trip planner now runs on the website too, right in the browser (no download needed). Export prints the plan; use Save as PDF in the print window.",
+      "Phones: a simple trip flow - tap Pick lights, tap lights on the map, Plan - then one day at a time. Trip has its own tab; Weather moved to More.",
+      "Phones: Boat Ramps, Hotels, Parks and Dams switches in a row under the search bar; slide it sideways."
+    ],
+    "known_issues": [
+      "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
+      "Small dams that the Army Corps doesn't run show only their name and location (no release or water-level data).",
+      "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",
+      "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
+      "Mobile and Ohio Valley sector cards have no published 24-hour number."
+    ],
+    "todo": [
+      "Add boat ramps, hotels, marinas, campgrounds, parks and dams for every district from downloaded OpenStreetMap state files (the public map servers were too overloaded to crawl). Northwest (D13) first.",
+      "Discrepancy tracker (in progress).",
+      "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
+      "Turn on the Windows app download on this site.",
+      "Field check: spot-check aids you know (FDR Lake, Snake, Columbia) for the right nearest ramp, ramp names, phone numbers, hotels and closed ramps.",
+      "Confirm CG sector and district on aid cards, and the 24-hour numbers (find Mobile and Ohio Valley).",
+      "Trip planner: compare auto plans against one or two real trips (day splits, launch/recovery ramps, lodging).",
+      "Add a Google Places key and verify every ramp, hotel and park against Google.",
+      "Test on a real phone (one-tap aids, scrolling card, map-only zoom, Locate) and on a work PC network.",
+      "Check dam cards you know for correct pool, tailwater and release status.",
+      "Flag any water temp or weather station that is a bad pick for its area."
+    ]
+  },
+  {
     "version": "2.1.2",
     "date": "2026-10-28",
     "title": "BNMs for every district",

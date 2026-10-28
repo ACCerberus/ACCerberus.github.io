@@ -2,11 +2,11 @@
  *  flies to the light, opens its card and shows what's wrong at the top of the card. Any aid with an active notice
  *  shows the same banner when it's opened from the map or search, and gets a pulsing ring on the map. */
 
-import { api } from './api.js?v=2.1.2-4';
-import { el, panelSkeleton, onPanelChange, toast } from './ui.js?v=2.1.2-4';
-import { map } from './map.js?v=2.1.2-4';
-import { openAid, allAids, getDistrict } from './aids.js?v=2.1.2-4';
-import { setAidNotices } from './detail.js?v=2.1.2-4';
+import { api } from './api.js?v=2.1.3';
+import { el, panelSkeleton, onPanelChange, toast } from './ui.js?v=2.1.3';
+import { map } from './map.js?v=2.1.3';
+import { openAid, allAids, getDistrict } from './aids.js?v=2.1.3';
+import { setAidNotices } from './detail.js?v=2.1.3';
 
 const DISTRICTS = { 1: 'Northeast', 5: 'East', 7: 'Southeast', 8: 'Heartland', 9: 'Great Lakes', 11: 'Southwest', 13: 'Northwest', 14: 'Oceania', 17: 'Arctic' };
 const REFRESH_MS = 15 * 60 * 1000;

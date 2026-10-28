@@ -1,22 +1,22 @@
 /** Browser edition of the API client. Same `api.get/post/del(path, …)` surface as the desktop app, but
  *  every `/api/...` path is answered in the page: the Light List from static tables on this site, places from
  *  OpenStreetMap (Overpass + Nominatim), water from NOAA / USGS / Open-Meteo, weather from the NWS, trips and
- *  settings from localStorage. Desktop-only endpoints (tile cache, pre-cache, backup, open file) answer
+ *  settings from localStorage, trip plans from the in-page planner. Desktop-only endpoints (tile cache, pre-cache, backup, open file) answer
  *  `{ok:false}` quietly. */
 
-import * as aids from './web/aids.js?v=2.1.2-4';
-import * as poi from './web/poi.js?v=2.1.2-4';
-import * as water from './web/water.js?v=2.1.2-4';
-import * as weather from './web/weather.js?v=2.1.2-4';
-import * as discrep from './web/discrepancies.js?v=2.1.2-4';
-import * as bnm from './web/bnm.js?v=2.1.2-4';
-import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.1.2-4';
+import * as aids from './web/aids.js?v=2.1.3';
+import * as poi from './web/poi.js?v=2.1.3';
+import * as water from './web/water.js?v=2.1.3';
+import * as weather from './web/weather.js?v=2.1.3';
+import * as discrep from './web/discrepancies.js?v=2.1.3';
+import * as bnm from './web/bnm.js?v=2.1.3';
+import * as tripplan from './web/tripplan.js?v=2.1.3';
+import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.1.3';
 
-export const VERSION = '2.1.2';
+export const VERSION = '2.1.3';
 const LS_SETTINGS = 'lk2.web.settings';
 const LS_TRIPS = 'lk2.web.trips';
 const DESKTOP_ONLY = { ok: false, error: 'Available in the desktop app', desktop_only: true };
-const PLAN_MESSAGE = 'Trip planning runs in the desktop app — download it from the LightKeeper page';
 
 const read = (key, fallback) => { try { const v = localStorage.getItem(key); return v == null ? fallback : JSON.parse(v); } catch { return fallback; } };
 const write = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage unavailable */ } };
@@ -115,7 +115,7 @@ async function route(method, path, params = {}, body = {}) {
       if (sub === 'observation') return pt ? weather.nearestObservation(pt[0], pt[1]) : { ok: false, error: 'Invalid or missing lat/lon' };
       return pt ? weather.getForecast(pt[0], pt[1]) : { ok: false, error: 'Invalid or missing lat/lon', periods: [] };
     case 'trip':
-      if (sub === 'plan') return { ok: false, error: PLAN_MESSAGE, desktop_only: true };
+      if (sub === 'plan') return tripplan.planTrip(body);
       break;
     case 'bnm': return bnm.list(params);
     case 'discrepancies': {
