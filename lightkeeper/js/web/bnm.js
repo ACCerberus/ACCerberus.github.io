@@ -1,7 +1,7 @@
 /** Web edition of /api/bnm: the hourly-published lightkeeper/data/bnm-D<id>.json (tools/build_bnm.py), with
  *  "active" recomputed here so notices expire on time between updates. All nine districts. */
 
-import { staticJson } from './aids.js?v=2.1.2-2';
+import { staticJson } from './aids.js?v=2.1.2-3';
 
 const DISTRICTS = [1, 5, 7, 8, 9, 11, 13, 14, 17];
 const TTL = 10 * 60 * 1000;
