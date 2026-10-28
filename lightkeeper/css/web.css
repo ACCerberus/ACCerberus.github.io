@@ -139,3 +139,27 @@ body.phone #detail .d-bar .btn.icon { width: 44px; }
 body.phone #detail .ac-v { font-size: 15px; }
 body.phone #detail .lt-value { font-size: 14px; }
 body.phone #detail .lt-sub { font-size: 12px; }
+
+/* Long-press on a phone opens LightKeeper's own menu; stop iOS/Android from also offering
+   "Copy / Save image" or starting a text selection. Text boxes keep normal selection. */
+body.phone, body.phone * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+body.phone input, body.phone textarea, body.phone [contenteditable] { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+body.phone #map img { -webkit-user-drag: none; }
+
+/* Phone long-press menu: centered card with a title, a close button and scrolling */
+#ctx-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, .45); z-index: 1290; }
+#ctx-backdrop[hidden] { display: none; }
+body.phone #ctx-menu.ctx-sheet {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%) !important; z-index: 1300;
+  width: min(340px, calc(100vw - 32px)); max-height: calc(100vh - var(--top-h) - var(--safe-t) - var(--tab-h) - var(--safe-b) - 32px);
+  overflow-y: auto; overscroll-behavior: contain; border-radius: 14px; padding: 4px 6px 8px;
+}
+body.phone #ctx-menu .ctx-head {
+  position: sticky; top: -4px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 8px 4px 8px 12px; margin: 0 -6px 4px; background: var(--bg-1); border-bottom: 1px solid var(--line);
+  font-size: 14px; font-weight: 600; color: var(--text-2);
+}
+body.phone #ctx-menu .ctx-close {
+  flex: 0 0 40px; width: 40px; min-height: 40px; height: 40px; padding: 0; justify-content: center;
+  border-radius: 50%; background: var(--bg-3); font-size: 18px; color: var(--text);
+}

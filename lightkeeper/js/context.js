@@ -1,13 +1,14 @@
 /** Right-click menu on the map: look up tides, currents, weather, water temp, places, measure. */
 
-import { $, el, fmt, toast, showPanel } from './ui.js?v=2.0.9c';
-import { map, flyTo } from './map.js?v=2.0.9c';
-import * as water from './water.js?v=2.0.9c';
-import * as weather from './weather.js?v=2.0.9c';
-import * as measure from './measure.js?v=2.0.9c';
-import * as poi from './poi.js?v=2.0.9c';
+import { $, el, fmt, toast, showPanel } from './ui.js?v=2.0.9c-3';
+import { map, flyTo } from './map.js?v=2.0.9c-3';
+import * as water from './water.js?v=2.0.9c-3';
+import * as weather from './weather.js?v=2.0.9c-3';
+import * as measure from './measure.js?v=2.0.9c-3';
+import * as poi from './poi.js?v=2.0.9c-3';
 
 let menu;
+let backdrop;
 
 export function init() {
   menu = el('div', { id: 'ctx-menu', hidden: true });
@@ -18,7 +19,7 @@ export function init() {
   document.addEventListener('click', (e) => { if (!menu.contains(e.target)) hide(); });
 }
 
-function hide() { if (menu) menu.hidden = true; }
+function hide() { if (menu) menu.hidden = true; if (backdrop) backdrop.hidden = true; }
 
 function show(e) {
   const ll = e.latlng;
@@ -40,10 +41,29 @@ function show(e) {
   const phone = document.body.classList.contains('phone');
   const shown = phone ? items.filter((it) => !it || it[1] !== 'Measure from here') : items;
   menu.innerHTML = '';
+  menu.classList.toggle('ctx-sheet', phone);
+  if (phone) {
+    // Phones: a centered card over a dimmed map, with a title and a close button, scrolling when it is taller than the screen.
+    if (menu.parentElement !== document.body) document.body.append(menu);
+    if (!backdrop) { backdrop = el('div', { id: 'ctx-backdrop', hidden: true, onclick: hide }); document.body.append(backdrop); }
+    menu.append(el('div', { class: 'ctx-head' }, [
+      el('span', { text: fmt.coord(ll.lat, ll.lng, 4) }),
+      el('button', { class: 'ctx-close', 'aria-label': 'Close', text: '✕', onclick: (ev) => { ev.stopPropagation(); hide(); } }),
+    ]));
+  } else if (menu.parentElement === document.body) {
+    $('#map').append(menu);
+  }
   for (const item of shown) {
     if (!item) { menu.append(el('div', { class: 'ctx-sep' })); continue; }
     const [glyph, label, action] = item;
     menu.append(el('button', { onclick: () => { hide(); action(); } }, [el('span', { class: 'ctx-glyph', text: glyph }), label]));
+  }
+  if (phone) {
+    menu.style.transform = '';
+    backdrop.hidden = false;
+    menu.hidden = false;
+    menu.scrollTop = 0;
+    return;
   }
   const size = map.getSize();
   menu.hidden = false;

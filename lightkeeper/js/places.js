@@ -1,11 +1,11 @@
 /** Places panel (phone mode): toggle the boat ramp / lodging / park layers and list what is loaded around the
  *  map, nearest first, with address and a tap-to-call phone number. Desktop users have the top-bar chips. */
 
-import { el, fmt, panelSkeleton, onPanelChange } from './ui.js?v=2.0.9c';
-import { map } from './map.js?v=2.0.9c';
-import { showPoi } from './detail.js?v=2.0.9c';
-import { haversineMi } from './geo.js?v=2.0.9c';
-import * as poi from './poi.js?v=2.0.9c';
+import { el, fmt, panelSkeleton, onPanelChange } from './ui.js?v=2.0.9c-3';
+import { map } from './map.js?v=2.0.9c-3';
+import { showPoi } from './detail.js?v=2.0.9c-3';
+import { haversineMi } from './geo.js?v=2.0.9c-3';
+import * as poi from './poi.js?v=2.0.9c-3';
 
 const LAYERS = [['ramps', 'Boat ramps', '⚓'], ['hotels', 'Hotels', '🛏'], ['parks', 'Parks', '🌲']];
 const state = { listEl: null, pills: null, active: false };

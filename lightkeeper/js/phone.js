@@ -2,9 +2,9 @@
  *  the map menu. Detected from the viewport (a browser cannot read the phone model); the screen size and pixel
  *  ratio are logged and shown in Settings → About. */
 
-import { $, $$, showPanel, onPanelChange } from './ui.js?v=2.0.9c';
-import { map } from './map.js?v=2.0.9c';
-import { onDetailOpen, hideDetail } from './detail.js?v=2.0.9c';
+import { $, $$, showPanel, onPanelChange } from './ui.js?v=2.0.9c-3';
+import { map } from './map.js?v=2.0.9c-3';
+import { onDetailOpen, hideDetail } from './detail.js?v=2.0.9c-3';
 
 const PHONE_QUERY = '(max-width: 820px), (pointer: coarse) and (max-width: 1024px), (max-height: 500px) and (max-width: 1024px)';
 const LONG_PRESS_MS = 500;
@@ -130,6 +130,8 @@ function initLongPress() {
     if (Math.hypot(t.clientX - start.x, t.clientY - start.y) > MOVE_TOLERANCE_PX) cancel();
   }, { passive: true });
   container.addEventListener('touchend', cancel, { passive: true });
+  // The browser's own long-press menu (Copy / Save image) must not appear on top of ours.
+  container.addEventListener('contextmenu', (e) => { if (state.phone) e.preventDefault(); });
   container.addEventListener('touchcancel', cancel, { passive: true });
   // Some mobile browsers also synthesise a native contextmenu after a long press; keep only ours.
   map.on('contextmenu', (e) => { if (e.originalEvent?.type !== 'touchstart' && Date.now() - lastSynthetic < 800) L.DomEvent.stop(e.originalEvent); });
