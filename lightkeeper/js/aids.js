@@ -1,9 +1,10 @@
 /** Aids to Navigation: load from the backend, cluster on the map, list + select in the panel. */
 
-import { api } from './api.js?v=2.1.0-6';
-import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.1.0-6';
-import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.0-6';
-import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.0-6';
+import { api } from './api.js?v=2.1.1';
+import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js?v=2.1.1';
+import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.1';
+import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.1';
+import { lite, whenChecked, DESKTOP } from './netcheck.js?v=2.1.1';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
 const PAGE = 200;
@@ -11,6 +12,7 @@ const state = {
   all: [], byId: new Map(), markers: new Map(), selected: new Map(),
   types: new Set(TYPES), q: '', shown: PAGE, listEl: null, countEl: null, view: null,
   district: null, // district id to show, or null for all
+  partial: false,  // Lite mode: only some districts loaded so far
 };
 
 /** Restrict the map and list to one district (null = all districts). */
@@ -20,6 +22,7 @@ export function setDistrict(id) {
   refreshMarkers();
   renderList();
   document.dispatchEvent(new CustomEvent('district-changed', { detail: state.district }));
+  if (state.partial && (!state.district || !state.all.some((a) => a.district_id === state.district))) loadAll({ silent: true, full: !state.district });
 }
 export const getDistrict = () => state.district;
 const inDistrict = (aid) => !state.district || aid.district_id === state.district;
@@ -90,18 +93,25 @@ export function init(view) {
 }
 
 /** Load every aid (slim) from the backend and rebuild the cluster layer. */
-export async function loadAll({ silent = false } = {}) {
+export async function loadAll({ silent = false, full = false } = {}) {
   try {
-    if (state.district && !state.all.length) {
+    if (state.district && (!state.all.length || state.partial) && !state.all.some((a) => a.district_id === state.district)) {
       // Show the district you were looking at first; the rest of the country follows right after.
       const first = await api.get('/api/aids', { districts: state.district, limit: 100000 }, { timeoutMs: 60000 });
-      state.all = first.aids || [];
+      state.all = state.partial ? state.all.concat(first.aids || []) : (first.aids || []);
       state.byId = new Map(state.all.map((a) => [a.objectid, a]));
       indexAids();
       refreshMarkers();
       renderList();
     }
+    // Slow link: stop at the picked district (the rest of the country is ~10 MB). Picking another loads that one.
+    if (!DESKTOP && !full && state.district && (await whenChecked(), lite())) {
+      state.partial = true;
+      setStatus({ aids: `${fmt.int(state.all.length)} aids (Lite mode)` });
+      return;
+    }
     const data = await api.get('/api/aids', { limit: 100000 }, { timeoutMs: 120000 });
+    state.partial = false;
     state.all = data.aids || [];
     state.byId = new Map(state.all.map((a) => [a.objectid, a]));
     indexAids();
@@ -115,6 +125,8 @@ export async function loadAll({ silent = false } = {}) {
     if (!silent) toast(`Could not load aids: ${err.message}`, 'err');
   }
 }
+
+document.addEventListener('net-mode', () => { if (state.partial && !lite()) loadAll({ silent: true, full: true }); });
 
 function refreshMarkers() {
   layers.aids.clearLayers();

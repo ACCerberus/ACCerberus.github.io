@@ -1,7 +1,7 @@
 /** Leaflet map setup: base layers (loaded straight from the public tile servers), NOAA ENC chart overlay,
  *  layer groups, icons. */
 
-import { $$, store } from './ui.js?v=2.1.0-6';
+import { $$, store } from './ui.js?v=2.1.1';
 
 const DEFAULT_VIEW = { center: [39.5, -98.35], zoom: 4 };
 
@@ -28,7 +28,7 @@ function withRetry(layer) {
   });
   return layer;
 }
-const xyz = (url, opts) => withRetry(L.tileLayer(url, { ...TILE_OPTS, ...opts }));
+const xyz = (url, opts) => withRetry(L.tileLayer(url, { ...TILE_OPTS, ...tileTuning, ...opts }));
 const bases = {
   osm: () => xyz('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxNativeZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }),
   // Imagery + Esri reference overlays (roads, place names). No baked-in business pins, so only our clickable markers show.
@@ -86,6 +86,15 @@ function trackLoading(layer) {
     l.on('load', () => { pendingLayers = Math.max(0, pendingLayers - 1); if (!pendingLayers) veil(false); });
   }
 }
+/** Tile behaviour: normal keeps a ring of tiles around the view; Lite (slow link) keeps fewer and waits for pans to stop. */
+const tileTuning = { keepBuffer: 4, updateWhenIdle: false };
+export function setLiteTiles(on) {
+  const next = { keepBuffer: on ? 1 : 4, updateWhenIdle: !!on };
+  if (next.keepBuffer === tileTuning.keepBuffer) return;
+  Object.assign(tileTuning, next);
+  if (currentBase) setBase(currentBaseName);
+}
+
 export function setBase(name) {
   if (!bases[name]) name = 'osm';
   if (currentBase) map.removeLayer(currentBase);

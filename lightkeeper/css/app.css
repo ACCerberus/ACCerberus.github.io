@@ -496,7 +496,7 @@ body.panel-hidden #progress { left: calc(var(--rail-w) + 14px); }
 
 /* BNM tab and the notice banner on aid cards */
 .bnm-head { align-items: center; gap: 8px; justify-content: space-between; margin-bottom: 6px; }
-.bnm-item { cursor: pointer; box-shadow: inset 3px 0 0 #ff9a3c; }
+.bnm-item { cursor: pointer; box-shadow: inset 3px 0 0 #ff9a3c; display: flex; width: 100%; text-align: left; font: inherit; color: inherit; }
 .bnm-item:hover, .bnm-item:focus-visible { background: rgba(255, 154, 60, .08); outline: none; }
 .bnm-item .title { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .bnm-banner { display: grid; gap: 6px; margin-bottom: 10px; }
@@ -511,3 +511,49 @@ body.panel-hidden #progress { left: calc(var(--rail-w) + 14px); }
 @media (prefers-reduced-motion: reduce) { .bnm-marker span { animation: none; } }
 .btn-spin { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -2px; border-radius: 50%;
   border: 2px solid currentColor; border-right-color: transparent; animation: spin .7s linear infinite; }
+
+/* District picker drawn by the page (the desktop window can't open native drop-downs) */
+.dsel { position: relative; }
+.dsel-btn { height: 32px; min-width: 150px; padding: 0 28px 0 10px; border-radius: 8px; text-align: left; color: var(--text);
+  background: var(--bg-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a9b7c6' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center / 14px;
+  border: 1px solid var(--line); cursor: pointer; }
+.dsel-btn:hover, .dsel-btn[aria-expanded="true"] { border-color: var(--accent); }
+.dsel-menu { position: absolute; top: 36px; right: 0; min-width: 220px; max-height: 70vh; overflow: auto; margin: 0; padding: 4px; list-style: none;
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); z-index: 1300; }
+.dsel-menu button { display: block; width: 100%; text-align: left; padding: 8px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--text); cursor: pointer; }
+.dsel-menu button:hover, .dsel-menu button:focus-visible { background: var(--bg-3); outline: none; }
+.dsel-menu button.on { color: var(--accent); font-weight: 600; }
+
+/* ── Card pictures and contact (photo / satellite hero, call, website, hours) ── */
+#detail .d-hero { position: relative; height: 168px; flex-shrink: 0; overflow: hidden; background: #0b1218; cursor: pointer; }
+#detail .d-hero.small { height: 120px; }
+#detail .d-sat, #detail .d-hero-img { position: absolute; inset: 0; }
+#detail .d-sat img { position: absolute; width: 256px; height: 256px; max-width: none; }
+#detail .d-hero-img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .25s; }
+#detail .d-hero.has-photo .d-hero-img { opacity: 1; }
+#detail .d-hero.has-photo.show-sat .d-hero-img { opacity: 0; }
+#detail .d-hero::after { content: ""; position: absolute; inset: auto 0 0 0; height: 56px; background: linear-gradient(transparent, rgba(8, 14, 20, .75)); pointer-events: none; }
+#detail .d-hero-pin { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #ff9a3c; border: 2px solid #fff; box-shadow: 0 0 0 3px rgba(255, 154, 60, .35); z-index: 1; }
+#detail .d-hero.has-photo:not(.show-sat) .d-hero-pin { display: none; }
+#detail .d-hero-cap { position: absolute; right: 10px; bottom: 8px; z-index: 1; font-size: 10.5px; color: rgba(255, 255, 255, .85); text-shadow: 0 1px 2px rgba(0, 0, 0, .6); }
+#detail .d-hero-close { position: absolute; top: 10px; right: 10px; z-index: 2; width: 32px; height: 32px; border: 0; border-radius: 50%; background: rgba(8, 14, 20, .65); color: #fff; font-size: 20px; line-height: 1; cursor: pointer; }
+#detail .d-hero-close:hover { background: rgba(8, 14, 20, .9); }
+#detail .d-hero + .d-head .d-close { display: none; }
+#detail .d-contact { display: flex; flex-wrap: wrap; gap: 8px; }
+#detail .d-contact .btn { display: inline-flex; align-items: center; gap: 6px; }
+#detail .d-contact svg { width: 15px; height: 15px; }
+#detail .d-hours { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; color: var(--text-2); }
+#detail .d-hours svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; color: var(--text-3); }
+#detail .d-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+#detail .d-chip { padding: 4px 9px; border-radius: 999px; background: var(--bg-2); border: 1px solid var(--line); font-size: 11.5px; color: var(--text-2); }
+#detail .d-chip b { color: var(--text); font-weight: 600; }
+/* Desktop: a roomier card (everything inside about 10% larger). */
+@media (min-width: 900px) {
+  #detail { width: 400px; }
+  #detail > .d-head, #detail > .d-body, #detail > .d-bar { zoom: 1.1; }
+}
+
+/* Aid card extras: characteristic in words, sun times */
+.ac-plain { margin: -2px 0 2px; font-size: 12.5px; color: var(--text-2); }
+.ac-sun { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; font-size: 12px; color: var(--text-2); }
+.ac-sun b { color: var(--text); font-weight: 600; }

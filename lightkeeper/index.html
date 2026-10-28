@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>LightKeeper 2.1.0</title>
+<title>LightKeeper 2.1.1</title>
 <script>
 /* Always run the newest build: compare ./version.json (never cached) with the version this browser last ran.
    On a change, drop every Cache Storage cache, the service worker and the IndexedDB data cache, then reload once. */
@@ -36,8 +36,8 @@
 <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.Default.css">
-<link rel="stylesheet" href="./css/app.css?v=2.1.0-6">
-<link rel="stylesheet" href="./css/web.css?v=2.1.0-6">
+<link rel="stylesheet" href="./css/app.css?v=2.1.1">
+<link rel="stylesheet" href="./css/web.css?v=2.1.1">
 <style>
   /* Loading screen: painted before any stylesheet or script arrives, removed when the app has started. */
   html { background: #0f1923; }
@@ -49,14 +49,14 @@
   @keyframes boot-spin { to { transform: rotate(360deg); } }
 </style>
 </head>
-<body data-version="2.1.0">
+<body data-version="2.1.1">
 <div id="boot-splash" role="status" aria-label="Loading LightKeeper"><div class="spin"></div><div>Loading LightKeeper…</div></div>
 
 <header id="topbar">
   <div class="brand">
     <img src="./img/lighthouse.png" alt="">
     <span class="brand-name">Light<b>Keeper</b></span>
-    <span class="brand-ver" title="LightKeeper by Evan Isakson">v2.1.0 web</span>
+    <span class="brand-ver" title="LightKeeper by Evan Isakson">v2.1.1 web</span>
   </div>
   <div class="search" id="search-wrap">
     <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -102,8 +102,8 @@
   <button data-panel="discrep" title="Discrepancy tracker (D)" hidden>
     <svg viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v4M12 17h.01"/></svg><span>Discrep</span><b class="rail-badge" id="discrep-count" hidden></b>
   </button>
-  <button id="rail-locate" title="Go to my location (L)">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="8"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg><span>Locate</span>
+  <button id="rail-locate" title="Center the map on my location (L)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="8"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg><span>Center</span>
   </button>
   <div class="rail-spacer"></div>
   <button data-panel="whatsnew" title="What's new in this version">
@@ -147,7 +147,7 @@
   <button data-panel="places"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Places</span></button>
   <button data-panel="weather"><svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.3 1.5A3.5 3.5 0 0 1 17 18z"/></svg><span>Weather</span></button>
   <button data-panel="bnm"><svg viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v4M12 17h.01"/></svg><span>BNM</span><b class="rail-badge" id="bnm-count-tab" hidden></b></button>
-  <button id="tab-locate" aria-label="Go to my location"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="8"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg><span>Locate</span></button>
+  <button id="tab-locate" aria-label="Center the map on my location"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="8"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg><span>Center</span></button>
   <button data-panel="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>More</span></button>
 </nav>
 
@@ -163,7 +163,7 @@
 
 <script src="./vendor/leaflet/leaflet.js"></script>
 <script src="./vendor/markercluster/leaflet.markercluster.js"></script>
-<script type="module" src="./js/app.js?v=2.1.0-6"></script>
+<script type="module" src="./js/app.js?v=2.1.1"></script>
 <script>
   /* Home-screen app safety net: if startup hasn't finished in 12 s (a stalled download, or iPhone resuming a page it
      dropped from memory), reload once. Never more than once a minute, so it can't loop. */

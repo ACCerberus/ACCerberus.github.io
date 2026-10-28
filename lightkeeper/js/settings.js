@@ -1,10 +1,11 @@
 /** Settings (web edition): vessel, Light List data status, storage, about + device diagnostics.
  *  Offline map download, pre-cache, API keys and backup files live in the desktop app. */
 
-import { api, VERSION } from './api.js?v=2.1.0-6';
-import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog, showPanel } from './ui.js?v=2.1.0-6';
-import { ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.0-6';
-import { setBase, getBase } from './map.js?v=2.1.0-6';
+import { api, VERSION } from './api.js?v=2.1.1';
+import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog, showPanel } from './ui.js?v=2.1.1';
+import { ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.1';
+import { setBase, getBase } from './map.js?v=2.1.1';
+import * as netcheck from './netcheck.js?v=2.1.1';
 
 export const DOWNLOAD_INFO = '/download.json';   // the site's download switch (see /download.js)
 const state = { body: null, settings: {}, districtsEl: null };
@@ -15,6 +16,7 @@ export function init(view) {
   const { body } = panelSkeleton(view, 'Settings', `LightKeeper v${document.body.dataset.version} — web edition`);
   state.body = body;
   onPanelChange((name) => { if (name === 'settings') render(); });
+  document.addEventListener('net-checked', () => { const line = document.getElementById('net-line'); if (line) line.textContent = netcheck.describe(); });
   render();
 }
 
@@ -51,6 +53,17 @@ async function render() {
     onclick: (e) => { setBase(name); e.currentTarget.parentElement.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === e.currentTarget)); },
   })));
   b.append(section('Map', [seg], 'phone-only'));
+
+  const modes = [['auto', 'Auto'], ['lite', 'Lite'], ['full', 'Full']];
+  const netSeg = el('div', { class: 'seg', role: 'group', 'aria-label': 'Connection mode' }, modes.map(([m, label]) => el('button', {
+    class: netcheck.net.mode === m ? 'on' : '', text: label, style: 'flex:1;min-height:40px',
+    onclick: (e) => { netcheck.setMode(m); e.currentTarget.parentElement.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === e.currentTarget)); toast(netcheck.lite() ? 'Lite mode on' : 'Full mode on', 'ok'); },
+  })));
+  b.append(section('Connection', [
+    el('div', { class: 'small', id: 'net-line', text: netcheck.describe() }),
+    netSeg,
+    el('p', { class: 'muted small', style: 'margin:0', text: "Auto turns on Lite when the connection is slow. Lite saves data: only your district's aids load and the map keeps fewer tiles around the view. Full always loads everything." }),
+  ]));
 
   state.districtsEl = el('div', { class: 'list' });
   b.append(section('Light List data', [

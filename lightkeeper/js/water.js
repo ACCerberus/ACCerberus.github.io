@@ -1,12 +1,12 @@
 /** Water: NOAA tide/current stations, USGS gages and USACE dams in view; readings on click. */
 
-import { api } from './api.js?v=2.1.0-6';
-import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.1.0-6';
-import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.1.0-6';
-import { showDetail, poiRecord } from './detail.js?v=2.1.0-6';
-import { haversineMi } from './geo.js?v=2.1.0-6';
-import { getDistrict, districtAt } from './aids.js?v=2.1.0-6';
-import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.1.0-6';
+import { api } from './api.js?v=2.1.1';
+import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.1.1';
+import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.1.1';
+import { showDetail, poiRecord } from './detail.js?v=2.1.1';
+import { haversineMi } from './geo.js?v=2.1.1';
+import { getDistrict, districtAt } from './aids.js?v=2.1.1';
+import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.1.1';
 
 const TYPES = [['tide', 'Tides'], ['current', 'Currents'], ['gage', 'USGS gages'], ['dam', 'Dams']];
 const MIN_ZOOM = 7;
@@ -18,6 +18,8 @@ const state = { types: new Set(store.get('waterTypes', ['tide', 'gage', 'dam']))
 export function setDams(on) {
   state.dams = !!on;
   store.set('showDams', state.dams);
+  if (state.dams && map.getZoom() < DAM_MIN_ZOOM) toast('Dams on: zoom in closer to see them', 'info', 4000);
+  state.damsAsked = state.dams;      // say so if this first look finds none or fails
   refresh();
   return state.dams;
 }
@@ -83,7 +85,13 @@ async function refresh() {
       state.items.set(poi.id, poi);
     }
     if (state.active) renderList(Array.from(state.items.values()));
-  } catch (err) { if (state.active) toast(`Water stations: ${err.message}`, 'warn'); }
+    if (state.damsAsked && types.has('dam')) {
+      state.damsAsked = false;
+      if (!Array.from(state.items.values()).some((p) => p.kind === 'dam')) toast('No dams found in this view', 'info', 3500);
+    }
+  } catch (err) {
+    if (state.active || types.has('dam')) toast(`${types.has('dam') && !state.active ? 'Dams' : 'Water stations'} could not load: ${err.message}`, 'warn');
+  }
 }
 
 function renderList(items, emptyText = 'No stations in view') {

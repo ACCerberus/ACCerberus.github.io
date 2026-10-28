@@ -1,28 +1,31 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js?v=2.1.0-6';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.0-6';
-import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.1.0-6';
-import { reportBug } from './settings.js?v=2.1.0-6';
-import * as aids from './aids.js?v=2.1.0-6';
-import * as poi from './poi.js?v=2.1.0-6';
-import * as measure from './measure.js?v=2.1.0-6';
-import * as trip from './trip.js?v=2.1.0-6';
-import * as water from './water.js?v=2.1.0-6';
-import * as weather from './weather.js?v=2.1.0-6';
-import * as settings from './settings.js?v=2.1.0-6';
-import * as hover from './hover.js?v=2.1.0-6';
-import * as context from './context.js?v=2.1.0-6';
-import * as places from './places.js?v=2.1.0-6';
-import * as phone from './phone.js?v=2.1.0-6';
-import * as whatsnew from './whatsnew.js?v=2.1.0-6';
-import * as discrep from './discrepancies.js?v=2.1.0-6';
-import * as notices from './notices.js?v=2.1.0-6';
-import { hideDetail, clearRoute } from './detail.js?v=2.1.0-6';
+import { api } from './api.js?v=2.1.1';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.1';
+import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn, setLiteTiles } from './map.js?v=2.1.1';
+import { reportBug } from './settings.js?v=2.1.1';
+import * as aids from './aids.js?v=2.1.1';
+import * as poi from './poi.js?v=2.1.1';
+import * as measure from './measure.js?v=2.1.1';
+import * as trip from './trip.js?v=2.1.1';
+import * as water from './water.js?v=2.1.1';
+import * as weather from './weather.js?v=2.1.1';
+import * as settings from './settings.js?v=2.1.1';
+import * as hover from './hover.js?v=2.1.1';
+import * as context from './context.js?v=2.1.1';
+import * as places from './places.js?v=2.1.1';
+import * as phone from './phone.js?v=2.1.1';
+import * as whatsnew from './whatsnew.js?v=2.1.1';
+import * as discrep from './discrepancies.js?v=2.1.1';
+import * as notices from './notices.js?v=2.1.1';
+import * as netcheck from './netcheck.js?v=2.1.1';
+import { ipLocation, districtFor } from './geodistrict.js?v=2.1.1';
+import { hideDetail, clearRoute } from './detail.js?v=2.1.1';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 
 function boot() {
+  netcheck.check();     // timed test download; slow link -> Lite mode (see netcheck.js)
   createMap();
   aids.init($('#view-aids'));
   trip.init($('#view-trip'));
@@ -76,9 +79,10 @@ function boot() {
   updateViewStatus();
 
   initSearch();
-  initDistricts();
   pollStatus();
-  aids.loadAll({ silent: true });
+  // District first (saved, or guessed from the connection's location on first launch), then the aids.
+  initDistricts().finally(() => aids.loadAll({ silent: true }));
+  initNetMode();
   document.addEventListener('keydown', shortcuts);
   // Light List tables stream in from this site; the adapter reports progress through this event.
   window.addEventListener('lk:progress', (e) => (e.detail.done ? hideProgress() : showProgress(e.detail.text, e.detail.fraction)));
@@ -104,7 +108,7 @@ async function initDistricts() {
     state.districts = await api.get('/api/districts');
     for (const d of state.districts) sel.append(el('option', { value: d.id, text: `D${d.id} · ${d.name}` }));
   } catch { /* offline before first run */ }
-  const saved = store.get('district', '');
+  const saved = store.get('district', null);
   if (saved && state.districts.some((d) => String(d.id) === String(saved))) { sel.value = String(saved); aids.setDistrict(Number(saved)); }
   sel.addEventListener('change', () => {
     const d = state.districts.find((x) => String(x.id) === sel.value);
@@ -113,6 +117,27 @@ async function initDistricts() {
     if (d?.bounds?.length) { const [w, s, e, n] = d.bounds[0]; fitWSEN(w, s, e, n); }
   });
   updateViewStatus();
+  // First launch only (no district ever picked): open on the district nearest this connection's location.
+  if (saved === null && state.districts.length && !store.get('districtGuessed', false)) {
+    const at = await ipLocation();
+    store.set('districtGuessed', true);      // only once the lookup has finished (a reload mid-way tries again)
+    const d = at && districtFor(state.districts, at[0], at[1]);
+    if (d && store.get('district', null) === null) {
+      sel.value = String(d.id);
+      sel.dispatchEvent(new Event('change'));
+      toast(`Showing D${d.id} ${d.name}, picked from your location. Change it at the top.`, 'ok', 6000);
+    }
+  }
+}
+
+/** Lite mode: on a slow link only the picked district's aids load and the map keeps fewer tiles. */
+function initNetMode() {
+  const apply = () => setLiteTiles(netcheck.lite());
+  document.addEventListener('net-checked', () => {
+    apply();
+    if (netcheck.lite() && netcheck.net.mode === 'auto') toast('Slow connection: Lite mode is on to save data. Change it in Settings > Connection.', 'warn', 7000);
+  });
+  document.addEventListener('net-mode', apply);
 }
 
 /* ── Search (aids + places) ── */

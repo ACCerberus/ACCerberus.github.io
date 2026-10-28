@@ -4,12 +4,12 @@
  *
  *  Backup chain for tides: NOAA (requested station → ±1 day window → next-nearest station) → Open-Meteo Marine. */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.0-6';
-import { cached, MIN, HOUR, DAY } from './store.js?v=2.1.0-6';
-import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.1.0-6';
-import { openMeteoGet, pointKey } from './weather.js?v=2.1.0-6';
-import { reverseGeocode } from './poi.js?v=2.1.0-6';
-import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.0-6';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.1';
+import { cached, MIN, HOUR, DAY } from './store.js?v=2.1.1';
+import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.1.1';
+import { openMeteoGet, pointKey } from './weather.js?v=2.1.1';
+import { reverseGeocode } from './poi.js?v=2.1.1';
+import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.1';
 
 const NOAA_MDAPI = 'https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json';
 const NOAA_DATAGETTER = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
@@ -289,6 +289,40 @@ function shippedDams(id, file) {
   }
   return shippedDamMemo.get(id);
 }
+/* National Inventory of Dams (USACE, public ArcGIS service with CORS, no key): fast and reliable, unlike the
+   public Overpass servers. Only dams on rivers/streams and at least 10 ft high (skips ponds and lagoons). */
+const NID_URL = 'https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/NID_v1/FeatureServer/0/query';
+const nidById = new Map();
+async function nidDams(bbox) {
+  const [s, w, n, e] = bbox;
+  const q = new URLSearchParams({
+    where: "NID_HEIGHT >= 10 AND RIVER_OR_STREAM <> 'Offstream'", geometry: `${w},${s},${e},${n}`, geometryType: 'esriGeometryEnvelope',
+    inSR: 4326, outSR: 4326, spatialRel: 'esriSpatialRelIntersects', resultRecordCount: 2000, f: 'json',
+    outFields: 'NIDID,NAME,OTHER_NAMES,PRIMARY_OWNER_TYPE,PRIMARY_PURPOSE,NID_HEIGHT,YEAR_COMPLETED,RIVER_OR_STREAM,CITY,STATE,NUMBER_OF_LOCKS',
+  });
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 12000);
+  try {
+    const data = await (await fetch(`${NID_URL}?${q}`, { signal: ctrl.signal })).json();
+    return (data.features || []).map(({ attributes: a = {}, geometry: g = {} }) => {
+      const name = (a.NAME || a.OTHER_NAMES || '').trim();
+      if (!name || !a.NIDID || !Number.isFinite(g.y) || !Number.isFinite(g.x)) return null;
+      const tags = Object.fromEntries(Object.entries({
+        nid_id: a.NIDID, river: a.RIVER_OR_STREAM, height_ft: a.NID_HEIGHT, year_completed: a.YEAR_COMPLETED,
+        purpose: a.PRIMARY_PURPOSE, owner_type: a.PRIMARY_OWNER_TYPE, locks: a.NUMBER_OF_LOCKS,
+      }).filter(([, v]) => v !== null && v !== undefined && v !== '' && v !== 0));
+      let city = String(a.CITY || '').trim().replace(/^Within (.+?) City Limits$/i, '$1');
+      if (/^(none|n\/a|unknown)$/i.test(city)) city = '';
+      city = city.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+      const p = poi(`nid:${a.NIDID}`, 'dam', name, g.y, g.x, 'USACE National Inventory of Dams', {
+        address: [city, a.STATE].filter(Boolean).join(', '), tags,
+      });
+      nidById.set(p.id, p);
+      return p;
+    }).filter(Boolean);
+  } catch { return []; } finally { clearTimeout(timer); }
+}
+
 async function damsInBbox(bbox) {
   const [s, w, n, e] = bbox;
   const all = await districtList().catch(() => []);
@@ -298,11 +332,21 @@ async function damsInBbox(bbox) {
   const shipped = (await Promise.all(published.map((id) => shippedDams(id, m.dams[id].file)))).flat()
     .filter((p) => inBbox(p.lat, p.lon, bbox));
   if (published.length && published.length === ids.length) return shipped;
-  let live = [];
-  try { live = await osmDams(bbox); } catch { live = []; }
-  const seen = new Set(shipped.map((p) => p.id));
-  return shipped.concat(live.filter((p) => !seen.has(p.id)));
+  // Inventory first (always answers); OpenStreetMap adds named dams it knows when its servers respond in time.
+  const osmSoon = Promise.race([osmDams(bbox).catch(() => []), new Promise((r) => setTimeout(() => r([]), 6000))]);
+  const [nid, osm] = await Promise.all([nidDams(bbox), osmSoon]);
+  const out = shipped.slice();
+  const near = (a, b) => Math.abs(a.lat - b.lat) < 0.004 && Math.abs(a.lon - b.lon) < 0.004;
+  for (const p of nid.concat(osm)) if (!out.some((q) => q.id === p.id || near(q, p))) out.push(p);
+  return out;
 }
+async function nidDamDetail(stationId) {
+  const p = nidById.get(stationId);
+  if (!p) return { ok: false, error: `Unknown dam '${stationId}'` };
+  const detail = Object.fromEntries(DAM_DETAIL_KEYS.map((k) => [k, null]));
+  return { ...detail, ok: true, poi: { ...p }, updated: '', office: '', phone: p.phone, address: p.address, website: p.website, data_available: false, note: 'Live pool and release data (USACE CWMS) is available in the desktop app.' };
+}
+
 async function osmDamDetail(stationId) {
   const known = shippedDamById.get(stationId);
   if (known) {
@@ -346,6 +390,7 @@ export async function stationDetail(stationId, dateArg) {
     }
     if (prefix === 'usgs') return gageDetail(code);
     if (prefix === 'osm') return osmDamDetail(stationId);
+    if (prefix === 'nid') return nidDamDetail(stationId);
   } catch (err) {
     console.warn('[lightkeeper] station detail failed:', err?.message);
     return { ok: false, error: `Data unavailable for ${stationId}` };

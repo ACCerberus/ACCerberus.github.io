@@ -5,7 +5,7 @@
  * Nominatim, Open-Meteo): never cached here — the page keeps those in IndexedDB with their own TTLs.
  */
 
-const VERSION = 'lk-2.1.0-6';
+const VERSION = 'lk-2.1.1';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const TILES = `${VERSION}-tiles`;
@@ -17,7 +17,7 @@ const SHELL_FILES = [
   './css/app.css', './css/web.css', './css/landing.css',
   './js/app.js', './js/api.js', './js/ui.js', './js/map.js', './js/aids.js', './js/poi.js', './js/places.js', './js/measure.js',
   './js/trip.js', './js/water.js', './js/weather.js', './js/settings.js', './js/detail.js', './js/hover.js', './js/context.js',
-  './js/geo.js', './js/chart.js', './js/whatsnew.js', './js/phone.js', './js/units.js', './js/notices.js', './js/discrepancies.js', './version.json',
+  './js/geo.js', './js/chart.js', './js/whatsnew.js', './js/phone.js', './js/units.js', './js/notices.js', './js/netcheck.js', './js/geodistrict.js', './js/discrepancies.js', './version.json',
   './js/web/util.js', './js/web/store.js', './js/web/http.js', './js/web/aids.js', './js/web/poi.js', './js/web/water.js', './js/web/weather.js', './js/web/bnm.js', './js/web/discrepancies.js',
   './vendor/leaflet/leaflet.js', './vendor/leaflet/leaflet.css', './vendor/leaflet/images/marker-icon.png', './vendor/leaflet/images/marker-icon-2x.png',
   './vendor/leaflet/images/marker-shadow.png', './vendor/leaflet/images/layers.png', './vendor/leaflet/images/layers-2x.png',
@@ -50,6 +50,7 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin === self.location.origin && url.pathname === `${BASE}version.json`) return; // always network
+  if (url.searchParams.has('speedtest')) return;                 // connection check: must time the real network
   if (url.origin === self.location.origin && url.pathname.startsWith(BASE)) {
     // The page itself and build-stamped files (?v=...) open straight from the saved copy, so the home-screen app
     // never waits on the network to start; the page's version check reloads when a newer build is published.

@@ -2,11 +2,11 @@
  *  opens its card and shows what's wrong at the top of the card. Any aid with an active notice shows the same
  *  banner when it's opened from the map or search. Northwest (D13) only for now; other districts are on the To do. */
 
-import { api } from './api.js?v=2.1.0-6';
-import { el, panelSkeleton, onPanelChange, toast } from './ui.js?v=2.1.0-6';
-import { flyTo, map } from './map.js?v=2.1.0-6';
-import { openAid, allAids, getDistrict } from './aids.js?v=2.1.0-6';
-import { setAidNotices } from './detail.js?v=2.1.0-6';
+import { api } from './api.js?v=2.1.1';
+import { el, panelSkeleton, onPanelChange, toast } from './ui.js?v=2.1.1';
+import { map } from './map.js?v=2.1.1';
+import { openAid, allAids, getDistrict } from './aids.js?v=2.1.1';
+import { setAidNotices } from './detail.js?v=2.1.1';
 
 const DISTRICTS = { 13: 'Northwest' };         // districts with BNM feeds so far
 const REFRESH_MS = 15 * 60 * 1000;
@@ -109,8 +109,7 @@ function render(loading = false) {
     const aids = aidsFor(b);
     const aid = aids[0] || null;
     const name = (aid?.aidname || b.aid_hint || b.area || b.id) + (b.llnrs.length > 1 ? ` + ${b.llnrs.length - 1} more` : '');
-    box.append(el('div', { class: 'item bnm-item', role: 'button', tabindex: 0, title: aid ? 'Go to this light' : 'This notice names no aid in the Light List', onclick: () => go(b, aid),
-      onkeydown: (e) => { if (e.key === 'Enter') go(b, aid); } }, [
+    box.append(el('button', { type: 'button', class: 'item bnm-item', title: aid ? 'Go to this light' : 'This notice names no aid in the Light List', onclick: () => go(b, aid) }, [
       el('div', { class: 'main' }, [
         el('div', { class: 'title' }, [el('span', { class: 'badge warn', text: whatsWrong(b) }), ` ${name}`]),
         el('div', { class: 'sub', text: [aid?.lightlistnumber != null ? `LLNR ${normLlnr(aid.lightlistnumber)}` : (b.llnrs[0] ? `LLNR ${b.llnrs[0]}` : ''), b.area, b.dtg].filter(Boolean).join(' · ') }),
@@ -126,8 +125,22 @@ function go(b, aid) {
     toast(`${b.id}: no matching aid in the Light List (${b.aid_hint || b.area || 'no LLNR given'})`, 'warn');
     return;
   }
-  flyTo(aid.latitude, aid.longitude, 15);
   openAid(aid.objectid);
+  // Fly so the light lands in the part of the map the card doesn't cover (bottom sheet on a phone, side card on desktop).
+  requestAnimationFrame(() => {
+    const zoom = Math.max(map.getZoom(), 15);
+    const mapBox = map.getContainer().getBoundingClientRect();
+    const card = document.getElementById('detail');
+    const r = card && !card.hidden ? card.getBoundingClientRect() : null;
+    let dx = 0;
+    let dy = 0;
+    if (r && r.width && r.height) {
+      if (r.width > mapBox.width * 0.8) dy = Math.max(0, mapBox.bottom - r.top) / 2;      // sheet along the bottom
+      else if (r.left > mapBox.left + mapBox.width / 2) dx = Math.max(0, mapBox.right - r.left) / 2;   // card on the right
+    }
+    const center = map.unproject(map.project([aid.latitude, aid.longitude], zoom).add([dx, dy]), zoom);
+    map.flyTo(center, zoom, { duration: 0.7 });
+  });
 }
 
 /** Banner(s) for the top of an aid card. */

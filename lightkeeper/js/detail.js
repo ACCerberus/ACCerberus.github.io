@@ -1,13 +1,15 @@
 /** The one detail card. Everything clickable on the map funnels into showDetail(). */
 
-import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.0-6';
-import { flyTo, map } from './map.js?v=2.1.0-6';
-import { api } from './api.js?v=2.1.0-6';
-import * as units from './units.js?v=2.1.0-6';
-import { layers, poiIcon, AID_COLORS } from './map.js?v=2.1.0-6';
-import { loadedItems } from './poi.js?v=2.1.0-6';
-import { logForAid, ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.0-6';
-import { haversineNM } from './geo.js?v=2.1.0-6';
+import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.1';
+import { photoUrl, satView } from './photo.js?v=2.1.1';
+import { lite } from './netcheck.js?v=2.1.1';
+import { flyTo, map } from './map.js?v=2.1.1';
+import { api } from './api.js?v=2.1.1';
+import * as units from './units.js?v=2.1.1';
+import { layers, poiIcon, AID_COLORS } from './map.js?v=2.1.1';
+import { loadedItems } from './poi.js?v=2.1.1';
+import { logForAid, ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.1';
+import { haversineNM } from './geo.js?v=2.1.1';
 
 const card = () => $('#detail');
 let current = null;
@@ -36,20 +38,23 @@ export function showDetail(record) {
   if (record.render) {                 // cards with their own layout (aids)
     record.render(body);
     if (record.source) body.append(el('div', { class: 'd-src', text: `Source: ${record.source}` }));
+    const pic = hero(record, { photo: false, small: true });
+    if (pic) c.append(pic);
     c.append(head, body);
     if (record.bar) c.append(record.bar);
     c.hidden = false;
     openListeners.forEach((fn) => fn(record));
     return;
   }
-  if (record.photo) {
-    const img = el('img', { class: 'd-photo', src: record.photo, alt: '', loading: 'lazy' });
-    img.addEventListener('error', () => img.remove());
-    body.append(img);
-  }
+  const pic = hero(record, { photo: !!record.photo });
+  if (record.chips?.length) body.append(el('div', { class: 'd-chips' }, record.chips.map(([k, v]) => el('span', { class: 'd-chip' }, [k ? `${k} ` : '', el('b', { text: String(v) })]))));
   if (record.address) body.append(line(ICONS.pin, record.address));
-  if (record.phone) body.append(line(ICONS.phone, el('a', { href: `tel:${record.phone.replace(/[^+\d]/g, '')}`, text: record.phone })));
-  if (record.website) body.append(line(ICONS.globe, el('a', { href: record.website, target: '_blank', rel: 'noopener', text: record.website.replace(/^https?:\/\//, '').replace(/\/$/, '') })));
+  const contact = el('div', { class: 'd-contact' });
+  if (record.phone) contact.append(el('a', { class: 'btn sm primary', href: `tel:${record.phone.replace(/[^+\d]/g, '')}`, html: `${ICONS.phone}<span></span>` }));
+  if (record.website) contact.append(el('a', { class: 'btn sm', href: record.website, target: '_blank', rel: 'noopener', html: `${ICONS.globe}<span>Website</span>` }));
+  if (record.phone) contact.querySelector('span').textContent = `Call ${record.phone}`;
+  if (contact.children.length) body.append(contact);
+  if (record.hours) body.append(el('div', { class: 'd-hours', html: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>' }, [el('span', { text: record.hours })]));
   if (record.lat != null) {
     body.append(line(ICONS.xy, el('span', { text: `${fmt.coord(record.lat, record.lon)}  ·  ${fmt.dms(record.lat, record.lon)}`, title: 'Click to copy', style: 'cursor:copy', onclick: () => copy(fmt.coord(record.lat, record.lon)) })));
   }
@@ -81,10 +86,37 @@ export function showDetail(record) {
   }
   for (const a of record.actions || []) actions.append(el('button', { class: `btn sm${a.primary ? ' primary' : ''}`, text: a.label, onclick: a.onClick }));
   body.append(actions);
-  if (record.source) body.append(el('div', { class: 'd-src', text: `Source: ${record.source}` }));
+  if (record.source) body.append(el('div', { class: 'd-src', text: `Source: ${record.source}${record.quality ? ` · ${record.quality}` : ''}` }));
+  if (pic) c.append(pic);
   c.append(head, body);
   c.hidden = false;
   openListeners.forEach((fn) => fn(record));
+}
+
+/** Picture strip at the top of a card: satellite view of the spot, replaced by a nearby photo when one exists.
+ *  Tapping it switches between the two. Skipped in Lite mode (slow connection). */
+function hero(record, { photo = true, small = false } = {}) {
+  if (record.lat == null || lite()) return null;
+  const cap = el('span', { class: 'd-hero-cap', text: 'Satellite · Esri' });
+  const box = el('div', { class: `d-hero${small ? ' small' : ''}`, title: 'Tap to switch photo / satellite' }, [
+    satView(record.lat, record.lon, small ? 16 : 17), el('span', { class: 'd-hero-pin' }), cap,
+    el('button', { class: 'd-hero-close', title: 'Close', 'aria-label': 'Close', html: '&times;', onclick: (e) => { e.stopPropagation(); hideDetail(); } }),
+  ]);
+  box.addEventListener('click', () => {
+    if (!box.classList.contains('has-photo')) return;
+    const sat = box.classList.toggle('show-sat');
+    cap.textContent = sat ? 'Satellite · Esri' : 'Photo · Wikimedia Commons';
+  });
+  if (photo) {
+    photoUrl(record.lat, record.lon, record.title || '').then((url) => {
+      if (!url) return;
+      const img = el('img', { class: 'd-hero-img', alt: '', src: url });
+      img.addEventListener('load', () => { box.classList.add('has-photo'); cap.textContent = 'Photo · Wikimedia Commons'; });
+      img.addEventListener('error', () => img.remove());
+      box.insertBefore(img, cap);
+    });
+  }
+  return box;
 }
 
 function line(icon, content) { return el('div', { class: 'd-line', html: icon }, [content]); }
@@ -183,6 +215,72 @@ function lightPreview(aid) {
 }
 
 /** Three quick-glance tiles: what the light does, how high, how far it is seen. */
+const COLOR_WORD = { W: 'white', R: 'red', G: 'green', Y: 'yellow', Bu: 'blue' };
+/** "Fl (2) G 6s" + 5 NM -> "Green, 2 flashes every 6 seconds · seen 5 nautical miles". Empty when unknown. */
+export function plainCharacteristic(text, rangeNm) {
+  const s = String(text || '').replace(/\s+/g, ' ').trim();
+  if (!s) return '';
+  const alt = s.match(/\bAl\.?\s*(W|R|G|Y)\s*(W|R|G|Y)\b/);
+  const colorM = s.replace(/\bAl\.?\s*\w+/, '').match(/\b(W|R|G|Y|Bu)\b/);
+  const color = alt ? `Alternating ${COLOR_WORD[alt[1]]} and ${COLOR_WORD[alt[2]]}` : (COLOR_WORD[colorM?.[1]] || 'white');
+  const period = s.match(/(\d+(?:\.\d+)?)\s*s\b/)?.[1];
+  const group = s.match(/\((\d+)(?:\s*\+\s*(\d+))?\)/);
+  const morse = s.match(/\bMo\s*\(([A-Z])\)/)?.[1];
+  const every = period ? ` every ${period} seconds` : '';
+  let what = '';
+  if (morse) what = `Morse code "${morse}"${every}`;
+  else if (/\bVQ\b/.test(s)) what = 'very quick flashing';
+  else if (/\bIQ\b/.test(s)) what = 'interrupted quick flashing';
+  else if (/\bQ\b/.test(s)) what = group ? `${group[1]} quick flashes${every}` : 'quick flashing';
+  else if (/\bLFl\b/.test(s)) what = `long flash${every}`;
+  else if (/\bIso\b/.test(s)) what = `equal on and off${every}`;
+  else if (/\bOc\b/.test(s)) what = group ? `on, with ${group[1]} short eclipses${every}` : `on, briefly off${every}`;
+  else if (/\bF\s*Fl\b|\bFFl\b/.test(s)) what = `steady with a brighter flash${every}`;
+  else if (/\bFl\b/.test(s)) what = group ? `${group[2] ? `${group[1]} + ${group[2]}` : group[1]} flashes${every}` : `flashes${every}`;
+  else if (/\bF\b/.test(s)) what = 'steady (fixed)';
+  else if (alt) what = `changing color${every}`;
+  else return '';
+  const seen = rangeNm ? ` · seen ${rangeNm} nautical miles` : '';
+  return `${color[0].toUpperCase()}${color.slice(1)}, ${what}${seen}`;
+}
+
+/** Sunrise and sunset (NOAA formula) for a day at a point, as Date objects; null in polar day/night. */
+function sunTimes(lat, lon, day = new Date()) {
+  const rad = Math.PI / 180;
+  const start = Date.UTC(day.getFullYear(), day.getMonth(), day.getDate());
+  const n = Math.floor((start - Date.UTC(2000, 0, 1, 12)) / 864e5) + 1 - lon / 360;
+  const M = (357.5291 + 0.98560028 * n) % 360;
+  const C = 1.9148 * Math.sin(M * rad) + 0.02 * Math.sin(2 * M * rad) + 0.0003 * Math.sin(3 * M * rad);
+  const L = (M + C + 180 + 102.9372) % 360;
+  const transit = 2451545 + n + 0.0053 * Math.sin(M * rad) - 0.0069 * Math.sin(2 * L * rad);
+  const dec = Math.asin(Math.sin(L * rad) * Math.sin(23.44 * rad));
+  const cosH = (Math.sin(-0.833 * rad) - Math.sin(lat * rad) * Math.sin(dec)) / (Math.cos(lat * rad) * Math.cos(dec));
+  if (cosH < -1 || cosH > 1) return null;
+  const H = Math.acos(cosH) / rad / 360;
+  const toDate = (jd) => new Date((jd - 2440587.5) * 864e5);
+  return { rise: toDate(transit - H), set: toDate(transit + H) };
+}
+
+function sunLine(aid) {
+  const t = sunTimes(aid.latitude, aid.longitude);
+  if (!t) return null;
+  const hm = (d) => d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  const now = new Date();
+  const left = (ms) => { const m = Math.round(ms / 6e4); return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`; };
+  let note = '';
+  if (now < t.rise) note = `sunrise in ${left(t.rise - now)}`;
+  else if (now < t.set) note = `${left(t.set - now)} of daylight left`;
+  else note = 'after sunset';
+  return el('div', { class: 'ac-sun', title: 'Times are in this device\'s time zone' }, [
+    el('span', { text: `Sunrise ${hm(t.rise)}` }), el('span', { text: `Sunset ${hm(t.set)}` }), el('b', { text: note }),
+  ]);
+}
+
+/** Cruise speed from Settings (mph), read once. */
+let cruise = null;
+const cruiseMph = () => (cruise ||= api.get('/api/settings').then((s) => Number(s.speed_mph) || 25).catch(() => 25));
+const runTime = (nm, mph) => { const m = Math.max(1, Math.round((nm * 1.15078) / mph * 60)); return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`; };
+
 function glanceTiles(aid) {
   const tiles = [
     ['Characteristic', aid.characteristics || 'Unlit'],
@@ -271,7 +369,9 @@ export function aidRecord(aid, extraActions = []) {
     const notes = aidNotices.lookup(aid);
     if (notes.length && aidNotices.banner) body.append(aidNotices.banner(notes));
     body.append(glanceTiles(aid));
-    const now = el('div', { class: 'lt-grid' }, [weatherTile(aid), waterTempTile(aid)]);
+    const plain = plainCharacteristic(aid.characteristics, aid.aidrange);
+    if (plain) body.append(el('div', { class: 'ac-plain', text: plain }));
+    const now = el('div', {}, [el('div', { class: 'lt-grid' }, [weatherTile(aid), waterTempTile(aid)]), sunLine(aid)]);
     const nearby = nearestRampTile(aid, (r) => { ctx.ramp = r; rampBtn.disabled = false; rampBtn.title = `Draw the water route to ${r.name} and open it in Google Maps`; });
     for (const s of [
       section('Conditions now', [], now),
@@ -337,10 +437,13 @@ function nearestRampTile(aid, onFound) {
   }).then((found) => {
     if (!found) { liveCache.delete(`ramp:${aid.objectid}`); t.fail(`None within ${RAMP_FAR_STEPS_MI.at(-1)} mi`); return; }
     const r = found.ramp;
+    const run = el('span');
     t.done(
       el('a', { href: '#', text: r.name, title: 'Draw the water route to this ramp', onclick: (e) => { e.preventDefault(); drawWaterRoute(aid, r); } }),
       [`${r.nm.toFixed(1)} NM`, found.far ? 'nothing within 25 mi' : null, r.address, r.phone].filter(Boolean).join(' · '),
     );
+    t.tile.querySelector('.lt-sub')?.append(run);
+    cruiseMph().then((mph) => { run.textContent = ` · about ${runTime(r.nm, mph)} by boat at ${mph} mph (straight line)`; });
     onFound(r);
   }).catch(() => t.fail('Unavailable'));
   return t.tile;
@@ -414,17 +517,23 @@ export function poiRecord(poi, extraActions = []) {
   if (['ramp', 'marina'].includes(poi.kind)) {
     facts.push(['Surface', t.surface], ['Fee', t.fee], ['Access', t.access], ['Park', t.park], ['Operator', poi.operator], ['Tidal', t.tidal ? 'yes' : '']);
   } else if (['hotel', 'motel', 'resort', 'campground'].includes(poi.kind)) {
-    facts.push(['Brand', t.brand || poi.operator], ['Stars', t.stars], ['Rooms', t.rooms]);
+    facts.push(['Brand', t.brand || poi.operator], ['Stars', t.stars], ['Rooms', t.rooms], ['Check-in', t.check_in], ['Check-out', t.check_out]);
   } else if (poi.kind === 'park') {
     facts.push(['Boat ramp', t.ramp_name], ['Operator', poi.operator]);
   } else if (poi.kind === 'dam') {
-    facts.push(['Operator', poi.operator], ['Office', t.office], ['River', t.waterway]);
+    facts.push(['Operator', poi.operator], ['Office', t.office], ['River', t.waterway || t.river], ['Height', t.height_ft ? `${t.height_ft} ft` : ''],
+      ['Built', t.year_completed], ['Purpose', t.purpose], ['Owner', t.owner_type], ['Locks', t.locks], ['NID ID', t.nid_id]);
   } else if (['tide', 'gage', 'current'].includes(poi.kind)) {
     facts.push(['Station ID', poi.id?.split(':').pop()], ['Gage height', t.gage_height_ft != null ? `${t.gage_height_ft} ft` : ''], ['Discharge', t.discharge_cfs != null ? `${fmt.int(t.discharge_cfs)} cfs` : ''], ['Water temp', t.water_temp_f != null ? `${t.water_temp_f} °F` : '']);
   }
-  if (poi.quality) facts.push(['Data quality', poi.quality]);
-  if (poi.distance_mi != null) facts.push(['Distance', fmt.mi(poi.distance_mi)]);
-  const photo = null; // place photos are looked up by the desktop app's backend
-  return { id: poi.id, title: poi.name, kind: poi.kind, lat: poi.lat, lon: poi.lon, address: poi.address, phone: poi.phone, website: poi.website, facts, actions: extraActions, source: poi.source, photo };
+  const chips = [];
+  if (poi.distance_mi != null) chips.push(['', `${fmt.mi(poi.distance_mi)} away`]);
+  if (t.stars) chips.push(['', `${t.stars}★`]);
+  if (t.fee) chips.push(['Fee', t.fee]);
+  if (t.surface) chips.push(['', t.surface]);
+  const photo = ['ramp', 'marina', 'hotel', 'motel', 'resort', 'campground', 'park', 'dam'].includes(poi.kind);
+  const hours = t.opening_hours ? (t.opening_hours === '24/7' ? 'Open 24 hours' : `Hours: ${t.opening_hours}`) : '';
+  return { id: poi.id, title: poi.name, kind: poi.kind, lat: poi.lat, lon: poi.lon, address: poi.address, phone: poi.phone || t.phone || t['contact:phone'], website: poi.website || t.website || t['contact:website'],
+    hours, chips, facts, actions: extraActions, source: poi.source, quality: poi.quality, photo };
 }
 
