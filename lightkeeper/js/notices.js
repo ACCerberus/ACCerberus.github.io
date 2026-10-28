@@ -2,11 +2,11 @@
  *  opens its card and shows what's wrong at the top of the card. Any aid with an active notice shows the same
  *  banner when it's opened from the map or search. Northwest (D13) only for now; other districts are on the To do. */
 
-import { api } from './api.js?v=2.1.0-3';
-import { el, panelSkeleton, onPanelChange, toast } from './ui.js?v=2.1.0-3';
-import { flyTo, map } from './map.js?v=2.1.0-3';
-import { openAid, allAids, getDistrict } from './aids.js?v=2.1.0-3';
-import { setAidNotices } from './detail.js?v=2.1.0-3';
+import { api } from './api.js?v=2.1.0-4';
+import { el, panelSkeleton, onPanelChange, toast } from './ui.js?v=2.1.0-4';
+import { flyTo, map } from './map.js?v=2.1.0-4';
+import { openAid, allAids, getDistrict } from './aids.js?v=2.1.0-4';
+import { setAidNotices } from './detail.js?v=2.1.0-4';
 
 const DISTRICTS = { 13: 'Northwest' };         // districts with BNM feeds so far
 const REFRESH_MS = 15 * 60 * 1000;

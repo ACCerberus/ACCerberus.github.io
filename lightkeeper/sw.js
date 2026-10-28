@@ -5,7 +5,7 @@
  * Nominatim, Open-Meteo): never cached here — the page keeps those in IndexedDB with their own TTLs.
  */
 
-const VERSION = 'lk-2.1.0-3';
+const VERSION = 'lk-2.1.0-4';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const TILES = `${VERSION}-tiles`;
@@ -59,18 +59,26 @@ self.addEventListener('fetch', (event) => {
 
 async function networkFirst(req, cacheName) {
   const cache = await caches.open(cacheName);
-  try {
-    // Ask the server every time (a cheap 304 when unchanged) so GitHub Pages' 10-minute browser cache
-    // can never hand back an older build of the page or its scripts.
-    const fresh = req.mode === 'navigate' ? new Request(req.url, { cache: 'no-cache', credentials: 'same-origin' }) : new Request(req, { cache: 'no-cache' });
-    let resp = await fetch(fresh);
+  // Ask the server every time (a cheap 304 when unchanged) so GitHub Pages' 10-minute browser cache
+  // can never hand back an older build of the page or its scripts.
+  const fresh = req.mode === 'navigate' ? new Request(req.url, { cache: 'no-cache', credentials: 'same-origin' }) : new Request(req, { cache: 'no-cache' });
+  const network = fetch(fresh).then((resp) => {
     // The host redirects page.html -> page. Safari refuses a page a service worker hands back if it was redirected,
     // so pass on a clean copy of the final response instead.
     if (resp.redirected) resp = new Response(resp.body, { status: resp.status, statusText: resp.statusText, headers: resp.headers });
     if (resp.ok) cache.put(req, resp.clone());
     return resp;
+  });
+  const saved = () => cache.match(req, { ignoreSearch: true }).then((hit) => hit || (req.mode === 'navigate' ? cache.match('./') : null));
+  // Weak signal (a phone on the water): don't sit on a white screen waiting. After a few seconds use the saved
+  // copy of this build; the network answer still lands in the cache for next time.
+  const slow = new Promise((resolve) => setTimeout(resolve, req.mode === 'navigate' ? 3000 : 4000)).then(saved);
+  try {
+    const first = await Promise.race([network, slow]);
+    if (first) { network.catch(() => {}); return first; }
+    return await network;
   } catch (err) {
-    const hit = await cache.match(req, { ignoreSearch: true }) || (req.mode === 'navigate' ? await cache.match('./index.html') : null);
+    const hit = await saved();
     if (hit) return hit;
     throw err;
   }
