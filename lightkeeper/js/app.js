@@ -1,31 +1,34 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js?v=2.1.1-3';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.1-3';
-import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn, setLiteTiles } from './map.js?v=2.1.1-3';
-import { reportBug } from './settings.js?v=2.1.1-3';
-import * as aids from './aids.js?v=2.1.1-3';
-import * as poi from './poi.js?v=2.1.1-3';
-import * as measure from './measure.js?v=2.1.1-3';
-import * as trip from './trip.js?v=2.1.1-3';
-import * as water from './water.js?v=2.1.1-3';
-import * as weather from './weather.js?v=2.1.1-3';
-import * as settings from './settings.js?v=2.1.1-3';
-import * as hover from './hover.js?v=2.1.1-3';
-import * as context from './context.js?v=2.1.1-3';
-import * as places from './places.js?v=2.1.1-3';
-import * as phone from './phone.js?v=2.1.1-3';
-import * as whatsnew from './whatsnew.js?v=2.1.1-3';
-import * as discrep from './discrepancies.js?v=2.1.1-3';
-import * as notices from './notices.js?v=2.1.1-3';
-import * as netcheck from './netcheck.js?v=2.1.1-3';
-import { ipLocation, districtFor } from './geodistrict.js?v=2.1.1-3';
-import { hideDetail, clearRoute } from './detail.js?v=2.1.1-3';
+import { api } from './api.js?v=2.1.1-5';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.1-5';
+import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn, setLiteTiles } from './map.js?v=2.1.1-5';
+import { reportBug } from './settings.js?v=2.1.1-5';
+import * as aids from './aids.js?v=2.1.1-5';
+import * as poi from './poi.js?v=2.1.1-5';
+import * as measure from './measure.js?v=2.1.1-5';
+import * as trip from './trip.js?v=2.1.1-5';
+import * as water from './water.js?v=2.1.1-5';
+import * as weather from './weather.js?v=2.1.1-5';
+import * as settings from './settings.js?v=2.1.1-5';
+import * as hover from './hover.js?v=2.1.1-5';
+import * as context from './context.js?v=2.1.1-5';
+import * as places from './places.js?v=2.1.1-5';
+import * as phone from './phone.js?v=2.1.1-5';
+import * as whatsnew from './whatsnew.js?v=2.1.1-5';
+import * as discrep from './discrepancies.js?v=2.1.1-5';
+import * as notices from './notices.js?v=2.1.1-5';
+import * as netcheck from './netcheck.js?v=2.1.1-5';
+import { ipLocation, districtFor } from './geodistrict.js?v=2.1.1-5';
+import { hideDetail, clearRoute } from './detail.js?v=2.1.1-5';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 
 function boot() {
   netcheck.check();     // timed test download; slow link -> Lite mode (see netcheck.js)
+  // No browser right-click menu (Back, Save as, Inspect...) over the app; text boxes keep theirs for copy/paste,
+  // and the map's own right-click menu still opens.
+  document.addEventListener('contextmenu', (e) => { if (!e.target.closest('input, textarea, [contenteditable="true"]')) e.preventDefault(); });
   createMap();
   aids.init($('#view-aids'));
   trip.init($('#view-trip'));
@@ -113,12 +116,29 @@ async function initDistricts() {
   const saved = store.get('district', null);
   if (saved && state.districts.some((d) => String(d.id) === String(saved))) { sel.value = String(saved); aids.setDistrict(Number(saved)); }
   sel.refreshPicker?.();
+  let following = false;              // true while the map itself moved us into a new district
   sel.addEventListener('change', () => {
     const d = state.districts.find((x) => String(x.id) === sel.value);
     store.set('district', sel.value);
     aids.setDistrict(d ? d.id : null);
-    if (d?.bounds?.length) { const [w, s, e, n] = d.bounds[0]; fitWSEN(w, s, e, n); }
+    if (!following && d?.bounds?.length) { const [w, s, e, n] = d.bounds[0]; fitWSEN(w, s, e, n); }
   });
+  // Follow the map: with a district picked, scrolling into another district switches to it (the map doesn't jump).
+  // "All districts" stays put, and a country-wide view (zoomed far out) never switches.
+  map.on('moveend', debounce(() => {
+    if (!sel.value || map.getZoom() < 7) return;
+    const c = map.getCenter();
+    const inside = (d) => (d.bounds || []).some(([w, s, e, n]) => c.lng >= w && c.lng <= e && c.lat >= s && c.lat <= n);
+    const cur = state.districts.find((x) => String(x.id) === sel.value);
+    if (cur && inside(cur)) return;
+    const next = state.districts.find(inside);
+    if (!next) return;
+    sel.value = String(next.id);
+    following = true;
+    sel.dispatchEvent(new Event('change'));
+    following = false;
+    toast(`Now showing D${next.id} ${next.name}`, 'info', 2500);
+  }, 800));
   updateViewStatus();
   // First launch only (no district ever picked): open on the district nearest this connection's location.
   if (saved === null && state.districts.length && !store.get('districtGuessed', false)) {
