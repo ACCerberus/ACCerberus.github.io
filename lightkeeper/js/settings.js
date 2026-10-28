@@ -1,9 +1,9 @@
 /** Settings (web edition): vessel, Light List data status, storage, about + device diagnostics.
  *  Offline map download, pre-cache, API keys and backup files live in the desktop app. */
 
-import { api, VERSION } from './api.js?v=2.0.9c-3';
-import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog } from './ui.js?v=2.0.9c-3';
-import { setBase, getBase } from './map.js?v=2.0.9c-3';
+import { api, VERSION } from './api.js?v=2.1.0';
+import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog, showPanel } from './ui.js?v=2.1.0';
+import { setBase, getBase } from './map.js?v=2.1.0';
 
 export const DOWNLOAD_INFO = '/download.json';   // the site's download switch (see /download.js)
 const state = { body: null, settings: {}, districtsEl: null };
@@ -28,6 +28,15 @@ async function render() {
   const s = state.settings;
   const b = state.body;
   b.innerHTML = '';
+
+  // Discrepancy tracker: first in More on phones (the rail has its own button on bigger screens).
+  const reportEmail = el('input', { type: 'email', value: s.report_email || '', placeholder: 'you@example.com', autocomplete: 'email' });
+  b.append(section('Discrepancy tracker', [
+    el('p', { class: 'muted small', style: 'margin:0', text: 'Log aids found extinguished, off station, missing, overgrown or vandalized; export to Excel or email the list to yourself.' }),
+    el('button', { class: 'btn primary', text: 'Open discrepancy tracker', onclick: () => showPanel('discrep') }),
+    el('div', { class: 'field' }, [el('label', { text: 'Your email (for Email from the tracker)' }), reportEmail]),
+    el('button', { class: 'btn sm', text: 'Save email', onclick: () => saveSettings({ report_email: reportEmail.value.trim() }) }),
+  ]));
 
   const speed = num('Cruise speed (mph)', s.speed_mph ?? 25, 3, 60);
   const gph = num('Fuel burn at cruise (gal/h)', s.fuel_gph ?? 12, 0, 100);

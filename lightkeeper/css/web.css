@@ -163,3 +163,10 @@ body.phone #ctx-menu .ctx-close {
   flex: 0 0 40px; width: 40px; min-height: 40px; height: 40px; padding: 0; justify-content: center;
   border-radius: 50%; background: var(--bg-3); font-size: 18px; color: var(--text);
 }
+
+/* Discrepancy tracker on phones: full-width form, big touch targets */
+body.phone .disc-modal { width: calc(100vw - 16px); max-height: calc(100vh - var(--safe-t) - var(--safe-b) - 24px); }
+body.phone .disc-field input, body.phone .disc-field select, body.phone .disc-field textarea { font-size: 16px; min-height: 44px; }
+body.phone .disc-tools .btn { flex: 1 1 calc(50% - 6px); }
+body.phone .disc-views button { min-height: 42px; padding: 10px 0; line-height: 1.2; font-size: 14px; }
+body.phone .disc-bnm-actions .btn { min-height: 40px; }

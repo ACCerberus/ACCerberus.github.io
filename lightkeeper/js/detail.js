@@ -1,12 +1,13 @@
 /** The one detail card. Everything clickable on the map funnels into showDetail(). */
 
-import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.0.9c-3';
-import { flyTo, map } from './map.js?v=2.0.9c-3';
-import { api } from './api.js?v=2.0.9c-3';
-import * as units from './units.js?v=2.0.9c-3';
-import { layers, poiIcon, AID_COLORS } from './map.js?v=2.0.9c-3';
-import { loadedItems } from './poi.js?v=2.0.9c-3';
-import { haversineNM } from './geo.js?v=2.0.9c-3';
+import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.0';
+import { flyTo, map } from './map.js?v=2.1.0';
+import { api } from './api.js?v=2.1.0';
+import * as units from './units.js?v=2.1.0';
+import { layers, poiIcon, AID_COLORS } from './map.js?v=2.1.0';
+import { loadedItems } from './poi.js?v=2.1.0';
+import { logForAid } from './discrepancies.js?v=2.1.0';
+import { haversineNM } from './geo.js?v=2.1.0';
 
 const card = () => $('#detail');
 let current = null;
@@ -258,6 +259,7 @@ export function aidRecord(aid, extraActions = []) {
   const bar = el('div', { class: 'd-bar' }, [
     rampBtn,
     ...extraActions.map((a) => el('button', { class: `btn sm${a.primary ? ' primary' : ''}`, text: a.label, onclick: a.onClick })),
+    el('button', { class: 'btn sm', text: 'Log discrepancy', title: 'Add this aid to the discrepancy tracker', onclick: () => logForAid(aid) }),
     el('button', { class: 'btn sm icon', title: 'Copy coordinates', html: SVG.copy, onclick: () => copy(fmt.coord(aid.latitude, aid.longitude)) }),
     el('button', { class: 'btn sm icon', title: 'Zoom to this aid', html: ICONS.xy, onclick: () => flyTo(aid.latitude, aid.longitude, 15) }),
   ]);

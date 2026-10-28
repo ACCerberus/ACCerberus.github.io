@@ -1,22 +1,23 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js?v=2.0.9c-3';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.0.9c-3';
-import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.0.9c-3';
-import { reportBug } from './settings.js?v=2.0.9c-3';
-import * as aids from './aids.js?v=2.0.9c-3';
-import * as poi from './poi.js?v=2.0.9c-3';
-import * as measure from './measure.js?v=2.0.9c-3';
-import * as trip from './trip.js?v=2.0.9c-3';
-import * as water from './water.js?v=2.0.9c-3';
-import * as weather from './weather.js?v=2.0.9c-3';
-import * as settings from './settings.js?v=2.0.9c-3';
-import * as hover from './hover.js?v=2.0.9c-3';
-import * as context from './context.js?v=2.0.9c-3';
-import * as places from './places.js?v=2.0.9c-3';
-import * as phone from './phone.js?v=2.0.9c-3';
-import * as whatsnew from './whatsnew.js?v=2.0.9c-3';
-import { hideDetail, clearRoute } from './detail.js?v=2.0.9c-3';
+import { api } from './api.js?v=2.1.0';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.0';
+import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.1.0';
+import { reportBug } from './settings.js?v=2.1.0';
+import * as aids from './aids.js?v=2.1.0';
+import * as poi from './poi.js?v=2.1.0';
+import * as measure from './measure.js?v=2.1.0';
+import * as trip from './trip.js?v=2.1.0';
+import * as water from './water.js?v=2.1.0';
+import * as weather from './weather.js?v=2.1.0';
+import * as settings from './settings.js?v=2.1.0';
+import * as hover from './hover.js?v=2.1.0';
+import * as context from './context.js?v=2.1.0';
+import * as places from './places.js?v=2.1.0';
+import * as phone from './phone.js?v=2.1.0';
+import * as whatsnew from './whatsnew.js?v=2.1.0';
+import * as discrep from './discrepancies.js?v=2.1.0';
+import { hideDetail, clearRoute } from './detail.js?v=2.1.0';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 
@@ -29,6 +30,8 @@ function boot() {
   weather.init($('#view-weather'));
   settings.init($('#view-settings'));
   whatsnew.init($('#view-whatsnew'));
+  discrep.init($('#view-discrep'));
+  discrep.onChange((n) => { const b = $('#discrep-count'); if (b) { b.hidden = !n; b.textContent = n; } });
   places.init($('#view-places'));
   poi.init();
   hover.init();
@@ -212,7 +215,7 @@ async function pollStatus() {
 /* ── Keyboard ── */
 function shortcuts(e) {
   if (e.target.matches('input, textarea, select')) return;
-  const keys = { a: 'aids', t: 'trip', m: 'measure', s: 'settings' };
+  const keys = { a: 'aids', t: 'trip', m: 'measure', s: 'settings', d: 'discrep' };
   if (keys[e.key]) showPanel(keys[e.key]);
   else if (e.key === 'l') window.dispatchEvent(new Event('lk-locate'));
   else if (e.key === '/') { e.preventDefault(); $('#search').focus(); }

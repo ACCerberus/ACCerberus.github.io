@@ -1,5 +1,37 @@
 [
   {
+    "version": "2.1.0",
+    "date": "2026-10-28",
+    "title": "Discrepancy tracker and Northwest BNMs",
+    "summary": "Version 2.1.0 — 3 changes since 2.0.9c.",
+    "changes": [
+      "New discrepancy tracker (the Discrepancies rail button, or More > Open discrepancy tracker on phones; \"Log discrepancy\" on any aid card): pick the light by name or Light List number, choose Extinguished, Improper characteristic, Off station, Missing, Overgrown, Vandalized, Damaged or Other, and record the date, original message time and LNM/BNM.",
+      "Edit or delete tracker entries, export them to Excel, email the spreadsheet to yourself (on phones the share sheet attaches it to Mail), and import an edited spreadsheet back. Entries are saved in this browser.",
+      "Broadcast Notices to Mariners for the Northwest (D13 office, Sector Columbia River, Sector Puget Sound) in Discrepancies > BNMs, refreshed every hour: active aid notices, \"Add to log\" fills the whole form, and a cancellation offers \"Mark corrected\"."
+    ],
+    "known_issues": [
+      "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
+      "Small dams that the Army Corps doesn't run show only their name and location (no release or water-level data).",
+      "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",
+      "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
+      "Mobile and Ohio Valley sector cards have no published 24-hour number."
+    ],
+    "todo": [
+      "Add boat ramps, hotels, marinas, campgrounds, parks and dams for every district from downloaded OpenStreetMap state files (the public map servers were too overloaded to crawl). Northwest (D13) first.",
+      "Broadcast Notices to Mariners for the other districts (the Northwest is live in Discrepancies > BNMs for testing).",
+      "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
+      "Finish the trip planner (day splits, ramp and lodging picks).",
+      "Turn on the Windows app download on this site.",
+      "Field check: spot-check aids you know (FDR Lake, Snake, Columbia) for the right nearest ramp, ramp names, phone numbers, hotels and closed ramps.",
+      "Confirm CG sector and district on aid cards, and the 24-hour numbers (find Mobile and Ohio Valley).",
+      "Trip planner: compare auto plans against one or two real trips (day splits, launch/recovery ramps, lodging).",
+      "Add a Google Places key and verify every ramp, hotel and park against Google.",
+      "Test on a real phone (one-tap aids, scrolling card, map-only zoom, Locate) and on a work PC network.",
+      "Check dam cards you know for correct pool, tailwater and release status.",
+      "Flag any water temp or weather station that is a bad pick for its area."
+    ]
+  },
+  {
     "version": "2.0.9c",
     "date": "2026-10-27",
     "title": "Full aid details, smarter search, faster dams",
@@ -30,6 +62,7 @@
     ],
     "todo": [
       "Add the rest of the districts' boat ramps, hotels, marinas, campgrounds and parks: Northeast (D1), East (D5), Southeast (D7), Heartland (D8), Great Lakes (D9), Southwest (D11), Oceania (D14), Arctic (D17). Northwest (D13) is being built now.",
+      "Broadcast Notices to Mariners for the other districts (the Northwest is live in Discrepancies > BNMs for testing).",
       "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
       "Finish the trip planner (day splits, ramp and lodging picks).",
       "Turn on the Windows app download on this site.",

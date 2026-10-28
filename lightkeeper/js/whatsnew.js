@@ -1,6 +1,6 @@
 /** "What's new" panel: the most recent version and its changes in plain language. */
 
-import { el, fmt, panelSkeleton } from './ui.js?v=2.0.9c-3';
+import { el, fmt, panelSkeleton } from './ui.js?v=2.1.0';
 
 export async function init(view) {
   const { body } = panelSkeleton(view, "What's new", 'Recent changes and fixes, in plain language.');

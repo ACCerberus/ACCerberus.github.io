@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>LightKeeper 2.0.9c</title>
+<title>LightKeeper 2.1.0</title>
 <script>
 /* Always run the newest build: compare ./version.json (never cached) with the version this browser last ran.
    On a change, drop every Cache Storage cache, the service worker and the IndexedDB data cache, then reload once. */
@@ -36,16 +36,16 @@
 <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.Default.css">
-<link rel="stylesheet" href="./css/app.css?v=2.0.9c-3">
-<link rel="stylesheet" href="./css/web.css?v=2.0.9c-3">
+<link rel="stylesheet" href="./css/app.css?v=2.1.0">
+<link rel="stylesheet" href="./css/web.css?v=2.1.0">
 </head>
-<body data-version="2.0.9c">
+<body data-version="2.1.0">
 
 <header id="topbar">
   <div class="brand">
     <img src="./img/lighthouse.png" alt="">
     <span class="brand-name">Light<b>Keeper</b></span>
-    <span class="brand-ver" title="LightKeeper by Evan Isakson">v2.0.9c web</span>
+    <span class="brand-ver" title="LightKeeper by Evan Isakson">v2.1.0 web</span>
   </div>
   <div class="search" id="search-wrap">
     <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -85,6 +85,9 @@
   <button data-panel="weather" title="Weather forecast (F)" hidden>
     <svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.3 1.5A3.5 3.5 0 0 1 17 18z"/></svg><span>Weather</span>
   </button>
+  <button data-panel="discrep" title="Discrepancy tracker (D)">
+    <svg viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v4M12 17h.01"/></svg><span>Discrep</span><b class="rail-badge" id="discrep-count" hidden></b>
+  </button>
   <button id="rail-locate" title="Go to my location (L)">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="8"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg><span>Locate</span>
   </button>
@@ -109,6 +112,7 @@
   <section class="view" id="view-measure"></section>
   <section class="view" id="view-water"></section>
   <section class="view" id="view-weather"></section>
+  <section class="view" id="view-discrep"></section>
   <section class="view" id="view-whatsnew"></section>
   <section class="view" id="view-places"></section>
   <section class="view" id="view-settings"></section>
@@ -143,7 +147,7 @@
 
 <script src="./vendor/leaflet/leaflet.js"></script>
 <script src="./vendor/markercluster/leaflet.markercluster.js"></script>
-<script type="module" src="./js/app.js?v=2.0.9c-3"></script>
+<script type="module" src="./js/app.js?v=2.1.0"></script>
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('[lightkeeper] service worker:', err.message)));

@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       districts:
-        description: "District ids to crawl for places, comma-separated (blank = all). Example: 13"
+        description: "District ids to crawl for places, comma-separated (blank = no places crawl). Example: 13"
         required: false
         default: ""
 
@@ -36,7 +36,10 @@ jobs:
       - name: Build Light List data
         run: python tools/build_aids.py
 
+      # Places crawl is paused: the public Overpass servers time out from GitHub's runners. It runs only when
+      # started by hand with district ids; the weekly run refreshes the Light List only.
       - name: Crawl OpenStreetMap places (keeps previous files for districts that fail)
+        if: github.event_name == 'workflow_dispatch' && inputs.districts != ''
         continue-on-error: true
         env:
           DISTRICTS: ${{ inputs.districts }}

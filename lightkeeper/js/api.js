@@ -4,13 +4,15 @@
  *  settings from localStorage. Desktop-only endpoints (tile cache, pre-cache, backup, open file) answer
  *  `{ok:false}` quietly. */
 
-import * as aids from './web/aids.js?v=2.0.9c-3';
-import * as poi from './web/poi.js?v=2.0.9c-3';
-import * as water from './web/water.js?v=2.0.9c-3';
-import * as weather from './web/weather.js?v=2.0.9c-3';
-import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.0.9c-3';
+import * as aids from './web/aids.js?v=2.1.0';
+import * as poi from './web/poi.js?v=2.1.0';
+import * as water from './web/water.js?v=2.1.0';
+import * as weather from './web/weather.js?v=2.1.0';
+import * as discrep from './web/discrepancies.js?v=2.1.0';
+import * as bnm from './web/bnm.js?v=2.1.0';
+import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.1.0';
 
-export const VERSION = '2.0.9c';
+export const VERSION = '2.1.0';
 const LS_SETTINGS = 'lk2.web.settings';
 const LS_TRIPS = 'lk2.web.trips';
 const DESKTOP_ONLY = { ok: false, error: 'Available in the desktop app', desktop_only: true };
@@ -103,6 +105,15 @@ async function route(method, path, params = {}, body = {}) {
     case 'trip':
       if (sub === 'plan') return { ok: false, error: PLAN_MESSAGE, desktop_only: true };
       break;
+    case 'bnm': return bnm.list(params);
+    case 'discrepancies': {
+      if (!sub) return method === 'POST' ? discrep.save(body) : discrep.list(params);
+      if (sub === 'export') return discrep.exportXlsx();
+      if (sub === 'email') return discrep.email(body?.to || settingsGet().report_email || '');
+      if (sub === 'import') return discrep.importXlsx(body?.data_b64 || '');
+      if (method === 'DELETE') return discrep.remove(sub);
+      throw new Error('Unknown discrepancy action');
+    }
     case 'trips': {
       if (!sub) return method === 'POST' ? tripSave(body) : tripsList().map(tripSummary);
       const id = Number(sub);
