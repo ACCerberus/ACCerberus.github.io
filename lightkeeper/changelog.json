@@ -3,10 +3,9 @@
     "version": "2.1.1",
     "date": "2026-10-28",
     "title": "Your district, slow-connection mode, nicer cards",
-    "summary": "Version 2.1.1 — 9 changes since 2.1.0.",
+    "summary": "Version 2.1.1 — 8 changes since 2.1.0.",
     "changes": [
       "The district picker at the top works on computers (clicking it did nothing in some browsers) and shows the saved district after a reload.",
-      "The district picker at the top works again in the Windows app (it could not be clicked).",
       "First launch opens on your district, picked from your connection's rough location; change it any time at the top.",
       "Connection check at startup: on a slow link Lite mode turns on (only your district's aids load and the map keeps fewer tiles). Settings > Connection shows the speed and lets you pick Auto, Lite or Full.",
       "Bigger, cleaner cards for ramps, hotels, parks and dams: a photo of the place when one exists (Wikimedia Commons) or a satellite view of the exact spot, a Call button, Website, and opening hours when known. Tap the picture to switch photo and satellite.",
