@@ -1,0 +1,20 @@
+# Cloudflare Pages response headers. Pages, scripts, styles, the changelog and the data manifest must always be
+# revalidated so a new build shows up on the next load; vendor libraries and fonts keep normal caching.
+/
+  Cache-Control: no-cache, must-revalidate
+/*.html
+  Cache-Control: no-cache, must-revalidate
+/lightkeeper/
+  Cache-Control: no-cache, must-revalidate
+/lightkeeper/*.js
+  Cache-Control: no-cache, must-revalidate
+/lightkeeper/js/*
+  Cache-Control: no-cache, must-revalidate
+/lightkeeper/css/*
+  Cache-Control: no-cache, must-revalidate
+/lightkeeper/changelog.json
+  Cache-Control: no-cache, must-revalidate
+/lightkeeper/version.json
+  Cache-Control: no-store
+/lightkeeper/data/manifest.json
+  Cache-Control: no-cache, must-revalidate

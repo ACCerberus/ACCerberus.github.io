@@ -80,6 +80,6 @@ export async function overpass(query, timeoutS = 25) {
     return value || { elements: [] };
   } catch (err) {
     console.warn('[lightkeeper] Overpass unavailable:', err?.message || err);
-    return { elements: [] };
+    return { elements: [], unavailable: true };
   }
 }

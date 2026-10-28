@@ -36,7 +36,7 @@ function show(e) {
     ['📏', 'Measure from here', () => { showPanel('measure'); measure.startFrom(ll); }],
     ['⎘', `Copy ${fmt.coord(ll.lat, ll.lng, 5)}`, () => navigator.clipboard?.writeText(fmt.coord(ll.lat, ll.lng, 5)).then(() => toast('Coordinates copied', 'ok'))],
   ];
-  // Phones have no measure tool (it is a desktop feature); drop that entry and its separator.
+  // Phones have no measure tool (it is a desktop feature); drop that entry.
   const phone = document.body.classList.contains('phone');
   const shown = phone ? items.filter((it) => !it || it[1] !== 'Measure from here') : items;
   menu.innerHTML = '';
@@ -51,4 +51,5 @@ function show(e) {
   const x = Math.max(4, e.containerPoint.x + w > size.x ? Math.min(e.containerPoint.x - w, size.x - w - 4) : e.containerPoint.x);
   const y = e.containerPoint.y + h > size.y ? Math.max(4, size.y - h - 8) : e.containerPoint.y;
   menu.style.transform = `translate(${x}px, ${y}px)`;
+  menu.hidden = false;
 }

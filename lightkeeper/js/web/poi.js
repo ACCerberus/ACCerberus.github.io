@@ -243,7 +243,10 @@ async function overpassElements(selectors, lat, lon, radiusM, limit) {
   const around = `(around:${Math.trunc(radiusM)},${lat.toFixed(5)},${lon.toFixed(5)})`;
   const body = selectors.map((s) => `  nwr${s}${around};`).join('\n');
   const query = `[out:json][timeout:${OVERPASS_TIMEOUT}];\n(\n${body}\n);\nout center ${limit};`;
-  return (await overpass(query, OVERPASS_TIMEOUT)).elements || [];
+  const res = await overpass(query, OVERPASS_TIMEOUT);
+  // A failed query must not read as "nothing here": let the caller report it (nothing is cached for it).
+  if (res.unavailable) throw new Error('OpenStreetMap servers are busy — try again in a minute');
+  return res.elements || [];
 }
 
 /* ── Geocoding ── */

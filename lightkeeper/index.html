@@ -3,7 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LightKeeper 2.0.0</title>
+<title>LightKeeper 2.0.7</title>
+<script>
+/* Always run the newest build: compare ./version.json (never cached) with the version this browser last ran.
+   On a change, drop every Cache Storage cache, the service worker and the IndexedDB data cache, then reload once. */
+(function () {
+  var KEY = 'lk2.siteVersion';
+  try {
+    fetch('./version.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
+      if (!v || !v.version) return;
+      var seen = localStorage.getItem(KEY);
+      if (seen === v.version) return;
+      localStorage.setItem(KEY, v.version);
+      if (seen === null && !('serviceWorker' in navigator && navigator.serviceWorker.controller)) return; // first visit: nothing stale
+      var jobs = [];
+      if (window.caches) jobs.push(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }));
+      if (navigator.serviceWorker) jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); }));
+      if (window.indexedDB) jobs.push(new Promise(function (res) { var q = indexedDB.deleteDatabase('lightkeeper'); q.onsuccess = q.onerror = q.onblocked = function () { res(); }; }));
+      Promise.all(jobs).catch(function () {}).then(function () { location.reload(); });
+    }).catch(function () {});
+  } catch (e) { /* storage blocked: just run */ }
+})();
+</script>
 <meta name="description" content="LightKeeper: the USCG Light List on a map with boat ramps, lodging, tides, river gages, dams and NWS weather. Web edition by Evan Isakson.">
 <meta name="theme-color" content="#0f1923">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,16 +35,16 @@
 <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.Default.css">
-<link rel="stylesheet" href="./css/app.css">
-<link rel="stylesheet" href="./css/web.css">
+<link rel="stylesheet" href="./css/app.css?v=2.0.7">
+<link rel="stylesheet" href="./css/web.css?v=2.0.7">
 </head>
-<body data-version="2.0.0">
+<body data-version="2.0.7">
 
 <header id="topbar">
   <div class="brand">
     <img src="./img/lighthouse.png" alt="">
     <span class="brand-name">Light<b>Keeper</b></span>
-    <span class="brand-ver" title="LightKeeper by Evan Isakson">v2.0.0 web</span>
+    <span class="brand-ver" title="LightKeeper by Evan Isakson">v2.0.7 web</span>
   </div>
   <div class="search" id="search-wrap">
     <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -56,10 +77,10 @@
   <button data-panel="measure" title="Measure distance (M)">
     <svg viewBox="0 0 24 24"><path d="m3 17 14-14 4 4L7 21zM9 11l2 2M12 8l2 2M15 5l2 2"/></svg><span>Measure</span>
   </button>
-  <button data-panel="water" title="Tides, gages and dams (W)">
+  <button data-panel="water" title="Tides, gages and dams (W)" hidden>
     <svg viewBox="0 0 24 24"><path d="M12 3c-3 4-6 7-6 11a6 6 0 0 0 12 0c0-4-3-7-6-11z"/></svg><span>Water</span>
   </button>
-  <button data-panel="weather" title="Weather forecast (F)">
+  <button data-panel="weather" title="Weather forecast (F)" hidden>
     <svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.3 1.5A3.5 3.5 0 0 1 17 18z"/></svg><span>Weather</span>
   </button>
   <div class="rail-spacer"></div>
@@ -100,7 +121,6 @@
 <nav id="tabbar" aria-label="Sections" hidden>
   <button data-panel="aids"><svg viewBox="0 0 24 24"><path d="M12 2 9 9h6zM9 9v11M15 9v11M6 20h12M8 13h8"/></svg><span>Aids</span></button>
   <button data-panel="places"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Places</span></button>
-  <button data-panel="water"><svg viewBox="0 0 24 24"><path d="M12 3c-3 4-6 7-6 11a6 6 0 0 0 12 0c0-4-3-7-6-11z"/></svg><span>Water</span></button>
   <button data-panel="weather"><svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.3 1.5A3.5 3.5 0 0 1 17 18z"/></svg><span>Weather</span></button>
   <button data-panel="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>More</span></button>
 </nav>
@@ -117,7 +137,7 @@
 
 <script src="./vendor/leaflet/leaflet.js"></script>
 <script src="./vendor/markercluster/leaflet.markercluster.js"></script>
-<script type="module" src="./js/app.js"></script>
+<script type="module" src="./js/app.js?v=2.0.7"></script>
 <script>
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('[lightkeeper] service worker:', err.message)));

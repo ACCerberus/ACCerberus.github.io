@@ -105,7 +105,10 @@ svg:not(.tchart) { width: 20px; height: 20px; fill: none; stroke: currentColor; 
   border-radius: 999px; padding: 5px 11px; font-weight: 500;
 }
 .chip.on { border-color: var(--accent); color: var(--text); background: rgba(79, 157, 255, .15); }
-.chip.busy { opacity: .6; }
+.chip.busy::after { content: ""; display: inline-block; width: 10px; height: 10px; margin-left: 6px; vertical-align: -1px;
+  border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
+.chip-count { color: var(--text-3); font-weight: 500; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Rail ── */
 #rail {
@@ -235,6 +238,11 @@ body.panel-hidden #rail-collapse svg { transform: rotate(180deg); }
 .tc-readout { fill: var(--text); font-size: 10px; font-weight: 600; paint-order: stroke; stroke: var(--bg-1); stroke-width: 3px; }
 .tc-muted { fill: var(--text-3); font-size: 11px; }
 
+/* Animated "loading…" dots for live cells */
+.loading-dots { color: var(--text-3); }
+.loading-dots::after { content: ""; display: inline-block; width: 1.2em; text-align: left; animation: dots 1.2s steps(4, end) infinite; }
+@keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+
 /* ── Detail card ── */
 #detail {
   position: absolute; right: 16px; bottom: calc(var(--status-h) + 16px);
@@ -337,11 +345,29 @@ body.panel-hidden #rail-collapse svg { transform: rotate(180deg); }
 #sb-online.online { color: var(--green); }
 #sb-online.offline { color: var(--yellow); }
 
+.known-issues summary { cursor: pointer; font-weight: 600; color: var(--yellow); list-style: revert; }
+.known-issues[open] summary { margin-bottom: 2px; }
+.todo-list summary { cursor: pointer; font-weight: 600; color: var(--accent); list-style: revert; }
+
 /* ── Modal ── */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, .55); z-index: 3000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
 .modal { width: min(440px, calc(100vw - 32px)); background: var(--bg-1); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); }
 .modal h3 { margin: 0 0 10px; font-size: 16px; }
 .modal p { margin: 6px 0; font-size: 13px; color: var(--text-2); }
+
+/* ── First-launch import screen ── */
+#firstrun { position: fixed; inset: 0; z-index: 2500; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+.fr-card { width: min(560px, calc(100vw - 32px)); background: var(--bg-1); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; box-shadow: var(--shadow); text-align: center; }
+.fr-card img { width: 48px; height: 48px; }
+.fr-card h2 { margin: 8px 0 6px; font-size: 20px; }
+.fr-card p { margin: 0 0 14px; color: var(--text-2); font-size: 13px; }
+#fr-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--cyan)); border-radius: 2px; transition: width .3s; }
+#fr-status { margin: 8px 0 10px; min-height: 16px; }
+#fr-log { text-align: left; margin: 0; padding: 8px 10px 8px 34px; height: 180px; overflow: auto; background: var(--bg-2); border-radius: 8px; font-size: 11.5px; color: var(--text-2); font-family: Consolas, "Cascadia Mono", monospace; }
+#fr-log li { padding: 1px 0; }
+#fr-log li.ok { color: var(--green); }
+#fr-log li.warn { color: var(--yellow); }
+.fr-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
 
 /* ── Toasts ── */
 #toasts { position: fixed; bottom: calc(var(--status-h) + 14px); left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 2000; pointer-events: none; }

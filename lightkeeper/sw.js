@@ -5,10 +5,10 @@
  * Nominatim, Open-Meteo): never cached here — the page keeps those in IndexedDB with their own TTLs.
  */
 
-const VERSION = 'lk-2.0.0-3';
+const VERSION = 'lk-2.0.7';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
-const TILES = 'lk-tiles';
+const TILES = `${VERSION}-tiles`;
 const TILE_LIMIT = 4000;
 const BASE = new URL('./', self.location).pathname;
 
@@ -17,13 +17,13 @@ const SHELL_FILES = [
   './css/app.css', './css/web.css', './css/landing.css',
   './js/app.js', './js/api.js', './js/ui.js', './js/map.js', './js/aids.js', './js/poi.js', './js/places.js', './js/measure.js',
   './js/trip.js', './js/water.js', './js/weather.js', './js/settings.js', './js/detail.js', './js/hover.js', './js/context.js',
-  './js/geo.js', './js/chart.js', './js/whatsnew.js', './js/phone.js',
+  './js/geo.js', './js/chart.js', './js/whatsnew.js', './js/phone.js', './js/units.js', './version.json',
   './js/web/util.js', './js/web/store.js', './js/web/http.js', './js/web/aids.js', './js/web/poi.js', './js/web/water.js', './js/web/weather.js',
   './vendor/leaflet/leaflet.js', './vendor/leaflet/leaflet.css', './vendor/leaflet/images/marker-icon.png', './vendor/leaflet/images/marker-icon-2x.png',
   './vendor/leaflet/images/marker-shadow.png', './vendor/leaflet/images/layers.png', './vendor/leaflet/images/layers-2x.png',
   './vendor/markercluster/leaflet.markercluster.js', './vendor/markercluster/MarkerCluster.css', './vendor/markercluster/MarkerCluster.Default.css',
   './vendor/fonts/inter-400.woff2', './vendor/fonts/inter-500.woff2', './vendor/fonts/inter-600.woff2', './vendor/fonts/inter-700.woff2',
-  './data/manifest.json', './data/districts.json', './data/stations-tide.json', './data/stations-current.json',
+  './data/manifest.json', './data/districts.json', './data/uscg_units.json', './data/stations-tide.json', './data/stations-current.json',
 ];
 const TILE_HOSTS = ['tile.openstreetmap.org', 'server.arcgisonline.com', 'tile.opentopomap.org', 'gis.charttools.noaa.gov'];
 
@@ -37,7 +37,8 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
-    for (const key of await caches.keys()) if (key !== SHELL && key !== DATA && key !== TILES) await caches.delete(key);
+    // Every cache from an older build (shell, data and tiles) goes.
+    for (const key of await caches.keys()) if (![SHELL, DATA, TILES].includes(key)) await caches.delete(key);
     await self.clients.claim();
   })());
 });
@@ -48,6 +49,7 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  if (url.origin === self.location.origin && url.pathname === `${BASE}version.json`) return; // always network
   if (url.origin === self.location.origin && url.pathname.startsWith(BASE)) {
     event.respondWith(url.pathname.startsWith(`${BASE}data/`) ? staleWhileRevalidate(req, DATA) : networkFirst(req, SHELL));
   } else if (TILE_HOSTS.some((h) => url.hostname.endsWith(h))) {
@@ -84,7 +86,7 @@ async function cacheFirstTile(req) {
   const hit = await cache.match(req);
   if (hit) return hit;
   const resp = await fetch(req);
-  if (resp.ok) {
+  if (resp.ok || resp.type === 'opaque') {   // chart tiles come back opaque (no CORS)
     cache.put(req, resp.clone());
     trimTiles(cache).catch(() => {});
   }

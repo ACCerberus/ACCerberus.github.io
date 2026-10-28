@@ -121,3 +121,4 @@ body.phone .toast { font-size: 14px; text-align: center; }
 
 /* Cluster count badges: legible on phones */
 body.phone .marker-cluster-small div, body.phone .marker-cluster-medium div, body.phone .marker-cluster-large div { font-size: 13px; }
+

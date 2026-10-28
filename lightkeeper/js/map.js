@@ -15,16 +15,29 @@ export const layers = {};
 // Street map is served natively to z19 and imagery to z19 in nearly all US coverage. The map allows
 // zooming to z22 (street level); beyond the native zoom Leaflet upscales the last real tile.
 export const MAX_ZOOM = 22;
-const TILE_OPTS = { maxZoom: MAX_ZOOM, crossOrigin: 'anonymous' };
+const TILE_RETRIES = 3;
+const TILE_OPTS = { maxZoom: MAX_ZOOM, crossOrigin: 'anonymous', updateWhenZooming: false, updateWhenIdle: false, keepBuffer: 4 };
+
+/** Retry a failed tile a few times with a growing delay instead of leaving a blank square. */
+function withRetry(layer) {
+  layer.on('tileerror', ({ tile, coords }) => {
+    const tries = Number(tile.dataset.tries || 0);
+    if (tries >= TILE_RETRIES) return;
+    tile.dataset.tries = String(tries + 1);
+    setTimeout(() => { tile.src = `${layer.getTileUrl(coords)}${layer.getTileUrl(coords).includes('?') ? '&' : '?'}r=${tries + 1}`; }, 600 * (tries + 1));
+  });
+  return layer;
+}
+const xyz = (url, opts) => withRetry(L.tileLayer(url, { ...TILE_OPTS, ...opts }));
 const bases = {
-  osm: () => L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { ...TILE_OPTS, maxNativeZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }),
+  osm: () => xyz('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxNativeZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }),
   // Imagery + Esri reference overlays (roads, place names). No baked-in business pins, so only our clickable markers show.
   sat: () => L.layerGroup([
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { ...TILE_OPTS, maxNativeZoom: 19, attribution: 'Esri, Maxar, Earthstar Geographics' }),
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}', { ...TILE_OPTS, maxNativeZoom: 19, opacity: 0.9 }),
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { ...TILE_OPTS, maxNativeZoom: 19, opacity: 0.95, attribution: 'Esri' }),
+    xyz('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxNativeZoom: 19, attribution: 'Esri, Maxar, Earthstar Geographics' }),
+    xyz('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}', { maxNativeZoom: 19, opacity: 0.9 }),
+    xyz('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { maxNativeZoom: 19, opacity: 0.95, attribution: 'Esri' }),
   ]),
-  topo: () => L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { ...TILE_OPTS, subdomains: 'abc', maxNativeZoom: 17, attribution: '© <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)' }),
+  topo: () => xyz('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { subdomains: 'abc', maxNativeZoom: 17, attribution: '© <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)' }),
 };
 // NOAA ENC charts via the Maritime Chart Service WMS (the desktop app shows the same service through its proxy).
 export const ENC_WMS_URL = 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/WMSServer';
@@ -45,13 +58,16 @@ export function createMap() {
     chunkedLoading: true, chunkInterval: 80, maxClusterRadius: 44, disableClusteringAtZoom: 12,
     spiderfyOnMaxZoom: false, showCoverageOnHover: false, removeOutsideVisibleBounds: true,
   }).addTo(map);
-  for (const name of ['ramps', 'hotels', 'parks', 'water', 'trip', 'measure', 'search']) {
+  for (const name of ['ramps', 'hotels', 'parks', 'water', 'trip', 'measure', 'search', 'route']) {
     layers[name] = L.layerGroup().addTo(map);
   }
   map.on('moveend', () => store.set('view', { center: [map.getCenter().lat, map.getCenter().lng], zoom: map.getZoom() }));
   // The grid shell can settle after Leaflet measures its container; keep the map in sync with its box.
-  new ResizeObserver(() => map.invalidateSize({ animate: false })).observe(document.getElementById('map'));
-  setTimeout(() => map.invalidateSize({ animate: false }), 50);
+  const fix = () => map.invalidateSize({ animate: false });
+  new ResizeObserver(fix).observe(document.getElementById('map'));
+  window.addEventListener('resize', fix);
+  window.addEventListener('load', fix);
+  for (const ms of [50, 300, 1000, 2500]) setTimeout(fix, ms);   // the grid can settle after first paint
   return map;
 }
 
@@ -69,21 +85,32 @@ export const getBase = () => currentBaseName;
 /** Toggle the NOAA ENC chart overlay. */
 export function setCharts(on) {
   if (on && !charts) {
-    charts = L.tileLayer.wms(ENC_WMS_URL, {
+    charts = withRetry(L.tileLayer.wms(ENC_WMS_URL, {
       layers: '0,1,2,3,4,5,6,7', format: 'image/png', transparent: true, opacity: 0.85, version: '1.3.0',
-      maxZoom: MAX_ZOOM, maxNativeZoom: 19, attribution: 'Charts: NOAA ENC', crossOrigin: 'anonymous',
-    }).addTo(map);
+      // No crossOrigin: the chart service does not send CORS headers on every response, and the pixels are never read.
+      maxZoom: MAX_ZOOM, maxNativeZoom: 19, attribution: 'Charts: NOAA ENC',
+      updateWhenZooming: false, keepBuffer: 4,
+    })).addTo(map);
     charts.on('tileerror', () => { if (!charts.__warned) { charts.__warned = true; console.warn('[lightkeeper] NOAA ENC chart tiles failed to load'); } });
   } else if (!on && charts) { map.removeLayer(charts); charts = null; }
   store.set('charts', Boolean(on));
   $$('[data-overlay="charts"]').forEach((b) => b.classList.toggle('on', Boolean(on)));
 }
 export const chartsOn = () => Boolean(charts);
+/** Desktop-compatible toggle: flips (or forces) the chart overlay and returns the new state. */
+export function toggleCharts(force) { setCharts(force ?? !charts); return Boolean(charts); }
 
 /* ── Icons ── */
 export function aidIcon(aid, selected = false) {
   const type = AID_COLORS[aid.aid_type] ? aid.aid_type : 'other';
   return L.divIcon({ className: '', html: `<div class="m ${type}${selected ? ' sel' : ''}"></div>`, iconSize: [14, 14], iconAnchor: [7, 7] });
+}
+/** Canvas circle style for aid markers — far cheaper than DOM icons for tens of thousands of aids. */
+export function aidStyle(aid, selected = false) {
+  const color = AID_COLORS[aid.aid_type] || AID_COLORS.other;
+  return selected
+    ? { radius: 7, color: '#4f9dff', weight: 3, fillColor: color, fillOpacity: 1 }
+    : { radius: 5, color: 'rgba(255,255,255,.8)', weight: 1.5, fillColor: color, fillOpacity: 1 };
 }
 export function poiIcon(kind) {
   return L.divIcon({ className: '', html: `<div class="m-poi ${kind}">${POI_GLYPH[kind] || '•'}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] });

@@ -11,12 +11,12 @@ const LAYERS = {
   hotels: { path: '/api/poi/hotels', capM: 100000 },
   parks: { path: '/api/poi/parks', capM: 150000 },
 };
-const on = new Set(store.get('poiLayers', []));
+const on = new Set((store.get('poiLayers', ['ramps', 'hotels', 'parks']) || []).filter((n) => n in LAYERS));   // all on by default
 const items = { ramps: new Map(), hotels: new Map(), parks: new Map() };
 let generation = 0;
 
 export function init() {
-  for (const chip of $$('#layer-chips .chip')) {
+  for (const chip of $$('#layer-chips .chip[data-layer]')) {
     chip.classList.toggle('on', on.has(chip.dataset.layer));
     chip.addEventListener('click', () => toggle(chip.dataset.layer));
   }
@@ -36,7 +36,8 @@ const changed = () => window.dispatchEvent(new CustomEvent('lk:places'));
 const LABEL = { ramps: 'boat ramps', hotels: 'hotels', parks: 'parks' };
 
 function toggle(name) {
-  if (on.has(name)) { on.delete(name); layers[name].clearLayers(); items[name].clear(); }
+  if (!(name in LAYERS)) return;
+  if (on.has(name)) { on.delete(name); layers[name].clearLayers(); items[name].clear(); setCount(document.querySelector(`#layer-chips .chip[data-layer="${name}"]`), null); }
   else {
     on.add(name);
     if (map.getZoom() < MIN_ZOOM) {
@@ -46,8 +47,16 @@ function toggle(name) {
     } else refresh(name);
   }
   store.set('poiLayers', Array.from(on));
-  $$('#layer-chips .chip').forEach((c) => c.classList.toggle('on', on.has(c.dataset.layer)));
+  $$('#layer-chips .chip[data-layer]').forEach((c) => c.classList.toggle('on', on.has(c.dataset.layer)));
   changed();
+}
+
+/** Chip label shows what is happening: spinner while loading, then a count or "none here". */
+function setCount(chip, n) {
+  if (!chip) return;
+  let badge = chip.querySelector('.chip-count');
+  if (!badge) { badge = document.createElement('span'); badge.className = 'chip-count'; chip.append(badge); }
+  badge.textContent = n == null ? '' : n ? ` · ${n}` : ' · none here';
 }
 
 function refreshAll() { for (const name of on) refresh(name); }
@@ -58,6 +67,7 @@ async function refresh(name) {
   const gen = ++generation;
   const c = map.getCenter();
   chip?.classList.add('busy');
+  setCount(chip, null);
   try {
     const data = await api.get(LAYERS[name].path, { lat: c.lat.toFixed(5), lon: c.lng.toFixed(5), radius_m: viewportRadiusM(LAYERS[name].capM), fast: 1 });
     if (gen !== generation && !on.has(name)) return;
@@ -69,6 +79,8 @@ async function refresh(name) {
       m.addTo(layers[name]);
       items[name].set(poi.id, { poi, marker: m });
     }
+    if (data.ok === false) { setCount(chip, null); if (chip) chip.title = data.error || 'Places unavailable right now'; return; }
+    setCount(chip, (data.items || []).length);
   } catch (err) {
     toast(`${name}: ${err.message}`, 'warn');
   } finally {

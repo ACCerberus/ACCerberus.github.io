@@ -1,7 +1,88 @@
 [
   {
-    "version": "2.0.0",
+    "version": "2.0.6",
     "date": "2026-10-27",
+    "title": "Faster places and map",
+    "summary": "Version 2.0.6 — 7 changes since 2.0.5.",
+    "changes": [
+      "Boat Ramps, Hotels and Parks now answer within about 4 seconds even when the public map-data servers are slow: the app shows whichever source responds first and fills in the rest in the background. This also stops the map from blurring and leaving black squares while places load.",
+      "Zooming quickly no longer leaves blurry or missing map squares: the map skips the in-between zoom levels and retries any tile that fails.",
+      "Aid cards now show the current weather and water temperature from the closest station, with how far away it is and how recent.",
+      "Weather moved from its own tab onto aid cards and the right-click menu.",
+      "The version panel has Known issues and To do dropdowns.",
+      "Opening Trip shows a short work-in-progress note.",
+      "Fixed: a marina found through the backup map source could be labeled as a boat ramp."
+    ],
+    "known_issues": [
+      "Dam cards can be slow and may show dashes for pool, inflow and outflow; matching dams to Army Corps live data is being fixed.",
+      "River gage details can take 10–40 seconds when the USGS service is slow.",
+      "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",
+      "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
+      "Mobile and Ohio Valley sector cards have no published 24-hour number."
+    ],
+    "todo": [
+      "Add the rest of the districts' boat ramps, hotels, marinas, campgrounds and parks: Northeast (D1), East (D5), Southeast (D7), Heartland (D8), Great Lakes (D9), Southwest (D11), Oceania (D14), Arctic (D17). Northwest (D13) is done.",
+      "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
+      "Match every dam to its Army Corps live data so pool, inflow and outflow always fill in.",
+      "Finish the trip planner (day splits, ramp and lodging picks)."
+    ]
+  },
+  {
+    "version": "2.0.5",
+    "date": "2026-10-27",
+    "title": "Bug fixes",
+    "summary": "Version 2.0.5 — 3 changes since 2.0.4.",
+    "changes": [
+      "Fixed the app window showing the previous version after an update (old page and scripts were cached): the map only drew one tile, aids did not load and the version read 2.0.3. Each version now starts with a fresh window cache.",
+      "First launch shows an Importing data screen that lists every Light List file as it is imported.",
+      "Aid cards: nearest boat ramp now draws a route that stays on the water around land where water geometry exists."
+    ],
+    "known_issues": [
+      "Dam cards can be slow and may show dashes for pool, inflow and outflow; matching dams to Army Corps live data is being fixed.",
+      "River gage details can take 10–40 seconds when the USGS service is slow.",
+      "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",
+      "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
+      "Mobile and Ohio Valley sector cards have no published 24-hour number."
+    ],
+    "todo": [
+      "Add the rest of the districts' boat ramps, hotels, marinas, campgrounds and parks: Northeast (D1), East (D5), Southeast (D7), Heartland (D8), Great Lakes (D9), Southwest (D11), Oceania (D14), Arctic (D17). Northwest (D13) is done.",
+      "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
+      "Match every dam to its Army Corps live data so pool, inflow and outflow always fill in.",
+      "Finish the trip planner (day splits, ramp and lodging picks)."
+    ]
+  },
+  {
+    "version": "2.0.4",
+    "date": "2026-10-27",
+    "title": "Bug fix",
+    "summary": "Version 2.0.4 — 1 change since 2.0.3.",
+    "changes": [
+      "Fixed an error toast on launch (\"Cannot read properties of undefined (reading path)\") caused by the Charts button being treated as a places layer."
+    ],
+    "todo": []
+  },
+  {
+    "version": "2.0.3",
+    "date": "2026-10-27",
+    "title": "Fixes and improvements",
+    "summary": "Version 2.0.3 — 10 changes since 2.0.0.",
+    "changes": [
+      "Lodging and parks no longer disappear when the public OpenStreetMap servers are busy: the app now checks Photon and Nominatim as well and shows whatever answers first.",
+      "Aid cards show the nearest boat ramp; click it to draw the route to the ramp. Where water geometry is not available yet the line is dashed and marked as a straight line.",
+      "Aid cards show the Coast Guard district and sector as links that open the unit's contact card.",
+      "Tides, currents and river gages open with a chart plus the table.",
+      "The \"Tides here\" and similar lookups search progressively farther and say how far away the station is instead of failing at 40 miles.",
+      "Water temperature now returns the nearest reading with its distance instead of \"no station nearby\".",
+      "Map draws faster on launch: aid markers are drawn on the canvas, your selected district loads first, and the aid list uses a spatial index.",
+      "Google Places key can be entered in Settings so every place is verified against Google (optional).",
+      "Report-a-bug button says \"Aye aye\" and the What's new entry is dated October 20.",
+      "Nightly refresh at 2 AM when the app is idle (can be turned off in Settings)."
+    ],
+    "todo": []
+  },
+  {
+    "version": "2.0.0",
+    "date": "2026-10-20",
     "title": "LightKeeper 2 — a fresh start",
     "summary": "LightKeeper was rebuilt from the ground up with a simpler layout, a native window instead of a browser tab, and much faster downloads.",
     "changes": [
@@ -9,18 +90,21 @@
       "One sidebar with six sections: Aids, Trip, Measure, Water, Weather and Settings. One detail card for everything you click.",
       "The whole USCG Light List (all nine districts, about 54,000 aids) downloads in under a minute on first launch, and every later launch checks for changes in seconds and tells you what moved, changed or was added or removed.",
       "Boat ramps, hotels and parks are properly named. Click one to see its address, phone number and website when they exist.",
-      "Right-click anywhere on the map for tides, currents, river gages, dam releases, weather, water temperature, flood alerts, nearby ramps and lodging, or to start measuring.",
+      "Right-click anywhere on the map for tides, currents, river gages, dam releases, weather, water temperature, nearby ramps and lodging, or to start measuring.",
       "Hover the map for a subtle hint; turn on 'nearest stations' in the Water panel to see the closest tide, gage and dam stations as you move.",
       "Trip planner: tick aids, set days, speed and hours, and get a day-by-day plan with launch and recovery ramps, lodging, weather, tides and a PDF export.",
       "Measure tool with distance in NM, miles or km and true course per leg. Drag points to move them, right-click to remove.",
       "Water panel: NOAA tide and current predictions, USGS river gages (level, flow, temperature), USACE dam pool, inflow and outflow.",
       "Backup sources: if the National Weather Service or NOAA tides are down, forecasts and tides come from Open-Meteo so you still get data.",
+      "Tides, currents and river gages open with a chart (highs and lows, flood and ebb, 7-day level) plus the table.",
       "Works offline: the Light List, places, station lists and every map tile you have viewed are cached in your AppData folder. After first launch the app also pre-caches the US base map, satellite imagery around every aid, and ramps and lodging per district in the background.",
       "NOAA ENC chart overlay (Charts button) with caching.",
       "District picker filters the map to one district or shows all.",
       "Zoom all the way to street level on every base map.",
       "Settings: vessel speed and fuel, offline map downloads, backup export/import of your settings and saved trips, optional Mapbox key.",
-      "Fixed: secure connections to map and chart services on PCs whose Windows certificate store is out of date."
-    ]
+      "Fixed: secure connections to map and chart services on PCs whose Windows certificate store is out of date.",
+      "Report a bug button (Teams or email) and a What's new tab in the rail."
+    ],
+    "todo": []
   }
 ]

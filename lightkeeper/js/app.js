@@ -1,9 +1,9 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
 import { api } from './api.js';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store } from './ui.js';
-import { reportBug } from './settings.js';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js';
 import { createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js';
+import { reportBug } from './settings.js';
 import * as aids from './aids.js';
 import * as poi from './poi.js';
 import * as measure from './measure.js';
@@ -13,10 +13,10 @@ import * as weather from './weather.js';
 import * as settings from './settings.js';
 import * as hover from './hover.js';
 import * as context from './context.js';
-import * as whatsnew from './whatsnew.js';
 import * as places from './places.js';
 import * as phone from './phone.js';
-import { hideDetail } from './detail.js';
+import * as whatsnew from './whatsnew.js';
+import { hideDetail, clearRoute } from './detail.js';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 
@@ -34,14 +34,23 @@ function boot() {
   hover.init();
   context.init();
 
+  let tripNoticeShown = false;
+  $('#rail button[data-panel="trip"]').addEventListener('click', () => {
+    if (tripNoticeShown) return;
+    tripNoticeShown = true;
+    dialog('Trip planner — work in progress', [
+      el('p', { text: 'Still figuring out some stuff here. You can try it, but expect rough edges in the day splits, ramp and lodging picks.' }),
+      el('p', { class: 'muted', text: 'Found something off? Use the Bug button and let me know.' }),
+    ], { okText: 'Got it' });
+  });
   $$('#rail button[data-panel]').forEach((b) => b.addEventListener('click', () => {
     if (currentPanel() === b.dataset.panel && !document.body.classList.contains('panel-hidden')) document.body.classList.add('panel-hidden');
     else showPanel(b.dataset.panel);
   }));
   $('#rail-collapse').addEventListener('click', () => document.body.classList.toggle('panel-hidden'));
+  $('#rail-bug').addEventListener('click', reportBug);
   $$('#basemap-seg button').forEach((b) => b.addEventListener('click', () => setBase(b.dataset.base)));
   $('#chip-charts').addEventListener('click', () => setCharts(!chartsOn()));
-  $('#rail-bug').addEventListener('click', reportBug);
   $('#rail-ver').textContent = document.body.dataset.version;
   showPanel(store.get('panel', 'aids'));
   $$('#rail button[data-panel]').forEach((b) => b.addEventListener('click', () => store.set('panel', b.dataset.panel)));
@@ -169,10 +178,10 @@ async function pollStatus() {
 /* ── Keyboard ── */
 function shortcuts(e) {
   if (e.target.matches('input, textarea, select')) return;
-  const keys = { a: 'aids', t: 'trip', m: 'measure', w: 'water', f: 'weather', s: 'settings' };
+  const keys = { a: 'aids', t: 'trip', m: 'measure', s: 'settings' };
   if (keys[e.key]) showPanel(keys[e.key]);
   else if (e.key === '/') { e.preventDefault(); $('#search').focus(); }
-  else if (e.key === 'Escape') hideDetail();
+  else if (e.key === 'Escape') { hideDetail(); clearRoute(); }
 }
 
 boot();

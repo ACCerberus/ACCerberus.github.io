@@ -2,7 +2,7 @@
 
 import { api } from './api.js';
 import { $, el, fmt, toast, panelSkeleton, debounce, setStatus } from './ui.js';
-import { map, layers, aidIcon, flyTo, AID_COLORS } from './map.js';
+import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js';
 import { showDetail, aidRecord, hideDetail } from './detail.js';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
@@ -23,6 +23,25 @@ export function setDistrict(id) {
 export const getDistrict = () => state.district;
 const inDistrict = (aid) => !state.district || aid.district_id === state.district;
 const selectionListeners = new Set();
+const GRID_DEG = 0.25;
+const grid = new Map();           // "row,col" -> aids[]  (rebuilt on loadAll)
+function indexAids() {
+  grid.clear();
+  for (const a of state.all) {
+    const key = `${Math.floor(a.latitude / GRID_DEG)},${Math.floor(a.longitude / GRID_DEG)}`;
+    let bucket = grid.get(key);
+    if (!bucket) { bucket = []; grid.set(key, bucket); }
+    bucket.push(a);
+  }
+}
+function aidsInBounds(b) {
+  const r0 = Math.floor(b.getSouth() / GRID_DEG); const r1 = Math.floor(b.getNorth() / GRID_DEG);
+  const c0 = Math.floor(b.getWest() / GRID_DEG); const c1 = Math.floor(b.getEast() / GRID_DEG);
+  if ((r1 - r0) * (c1 - c0) > 4000) return state.all;      // zoomed way out: just scan everything
+  const out = [];
+  for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) { const bucket = grid.get(`${r},${c}`); if (bucket) out.push(...bucket); }
+  return out;
+}
 
 export const getSelected = () => Array.from(state.selected.values());
 export const isSelected = (id) => state.selected.has(id);
@@ -52,15 +71,26 @@ export function init(view) {
 /** Load every aid (slim) from the backend and rebuild the cluster layer. */
 export async function loadAll({ silent = false } = {}) {
   try {
+    if (state.district && !state.all.length) {
+      // Show the district you were looking at first; the rest of the country follows right after.
+      const first = await api.get('/api/aids', { districts: state.district, limit: 100000 }, { timeoutMs: 60000 });
+      state.all = first.aids || [];
+      state.byId = new Map(state.all.map((a) => [a.objectid, a]));
+      indexAids();
+      refreshMarkers();
+      renderList();
+    }
     const data = await api.get('/api/aids', { limit: 100000 }, { timeoutMs: 120000 });
     state.all = data.aids || [];
     state.byId = new Map(state.all.map((a) => [a.objectid, a]));
+    indexAids();
     for (const [id, aid] of state.selected) if (state.byId.has(id)) state.selected.set(id, state.byId.get(id)); else state.selected.delete(id);
     refreshMarkers();
     renderList();
     setStatus({ aids: `${fmt.int(state.all.length)} aids` });
     if (!silent) toast(`${fmt.int(state.all.length)} aids loaded`, 'ok');
   } catch (err) {
+    console.error('aids.loadAll failed', err);
     if (!silent) toast(`Could not load aids: ${err.message}`, 'err');
   }
 }
@@ -72,7 +102,8 @@ function refreshMarkers() {
   for (const aid of state.all) {
     if (!inDistrict(aid)) continue;
     if (!state.types.has(aid.aid_type) && !(aid.aid_type === 'other' && state.types.size === TYPES.length)) continue;
-    const m = L.marker([aid.latitude, aid.longitude], { icon: aidIcon(aid, state.selected.has(aid.objectid)), aidId: aid.objectid, title: aid.aidname });
+    const m = L.circleMarker([aid.latitude, aid.longitude], { ...aidStyle(aid, state.selected.has(aid.objectid)), aidId: aid.objectid });
+    m.bindTooltip(aid.aidname, { direction: 'top', offset: [0, -8] });
     state.markers.set(aid.objectid, m);
     markers.push(m);
   }
@@ -82,7 +113,7 @@ function refreshMarkers() {
 function visibleAids() {
   const b = map.getBounds();
   const q = state.q;
-  return state.all.filter((a) => inDistrict(a) && (state.types.has(a.aid_type) || a.aid_type === 'other')
+  return aidsInBounds(b).filter((a) => inDistrict(a) && (state.types.has(a.aid_type) || a.aid_type === 'other')
     && b.contains([a.latitude, a.longitude])
     && (!q || matches(a, q)));
 }
@@ -124,7 +155,7 @@ export function selectMany(ids, on) {
     if (!aid) continue;
     if (on) state.selected.set(id, aid); else state.selected.delete(id);
     const m = state.markers.get(id);
-    if (m) m.setIcon(aidIcon(aid, on));
+    if (m) m.setStyle(aidStyle(aid, on));
     const rowEl = state.listEl?.querySelector(`.item[data-id="${id}"]`);
     if (rowEl) { rowEl.classList.toggle('sel', on); rowEl.querySelector('input').checked = on; }
   }

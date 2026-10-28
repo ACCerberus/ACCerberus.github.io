@@ -10,7 +10,7 @@ import * as water from './web/water.js';
 import * as weather from './web/weather.js';
 import { latLonArgs, parseBbox, validateCoords } from './web/util.js';
 
-export const VERSION = '2.0.0';
+export const VERSION = '2.0.7';
 const LS_SETTINGS = 'lk2.web.settings';
 const LS_TRIPS = 'lk2.web.trips';
 const DESKTOP_ONLY = { ok: false, error: 'Available in the desktop app', desktop_only: true };
