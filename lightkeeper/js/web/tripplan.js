@@ -6,13 +6,13 @@
  *  failure becomes an empty result plus a plan warning, like the desktop _Degrader.
  */
 
-import * as aidsData from './aids.js?v=2.1.3-2';
-import * as poi from './poi.js?v=2.1.3-2';
-import * as water from './water.js?v=2.1.3-2';
-import * as weather from './weather.js?v=2.1.3-2';
-import { cached, DAY } from './store.js?v=2.1.3-2';
-import { getJson } from './http.js?v=2.1.3-2';
-import { bboxAround, nearestK, todayIso, METERS_PER_MILE } from './util.js?v=2.1.3-2';
+import * as aidsData from './aids.js?v=2.1.3-3';
+import * as poi from './poi.js?v=2.1.3-3';
+import * as water from './water.js?v=2.1.3-3';
+import * as weather from './weather.js?v=2.1.3-3';
+import { cached, DAY } from './store.js?v=2.1.3-3';
+import { getJson } from './http.js?v=2.1.3-3';
+import { bboxAround, nearestK, todayIso, METERS_PER_MILE } from './util.js?v=2.1.3-3';
 
 /* ── Constants (copied from constants.py) ── */
 export const C = {

@@ -3,11 +3,11 @@
  *  Desktop: the panel is a full form and every day can be opened. Phone: one simple flow - tap lights on the map,
  *  Plan, then one day at a time. Planning itself is POST /api/trip/plan (desktop: trip.py; website: js/web/tripplan.js). */
 
-import { api } from './api.js?v=2.1.3-2';
-import { el, fmt, toast, panelSkeleton, debounce, store, showProgress, hideProgress, onPanelChange, showPanel } from './ui.js?v=2.1.3-2';
-import { layers, dayIcon, poiIcon, fitBounds, DAY_COLORS } from './map.js?v=2.1.3-2';
-import { showPoi } from './detail.js?v=2.1.3-2';
-import { getSelected, onSelectionChange, toggleSelect, openAid, clearSelection } from './aids.js?v=2.1.3-2';
+import { api } from './api.js?v=2.1.3-3';
+import { el, fmt, toast, panelSkeleton, debounce, store, showProgress, hideProgress, onPanelChange, showPanel } from './ui.js?v=2.1.3-3';
+import { layers, dayIcon, poiIcon, fitBounds, DAY_COLORS } from './map.js?v=2.1.3-3';
+import { showPoi } from './detail.js?v=2.1.3-3';
+import { getSelected, onSelectionChange, toggleSelect, openAid, clearSelection } from './aids.js?v=2.1.3-3';
 
 const LODGING = ['hotel', 'motel', 'resort', 'campground'];
 const LAUNCH_PREP_MIN = 25;
@@ -487,11 +487,12 @@ function printPlan(p) {
     .w{color:#8a5a00}</style></head><body><h1>${esc(p.name)}</h1>
     <p>${esc(fmt.date(p.start_date))} · ${p.totals?.days} days · ${p.totals?.aids} lights · ${p.totals?.water_mi} mi on the water · ${speed} mph</p>
     ${(p.warnings || []).map((w) => `<div class="w">! ${esc(w)}</div>`).join('')}${dayHtml}
-    <p style="margin-top:24px;color:#666">LightKeeper trip plan</p><script>onload=()=>print()<\/script></body></html>`;
+    <p style="margin-top:24px;color:#666">LightKeeper trip plan</p></body></html>`;
   const w = window.open('', '_blank');
   if (!w) { toast('Allow pop-ups to print the plan', 'warn'); return; }
   w.document.write(html);
   w.document.close();
+  setTimeout(() => { w.focus(); w.print(); }, 300);
 }
 
 function savedBox() {
