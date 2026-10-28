@@ -1,8 +1,8 @@
 /** NWS forecast for the map center (or a picked point) with active alerts. */
 
-import { api } from './api.js?v=2.0.9-4';
-import { $, el, fmt, toast, panelSkeleton, onPanelChange, showProgress, hideProgress } from './ui.js?v=2.0.9-4';
-import { map, layers, poiIcon } from './map.js?v=2.0.9-4';
+import { api } from './api.js?v=2.0.9c';
+import { $, el, fmt, toast, panelSkeleton, onPanelChange, showProgress, hideProgress } from './ui.js?v=2.0.9c';
+import { map, layers, poiIcon } from './map.js?v=2.0.9c';
 
 const state = { body: null, picking: false, point: null, loaded: false };
 

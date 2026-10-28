@@ -1,9 +1,9 @@
 [
   {
-    "version": "2.0.9",
+    "version": "2.0.9c",
     "date": "2026-10-27",
     "title": "Full aid details, smarter search, faster dams",
-    "summary": "Version 2.0.9 — 13 changes since 2.0.8.",
+    "summary": "Version 2.0.9c — 13 changes since 2.0.8.",
     "changes": [
       "Fixed: on iPhone home-screen mode the search bar and district picker sat under the clock and battery; the top bar now starts below them.",
       "New \"LightKeeper V1\" dropdown on the Version page and in What's new: every update to the original app, October 2025 to April 2026.",

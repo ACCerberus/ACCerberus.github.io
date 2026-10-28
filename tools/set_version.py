@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 APP = ROOT / "lightkeeper"
-SEMVER = re.compile(r"\d+\.\d+\.\d+")
+SEMVER = re.compile(r"\d+\.\d+\.\d+[a-z]?")   # 2.0.9 or a lettered fix build like 2.0.9c
 # Local module specifiers: './x.js', '../x.js', './web/x.js', with or without an old ?v= token.
 IMPORT_RE = re.compile(r"""((?:from\s+|import\s*\(\s*)['"])(\.{1,2}/[\w./-]+?\.js)(?:\?v=[\w.-]+)?(['"])""")
 
@@ -43,17 +43,17 @@ def main() -> int:
     (APP / "version.json").write_text('{"version":"%s"}\n' % token, "utf-8", newline="\n")
     for js in sorted((APP / "js").rglob("*.js")):
         sub_file(js, [(IMPORT_RE, rf"\g<1>\g<2>?v={token}\g<3>")])
-    sub_file(APP / "js" / "api.js", [(re.compile(r"export const VERSION = '[\d.]+';"), f"export const VERSION = '{v}';")])
+    sub_file(APP / "js" / "api.js", [(re.compile(r"export const VERSION = '[\d.]+[a-z]?';"), f"export const VERSION = '{v}';")])
     sub_file(APP / "index.html", [
-        (re.compile(r"<title>LightKeeper [\d.]+</title>"), f"<title>LightKeeper {v}</title>"),
-        (re.compile(r'data-version="[\d.]+"'), f'data-version="{v}"'),
-        (re.compile(r">v[\d.]+ web</span>"), f">v{v} web</span>"),
+        (re.compile(r"<title>LightKeeper [\d.]+[a-z]?</title>"), f"<title>LightKeeper {v}</title>"),
+        (re.compile(r'data-version="[\d.]+[a-z]?"'), f'data-version="{v}"'),
+        (re.compile(r">v[\d.]+[a-z]? web</span>"), f">v{v} web</span>"),
         (re.compile(r'\.(css|js)\?v=[\w.-]+"'), rf'.\g<1>?v={token}"'),
     ])
     sub_file(APP / "sw.js", [(re.compile(r"const VERSION = 'lk-[\w.-]+';"), f"const VERSION = 'lk-{token}';")])
     for page in (ROOT / "index.html", APP / "about.html", APP / "updates.html"):
-        sub_file(page, [(re.compile(r"LightKeeper v[\d.]+ "), f"LightKeeper v{v} "),
-                        (re.compile(r"LightKeeper [\d.]+ · by"), f"LightKeeper {v} · by")])
+        sub_file(page, [(re.compile(r"LightKeeper v[\d.]+[a-z]? "), f"LightKeeper v{v} "),
+                        (re.compile(r"LightKeeper [\d.]+[a-z]? · by"), f"LightKeeper {v} · by")])
     print(f"version set to {v} (cache token {token})")
     return 0
 

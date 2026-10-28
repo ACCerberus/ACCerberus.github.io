@@ -1,7 +1,7 @@
 /** Outbound HTTP for the browser edition: JSON GET with timeout, Overpass mirror racing and the
  *  Nominatim 1-request-per-second throttle (the usage policy; the browser supplies the Referer). */
 
-import { cached, DAY } from './store.js?v=2.0.9-4';
+import { cached, DAY } from './store.js?v=2.0.9c';
 
 export const OVERPASS_SERVERS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
 export const NOMINATIM_URL = 'https://nominatim.openstreetmap.org';

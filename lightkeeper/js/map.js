@@ -1,7 +1,7 @@
 /** Leaflet map setup: base layers (loaded straight from the public tile servers), NOAA ENC chart overlay,
  *  layer groups, icons. */
 
-import { $$, store } from './ui.js?v=2.0.9-4';
+import { $$, store } from './ui.js?v=2.0.9c';
 
 const DEFAULT_VIEW = { center: [39.5, -98.35], zoom: 4 };
 
