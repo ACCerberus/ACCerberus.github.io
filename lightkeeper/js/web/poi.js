@@ -7,10 +7,10 @@
  *  7 days, reverse geocodes forever, assembled place lists 5 minutes.
  */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.0-4';
-import { cached, idbGet, idbSet, DAY, MIN } from './store.js?v=2.1.0-4';
-import { districts as districtList, manifest, staticJson } from './aids.js?v=2.1.0-4';
-import { haversineMi, isInUs, validateCoords, normalizePhone, first, formatAddress, METERS_PER_MILE } from './util.js?v=2.1.0-4';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.0-5';
+import { cached, idbGet, idbSet, DAY, MIN } from './store.js?v=2.1.0-5';
+import { districts as districtList, manifest, staticJson } from './aids.js?v=2.1.0-5';
+import { haversineMi, isInUs, validateCoords, normalizePhone, first, formatAddress, METERS_PER_MILE } from './util.js?v=2.1.0-5';
 
 const SOURCE_OSM = 'OpenStreetMap';
 const SOURCE_NOMINATIM = 'Nominatim';

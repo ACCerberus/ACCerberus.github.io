@@ -1,12 +1,12 @@
 /** Water: NOAA tide/current stations, USGS gages and USACE dams in view; readings on click. */
 
-import { api } from './api.js?v=2.1.0-4';
-import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.1.0-4';
-import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.1.0-4';
-import { showDetail, poiRecord } from './detail.js?v=2.1.0-4';
-import { haversineMi } from './geo.js?v=2.1.0-4';
-import { getDistrict, districtAt } from './aids.js?v=2.1.0-4';
-import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.1.0-4';
+import { api } from './api.js?v=2.1.0-5';
+import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.1.0-5';
+import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.1.0-5';
+import { showDetail, poiRecord } from './detail.js?v=2.1.0-5';
+import { haversineMi } from './geo.js?v=2.1.0-5';
+import { getDistrict, districtAt } from './aids.js?v=2.1.0-5';
+import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.1.0-5';
 
 const TYPES = [['tide', 'Tides'], ['current', 'Currents'], ['gage', 'USGS gages'], ['dam', 'Dams']];
 const MIN_ZOOM = 7;

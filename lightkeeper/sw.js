@@ -5,7 +5,7 @@
  * Nominatim, Open-Meteo): never cached here — the page keeps those in IndexedDB with their own TTLs.
  */
 
-const VERSION = 'lk-2.1.0-4';
+const VERSION = 'lk-2.1.0-5';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const TILES = `${VERSION}-tiles`;
@@ -51,7 +51,11 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
   if (url.origin === self.location.origin && url.pathname === `${BASE}version.json`) return; // always network
   if (url.origin === self.location.origin && url.pathname.startsWith(BASE)) {
-    event.respondWith(url.pathname.startsWith(`${BASE}data/`) ? staleWhileRevalidate(req, DATA) : networkFirst(req, SHELL));
+    // The page itself and build-stamped files (?v=...) open straight from the saved copy, so the home-screen app
+    // never waits on the network to start; the page's version check reloads when a newer build is published.
+    const instant = req.mode === 'navigate' || url.searchParams.has('v');
+    event.respondWith(url.pathname.startsWith(`${BASE}data/`) ? staleWhileRevalidate(req, DATA)
+      : instant ? savedFirst(req, SHELL) : networkFirst(req, SHELL));
   } else if (TILE_HOSTS.some((h) => url.hostname.endsWith(h))) {
     event.respondWith(cacheFirstTile(req));
   }
@@ -82,6 +86,18 @@ async function networkFirst(req, cacheName) {
     if (hit) return hit;
     throw err;
   }
+}
+
+/** Saved copy at once (refreshed in the background); the network only when nothing is saved yet. */
+async function savedFirst(req, cacheName) {
+  const cache = await caches.open(cacheName);
+  const nav = req.mode === 'navigate';
+  const hit = nav ? (await cache.match(req, { ignoreSearch: true }) || await cache.match('./')) : await cache.match(req);
+  if (hit) {
+    if (nav) networkFirst(req, cacheName).catch(() => {});      // keep the saved page current
+    return hit;
+  }
+  return networkFirst(req, cacheName);
 }
 
 async function staleWhileRevalidate(req, cacheName) {

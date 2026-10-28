@@ -7,7 +7,7 @@
     "changes": [
       "New BNM tab: the current USCG Broadcast Notices to Mariners for your district (Northwest for now). Each one says what's wrong (extinguished, off station, decommissioned...); tap it to fly to the light.",
       "Lights with an active notice pulse orange on the map, and their aid card shows the notice at the top.",
-      "The home-screen app no longer opens to a white screen on a weak signal: after a few seconds it opens the saved copy, and it reloads itself if startup stalls."
+      "The home-screen app opens straight away from the copy saved on your phone (no more white screen on a weak signal), with a loading circle until the map is ready. Newer versions still load automatically."
     ],
     "known_issues": [
       "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",

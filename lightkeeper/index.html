@@ -36,10 +36,21 @@
 <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.css">
 <link rel="stylesheet" href="./vendor/markercluster/MarkerCluster.Default.css">
-<link rel="stylesheet" href="./css/app.css?v=2.1.0-4">
-<link rel="stylesheet" href="./css/web.css?v=2.1.0-4">
+<link rel="stylesheet" href="./css/app.css?v=2.1.0-5">
+<link rel="stylesheet" href="./css/web.css?v=2.1.0-5">
+<style>
+  /* Loading screen: painted before any stylesheet or script arrives, removed when the app has started. */
+  html { background: #0f1923; }
+  #boot-splash { position: fixed; inset: 0; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px; background: #0f1923; color: #9fb3c8; font: 500 15px system-ui, -apple-system, sans-serif; transition: opacity .25s; }
+  #boot-splash.done { opacity: 0; pointer-events: none; }
+  #boot-splash .spin { width: 44px; height: 44px; border-radius: 50%; border: 4px solid rgba(159,179,200,.2); border-top-color: #4f9dff;
+    animation: boot-spin .8s linear infinite; }
+  @keyframes boot-spin { to { transform: rotate(360deg); } }
+</style>
 </head>
 <body data-version="2.1.0">
+<div id="boot-splash" role="status" aria-label="Loading LightKeeper"><div class="spin"></div><div>Loading LightKeeper…</div></div>
 
 <header id="topbar">
   <div class="brand">
@@ -152,7 +163,7 @@
 
 <script src="./vendor/leaflet/leaflet.js"></script>
 <script src="./vendor/markercluster/leaflet.markercluster.js"></script>
-<script type="module" src="./js/app.js?v=2.1.0-4"></script>
+<script type="module" src="./js/app.js?v=2.1.0-5"></script>
 <script>
   /* Home-screen app safety net: if startup hasn't finished in 12 s (a stalled download, or iPhone resuming a page it
      dropped from memory), reload once. Never more than once a minute, so it can't loop. */
