@@ -1,11 +1,11 @@
 /** Settings (web edition): vessel, Light List data status, storage, about + device diagnostics.
  *  Offline map download, pre-cache, API keys and backup files live in the desktop app. */
 
-import { api, VERSION } from './api.js?v=2.1.1';
-import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog, showPanel } from './ui.js?v=2.1.1';
-import { ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.1';
-import { setBase, getBase } from './map.js?v=2.1.1';
-import * as netcheck from './netcheck.js?v=2.1.1';
+import { api, VERSION } from './api.js?v=2.1.1-3';
+import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog, showPanel } from './ui.js?v=2.1.1-3';
+import { ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.1-3';
+import { setBase, getBase } from './map.js?v=2.1.1-3';
+import * as netcheck from './netcheck.js?v=2.1.1-3';
 
 export const DOWNLOAD_INFO = '/download.json';   // the site's download switch (see /download.js)
 const state = { body: null, settings: {}, districtsEl: null };

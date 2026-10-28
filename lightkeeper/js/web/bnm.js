@@ -1,7 +1,7 @@
 /** Web edition of /api/bnm: the hourly-published lightkeeper/data/bnm-D<id>.json (tools/build_bnm.py), with
  *  "active" recomputed here so notices expire on time between updates. Northwest only for now. */
 
-import { staticJson } from './aids.js?v=2.1.1';
+import { staticJson } from './aids.js?v=2.1.1-3';
 
 const DISTRICTS = [13];
 const TTL = 10 * 60 * 1000;

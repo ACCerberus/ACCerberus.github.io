@@ -1,26 +1,26 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js?v=2.1.1';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.1';
-import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn, setLiteTiles } from './map.js?v=2.1.1';
-import { reportBug } from './settings.js?v=2.1.1';
-import * as aids from './aids.js?v=2.1.1';
-import * as poi from './poi.js?v=2.1.1';
-import * as measure from './measure.js?v=2.1.1';
-import * as trip from './trip.js?v=2.1.1';
-import * as water from './water.js?v=2.1.1';
-import * as weather from './weather.js?v=2.1.1';
-import * as settings from './settings.js?v=2.1.1';
-import * as hover from './hover.js?v=2.1.1';
-import * as context from './context.js?v=2.1.1';
-import * as places from './places.js?v=2.1.1';
-import * as phone from './phone.js?v=2.1.1';
-import * as whatsnew from './whatsnew.js?v=2.1.1';
-import * as discrep from './discrepancies.js?v=2.1.1';
-import * as notices from './notices.js?v=2.1.1';
-import * as netcheck from './netcheck.js?v=2.1.1';
-import { ipLocation, districtFor } from './geodistrict.js?v=2.1.1';
-import { hideDetail, clearRoute } from './detail.js?v=2.1.1';
+import { api } from './api.js?v=2.1.1-3';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.1-3';
+import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn, setLiteTiles } from './map.js?v=2.1.1-3';
+import { reportBug } from './settings.js?v=2.1.1-3';
+import * as aids from './aids.js?v=2.1.1-3';
+import * as poi from './poi.js?v=2.1.1-3';
+import * as measure from './measure.js?v=2.1.1-3';
+import * as trip from './trip.js?v=2.1.1-3';
+import * as water from './water.js?v=2.1.1-3';
+import * as weather from './weather.js?v=2.1.1-3';
+import * as settings from './settings.js?v=2.1.1-3';
+import * as hover from './hover.js?v=2.1.1-3';
+import * as context from './context.js?v=2.1.1-3';
+import * as places from './places.js?v=2.1.1-3';
+import * as phone from './phone.js?v=2.1.1-3';
+import * as whatsnew from './whatsnew.js?v=2.1.1-3';
+import * as discrep from './discrepancies.js?v=2.1.1-3';
+import * as notices from './notices.js?v=2.1.1-3';
+import * as netcheck from './netcheck.js?v=2.1.1-3';
+import { ipLocation, districtFor } from './geodistrict.js?v=2.1.1-3';
+import { hideDetail, clearRoute } from './detail.js?v=2.1.1-3';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 
@@ -108,8 +108,11 @@ async function initDistricts() {
     state.districts = await api.get('/api/districts');
     for (const d of state.districts) sel.append(el('option', { value: d.id, text: `D${d.id} · ${d.name}` }));
   } catch { /* offline before first run */ }
+  // Computers: our own drop-down (some desktop browsers never open the native list here). Phones keep the native picker.
+  if (!matchMedia('(pointer: coarse)').matches) pickerFor(sel);
   const saved = store.get('district', null);
   if (saved && state.districts.some((d) => String(d.id) === String(saved))) { sel.value = String(saved); aids.setDistrict(Number(saved)); }
+  sel.refreshPicker?.();
   sel.addEventListener('change', () => {
     const d = state.districts.find((x) => String(x.id) === sel.value);
     store.set('district', sel.value);
@@ -128,6 +131,35 @@ async function initDistricts() {
       toast(`Showing D${d.id} ${d.name}, picked from your location. Change it at the top.`, 'ok', 6000);
     }
   }
+}
+
+/** A drop-down drawn by the page (button + list) that drives a hidden <select>. */
+function pickerFor(sel) {
+  const btn = el('button', { type: 'button', class: 'dsel-btn', title: sel.title, 'aria-haspopup': 'listbox', 'aria-expanded': 'false' });
+  const menu = el('ul', { class: 'dsel-menu', role: 'listbox', hidden: true });
+  const wrap = el('div', { class: 'dsel' }, [btn, menu]);
+  sel.hidden = true;
+  sel.after(wrap);
+  const label = () => { btn.textContent = sel.selectedOptions[0]?.text || 'All districts'; };
+  const close = () => { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+  const open = () => {
+    menu.innerHTML = '';
+    for (const o of sel.options) {
+      menu.append(el('li', { role: 'option', 'aria-selected': String(o.value === sel.value) }, [el('button', {
+        type: 'button', class: o.value === sel.value ? 'on' : '', text: o.text,
+        onclick: () => { close(); if (sel.value !== o.value) { sel.value = o.value; sel.dispatchEvent(new Event('change')); } },
+      })]));
+    }
+    menu.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+    menu.querySelector('.on')?.focus();
+  };
+  btn.addEventListener('click', () => (menu.hidden ? open() : close()));
+  document.addEventListener('pointerdown', (e) => { if (!wrap.contains(e.target)) close(); });
+  wrap.addEventListener('keydown', (e) => { if (e.key === 'Escape') { close(); btn.focus(); } });
+  sel.addEventListener('change', label);
+  sel.refreshPicker = label;          // for code that sets sel.value without a change event
+  label();
 }
 
 /** Lite mode: on a slow link only the picked district's aids load and the map keeps fewer tiles. */
