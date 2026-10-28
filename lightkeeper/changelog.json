@@ -3,8 +3,10 @@
     "version": "2.0.9",
     "date": "2026-10-27",
     "title": "Full aid details, smarter search, faster dams",
-    "summary": "Version 2.0.9 — 11 changes since 2.0.8.",
+    "summary": "Version 2.0.9 — 13 changes since 2.0.8.",
     "changes": [
+      "Fixed: on iPhone home-screen mode the search bar and district picker sat under the clock and battery; the top bar now starts below them.",
+      "New \"LightKeeper V1\" dropdown on the Version page and in What's new: every update to the original app, October 2025 to April 2026.",
       "Fixed: the Version and Data & notices pages would not open on iPhone (Safari said the response \"has redirections\").",
       "Adding the site to your home screen now shows a lighthouse icon instead of a plain letter.",
       "New Dams button next to Boat Ramps, Hotels and Parks: dam markers show on the map whenever you zoom in (they used to appear only from the right-click menu).",

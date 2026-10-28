@@ -1,0 +1,459 @@
+[
+ {
+  "version": "v1.0.0",
+  "date": "April 24, 2026",
+  "groups": [
+   {
+    "title": "New Features",
+    "items": [
+     "Right-click water monitoring: Check Water Temp, Lake/River Level, Dam Flow Info, and Flood Alerts from map context menu using USGS NWIS, NOAA CO-OPS, USACE CWMS, and NWS AHPS APIs",
+     "Safety validation: hotel-in-water detection discards POIs with coordinates in lakes/rivers; ramp-near-water verification confirms ramps are within 500m of mapped waterway",
+     "Stale data warning banner: persistent amber banner when any enabled district data is older than 30 days",
+     "PDF workplan export: formatted multi-page PDF via jsPDF with cover page, per-day schedules with aid details, and summary page",
+     "Service worker: cache-first for map tiles, network-first for API calls, stale-while-revalidate for HTML; enables full offline support after first load",
+     "Trip templates & calendar: save/reload complete trip configurations with new database tables; multi-trip calendar CRUD endpoints",
+     "Spatial index: SpatialGrid class replaces O(n) warm pool linear scan with grid-based O(k) lookup for faster POI searches",
+     "Unified config system: AppConfig singleton with lazy-loaded API keys, paths, and version replacing scattered config files",
+     "Constants extraction: 80+ magic numbers (cache TTLs, search radii, timeouts, pool sizes) extracted into constants.py"
+    ]
+   },
+   {
+    "title": "Improvements",
+    "items": [
+     "Persistent status toasts: water check \"Checking...\" toasts stay visible until API responds instead of auto-dismissing after 3 seconds",
+     "Expanded water temp search: dedicated USGS param 00010 query with 50mi radius and 24hr lookback; NOAA water level stations (not just tide predictions) for inland coverage",
+     "Exception logging: 27 bare pass blocks replaced with log.debug()/log.warning() calls across app.py and database.py",
+     "Coordinate validation: unified validate_coords() and parse_lat_lon() helpers replacing 15+ inline variations",
+     "Database enhancements: 4 new tables (trip_templates, trip_template_aids, trip_schedule, trip_schedule_aids) with full CRUD"
+    ]
+   },
+   {
+    "title": "Testing",
+    "items": [
+     "91 pytest tests across 6 test files covering constants, config, cache, utilities, API endpoints, and database CRUD",
+     "pytest fixtures with Flask test client and temporary database"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.9.0",
+  "date": "April 10, 2026",
+  "groups": [
+   {
+    "title": "New Features",
+    "items": [
+     "Water-aware routing: routes automatically follow waterways around land using A* pathfinding on OpenStreetMap water polygons fetched from the Overpass API; works for both the workplan Route Map and the free-form Route Planner",
+     "Water station layer toggles: new \"Water\" dropdown in toolbar lets you show/hide Tides, Currents, USGS Gages, and Dams independently; state persists across sessions",
+     "Unit preferences: Settings panel now has a Units tab to switch temperature (F/C), wind speed (kt/mph/kph), elevation (ft/m), and distance (NM/mi/km); applied to NOAA and USGS station popups",
+     "USACE CWMS dam data: replaced broken USBR RISE API with USACE Corps Water Management System; dynamically discovers dams across all 24 USACE offices with real-time reservoir elevation, inflow, outflow, and storage",
+     "USGS stream gages: viewport-based lazy loading of active USGS gages with discharge, gage height, and water temperature"
+    ]
+   },
+   {
+    "title": "Improvements",
+    "items": [
+     "Two-row centered toolbar: navigation controls on top row, map layers and tools on bottom row; cleaner layout with section labels (\"Layers\", \"Tools\") and consistent button sizing",
+     "Faster trip generation: Phase 2 hotel refinement skipped when sufficient hotels found in Phase 1; 20-second timeout on corridor search; reduced Overpass search radius; progress bar updates throughout optimization pipeline",
+     "OSRM batch timeout: 30-second timeout on driving distance calculations prevents indefinite hangs",
+     "Water station visibility: dark circular backgrounds with colored borders for all water markers; tide/dam/USGS markers stacked above current markers for better visibility",
+     "ENC charts: restored WMS endpoint after NOAA tile services were discontinued",
+     "Preflight speed: removed sequential NAVCEN HEAD requests that caused 45+ second startup hangs"
+    ]
+   },
+   {
+    "title": "Bug Fixes",
+    "items": [
+     "Fixed NOAA tide stations invisible under 4400+ current station markers at same coordinates",
+     "Fixed USGS gage temperature displaying in Celsius regardless of unit preference",
+     "Fixed trip generation hanging at \"Refining hotel search\" when Phase 2 was already skipped",
+     "Fixed progress step indicators not advancing during optimization pipeline"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.8.9.5",
+  "date": "April 10, 2026",
+  "groups": [
+   {
+    "title": "New Features",
+    "items": [
+     "Tides & Water Levels: right-click map to search nearby water stations from NOAA CO-OPS (tides, currents), USGS NWIS (river/stream gages), and USBR RISE (reservoirs like Lake Roosevelt/Grand Coulee)",
+     "Clickable station markers: left-click any water station marker to load detailed tide predictions, reservoir elevation/inflow/storage, or gage readings",
+     "Route backbone snapping: workplan Route Map follows saved routes along waterways instead of drawing straight lines across land",
+     "Auto Route button: one-click to connect all aids for a day, snapping to saved routes if available",
+     "Select All in Aids Browser: moved to each tab's \"N aids in view\" header for better workflow; auto-opens workplan panel after selection"
+    ]
+   },
+   {
+    "title": "Improvements",
+    "items": [
+     "Smarter Distribute: auto-optimizes after distributing: border smoothing between adjacent days, hours balancing, route reordering within each day",
+     "Responsive toolbar: wraps to 2 rows on smaller/laptop screens (e.g. 1920x1200) with dynamic map and panel adjustment via ResizeObserver",
+     "Dashed route lines when no saved route available (visual cue for unverified paths)",
+     "Route status bar shows \"(on saved route)\" or \"(straight line)\"",
+     "Panel drag constrained to stay below toolbar"
+    ]
+   },
+   {
+    "title": "Removals",
+    "items": [
+     "Removed Optimize button from Manual Builder (functionality merged into Distribute)"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.8.9.4",
+  "date": "April 4, 2026",
+  "groups": [
+   {
+    "title": "Fixes",
+    "items": [
+     "Added third Overpass API fallback server for improved reliability",
+     "Fixed silent weather/tide/sunrise task failures in workplan generation"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.8.9.3",
+  "date": "April 2026",
+  "groups": [
+   {
+    "title": "New Features",
+    "items": [
+     "District picker: jump to any USCG district from toolbar dropdown, priority loads selected district",
+     "Extended aid data: structure description, focal plane, sound signal, color, state, CG sector, international LL#, daymark shape",
+     "CDN tile loading: direct CDN tiles when online for faster map rendering with background proxy caching for offline",
+     "NOAA Coast Pilot: toolbar button, per-district PDF volumes, offline caching",
+     "Improved aid popups: color-coded type badge and richer detail display",
+     "Unified right-click context menu on all aid markers with grouped actions"
+    ]
+   },
+   {
+    "title": "Improvements",
+    "items": [
+     "Auto-backup on exit with silent restore on launch",
+     "Map position remembered across sessions",
+     "Status bar shows active district and aid count",
+     "Keyboard shortcuts overlay includes Route (R)"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.8.9.2",
+  "date": "April 2026",
+  "groups": [
+   {
+    "title": "New Features",
+    "items": [
+     "Mapbox Directions API: real road routing with OSRM fallback for workplan travel distances",
+     "Mapbox token config: configurable in Settings > Charts"
+    ]
+   },
+   {
+    "title": "Improvements",
+    "items": [
+     "More accurate road distance calculations throughout optimization pipeline",
+     "Automatic fallback to OSRM when Mapbox unavailable"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.8.9.1",
+  "date": "April 2026",
+  "groups": [
+   {
+    "title": "Changes",
+    "items": [
+     "Switched to 4th-number patch versioning scheme (0.8.9.X)",
+     "Point update checker to public lightkeeper-releases repo"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.8.9",
+  "date": "March 2026",
+  "groups": [
+   {
+    "title": "New Features",
+    "items": [
+     "Open Data Folder button in Settings > Cache",
+     "Faster ENC chart loading: smaller tile sizes and longer timeout"
+    ]
+   },
+   {
+    "title": "Improvements",
+    "items": [
+     "Much faster app restart — auto-kills previous instance, background MEI cleanup",
+     "Disabled debug mode and reloader in frozen exe for stability"
+    ]
+   },
+   {
+    "title": "Fixes",
+    "items": [
+     "Fixed route clearing — Clear only removes from map, doesn't delete saved routes",
+     "Removed destructive Clear All from Load Route modal",
+     "Browser shows loading page instead of error on reconnect",
+     "Fixed sync failures caused by debug mode in frozen exe",
+     "Updated version history in About section"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.8.8",
+  "date": "March 2026",
+  "groups": [
+   {
+    "title": "Fixes",
+    "items": [
+     "Fixed _MEI temp directories appearing on Desktop",
+     "Added atexit cleanup for PyInstaller temp directory",
+     "Auto-dismiss _MEI cleanup warning dialog",
+     "Switched to console mode with hidden window to suppress warnings",
+     "Removed all lightkeeper-releases references from source code"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.8.7",
+  "date": "March 2026",
+  "groups": [
+   {
+    "title": "Changes",
+    "items": [
+     "Updated copyright holder to Evan Isakson",
+     "Check both repos (source + releases) for updates",
+     "Updated copyright in About section and LICENSE file"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.8.6",
+  "date": "March 2026",
+  "groups": [
+   {
+    "title": "Fixes",
+    "items": [
+     "Fixed tutorial checkbox persistence",
+     "Added X close button to tutorial",
+     "Suppress _MEI warning dialog",
+     "Use releases repo for update checks"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.8.5/v0.8.0",
+  "date": "March 2026",
+  "groups": [
+   {
+    "title": "New Features",
+    "items": [
+     "Logic engine overhaul: tidal/difficulty/barrier intelligence",
+     "Manual workplan builder: drag-and-drop day assignment and reordering",
+     "Workplan route map: draw custom routes per day with distance/bearing labels",
+     "Route planner upgrades: ETA per waypoint, multi-route loading, right-click context menu",
+     "Border smoothing: fix interleaved day assignments between adjacent days",
+     "Max hours cap: rebalance aids between overloaded days",
+     "Oscillation detection: prevent clustering hang in balancing phases",
+     "In-app styled modals: replace all browser alert/confirm dialogs",
+     "Template auto-load on select, start date auto-populate",
+     "First-launch tutorial: interactive guided walkthrough"
+    ]
+   },
+   {
+    "title": "Improvements",
+    "items": [
+     "Waterway-aware routing throughout clustering",
+     "Hotel scoring improvements",
+     "Modal cleanup and visual polish"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.7.0",
+  "date": "March 2026",
+  "groups": [
+   {
+    "title": "New Features",
+    "items": [
+     "Offline map tile caching: CDN-direct loading when online, proxy cache when offline",
+     "Weather forecast caching with stale fallback",
+     "OSRM route caching for offline distance calculations",
+     "Cache management in Settings panel",
+     "District download for full offline support",
+     "Auto-precache on launch for seamless panning",
+     "Queue-based background tile downloader"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.5.0",
+  "date": "February–March 2026",
+  "groups": [
+   {
+    "title": "New Features",
+    "items": [
+     "Trip workplan generator: smart geographic clustering with sequential waterway partitioning",
+     "Route optimization: 2-opt with waterway linear ordering and recovery ramp end-bias",
+     "Waterway tortuosity factor: auto-computed from aid GPS positions (accounts for river bends)",
+     "Per-aid work time estimation: based on characteristics, RACON, AIS, optics, range, height, and remarks",
+     "Full day time budget: launch/recovery prep, ramp transit, approach/departure, work, contingency buffer",
+     "Joint ramp optimization: evaluates top 3 launch x top 3 recovery ramps (9 combinations)",
+     "Barrier-aware ramp scoring: dams, locks, weirs detected via OpenStreetMap",
+     "Tight cluster detection: aids <0.5mi apart never split across days",
+     "Hotel recommendations: multi-night preference scoring, lodging subtype classification (hotels, motels, resorts, airport hotels, campgrounds)",
+     "Boat ramp finder: surface quality, fee info, smart POI-based naming",
+     "Weather forecasts: NWS API with severe weather alerts",
+     "Departure and arrival city routing",
+     "Trip templates: save and auto-load settings",
+     "Equipment load list per trip",
+     "Zulu Time Calculator: 24hr military time, duration display"
+    ]
+   },
+   {
+    "title": "Improvements",
+    "items": [
+     "OSRM real road distances throughout optimization pipeline",
+     "Trip phases (Trailering + Water or Water Only)",
+     "Vessel config integration (fuel, draft, bridge clearance checks)",
+     "Batch trip context API for faster hotel/ramp/weather lookups",
+     "Cancel button for workplan generation",
+     "Dark theme workplan redesign with interactive features"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.2.x",
+  "date": "January–February 2026",
+  "groups": [
+   {
+    "title": "v0.2.5",
+    "items": [
+     "Zulu calculator — 24hr input, duration display, military format"
+    ]
+   },
+   {
+    "title": "v0.2.4",
+    "items": [
+     "Fixed update batch script — writes to correct app directory, self-deletes"
+    ]
+   },
+   {
+    "title": "v0.2.3",
+    "items": [
+     "Lodging classification — hotels, motels, resorts, airport hotels, campgrounds",
+     "Airport hotel filtering",
+     "38 accuracy checks across workplan generation"
+    ]
+   },
+   {
+    "title": "v0.2.2",
+    "items": [
+     "Dark theme workplan redesign with interactive features",
+     "Cancel button for workplan generation",
+     "Batch trip context API — faster lookups",
+     "Simplified workplan header"
+    ]
+   },
+   {
+    "title": "v0.2.1",
+    "items": [
+     "Fixed auto-update — no more .bak files on desktop",
+     "Fixed PyInstaller temp directory warning",
+     "Fixed: show no aids when no districts enabled"
+    ]
+   },
+   {
+    "title": "v0.2.0",
+    "items": [
+     "Arrival city support",
+     "Update notification with Update Now button",
+     "Geocode retry with longer timeout",
+     "Per-day hotel/launch/weather queries with rate limiting"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.1.0",
+  "date": "December 2025–January 2026",
+  "groups": [
+   {
+    "title": "New Features",
+    "items": [
+     "Interactive map: Leaflet with lights, buoys, daybeacons, bridges",
+     "Multiple map layers: Google Satellite, Esri, OpenStreetMap, Topo, NOAA ENC",
+     "USCG NAVCEN data sync: download official Light List GeoJSON for all 9 districts",
+     "Search and filter: by aid name, Light List number, type",
+     "Areas of Responsibility (AOR): save and manage custom regions",
+     "Aid notes system: per-aid annotations",
+     "Waterway name search: search by lake/river name",
+     "Box select: shift+drag to select aids in an area",
+     "Right-click context menu: quick actions on aids and map"
+    ]
+   },
+   {
+    "title": "Improvements",
+    "items": [
+     "Click-to-fly — click aid in sidebar to zoom to it on map",
+     "District management — enable/disable districts, live toggle",
+     "Aid deduplication by light list number",
+     "Responsive UI for different screen sizes"
+    ]
+   }
+  ]
+ },
+ {
+  "version": "v0.0.x",
+  "date": "October–December 2025",
+  "groups": [
+   {
+    "title": "Initial Development (v0.0.1–v0.0.9)",
+    "items": [
+     "October 24, 2025: Initial release",
+     "ATON data browser with interactive Leaflet map",
+     "USCG NAVCEN data sync (all 9 districts)",
+     "Dark theme UI",
+     "Single-file EXE distribution via PyInstaller",
+     "Store database in %APPDATA%/LightKeeper",
+     "Auto-sync ATON data on first launch",
+     "Auto-report errors to GitHub Issues",
+     "Auto-shutdown server when browser tab closes",
+     "GitHub update check on launch",
+     "Lighthouse icon for EXE",
+     "Multiple map layer support",
+     "Weather location search"
+    ]
+   },
+   {
+    "title": "Fixes (v0.0.x)",
+    "items": [
+     "Fixed longitude wrapping bug in bbox viewport query",
+     "Fixed black/grey map tiles — multi-subdomain Google tiles + Esri fallback",
+     "Fixed frozen loading spinner",
+     "Fixed white map on zoom",
+     "Fixed NOAA charts showing white",
+     "Fixed duplicate aid entries",
+     "Fixed flyToAid crash",
+     "Fixed white screen — heartbeat watchdog replaces beforeunload shutdown",
+     "Fixed objectid collision dropping sync batches",
+     "Fixed departure city geocode",
+     "Fixed hotel/launch search — single bulk query"
+    ]
+   }
+  ]
+ }
+]

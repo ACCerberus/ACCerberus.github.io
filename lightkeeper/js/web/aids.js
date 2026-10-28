@@ -1,8 +1,8 @@
 /** Light List in the browser: static per-district tables built by tools/build_aids.py, loaded lazily,
  *  kept in memory and mirrored in IndexedDB so the app keeps working offline. */
 
-import { idbGet, idbSet } from './store.js?v=2.0.9-3';
-import { parseBbox } from './util.js?v=2.0.9-3';
+import { idbGet, idbSet } from './store.js?v=2.0.9-4';
+import { parseBbox } from './util.js?v=2.0.9-4';
 
 const DATA_URL = new URL('../../data/', import.meta.url);
 const SLIM = ['objectid', 'lightlistnumber', 'aidname', 'latitude', 'longitude', 'aid_type', 'characteristics', 'waterway', 'district_id'];

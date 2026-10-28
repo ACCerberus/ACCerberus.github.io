@@ -20,6 +20,8 @@
     .upd .meta { font-size: 13px; color: var(--text-3); margin-top: 2px; }
     .upd details { margin-top: 10px; }
     .upd summary { cursor: pointer; color: var(--text); font-size: 14.5px; }
+    .upd #u-v1 > summary { list-style-position: outside; }
+    .upd #u-v1-list details { margin-left: 4px; }
     .upd .badge { display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; border-radius: 999px; padding: 1px 8px; vertical-align: middle; border: 1px solid var(--line); color: var(--text-3); }
   </style>
 </head>
@@ -47,6 +49,13 @@
     <article class="card"><h3>Known issues <span class="badge">being worked on</span></h3><ul id="u-issues"></ul></article>
     <article class="card"><h3>To do</h3><ul id="u-todo"></ul></article>
     <article class="card"><h3>Earlier versions</h3><div id="u-older"></div></article>
+    <article class="card">
+      <details id="u-v1">
+        <summary><h3 style="display:inline">LightKeeper V1</h3> <span class="badge">original app, Oct 2025 – Apr 2026</span></summary>
+        <p class="meta">Every update to the first LightKeeper, before the 2.0 rework.</p>
+        <div id="u-v1-list"></div>
+      </details>
+    </article>
   </div>
 </main>
 <footer>
@@ -89,6 +98,29 @@
       older.append(d);
     }
     if (!older.children.length) older.textContent = 'This is the first version.';
+    // LightKeeper V1: loaded when the dropdown is first opened.
+    const v1 = $('u-v1');
+    v1.addEventListener('toggle', async () => {
+      const box = $('u-v1-list');
+      if (!v1.open || box.dataset.loaded) return;
+      box.dataset.loaded = '1';
+      box.textContent = 'Loading…';
+      try {
+        const old = await fetch('./changelog_v1.json', { cache: 'no-store' }).then((r) => r.json());
+        box.replaceChildren(...old.map((v) => {
+          const d = document.createElement('details');
+          const s = document.createElement('summary');
+          s.textContent = `Version ${v.version.replace(/^v/i, '')}${v.date ? ` — ${v.date}` : ''}`;
+          d.append(s);
+          for (const g of v.groups) {
+            const h = document.createElement('div'); h.className = 'meta'; h.style.marginTop = '8px'; h.textContent = g.title;
+            const ul = document.createElement('ul'); list(ul, g.items);
+            d.append(h, ul);
+          }
+          return d;
+        }));
+      } catch { box.textContent = 'Could not load the V1 history right now.'; }
+    });
   } catch {
     $('u-lead').textContent = 'Could not load the change list right now. Please try again in a moment.';
   }

@@ -1,6 +1,6 @@
 /** Browser-edition helpers shared by the data adapters (mirrors geo.py + small bits of poi.py). */
 
-import { haversineMi } from '../geo.js?v=2.0.9-3';
+import { haversineMi } from '../geo.js?v=2.0.9-4';
 
 export const METERS_PER_MILE = 1609.344;
 export const METERS_TO_FEET = 3.28084;

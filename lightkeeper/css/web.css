@@ -1,7 +1,7 @@
 /* LightKeeper web edition — additions to app.css: notices, places list, and phone mode
    (bottom tab bar, sheets, 44 px touch targets, ≥ 13 px text). */
 
-:root { --tab-h: 60px; --safe-b: env(safe-area-inset-bottom, 0px); }
+:root { --tab-h: 60px; --safe-b: env(safe-area-inset-bottom, 0px); --safe-t: env(safe-area-inset-top, 0px); }
 
 .box.notice { border-color: rgba(79, 157, 255, .45); background: rgba(79, 157, 255, .08); }
 .box.notice h4 { color: var(--accent); }
@@ -12,7 +12,8 @@
 
 /* ── Phone mode ── */
 body.phone {
-  grid-template-rows: var(--top-h) 1fr;
+  /* Home-screen (standalone) mode draws under the iPhone status bar: push the top bar below the clock/battery. */
+  grid-template-rows: calc(var(--top-h) + var(--safe-t)) 1fr;
   grid-template-columns: 1fr;
   grid-template-areas: "top" "map";
   font-size: 14px;
@@ -22,12 +23,13 @@ body.phone {
 body.phone #rail, body.phone #statusbar, body.phone #basemap-seg, body.phone #layer-chips, body.phone .brand-name, body.phone .brand-ver,
 body.phone #hover-hint, body.phone .desktop-only, body.phone #rail-collapse { display: none !important; }
 body.phone .phone-only { display: block; }
-body.phone #topbar { gap: 10px; padding: 0 12px; }
+body.phone #topbar { gap: 10px; padding: var(--safe-t) 12px 0; height: calc(var(--top-h) + var(--safe-t)); box-sizing: border-box; }
+html:has(body.phone) { background: var(--bg-1); }   /* the strip under the home indicator matches the tab bar */
 body.phone .brand { min-width: 0; }
 body.phone .brand img { width: 28px; height: 28px; }
 body.phone .search { max-width: none; }
 body.phone #search { height: 40px; font-size: 15px; }
-body.phone #search-results { position: fixed; top: calc(var(--top-h) + 4px); left: 8px; right: 8px; max-height: 60vh; }
+body.phone #search-results { position: fixed; top: calc(var(--top-h) + var(--safe-t) + 4px); left: 8px; right: 8px; max-height: 60vh; }
 body.phone #search-results li { min-height: 44px; font-size: 14px; }
 body.phone #search-results .kind, body.phone #search-results .sub { font-size: 13px; }
 body.phone .topbar-right { margin-left: 0; gap: 8px; }
@@ -50,7 +52,7 @@ body.phone #tabbar button.on { color: var(--accent); }
 /* Panels as bottom sheets */
 body.phone #panel {
   position: fixed; left: 0; right: 0; bottom: calc(var(--tab-h) + var(--safe-b)); top: auto;
-  height: min(58vh, calc(100vh - var(--top-h) - var(--tab-h) - var(--safe-b)));
+  height: min(58vh, calc(100vh - var(--top-h) - var(--safe-t) - var(--tab-h) - var(--safe-b)));
   width: auto; border-right: 0; border-top: 1px solid var(--line); border-radius: 16px 16px 0 0;
   box-shadow: 0 -12px 40px rgba(0, 0, 0, .5); z-index: 1120;
 }
@@ -67,7 +69,7 @@ body.phone .view-foot { padding: 10px 14px calc(10px + var(--safe-b)); }
 /* Detail card as a bottom sheet */
 body.phone #detail {
   left: 0; right: 0; bottom: calc(var(--tab-h) + var(--safe-b)); width: auto;
-  max-height: min(40vh, calc(100vh - var(--top-h) - var(--tab-h) - var(--safe-b)));
+  max-height: min(40vh, calc(100vh - var(--top-h) - var(--safe-t) - var(--tab-h) - var(--safe-b)));
   border-radius: 16px 16px 0 0; border-left: 0; border-right: 0; border-bottom: 0; z-index: 1130;
 }
 body.phone #detail .d-head { padding: 10px 16px 6px; }
@@ -113,8 +115,8 @@ body.phone .toast { font-size: 14px; text-align: center; }
 
 /* Landscape phones: shorter sheets so the map stays visible */
 @media (max-height: 480px) {
-  body.phone #panel { height: calc(100vh - var(--top-h) - var(--tab-h) - var(--safe-b)); border-radius: 0; }
-  body.phone #detail { max-height: calc(100vh - var(--top-h) - var(--tab-h) - var(--safe-b) - 8px); }
+  body.phone #panel { height: calc(100vh - var(--top-h) - var(--safe-t) - var(--tab-h) - var(--safe-b)); border-radius: 0; }
+  body.phone #detail { max-height: calc(100vh - var(--top-h) - var(--safe-t) - var(--tab-h) - var(--safe-b) - 8px); }
   body.phone .view-head { padding: 0 16px 6px; }
 }
 

@@ -5,7 +5,7 @@
  * Nominatim, Open-Meteo): never cached here — the page keeps those in IndexedDB with their own TTLs.
  */
 
-const VERSION = 'lk-2.0.9-3';
+const VERSION = 'lk-2.0.9-4';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const TILES = `${VERSION}-tiles`;
@@ -13,7 +13,7 @@ const TILE_LIMIT = 4000;
 const BASE = new URL('./', self.location).pathname;
 
 const SHELL_FILES = [
-  './', './about', './manifest.webmanifest', './changelog.json', './img/lighthouse.png', './img/apple-touch-icon.png', './img/icon-192.png', './updates',
+  './', './about', './manifest.webmanifest', './changelog.json', './img/lighthouse.png', './img/apple-touch-icon.png', './img/icon-192.png', './updates', './changelog_v1.json',
   './css/app.css', './css/web.css', './css/landing.css',
   './js/app.js', './js/api.js', './js/ui.js', './js/map.js', './js/aids.js', './js/poi.js', './js/places.js', './js/measure.js',
   './js/trip.js', './js/water.js', './js/weather.js', './js/settings.js', './js/detail.js', './js/hover.js', './js/context.js',
