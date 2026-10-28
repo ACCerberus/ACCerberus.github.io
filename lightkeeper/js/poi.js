@@ -1,10 +1,10 @@
 /** Places layers: boat ramps / marinas, lodging, parks with ramps. Toggled by the top-bar chips. */
 
-import { api } from './api.js?v=2.0.9';
-import { $$, toast, debounce, store } from './ui.js?v=2.0.9';
-import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.9';
-import { showPoi } from './detail.js?v=2.0.9';
-import { getDistrict, districtAt } from './aids.js?v=2.0.9';
+import { api } from './api.js?v=2.0.9-2';
+import { $$, toast, debounce, store } from './ui.js?v=2.0.9-2';
+import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.9-2';
+import { showPoi } from './detail.js?v=2.0.9-2';
+import { getDistrict, districtAt } from './aids.js?v=2.0.9-2';
 
 const LAYERS = {
   ramps: { path: '/api/poi/ramps', capM: 150000 },

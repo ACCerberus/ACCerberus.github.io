@@ -4,12 +4,12 @@
  *
  *  Backup chain for tides: NOAA (requested station → ±1 day window → next-nearest station) → Open-Meteo Marine. */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.0.9';
-import { cached, MIN, HOUR, DAY } from './store.js?v=2.0.9';
-import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.0.9';
-import { openMeteoGet, pointKey } from './weather.js?v=2.0.9';
-import { reverseGeocode } from './poi.js?v=2.0.9';
-import { staticJson } from './aids.js?v=2.0.9';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.0.9-2';
+import { cached, MIN, HOUR, DAY } from './store.js?v=2.0.9-2';
+import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.0.9-2';
+import { openMeteoGet, pointKey } from './weather.js?v=2.0.9-2';
+import { reverseGeocode } from './poi.js?v=2.0.9-2';
+import { staticJson } from './aids.js?v=2.0.9-2';
 
 const NOAA_MDAPI = 'https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json';
 const NOAA_DATAGETTER = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
@@ -320,17 +320,40 @@ export async function stationDetail(stationId, dateArg) {
 }
 
 const tempRecord = (source, p, tempF, when) => ({ source, station_id: p.id, station_name: p.name, lat: p.lat, lon: p.lon, distance_mi: p.distance_mi, water_temp_f: tempF, water_temp_c: fToC(tempF), time: when });
-async function usgsTempNear(lat, lon) {
-  const sites = await usgsSitesInBbox(bboxAround(lat, lon, WATER_TEMP_RADIUS_MI * METERS_PER_MILE), P_TEMP, 'PT24H');
-  const pois = Object.values(sites).filter((s) => s.latest[P_TEMP]).map(usgsPoi);
-  const p = nearest(lat, lon, pois, WATER_TEMP_RADIUS_MI);
+// Water temperature, same approach as the desktop app: USGS area searches are slow (7-40 s), so each ring's list of
+// temperature sites is remembered for a day and later visits fetch readings by site id (about 0.3 s).
+const TEMP_RINGS_MI = [15, 50, 120];          // 120 mi keeps the USGS box under its 25 square-degree limit
+const TEMP_NOAA_MAX_MI = 300;
+const TEMP_DEADLINE_MS = 9000;
+const USGS_AREA_TIMEOUT = 45000;
+async function usgsTempSites(lat, lon, radiusMi) {
+  const key = `usgs:tempsites:${lat.toFixed(2)},${lon.toFixed(2)}:${radiusMi}`;
+  const { value } = await cached(key, DAY, async () => {
+    const b = usgsBboxParam(bboxAround(lat, lon, radiusMi * METERS_PER_MILE));
+    if (!b) return [];
+    const data = await getJson(usgsUrl({ parameterCd: P_TEMP, bBox: b, period: 'PT6H' }), { timeoutMs: USGS_AREA_TIMEOUT });
+    return Object.values(parseUsgs(data)).filter((x) => x.latest[P_TEMP]).map((x) => ({ site: x.site, name: x.name, lat: x.lat, lon: x.lon }));
+  });
+  return value || [];
+}
+async function usgsTempRing(lat, lon, radiusMi) {
+  const sites = (await usgsTempSites(lat, lon, radiusMi))
+    .map((x) => ({ ...x, d: haversineMi(lat, lon, x.lat, x.lon) })).sort((x, y) => x.d - y.d).slice(0, 10);
+  if (!sites.length) return null;
+  const ids = sites.map((x) => x.site).join(',');
+  const parsed = parseUsgs(await usgsFetch(`usgs:temp:${ids}:PT6H`, usgsUrl({ sites: ids, parameterCd: P_TEMP, period: 'PT6H' })));
+  const pois = Object.values(parsed).filter((x) => x.latest[P_TEMP] && x.latest[P_TEMP][0] > -999)
+    .map(usgsPoi).map((x) => ({ ...x, distance_mi: round(haversineMi(lat, lon, x.lat, x.lon), 1) }))
+    .sort((x, y) => x.distance_mi - y.distance_mi);
+  const p = pois[0];
   return p ? tempRecord(SOURCE_USGS, p, p.tags.water_temp_f, p.tags.times?.water_temp_f || '') : null;
 }
 async function noaaTempNear(lat, lon) {
-  const p = nearest(lat, lon, await noaaStations('tide'), WATER_TEMP_RADIUS_MI);
-  if (!p) return null;
-  const [temp, when] = await noaaWaterTemp(noaaCode(p), todayIso());
-  return temp != null ? tempRecord(SOURCE_NOAA, p, temp, when) : null;
+  for (const p of nearestK(lat, lon, await noaaStations('tide'), TEMP_NOAA_MAX_MI, 3)) {
+    const [temp, when] = await noaaWaterTemp(noaaCode(p), todayIso());
+    if (temp != null) return tempRecord(SOURCE_NOAA, p, temp, when);
+  }
+  return null;
 }
 async function marineTempNear(lat, lon) {
   const [temp, when] = marineSeaTemp(await marineHourly(lat, lon));
@@ -339,11 +362,39 @@ async function marineTempNear(lat, lon) {
 }
 export async function waterTempNear(lat, lon) {
   if (!validateCoords(lat, lon)) return { ok: false, error: 'Invalid coordinates', all: [] };
-  const out = await settle({ usgs: () => usgsTempNear(lat, lon), noaa: () => noaaTempNear(lat, lon) }, null);
-  let found = Object.values(out).filter(Boolean).sort((a, b) => a.distance_mi - b.distance_mi);
-  if (!found.length) { try { const m = await marineTempNear(lat, lon); found = m ? [m] : []; } catch { found = []; } }
-  if (!found.length) return { ok: false, error: 'No water temperature readings within 50 mi', all: [] };
-  return { ok: true, primary: found[0], all: found };
+  const found = [];
+  let usgsPending = TEMP_RINGS_MI.length;
+  const keep = (rec) => { if (rec && !found.some((f) => f.station_id === rec.station_id)) found.push(rec); };
+  const jobs = [
+    ...TEMP_RINGS_MI.map((r) => usgsTempRing(lat, lon, r).then(keep).catch(() => {}).finally(() => { usgsPending -= 1; })),
+    noaaTempNear(lat, lon).then(keep).catch(() => {}),
+  ];
+  // Answer as soon as a reading within the first ring is in hand, or when everything settles, or at the deadline.
+  // Searches still running keep going in the background and seed the cache for the next visit.
+  await new Promise((done) => {
+    const all = Promise.all(jobs).then(done);
+    const timer = setTimeout(done, TEMP_DEADLINE_MS);
+    const tick = setInterval(() => { if (found.some((f) => f.distance_mi <= TEMP_RINGS_MI[0])) done(); }, 100);
+    all.finally(() => { clearTimeout(timer); clearInterval(tick); });
+    setTimeout(() => clearInterval(tick), TEMP_DEADLINE_MS);
+  });
+  found.sort((x, y) => x.distance_mi - y.distance_mi);
+  const nearestRec = found[0] || null;
+  if (nearestRec && nearestRec.distance_mi <= WATER_TEMP_RADIUS_MI) {
+    return { ok: true, primary: nearestRec, all: found, nearest_mi: nearestRec.distance_mi, note: null };
+  }
+  let marine = null;
+  try { marine = await marineTempNear(lat, lon); } catch { marine = null; }
+  if (marine) {
+    return { ok: true, primary: marine, all: [marine, ...found], nearest_mi: 0,
+      note: `No water temperature station within ${WATER_TEMP_RADIUS_MI} mi of this spot; showing Open-Meteo Marine model sea surface temperature` };
+  }
+  if (nearestRec) {
+    return { ok: true, primary: nearestRec, all: found, nearest_mi: nearestRec.distance_mi,
+      note: `No water temperature station within ${WATER_TEMP_RADIUS_MI} mi of this spot; nearest reading is ${nearestRec.station_name}, ${Math.round(nearestRec.distance_mi)} mi away` };
+  }
+  return { ok: false, all: [], usgs_pending: usgsPending > 0,
+    error: usgsPending > 0 ? 'Still looking up river gauges for this area; try again in a moment' : 'No water temperature source answered' };
 }
 
 
