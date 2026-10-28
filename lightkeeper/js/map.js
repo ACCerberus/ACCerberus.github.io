@@ -1,7 +1,7 @@
 /** Leaflet map setup: base layers (loaded straight from the public tile servers), NOAA ENC chart overlay,
  *  layer groups, icons. */
 
-import { $$, store } from './ui.js?v=2.0.8-3';
+import { $$, store } from './ui.js?v=2.0.9';
 
 const DEFAULT_VIEW = { center: [39.5, -98.35], zoom: 4 };
 
@@ -93,7 +93,9 @@ export function setBase(name) {
   currentBase = bases[name]();
   trackLoading(currentBase);
   currentBase.addTo(map);
-  currentBase.eachLayer ? currentBase.eachLayer((l) => l.bringToBack()) : currentBase.bringToBack();
+  // Fixed stacking: imagery at the bottom, then roads, then place names; the chart overlay sits above all of them.
+  // (Sending each layer to the back one by one reversed this and hid the road names under the satellite photo.)
+  (currentBase.getLayers ? currentBase.getLayers() : [currentBase]).forEach((l, i) => l.setZIndex(i));
   currentBaseName = name;
   store.set('base', name);
   $$('#basemap-seg button').forEach((b) => b.classList.toggle('on', b.dataset.base === name));
@@ -106,7 +108,7 @@ export function setCharts(on) {
     charts = withRetry(L.tileLayer.wms(ENC_WMS_URL, {
       layers: '0,1,2,3,4,5,6,7', format: 'image/png', transparent: true, opacity: 0.85, version: '1.3.0',
       // No crossOrigin: the chart service does not send CORS headers on every response, and the pixels are never read.
-      maxZoom: MAX_ZOOM, maxNativeZoom: 19, attribution: 'Charts: NOAA ENC',
+      maxZoom: MAX_ZOOM, maxNativeZoom: 19, attribution: 'Charts: NOAA ENC', zIndex: 10,
       updateWhenZooming: false, keepBuffer: 4,
     })).addTo(map);
     charts.on('tileerror', () => { if (!charts.__warned) { charts.__warned = true; console.warn('[lightkeeper] NOAA ENC chart tiles failed to load'); } });

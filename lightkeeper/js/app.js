@@ -1,22 +1,22 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js?v=2.0.8-3';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.0.8-3';
-import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.0.8-3';
-import { reportBug } from './settings.js?v=2.0.8-3';
-import * as aids from './aids.js?v=2.0.8-3';
-import * as poi from './poi.js?v=2.0.8-3';
-import * as measure from './measure.js?v=2.0.8-3';
-import * as trip from './trip.js?v=2.0.8-3';
-import * as water from './water.js?v=2.0.8-3';
-import * as weather from './weather.js?v=2.0.8-3';
-import * as settings from './settings.js?v=2.0.8-3';
-import * as hover from './hover.js?v=2.0.8-3';
-import * as context from './context.js?v=2.0.8-3';
-import * as places from './places.js?v=2.0.8-3';
-import * as phone from './phone.js?v=2.0.8-3';
-import * as whatsnew from './whatsnew.js?v=2.0.8-3';
-import { hideDetail, clearRoute } from './detail.js?v=2.0.8-3';
+import { api } from './api.js?v=2.0.9';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.0.9';
+import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn } from './map.js?v=2.0.9';
+import { reportBug } from './settings.js?v=2.0.9';
+import * as aids from './aids.js?v=2.0.9';
+import * as poi from './poi.js?v=2.0.9';
+import * as measure from './measure.js?v=2.0.9';
+import * as trip from './trip.js?v=2.0.9';
+import * as water from './water.js?v=2.0.9';
+import * as weather from './weather.js?v=2.0.9';
+import * as settings from './settings.js?v=2.0.9';
+import * as hover from './hover.js?v=2.0.9';
+import * as context from './context.js?v=2.0.9';
+import * as places from './places.js?v=2.0.9';
+import * as phone from './phone.js?v=2.0.9';
+import * as whatsnew from './whatsnew.js?v=2.0.9';
+import { hideDetail, clearRoute } from './detail.js?v=2.0.9';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 
@@ -100,6 +100,22 @@ async function initDistricts() {
 }
 
 /* ── Search (aids + places) ── */
+const AID_RESULTS = 20;
+const TYPE_RANK = { light: 0, daybeacon: 1, buoy: 2 };
+const natural = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+/** Exact Light List number, then names starting with the query, then lights, daybeacons, buoys; "Buoy 2" before "Buoy 10". */
+function rankAids(rows, q) {
+  const lq = q.toLowerCase();
+  const score = (a) => [
+    String(a.lightlistnumber || '').toLowerCase() === lq ? 0 : 1,
+    (a.aidname || '').toLowerCase().startsWith(lq) ? 0 : 1,
+    TYPE_RANK[a.aid_type] ?? 3,
+  ];
+  return rows.map((a) => ({ a, s: score(a) })).sort((x, y) => {
+    for (let i = 0; i < x.s.length; i++) if (x.s[i] !== y.s[i]) return x.s[i] - y.s[i];
+    return natural.compare(x.a.aidname || '', y.a.aidname || '');
+  }).map((x) => x.a);
+}
 function initSearch() {
   const input = $('#search');
   const list = $('#search-results');
@@ -132,7 +148,9 @@ function initSearch() {
     const my = ++seq;
     const c = map.getCenter();
     const placesP = api.get('/api/poi/search', { q, lat: c.lat.toFixed(4), lon: c.lng.toFixed(4) }).then((r) => r.items || []).catch(() => []);
-    const aidRows = await api.get('/api/aids', { q, limit: 8, ...(aids.getDistrict() ? { districts: aids.getDistrict() } : {}) }).then((r) => r.aids || []).catch(() => []);
+    // Pull plenty of matches (the list is local and fast), then rank: exact LL#, lights first, numbers in natural order.
+    const aidRows = await api.get('/api/aids', { q, limit: 400, ...(aids.getDistrict() ? { districts: aids.getDistrict() } : {}) })
+      .then((r) => rankAids(r.aids || [], q).slice(0, AID_RESULTS)).catch(() => []);
     if (my !== seq) return;
     render(aidRows, [], true);
     const placeRows = await placesP;

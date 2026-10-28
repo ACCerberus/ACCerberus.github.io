@@ -1,12 +1,12 @@
 /** The one detail card. Everything clickable on the map funnels into showDetail(). */
 
-import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.0.8-3';
-import { flyTo, map } from './map.js?v=2.0.8-3';
-import { api } from './api.js?v=2.0.8-3';
-import * as units from './units.js?v=2.0.8-3';
-import { layers, poiIcon, AID_COLORS } from './map.js?v=2.0.8-3';
-import { loadedItems } from './poi.js?v=2.0.8-3';
-import { haversineNM } from './geo.js?v=2.0.8-3';
+import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.0.9';
+import { flyTo, map } from './map.js?v=2.0.9';
+import { api } from './api.js?v=2.0.9';
+import * as units from './units.js?v=2.0.9';
+import { layers, poiIcon, AID_COLORS } from './map.js?v=2.0.9';
+import { loadedItems } from './poi.js?v=2.0.9';
+import { haversineNM } from './geo.js?v=2.0.9';
 
 const card = () => $('#detail');
 let current = null;
@@ -269,8 +269,10 @@ export function aidRecord(aid, extraActions = []) {
       section('Conditions now', [], now),
       section('Nearby', [], nearby),
       section('Identity', [
-        ['Light List #', aid.lightlistnumber], ['Intl LL#', aid.intl_llnr], ['Structure', aid.structure],
-        ['Height', aid.aidheight && aid.focal_plane ? `${aid.aidheight} ft` : ''], ['Color', aid.color],
+        ['Light List #', aid.lightlistnumber], ['Intl LL#', aid.intl_llnr],
+        ['Characteristic', aid.characteristics], ['Light color', aid.color],
+        ['Range (visibility)', aid.aidrange ? `${aid.aidrange} NM` : ''], ['Focal plane', aid.focal_plane],
+        ['Structure', aid.structure], ['Structure height', aid.aidheight ? `${aid.aidheight} ft` : ''],
         ['Daymark', aid.daymark_shape], ['Sound signal', aid.sound_signal],
         ['Remarks', [aid.structure_remark, aid.remark].filter(Boolean).join(' ')],
       ]),

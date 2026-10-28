@@ -124,6 +124,27 @@ def make_objectid(*parts: Any) -> int:
     return int(digest.hexdigest()[:8], 16)
 
 
+_LLNR_NOISE = re.compile(r"\d+\.\d{6,}")
+
+def clean_llnr(value: Any) -> str:
+    """Light List number as text without float noise: "13672.300000000001" -> "13672.3"."""
+    s = str(value or "").strip()
+    if _LLNR_NOISE.fullmatch(s):
+        s = f"{float(s):.4f}".rstrip("0").rstrip(".")
+    return s
+
+
+def _height_ft(props: dict[str, Any]) -> str:
+    """Structure height in feet. NAVCEN names it STRUCTURE_HEIGHT (+ _UNIT); older files used HEIGHT_FEET."""
+    raw = _prop(props, "STRUCTURE_HEIGHT", "HEIGHT_FEET", "AIDHEIGHT")
+    if raw and _prop(props, "STRUCTURE_HEIGHT_UNIT").upper() in ("M", "METERS", "METRES"):
+        try:
+            return str(round(float(raw) * 3.28084, 1))
+        except ValueError:
+            return ""
+    return raw
+
+
 def _prop(props: dict[str, Any], *keys: str) -> str:
     for key in keys:
         value = props.get(key)
@@ -189,7 +210,7 @@ def process_geojson_features(features: list[dict[str, Any]], district_id: int) -
         sound = _prop(props, "SOUND_EMITTER_TYPE")
         rows.append({
             "objectid": make_objectid(name, round(lat, COORD_ROUND_DEDUP), round(lon, COORD_ROUND_DEDUP), district_id),
-            "lightlistnumber": _prop(props, "LIGHT_LIST_NUMBER", "LL_NUMBER"),
+            "lightlistnumber": clean_llnr(_prop(props, "LIGHT_LIST_NUMBER", "LL_NUMBER")),
             "aidname": name,
             "latitude": round(lat, COORD_ROUND_AID),
             "longitude": round(lon, COORD_ROUND_AID),
@@ -198,8 +219,8 @@ def process_geojson_features(features: list[dict[str, Any]], district_id: int) -
             "waterway": normalize_waterway_name(_prop(props, "HWATERWAY_NAME", "WATERWAY")),
             "district_id": district_id,
             "structure": structure,
-            "aidheight": _sane_number(_prop(props, "HEIGHT_FEET", "AIDHEIGHT"), AID_MAX_HEIGHT_FT),
-            "aidrange": _sane_number(_prop(props, "NOMINAL_RANGE", "AIDRANGE"), AID_MAX_RANGE_NM),
+            "aidheight": _sane_number(_height_ft(props), AID_MAX_HEIGHT_FT),
+            "aidrange": _sane_number(_prop(props, "LIGHT_NOM_RANGE", "NOMINAL_RANGE", "AIDRANGE"), AID_MAX_RANGE_NM),
             "remark": _prop(props, "REMARK", "REMARKS"),
             "state": _prop(props, "STATE"),
             "color": _prop(props, "COLOR"),

@@ -1,5 +1,42 @@
 [
   {
+    "version": "2.0.9",
+    "date": "2026-10-27",
+    "title": "Full aid details, smarter search, faster dams",
+    "summary": "Version 2.0.9 — 8 changes since 2.0.8.",
+    "changes": [
+      "Aid cards list the light's characteristic, color, range (visibility), focal plane and structure height under Identity. Range and structure height were blank for every aid before; they are now read from the Light List.",
+      "Search finds aids from any part of the name in any order: \"goose 4\", \"lit goo res 12\" and \"lt 2\" all work, as do Light List numbers.",
+      "Search shows lights first, then daybeacons and buoys, with numbers in order (Light 2 before Light 10) and up to 20 aids in a scrolling list.",
+      "Light List numbers show cleanly (13672.3 instead of 13672.300000000001).",
+      "Dams no longer disappear when zoomed out, and 875 dam cards fill in Army Corps releases and water levels in about 1 to 2 seconds.",
+      "Water temperature now comes from the nearest river gauge in well under a second at most spots (Fashion Reef: 4 mi away instead of Tacoma, 117 mi).",
+      "Satellite view on the website shows road and place names again.",
+      "The website has a Version page with the latest updates and fixes, known issues and the to-do list, and it always loads the newest version after an update."
+    ],
+    "known_issues": [
+      "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
+      "Small dams that the Army Corps doesn't run show only their name and location (no release or water-level data).",
+      "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",
+      "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
+      "Mobile and Ohio Valley sector cards have no published 24-hour number."
+    ],
+    "todo": [
+      "Add the rest of the districts' boat ramps, hotels, marinas, campgrounds and parks: Northeast (D1), East (D5), Southeast (D7), Heartland (D8), Great Lakes (D9), Southwest (D11), Oceania (D14), Arctic (D17). Northwest (D13) is being built now.",
+      "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
+      "Finish the trip planner (day splits, ramp and lodging picks).",
+      "Turn on the Windows app download on this site.",
+      "Field check: spot-check aids you know (FDR Lake, Snake, Columbia) for the right nearest ramp, ramp names, phone numbers, hotels and closed ramps.",
+      "Confirm CG sector and district on aid cards, and the 24-hour numbers (find Mobile and Ohio Valley).",
+      "Trip planner: compare auto plans against one or two real trips (day splits, launch/recovery ramps, lodging).",
+      "Add a Google Places key and verify every ramp, hotel and park against Google.",
+      "Test on a real phone (one-tap aids, scrolling card, map-only zoom, Locate) and on a work PC network.",
+      "Check dam cards you know for correct pool, tailwater and release status.",
+      "Flag any water temp or weather station that is a bad pick for its area.",
+      "Confirm Claude no longer shows in the GitHub contributors list."
+    ]
+  },
+  {
     "version": "2.0.8",
     "date": "2026-10-27",
     "title": "Locate, smarter ramp search, search everything",

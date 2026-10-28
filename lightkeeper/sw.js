@@ -5,7 +5,7 @@
  * Nominatim, Open-Meteo): never cached here — the page keeps those in IndexedDB with their own TTLs.
  */
 
-const VERSION = 'lk-2.0.8-3';
+const VERSION = 'lk-2.0.9';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const TILES = `${VERSION}-tiles`;
@@ -60,7 +60,10 @@ self.addEventListener('fetch', (event) => {
 async function networkFirst(req, cacheName) {
   const cache = await caches.open(cacheName);
   try {
-    const resp = await fetch(req);
+    // Ask the server every time (a cheap 304 when unchanged) so GitHub Pages' 10-minute browser cache
+    // can never hand back an older build of the page or its scripts.
+    const fresh = req.mode === 'navigate' ? new Request(req.url, { cache: 'no-cache', credentials: 'same-origin' }) : new Request(req, { cache: 'no-cache' });
+    const resp = await fetch(fresh);
     if (resp.ok) cache.put(req, resp.clone());
     return resp;
   } catch (err) {
