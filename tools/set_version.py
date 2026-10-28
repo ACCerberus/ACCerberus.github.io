@@ -51,7 +51,7 @@ def main() -> int:
         (re.compile(r'\.(css|js)\?v=[\w.-]+"'), rf'.\g<1>?v={token}"'),
     ])
     sub_file(APP / "sw.js", [(re.compile(r"const VERSION = 'lk-[\w.-]+';"), f"const VERSION = 'lk-{token}';")])
-    for page in (ROOT / "index.html", APP / "about.html"):
+    for page in (ROOT / "index.html", APP / "about.html", APP / "updates.html"):
         sub_file(page, [(re.compile(r"LightKeeper v[\d.]+ "), f"LightKeeper v{v} "),
                         (re.compile(r"LightKeeper [\d.]+ · by"), f"LightKeeper {v} · by")])
     print(f"version set to {v} (cache token {token})")

@@ -16,17 +16,17 @@
     ],
     "known_issues": [
       "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
-      "Dam cards can be slow and may show dashes for pool, inflow and outflow; matching dams to Army Corps live data is being fixed.",
+      "Small dams that the Army Corps doesn't run show only their name and location (no release or water-level data).",
       "River gage details can take 10–40 seconds when the USGS service is slow.",
       "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",
       "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
       "Mobile and Ohio Valley sector cards have no published 24-hour number."
     ],
     "todo": [
-      "Add the rest of the districts' boat ramps, hotels, marinas, campgrounds and parks: Northeast (D1), East (D5), Southeast (D7), Heartland (D8), Great Lakes (D9), Southwest (D11), Oceania (D14), Arctic (D17). Northwest (D13) is done.",
+      "Add the rest of the districts' boat ramps, hotels, marinas, campgrounds and parks: Northeast (D1), East (D5), Southeast (D7), Heartland (D8), Great Lakes (D9), Southwest (D11), Oceania (D14), Arctic (D17). Northwest (D13) is being built now.",
       "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
-      "Match every dam to its Army Corps live data so pool, inflow and outflow always fill in.",
-      "Finish the trip planner (day splits, ramp and lodging picks)."
+      "Finish the trip planner (day splits, ramp and lodging picks).",
+      "Turn on the Windows app download on this site."
     ]
   },
   {
