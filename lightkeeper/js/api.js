@@ -4,13 +4,13 @@
  *  settings from localStorage. Desktop-only endpoints (tile cache, pre-cache, backup, open file) answer
  *  `{ok:false}` quietly. */
 
-import * as aids from './web/aids.js?v=2.1.0-5';
-import * as poi from './web/poi.js?v=2.1.0-5';
-import * as water from './web/water.js?v=2.1.0-5';
-import * as weather from './web/weather.js?v=2.1.0-5';
-import * as discrep from './web/discrepancies.js?v=2.1.0-5';
-import * as bnm from './web/bnm.js?v=2.1.0-5';
-import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.1.0-5';
+import * as aids from './web/aids.js?v=2.1.0-6';
+import * as poi from './web/poi.js?v=2.1.0-6';
+import * as water from './web/water.js?v=2.1.0-6';
+import * as weather from './web/weather.js?v=2.1.0-6';
+import * as discrep from './web/discrepancies.js?v=2.1.0-6';
+import * as bnm from './web/bnm.js?v=2.1.0-6';
+import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.1.0-6';
 
 export const VERSION = '2.1.0';
 const LS_SETTINGS = 'lk2.web.settings';

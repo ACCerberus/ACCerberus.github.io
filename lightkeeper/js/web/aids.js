@@ -1,8 +1,8 @@
 /** Light List in the browser: static per-district tables built by tools/build_aids.py, loaded lazily,
  *  kept in memory and mirrored in IndexedDB so the app keeps working offline. */
 
-import { idbGet, idbSet } from './store.js?v=2.1.0-5';
-import { parseBbox } from './util.js?v=2.1.0-5';
+import { idbGet, idbSet } from './store.js?v=2.1.0-6';
+import { parseBbox } from './util.js?v=2.1.0-6';
 
 const DATA_URL = new URL('../../data/', import.meta.url);
 const SLIM = ['objectid', 'lightlistnumber', 'aidname', 'latitude', 'longitude', 'aid_type', 'characteristics', 'waterway', 'district_id'];
@@ -10,19 +10,22 @@ const AID_TYPES = new Set(['light', 'buoy', 'daybeacon', 'bridge', 'other']);
 
 const state = { manifest: null, districts: null, tables: new Map(), loading: new Map(), byId: new Map() };
 
-async function fetchData(name) {
-  const resp = await fetch(new URL(name, DATA_URL), { cache: 'no-cache' });
+async function fetchData(name, fresh = false) {
+  // fresh: straight from the server, past the service worker's saved copy (the BNM Refresh button)
+  const url = new URL(name, DATA_URL);
+  if (fresh) url.searchParams.set('fresh', Date.now());
+  const resp = await fetch(url, { cache: 'no-cache' });
   if (!resp.ok) throw new Error(`${name}: HTTP ${resp.status}`);
   return resp.json();
 }
 
 /** Network first (so a weekly data update is picked up), IndexedDB copy when offline. */
-export async function staticJson(name, ttlMs = 0) {
+export async function staticJson(name, ttlMs = 0, { fresh = false } = {}) {
   const key = `static:${name}`;
   const hit = await idbGet(key);
-  if (hit && ttlMs && Date.now() - hit.at < ttlMs) return hit.value;
+  if (!fresh && hit && ttlMs && Date.now() - hit.at < ttlMs) return hit.value;
   try {
-    const value = await fetchData(name);
+    const value = await fetchData(name, fresh);
     await idbSet(key, value);
     return value;
   } catch (err) {

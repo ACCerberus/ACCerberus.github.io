@@ -2,16 +2,16 @@
  *  opens its card and shows what's wrong at the top of the card. Any aid with an active notice shows the same
  *  banner when it's opened from the map or search. Northwest (D13) only for now; other districts are on the To do. */
 
-import { api } from './api.js?v=2.1.0-5';
-import { el, panelSkeleton, onPanelChange, toast } from './ui.js?v=2.1.0-5';
-import { flyTo, map } from './map.js?v=2.1.0-5';
-import { openAid, allAids, getDistrict } from './aids.js?v=2.1.0-5';
-import { setAidNotices } from './detail.js?v=2.1.0-5';
+import { api } from './api.js?v=2.1.0-6';
+import { el, panelSkeleton, onPanelChange, toast } from './ui.js?v=2.1.0-6';
+import { flyTo, map } from './map.js?v=2.1.0-6';
+import { openAid, allAids, getDistrict } from './aids.js?v=2.1.0-6';
+import { setAidNotices } from './detail.js?v=2.1.0-6';
 
 const DISTRICTS = { 13: 'Northwest' };         // districts with BNM feeds so far
 const REFRESH_MS = 15 * 60 * 1000;
 let warnLayer = null;       // a warning ring over every aid with an active notice
-const state = { body: null, items: [], district: 13, msg: '', loadedAt: 0, loading: null };
+const state = { body: null, items: [], district: 13, msg: '', loadedAt: 0, loading: null, refreshing: false, checkedAt: 0 };
 
 const normLlnr = (v) => { const n = parseFloat(v); return Number.isFinite(n) ? String(n) : String(v || '').trim(); };
 const active = () => state.items.filter((b) => b.active);
@@ -57,17 +57,22 @@ export function init(view) {
 async function load(fetchNew = false, refresh = false) {
   if (!fetchNew && state.loadedAt) { render(); return; }
   if (state.loading) return state.loading;
+  state.refreshing = refresh;
   if (!state.items.length) render(true);
+  else if (refresh) render();             // show the spinning Refresh button
   state.loading = (async () => {
     try {
       const res = await api.get('/api/bnm', { district: state.district, ...(refresh ? { refresh: 1 } : {}) }, { timeoutMs: 30000 });
       if (res.ok === false) state.msg = res.error || 'Notices are unavailable right now';
       else { state.items = res.items || []; state.msg = res.fetched_at ? `Updated ${new Date(res.fetched_at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}` : ''; }
       state.loadedAt = Date.now();
+      if (refresh) toast(`Notices checked: ${active().length} active`, 'ok');
     } catch (err) {
       state.msg = `Could not load notices: ${err.message}`;
+      if (refresh) toast(state.msg, 'warn');
     } finally {
       state.loading = null;
+      state.refreshing = false;
     }
     render();
     drawWarnings();
@@ -89,7 +94,9 @@ function render(loading = false) {
   }
   body.append(el('div', { class: 'row bnm-head' }, [
     el('span', { class: 'muted small', text: [`${DISTRICTS[state.district]} (D${state.district})`, `${active().length} active`, state.msg].filter(Boolean).join(' · ') }),
-    el('button', { class: 'btn sm', text: 'Refresh', onclick: () => load(true, true) }),
+    state.refreshing
+      ? el('button', { class: 'btn sm', disabled: true }, [el('span', { class: 'btn-spin' }), 'Refreshing'])
+      : el('button', { class: 'btn sm', text: 'Refresh', onclick: () => load(true, true) }),
   ]));
   if (loading) { body.append(el('div', { class: 'empty loading-dots', text: 'Loading notices' })); return; }
   const list = active();

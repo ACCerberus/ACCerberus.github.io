@@ -5,7 +5,7 @@
  * Nominatim, Open-Meteo): never cached here — the page keeps those in IndexedDB with their own TTLs.
  */
 
-const VERSION = 'lk-2.1.0-5';
+const VERSION = 'lk-2.1.0-6';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const TILES = `${VERSION}-tiles`;
@@ -54,6 +54,7 @@ self.addEventListener('fetch', (event) => {
     // The page itself and build-stamped files (?v=...) open straight from the saved copy, so the home-screen app
     // never waits on the network to start; the page's version check reloads when a newer build is published.
     const instant = req.mode === 'navigate' || url.searchParams.has('v');
+    if (url.pathname.startsWith(`${BASE}data/`) && url.searchParams.has('fresh')) { event.respondWith(freshData(req, url)); return; }
     event.respondWith(url.pathname.startsWith(`${BASE}data/`) ? staleWhileRevalidate(req, DATA)
       : instant ? savedFirst(req, SHELL) : networkFirst(req, SHELL));
   } else if (TILE_HOSTS.some((h) => url.hostname.endsWith(h))) {
@@ -98,6 +99,21 @@ async function savedFirst(req, cacheName) {
     return hit;
   }
   return networkFirst(req, cacheName);
+}
+
+/** A data file asked for with ?fresh=: the server's copy (saved for later under the plain address), the saved one offline. */
+async function freshData(req, url) {
+  const cache = await caches.open(DATA);
+  const plain = `${url.origin}${url.pathname}`;
+  try {
+    const resp = await fetch(req, { cache: 'no-cache' });
+    if (resp.ok) cache.put(plain, resp.clone());
+    return resp;
+  } catch (err) {
+    const hit = await cache.match(plain);
+    if (hit) return hit;
+    throw err;
+  }
 }
 
 async function staleWhileRevalidate(req, cacheName) {

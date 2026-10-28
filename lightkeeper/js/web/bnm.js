@@ -1,7 +1,7 @@
 /** Web edition of /api/bnm: the hourly-published lightkeeper/data/bnm-D<id>.json (tools/build_bnm.py), with
  *  "active" recomputed here so notices expire on time between updates. Northwest only for now. */
 
-import { staticJson } from './aids.js?v=2.1.0-5';
+import { staticJson } from './aids.js?v=2.1.0-6';
 
 const DISTRICTS = [13];
 const TTL = 10 * 60 * 1000;
@@ -27,7 +27,7 @@ export async function list(params = {}) {
   if (!DISTRICTS.includes(district)) {
     return { ok: false, district, items: [], error: 'Broadcast notices are available for the Northwest district so far; other districts are coming' };
   }
-  const data = await staticJson(`bnm-D${district}.json`, params.refresh ? 1 : TTL).catch(() => null);
+  const data = await staticJson(`bnm-D${district}.json`, TTL, { fresh: !!params.refresh }).catch(() => null);
   if (!data?.items) return { ok: false, district, items: [], error: 'Broadcast notices are not published yet' };
   return { ok: true, district, items: markActive(data.items), fetched_at: data.fetched_at };
 }
