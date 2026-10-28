@@ -1,9 +1,9 @@
 /** Places layers: boat ramps / marinas, lodging, parks with ramps. Toggled by the top-bar chips. */
 
-import { api } from './api.js?v=2.0.7-3';
-import { $$, toast, debounce, store } from './ui.js?v=2.0.7-3';
-import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.7-3';
-import { showPoi } from './detail.js?v=2.0.7-3';
+import { api } from './api.js?v=2.0.7-4';
+import { $$, toast, debounce, store } from './ui.js?v=2.0.7-4';
+import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.0.7-4';
+import { showPoi } from './detail.js?v=2.0.7-4';
 
 const LAYERS = {
   // capM caps the search radius, so a zoomed-out view never asks Overpass for a whole state.

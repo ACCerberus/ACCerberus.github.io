@@ -7,19 +7,29 @@
 const DB_NAME = 'lightkeeper';
 const STORE = 'cache';
 const memory = new Map();
+const OPEN_TIMEOUT_MS = 2000;
 let dbPromise = null;
 
 function openDb() {
   if (dbPromise) return dbPromise;
   dbPromise = new Promise((resolve) => {
     if (!('indexedDB' in globalThis)) { resolve(null); return; }
+    // Another tab of an older build can hold the database open while a new build deletes it; the open request
+    // then waits with no event. Never let that stall the app: fall back to memory after a short wait.
+    const fallback = setTimeout(() => { console.warn('[lightkeeper] IndexedDB busy (another tab?) — using memory cache'); resolve(null); }, OPEN_TIMEOUT_MS);
+    const done = (db) => { clearTimeout(fallback); resolve(db); };
     try {
       const req = indexedDB.open(DB_NAME, 1);
       req.onupgradeneeded = () => req.result.createObjectStore(STORE);
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => resolve(null);
-      req.onblocked = () => resolve(null);
-    } catch { resolve(null); }
+      req.onsuccess = () => {
+        const db = req.result;
+        // Let a newer build (or "Clear cached data") delete or upgrade the database without waiting on this tab.
+        db.onversionchange = () => { db.close(); dbPromise = Promise.resolve(null); };
+        done(db);
+      };
+      req.onerror = () => done(null);
+      req.onblocked = () => done(null);
+    } catch { done(null); }
   });
   return dbPromise;
 }

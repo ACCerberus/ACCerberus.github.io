@@ -1,11 +1,11 @@
 /** The one detail card. Everything clickable on the map funnels into showDetail(). */
 
-import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.0.7-3';
-import { flyTo, map } from './map.js?v=2.0.7-3';
-import { api } from './api.js?v=2.0.7-3';
-import * as units from './units.js?v=2.0.7-3';
-import { layers, poiIcon } from './map.js?v=2.0.7-3';
-import { haversineNM } from './geo.js?v=2.0.7-3';
+import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.0.7-4';
+import { flyTo, map } from './map.js?v=2.0.7-4';
+import { api } from './api.js?v=2.0.7-4';
+import * as units from './units.js?v=2.0.7-4';
+import { layers, poiIcon } from './map.js?v=2.0.7-4';
+import { haversineNM } from './geo.js?v=2.0.7-4';
 
 const card = () => $('#detail');
 let current = null;
