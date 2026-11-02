@@ -1,7 +1,7 @@
 /** Leaflet map setup: base layers (loaded straight from the public tile servers), NOAA ENC chart overlay,
  *  layer groups, icons. */
 
-import { $$, store } from './ui.js?v=2.1.5';
+import { $$, store } from './ui.js?v=2.1.6';
 
 const DEFAULT_VIEW = { center: [39.5, -98.35], zoom: 4 };
 
@@ -114,18 +114,32 @@ export const getBase = () => currentBaseName;
 /** Toggle the NOAA ENC chart overlay. */
 export function setCharts(on) {
   if (on && !charts) {
-    charts = withRetry(L.tileLayer.wms(ENC_WMS_URL, {
-      layers: '0,1,2,3,4,5,6,7', format: 'image/png', transparent: true, opacity: 0.85, version: '1.3.0',
-      // No crossOrigin: the chart service does not send CORS headers on every response, and the pixels are never read.
-      maxZoom: MAX_ZOOM, maxNativeZoom: 19, attribution: 'Charts: NOAA ENC', zIndex: 10,
-      updateWhenZooming: false, keepBuffer: 4,
-    })).addTo(map);
+    charts = withRetry(L.tileLayer.wms(ENC_WMS_URL, chartOptions())).addTo(map);
     charts.on('tileerror', () => { if (!charts.__warned) { charts.__warned = true; console.warn('[lightkeeper] NOAA ENC chart tiles failed to load'); } });
   } else if (!on && charts) { map.removeLayer(charts); charts = null; }
   store.set('charts', Boolean(on));
   $$('[data-overlay="charts"]').forEach((b) => b.classList.toggle('on', Boolean(on)));
 }
 export const chartsOn = () => Boolean(charts);
+
+const chartOptions = () => ({
+  layers: '0,1,2,3,4,5,6,7', format: 'image/png', transparent: true, opacity: 0.85, version: '1.3.0',
+  // No crossOrigin: the chart service does not send CORS headers on every response, and the pixels are never read.
+  maxZoom: MAX_ZOOM, maxNativeZoom: 19, attribution: 'Charts: NOAA ENC', zIndex: 10,
+  updateWhenZooming: false, keepBuffer: 4,
+});
+
+/** The chart tile addresses the Charts layer will request for tiles {x, y, z}: built by a spare layer with the same
+ *  options, so the offline download stores exactly what the map later asks for. */
+export function chartTileUrls(tiles) {
+  const l = L.tileLayer.wms(ENC_WMS_URL, chartOptions());
+  l._map = map;
+  l._crs = map.options.crs;
+  l._wmsVersion = parseFloat(l.wmsParams.version);
+  l.wmsParams[l._wmsVersion >= 1.3 ? 'crs' : 'srs'] = l._crs.code;
+  l._globalTileRange = L.bounds([0, 0], [0, 0]);   // only used for {y} templates, which WMS doesn't have
+  return tiles.map((t) => { const c = L.point(t.x, t.y); c.z = t.z; return l.getTileUrl(c); });
+}
 /** Desktop-compatible toggle: flips (or forces) the chart overlay and returns the new state. */
 export function toggleCharts(force) { setCharts(force ?? !charts); return Boolean(charts); }
 

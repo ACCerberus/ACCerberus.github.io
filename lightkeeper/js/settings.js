@@ -1,13 +1,13 @@
 /** Settings (web edition): vessel, Light List data status, storage, about + device diagnostics.
  *  Offline map download, pre-cache, API keys and backup files live in the desktop app. */
 
-import { api, VERSION } from './api.js?v=2.1.5';
-import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog, showPanel } from './ui.js?v=2.1.5';
-import { ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.5';
-import { setBase, getBase } from './map.js?v=2.1.5';
-import * as netcheck from './netcheck.js?v=2.1.5';
-import * as offline from './web/offline.js?v=2.1.5';
-import { getDistrict } from './aids.js?v=2.1.5';
+import { api, VERSION } from './api.js?v=2.1.6';
+import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog, showPanel } from './ui.js?v=2.1.6';
+import { ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.6';
+import { setBase, getBase } from './map.js?v=2.1.6';
+import * as netcheck from './netcheck.js?v=2.1.6';
+import * as offline from './web/offline.js?v=2.1.6';
+import { getDistrict } from './aids.js?v=2.1.6';
 
 export const DOWNLOAD_INFO = '/download.json';   // the site's download switch (see /download.js)
 const state = { body: null, settings: {}, districtsEl: null };
@@ -109,12 +109,14 @@ function offlineSection() {
   const bar = el('div', { class: 'off-bar', hidden: true }, [el('span')]);
   const store = el('div', { class: 'muted small' });
   const btn = el('button', { class: 'btn primary', style: 'min-height:44px' });
-  const d = getDistrict();
+  let d = getDistrict();
   const refresh = async () => {
+    d = getDistrict();
     if (!d) { line.textContent = 'Pick a district at the top first.'; btn.disabled = true; btn.textContent = 'Make this district available offline'; return; }
     const r = await offline.districtStatus(d);
-    const old = r && Date.now() - r.at > 7 * 864e5;
-    line.textContent = r ? `D${d} ${r.name}: saved ${new Date(r.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })} · ${r.tideStations} tide stations, ${r.areas} weather areas${old ? ' · over a week old, save again' : ''}` : `D${d}: not saved for offline yet`;
+    const until = r && (r.until || r.at + offline.SAVE_DAYS * 864e5);
+    const old = r && Date.now() > until;
+    line.textContent = r ? `D${d} ${r.name}: ${old ? `ran out ${offline.untilText(until)} - save again` : `good until ${offline.untilText(until)}`} · ${r.tideStations} tide stations, ${r.areas} weather areas${r.chartTiles ? `, ${r.chartTiles} chart tiles` : ''}` : `D${d}: not saved for offline yet`;
     line.classList.toggle('warn-text', !!old);
     btn.textContent = r ? `Save D${d} again` : `Make D${d} available offline`;
     btn.disabled = false;
@@ -122,17 +124,21 @@ function offlineSection() {
     store.textContent = `${st.persisted ? 'Kept permanently on this device' : 'The browser may clear it when the device is low on space'}${st.usedMb != null ? ` · ${st.usedMb} MB used` : ''}`;
   };
   btn.addEventListener('click', async () => {
+    d = getDistrict();
+    if (!d) { toast('Pick a district at the top first', 'warn'); return; }
     btn.disabled = true; prog.hidden = false; bar.hidden = false;
     try {
       const r = await offline.saveDistrict(d, (text, f) => { prog.textContent = text; bar.firstChild.style.width = `${Math.round(f * 100)}%`; });
-      toast(`D${d} ${r.name} saved for offline: ${r.tideDays} tide days, ${r.readings} readings`, 'ok', 6000);
+      toast(`D${d} ${r.name} saved for offline until ${offline.untilText(r.until)}: tides, weather, water temp and NOAA charts. We'll remind you when it runs out.`, 'ok', 8000);
     } catch (err) { toast(`Offline save failed: ${err.message}`, 'warn', 6000); }
     prog.hidden = true; bar.hidden = true;
     refresh();
   });
   refresh();
+  const onDistrict = () => { if (line.isConnected) refresh(); else document.removeEventListener('district-changed', onDistrict); };
+  document.addEventListener('district-changed', onDistrict);
   return section('Offline', [
-    el('p', { class: 'muted small', style: 'margin:0', text: "Saves this district's aids, notices, 7 days of tides, and weather and water temperature for each area, so LightKeeper keeps working with no signal. Map areas you've already viewed stay saved too. Takes a minute or two on a good connection." }),
+    el('p', { class: 'muted small', style: 'margin:0', text: `Saves this district for the next ${offline.SAVE_DAYS} days (until ${offline.untilText(Date.now() + offline.SAVE_DAYS * 864e5)}): aids, notices, tides, weather and water temperature for each area, and NOAA charts around the aids. Map areas you've already viewed stay saved too. You'll get a reminder when it runs out. Takes a few minutes on a good connection.` }),
     line, btn, bar, prog, store,
   ]);
 }

@@ -1,5 +1,36 @@
 [
   {
+    "version": "2.1.6",
+    "date": "2026-11-02",
+    "title": "Offline start on the phone",
+    "summary": "Version 2.1.6 — 3 changes since 2.1.5.",
+    "changes": [
+      "Phone: the home-screen app now starts with no signal. Before, it could sit on \"Loading LightKeeper…\" because two app files weren't saved for offline use, and every update dropped the offline copy until the next open. If it still can't start, the loading screen says why with a Try again button.",
+      "Website and phone: \"Make this district available offline\" also saves the NOAA charts around the district's aids; with no signal the Charts layer turns on with them.",
+      "Saved offline data covers the next 7 days. Settings and the Offline badge say until when, and the app reminds you when it runs out."
+    ],
+    "known_issues": [
+      "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
+      "Small dams that the Army Corps doesn't run show only their name and location (no release or water-level data).",
+      "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",
+      "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
+      "Mobile and Ohio Valley sector cards have no published 24-hour number."
+    ],
+    "todo": [
+      "Add boat ramps, hotels, marinas, campgrounds, parks and dams for every district from downloaded OpenStreetMap state files (the public map servers were too overloaded to crawl). Northwest (D13) first.",
+      "Discrepancy tracker (in progress).",
+      "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
+      "Turn on the Windows app download on this site.",
+      "Field check: spot-check aids you know (FDR Lake, Snake, Columbia) for the right nearest ramp, ramp names, phone numbers, hotels and closed ramps.",
+      "Confirm CG sector and district on aid cards, and the 24-hour numbers (find Mobile and Ohio Valley).",
+      "Trip planner: compare auto plans against one or two real trips (day splits, launch/recovery ramps, lodging).",
+      "Add a Google Places key and verify every ramp, hotel and park against Google.",
+      "Test on a real phone (one-tap aids, scrolling card, map-only zoom, Center) and on a work PC network.",
+      "Check dam cards you know for correct pool, tailwater and release status.",
+      "Flag any water temp or weather station that is a bad pick for its area."
+    ]
+  },
+  {
     "version": "2.1.5",
     "date": "2026-11-02",
     "title": "Offline on the phone",
@@ -64,7 +95,7 @@
     "version": "2.1.3",
     "date": "2026-10-28",
     "title": "Trip planner",
-    "summary": "Version 2.1.3 — 9 changes since 2.1.2.",
+    "summary": "Version 2.1.3 — 7 changes since 2.1.2.",
     "changes": [
       "Trip planner finished: pick lights on the map, then LightKeeper orders them along the water, picks the launch and recovery ramps (tonight's recovery is tomorrow's launch), splits the days and picks a hotel near the ramp.",
       "Each day is a timeline: drive to the ramp, launch, every light with the leg in NM and miles, run time, arrival and stop time, recovery, day done, and the drive to the hotel with minutes.",
@@ -72,9 +103,7 @@
       "Swap a ramp or hotel with one tap (\"Other ramps\" / \"Other hotels\"); the day re-times right away and the ramp chain is kept.",
       "The trip PDF shows each leg in NM and miles.",
       "First launch asks which district you want to view; after that LightKeeper opens on the last district you used.",
-      "Fixed tide lookups in trip plans.",
-      "The trip planner now runs on the website too, right in the browser (no download needed). Export prints the plan; use Save as PDF in the print window.",
-      "Phones: a simple trip flow - tap Pick lights, tap lights on the map, Plan - then one day at a time. Trip has its own tab; Weather moved to More."
+      "Fixed tide lookups in trip plans."
     ],
     "known_issues": [
       "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
@@ -101,13 +130,12 @@
     "version": "2.1.2",
     "date": "2026-10-28",
     "title": "BNMs for every district",
-    "summary": "Version 2.1.2 — 8 changes since 2.1.1.",
+    "summary": "Version 2.1.2 — 7 changes since 2.1.1.",
     "changes": [
       "Broadcast Notices to Mariners for every district (Northeast, East, Southeast, Heartland, Great Lakes, Southwest, Northwest, Oceania, Arctic) from each district office and its sectors. The BNM tab shows the district you're in and lists only notices about aids (not whale zones, launches or hazard operations).",
       "Northwest notices now include Sector North Bend, and notices from offices like CGD-E, CGD-NE and CCGD13 are read correctly.",
       "More problems recognized in notices: inoperative (fog signals and other equipment) and reduced intensity; notices that name no aid show the area instead of a sentence.",
       "Dam cards say \"No data available\" when the Army Corps has no current reading, instead of dashes.",
-      "Dam cards on the website show live Army Corps readings (water above and below the dam, flows, storage), like the Windows app.",
       "Notices that were already cancelled no longer show as active (about 23 across the districts), and notices with no end time stop counting after 180 days.",
       "Place cards: the first phone number shows when a place lists several, website links always open the real site, and settings only accept sensible speed, fuel and tank values.",
       "Boat run time on aid cards follows a new cruise speed right away; on a slow link the same district is never loaded twice, and clearing a trip selection stays cleared."
@@ -140,7 +168,7 @@
     "title": "Your district, slow-connection mode, nicer cards",
     "summary": "Version 2.1.1 — 12 changes since 2.1.0.",
     "changes": [
-      "The district picker at the top works on computers (clicking it did nothing in some browsers) and shows the saved district after a reload.",
+      "The district picker at the top works again in the Windows app (it could not be clicked).",
       "First launch opens on your district, picked from your connection's rough location; change it any time at the top.",
       "Connection check at startup: on a slow link Lite mode turns on (only your district's aids load and the map keeps fewer tiles). Settings > Connection shows the speed and lets you pick Auto, Lite or Full.",
       "Bigger, cleaner cards for ramps, hotels, parks and dams: a photo of the place when one exists (Wikimedia Commons) or a satellite view of the exact spot, a Call button, Website, and opening hours when known. Tap the picture to switch photo and satellite.",
@@ -148,10 +176,10 @@
       "Dams show reliably: the USACE National Inventory of Dams is now a source (height, river, year built, purpose), and the Dams button tells you to zoom in or if dams could not load.",
       "Tapping a notice in the BNM tab flies to the light and keeps it in view beside the card (above it on phones).",
       "The Locate button is now Center.",
+      "No browser right-click menu (Save image, Inspect) in the Windows app; the map's own right-click menu still works.",
       "The district follows the map: wherever you scroll (zoomed in to regional level), that district is picked and its aids, places and notices fill in, without the map jumping.",
-      "No browser right-click menu (Back, Save as, Inspect) over the app; the map's own right-click menu still works and text boxes keep copy/paste.",
-      "Aids you select for a trip are kept through reloads and restarts.",
-      "The website checks for a new version every 2 minutes and updates itself (\"Updating to version …\"), keeping your selected aids, trip form, district and map view; updates no longer re-download the Light List."
+      "The district picker shows your saved district after a restart.",
+      "Aids you select for a trip are kept through reloads and restarts."
     ],
     "known_issues": [
       "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
@@ -180,12 +208,12 @@
     "version": "2.1.0",
     "date": "2026-10-28",
     "title": "BNM tab: see which lights have problems",
-    "summary": "Version 2.1.0 — 2 changes since 2.0.9c.",
+    "summary": "Version 2.1.0 — 4 changes since 2.0.9.",
     "changes": [
       "New BNM tab: the current USCG Broadcast Notices to Mariners for your district (Northwest for now). Each one says what's wrong (extinguished, off station, decommissioned...); tap it to fly to the light.",
       "Lights with an active notice pulse orange on the map, and their aid card shows the notice at the top.",
-      "The home-screen app opens straight away from the copy saved on your phone (no more white screen on a weak signal), with a loading circle until the map is ready. Newer versions still load automatically.",
-      "BNM tab: Refresh now gets the newest notices (it was showing the saved copy) and spins while it checks."
+      "Dams have their own toggle on the map, next to ramps, lodging and parks.",
+      "Place names read cleaner: no ALL CAPS, proper Mc/O' names, and plain \"Boat Ramp\" entries take the name of the park they sit in."
     ],
     "known_issues": [
       "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
@@ -211,18 +239,11 @@
     ]
   },
   {
-    "version": "2.0.9c",
+    "version": "2.0.9",
     "date": "2026-10-27",
     "title": "Full aid details, smarter search, faster dams",
-    "summary": "Version 2.0.9c — 15 changes since 2.0.8.",
+    "summary": "Version 2.0.9 — 8 changes since 2.0.8.",
     "changes": [
-      "Fixed: on phones, holding a finger on the map opened the menu but iOS also offered to copy or save the map image; now only the LightKeeper menu appears.",
-      "On phones the long-press menu opens as a centered card with an X to close; every option fits and the list scrolls if needed.",
-      "Fixed: on iPhone home-screen mode the search bar and district picker sat under the clock and battery; the top bar now starts below them.",
-      "New \"LightKeeper V1\" dropdown on the Version page and in What's new: every update to the original app, October 2025 to April 2026.",
-      "Fixed: the Version and Data & notices pages would not open on iPhone (Safari said the response \"has redirections\").",
-      "Adding the site to your home screen now shows a lighthouse icon instead of a plain letter.",
-      "New Dams button next to Boat Ramps, Hotels and Parks: dam markers show on the map whenever you zoom in (they used to appear only from the right-click menu).",
       "Aid cards list the light's characteristic, color, range (visibility), focal plane and structure height under Identity. Range and structure height were blank for every aid before; they are now read from the Light List.",
       "Search finds aids from any part of the name in any order: \"goose 4\", \"lit goo res 12\" and \"lt 2\" all work, as do Light List numbers.",
       "Search shows lights first, then daybeacons and buoys, with numbers in order (Light 2 before Light 10) and up to 20 aids in a scrolling list.",
@@ -240,7 +261,7 @@
       "Mobile and Ohio Valley sector cards have no published 24-hour number."
     ],
     "todo": [
-      "Add the rest of the districts' boat ramps, hotels, marinas, campgrounds and parks: Northeast (D1), East (D5), Southeast (D7), Heartland (D8), Great Lakes (D9), Southwest (D11), Oceania (D14), Arctic (D17). Northwest (D13) is being built now.",
+      "Add boat ramps, hotels, marinas, campgrounds, parks and dams for every district from downloaded OpenStreetMap state files (the public map servers were too overloaded to crawl). Northwest (D13) first.",
       "Broadcast Notices to Mariners for the other districts (the Northwest is live in Discrepancies > BNMs for testing).",
       "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
       "Finish the trip planner (day splits, ramp and lodging picks).",
@@ -251,8 +272,7 @@
       "Add a Google Places key and verify every ramp, hotel and park against Google.",
       "Test on a real phone (one-tap aids, scrolling card, map-only zoom, Center) and on a work PC network.",
       "Check dam cards you know for correct pool, tailwater and release status.",
-      "Flag any water temp or weather station that is a bad pick for its area.",
-      "Confirm Claude no longer shows in the GitHub contributors list."
+      "Flag any water temp or weather station that is a bad pick for its area."
     ]
   },
   {

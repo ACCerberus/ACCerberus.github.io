@@ -1,14 +1,17 @@
 /* LightKeeper web edition — service worker.
  *
  * App shell: network first, cached copy when offline.      Data files (./data/*.json): stale-while-revalidate.
- * Map tiles (OSM, Esri, OpenTopoMap, NOAA ENC): cache first, capped.   Live APIs (NOAA, USGS, NWS, Overpass,
+ * Map tiles (OSM, Esri, OpenTopoMap): cache first, capped. NOAA chart tiles: cache first in their own cache, filled
+ * by "Make this district available offline". Both tile caches keep their names across updates (lk-keep-*).   Live APIs (NOAA, USGS, NWS, Overpass,
  * Nominatim, Open-Meteo): never cached here — the page keeps those in IndexedDB with their own TTLs.
  */
 
-const VERSION = 'lk-2.1.5';
+const VERSION = 'lk-2.1.6';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
-const TILES = `${VERSION}-tiles`;
+const TILES = 'lk-keep-tiles';          // kept across updates
+const CHARTS = 'lk-keep-charts';        // NOAA chart tiles saved for offline
+const CHART_HOST = 'gis.charttools.noaa.gov';
 const TILE_LIMIT = 4000;
 const BASE = new URL('./', self.location).pathname;
 
@@ -17,8 +20,8 @@ const SHELL_FILES = [
   './css/app.css', './css/web.css', './css/landing.css',
   './js/app.js', './js/head.js', './js/tail.js', './js/api.js', './js/ui.js', './js/map.js', './js/aids.js', './js/poi.js', './js/places.js', './js/measure.js',
   './js/trip.js', './js/water.js', './js/weather.js', './js/settings.js', './js/detail.js', './js/hover.js', './js/context.js',
-  './js/geo.js', './js/chart.js', './js/whatsnew.js', './js/phone.js', './js/units.js', './js/notices.js', './js/netcheck.js', './js/discrepancies.js', './version.json',
-  './js/web/util.js', './js/web/store.js', './js/web/http.js', './js/web/aids.js', './js/web/poi.js', './js/web/water.js', './js/web/weather.js', './js/web/bnm.js', './js/web/ndbc.js', './js/web/offline.js', './js/web/offline-store.js', './js/web/updater.js', './js/web/discrepancies.js',
+  './js/geo.js', './js/chart.js', './js/photo.js', './js/updates-page.js', './js/whatsnew.js', './js/phone.js', './js/units.js', './js/notices.js', './js/netcheck.js', './js/discrepancies.js', './version.json',
+  './js/web/util.js', './js/web/store.js', './js/web/http.js', './js/web/aids.js', './js/web/poi.js', './js/web/water.js', './js/web/weather.js', './js/web/bnm.js', './js/web/ndbc.js', './js/web/offline.js', './js/web/offline-store.js', './js/web/tripplan.js', './js/web/updater.js', './js/web/discrepancies.js',
   './vendor/leaflet/leaflet.js', './vendor/leaflet/leaflet.css', './vendor/leaflet/images/marker-icon.png', './vendor/leaflet/images/marker-icon-2x.png',
   './vendor/leaflet/images/marker-shadow.png', './vendor/leaflet/images/layers.png', './vendor/leaflet/images/layers-2x.png',
   './vendor/markercluster/leaflet.markercluster.js', './vendor/markercluster/MarkerCluster.css', './vendor/markercluster/MarkerCluster.Default.css',
@@ -38,7 +41,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     // Every cache from an older build (shell, data and tiles) goes.
-    for (const key of await caches.keys()) if (![SHELL, DATA, TILES].includes(key)) await caches.delete(key);
+    for (const key of await caches.keys()) if (![SHELL, DATA, TILES, CHARTS].includes(key)) await caches.delete(key);
     await self.clients.claim();
   })());
 });
@@ -94,7 +97,9 @@ async function networkFirst(req, cacheName) {
 async function savedFirst(req, cacheName) {
   const cache = await caches.open(cacheName);
   const nav = req.mode === 'navigate';
-  const hit = nav ? (await cache.match(req, { ignoreSearch: true }) || await cache.match('./')) : await cache.match(req);
+  // ?v= files: this cache belongs to this build, so the copy saved at install (stored without the token) is the same file.
+  const hit = nav ? (await cache.match(req, { ignoreSearch: true }) || await cache.match('./'))
+    : (await cache.match(req) || await cache.match(req, { ignoreSearch: true }));
   if (hit) {
     if (nav) networkFirst(req, cacheName).catch(() => {});      // keep the saved page current
     return hit;
@@ -129,6 +134,11 @@ async function staleWhileRevalidate(req, cacheName) {
 
 let tileCount = null;
 async function cacheFirstTile(req) {
+  if (new URL(req.url).hostname.endsWith(CHART_HOST)) {
+    const charts = await caches.open(CHARTS);
+    const saved = await charts.match(req);
+    if (saved) return saved;
+  }
   const cache = await caches.open(TILES);
   const hit = await cache.match(req);
   if (hit) return hit;

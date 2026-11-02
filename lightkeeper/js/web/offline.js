@@ -6,18 +6,60 @@
  *  water temperature. Cards fall back to these (with their age) when there's no signal. Map tiles are not downloaded in
  *  bulk (the public tile servers don't allow it); areas already viewed stay cached by the service worker. */
 
-import { staticJson, loadDistrict, districts as districtList } from './aids.js?v=2.1.5';
-import { idbGet, idbSet } from './store.js?v=2.1.5';
-import { haversineMi, todayIso } from './util.js?v=2.1.5';
-import { getForecast, nearestObservation } from './weather.js?v=2.1.5';
-import { waterTempNear, prefetchTides, tideStations } from './water.js?v=2.1.5';
-import { saveReading, savedAgo } from './offline-store.js?v=2.1.5';
+import { staticJson, loadDistrict, districts as districtList } from './aids.js?v=2.1.6';
+import { idbGet, idbSet } from './store.js?v=2.1.6';
+import { haversineMi, todayIso } from './util.js?v=2.1.6';
+import { getForecast, nearestObservation } from './weather.js?v=2.1.6';
+import { waterTempNear, prefetchTides, tideStations } from './water.js?v=2.1.6';
+import { saveReading, savedAgo } from './offline-store.js?v=2.1.6';
+import { chartTileUrls, setCharts, chartsOn } from '../map.js?v=2.1.6';
+import { toast } from '../ui.js?v=2.1.6';
 
 const CELL_DEG = 0.5;
 const MAX_CELLS = 60;
 const TIDE_NEAR_MI = 25;
 const MAX_TIDE_STATIONS = 250;
 const recordKey = (id) => `offline:district:${id}`;
+export const SAVE_DAYS = 7;                     // saved data covers the next week
+const CHART_CACHE = 'lk-keep-charts';           // the service worker serves chart tiles from here
+const MAX_CHART_TILES = 6000;                   // ~3-30 KB each
+const day = 864e5;
+export const untilText = (ms) => new Date(ms).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+
+/** Chart tiles around the aids: whole areas at zoom 8-10, around each aid at 11-12, the aid's own tile at 13-14. */
+function chartTiles(aids) {
+  const tileOf = (lat, lon, z) => {
+    const n = 2 ** z; const r = (lat * Math.PI) / 180;
+    return { x: Math.floor(((lon + 180) / 360) * n), y: Math.floor(((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2) * n), z };
+  };
+  const seen = new Map();
+  const add = (t) => { const k = `${t.z}/${t.x}/${t.y}`; if (!seen.has(k)) seen.set(k, t); };
+  for (const z of [8, 9, 10, 11, 12, 13, 14]) {
+    const ring = z <= 10 ? 1 : z <= 12 ? 1 : 0;
+    for (const a of aids) {
+      const t = tileOf(a.latitude, a.longitude, z);
+      for (let dx = -ring; dx <= ring; dx += 1) for (let dy = -ring; dy <= ring; dy += 1) add({ x: t.x + dx, y: t.y + dy, z });
+    }
+    if (seen.size > MAX_CHART_TILES) break;
+  }
+  return Array.from(seen.values()).slice(0, MAX_CHART_TILES);
+}
+
+async function saveCharts(aids, onProgress) {
+  if (!('caches' in globalThis)) return 0;
+  const cache = await caches.open(CHART_CACHE);
+  const urls = chartTileUrls(chartTiles(aids));
+  let saved = 0;
+  await pool(urls, 6, async (u, n) => {
+    if (!(await cache.match(u))) {
+      const resp = await fetch(u, { mode: 'no-cors' });      // NOAA sends no CORS headers: an opaque copy is fine for the map
+      if (resp.type === 'opaque' || resp.ok) await cache.put(u, resp);
+    }
+    saved += 1;
+    if (n % 25 === 0) onProgress(`Saving NOAA charts (${n + 1} of ${urls.length} tiles)`, 0.75 + 0.25 * ((n + 1) / urls.length));
+  });
+  return saved;
+}
 
 /** Run jobs a few at a time. */
 async function pool(items, limit, fn) {
@@ -88,10 +130,12 @@ export async function saveDistrict(id, onProgress = () => {}) {
       if (again?.primary && (!water?.primary || again.primary.distance_mi < water.primary.distance_mi)) water = again;
     }
     if (water?.primary && !water.offline_saved) { await saveReading('temp', z.lat, z.lon, water); readings += 1; }
-    onProgress(`Saving weather and water temperature (${n + 1} of ${zones.length} areas)`, 0.55 + 0.45 * ((n + 1) / zones.length));
+    onProgress(`Saving weather and water temperature (${n + 1} of ${zones.length} areas)`, 0.55 + 0.2 * ((n + 1) / zones.length));
   });
 
-  const record = { id, name, at: Date.now(), aids: aids.length, tideStations: stations.length, tideDays, areas: zones.length, readings, persisted: !!persisted };
+  const chartTilesSaved = await saveCharts(aids, onProgress).catch(() => 0);
+  const at = Date.now();
+  const record = { id, name, at, until: at + SAVE_DAYS * day, aids: aids.length, tideStations: stations.length, tideDays, areas: zones.length, readings, chartTiles: chartTilesSaved, persisted: !!persisted };
   await idbSet(recordKey(id), record);
   onProgress('Saved', 1);
   return record;
@@ -110,11 +154,30 @@ async function newestSave() {
 async function showBadge() {
   if (!pill) { pill = document.createElement('div'); pill.id = 'offline-pill'; pill.setAttribute('role', 'status'); document.body.append(pill); }
   const saved = await newestSave();
-  pill.textContent = saved ? `Offline · using ${saved.name} data saved ${savedAgo(saved.at)}` : 'Offline · showing what was loaded before';
+  const until = saved && (saved.until || saved.at + SAVE_DAYS * day);
+  pill.textContent = !saved ? 'Offline · showing what was loaded before'
+    : Date.now() > until ? `Offline · ${saved.name} data ran out ${untilText(until)}`
+      : `Offline · ${saved.name} data saved ${savedAgo(saved.at)}, good until ${untilText(until)}`;
+  pill.classList.toggle('expired', !!saved && Date.now() > until);
   pill.hidden = false;
+  if (saved?.chartTiles && !chartsOn()) { setCharts(true); toast('Showing the saved NOAA charts', 'info', 4000); }
 }
+
+/** On opening the app: say when saved offline data is about to run out, or has. */
+async function remind() {
+  for (const d of await districtList().catch(() => []) || []) {
+    const r = await districtStatus(d.id);
+    if (!r) continue;
+    const until = r.until || r.at + SAVE_DAYS * day;
+    const left = until - Date.now();
+    if (left < 0) toast(`Offline data for D${r.id} ${r.name} ran out on ${untilText(until)}. Save it again (Settings > Offline) before you lose signal.`, 'warn', 9000);
+    else if (left < day) toast(`Offline data for D${r.id} ${r.name} runs out ${untilText(until)}. Save it again while you have signal.`, 'info', 8000);
+  }
+}
+
 export function initOfflineBadge() {
   addEventListener('offline', showBadge);
   addEventListener('online', () => { if (pill) pill.hidden = true; });
   if (!navigator.onLine) showBadge();
+  setTimeout(remind, 4000);
 }

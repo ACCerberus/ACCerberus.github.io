@@ -54,6 +54,13 @@ def main() -> int:
     for page in (ROOT / "index.html", APP / "about.html", APP / "updates.html"):
         sub_file(page, [(re.compile(r"LightKeeper v[\d.]+[a-z]? "), f"LightKeeper v{v} "),
                         (re.compile(r"LightKeeper [\d.]+[a-z]? · by"), f"LightKeeper {v} · by")])
+    # Every app script must be saved by the service worker, or the app can't start offline (one missing import stops it).
+    sw = (APP / "sw.js").read_text("utf-8")
+    listed = set(re.findall(r"'\./([^']+)'", sw.split("const SHELL_FILES")[1].split("];")[0]))
+    missing = sorted(p.relative_to(APP).as_posix() for p in (APP / "js").rglob("*.js") if p.relative_to(APP).as_posix() not in listed)
+    if missing:
+        print("ERROR: add these to SHELL_FILES in lightkeeper/sw.js (needed offline):", ", ".join(missing))
+        return 1
     print(f"version set to {v} (cache token {token})")
     return 0
 

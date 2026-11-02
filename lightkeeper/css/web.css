@@ -182,3 +182,4 @@ body.phone .disc-bnm-actions .btn { min-height: 40px; }
 .off-bar { height: 6px; border-radius: 3px; background: var(--bg-3, #223040); overflow: hidden; }
 .off-bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
 .warn-text { color: #f5c542; }
+#offline-pill.expired { background: #a3362e; }

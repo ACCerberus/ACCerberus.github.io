@@ -4,14 +4,14 @@
  *
  *  Backup chain for tides: NOAA (requested station → ±1 day window → next-nearest station) → Open-Meteo Marine. */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.5';
-import { cached, idbSet, MIN, HOUR, DAY } from './store.js?v=2.1.5';
-import { nearestSaved } from './offline-store.js?v=2.1.5';
-import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.1.5';
-import { openMeteoGet, pointKey } from './weather.js?v=2.1.5';
-import * as ndbc from './ndbc.js?v=2.1.5';
-import { reverseGeocode } from './poi.js?v=2.1.5';
-import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.5';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.6';
+import { cached, idbSet, MIN, HOUR, DAY } from './store.js?v=2.1.6';
+import { nearestSaved } from './offline-store.js?v=2.1.6';
+import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.1.6';
+import { openMeteoGet, pointKey } from './weather.js?v=2.1.6';
+import * as ndbc from './ndbc.js?v=2.1.6';
+import { reverseGeocode } from './poi.js?v=2.1.6';
+import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.6';
 
 const NOAA_MDAPI = 'https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json';
 const NOAA_DATAGETTER = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';

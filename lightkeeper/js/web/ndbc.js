@@ -2,8 +2,8 @@
  *  Fills gaps on aid cards: water temperature on the Great Lakes and open coast, air temperature and wind where the
  *  National Weather Service has no recent station report. */
 
-import { staticJson } from './aids.js?v=2.1.5';
-import { haversineMi, compassPoint } from './util.js?v=2.1.5';
+import { staticJson } from './aids.js?v=2.1.6';
+import { haversineMi, compassPoint } from './util.js?v=2.1.6';
 
 const TTL = 15 * 60 * 1000;
 const MAX_AGE_MS = 6 * 3600 * 1000;
