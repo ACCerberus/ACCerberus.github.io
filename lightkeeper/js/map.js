@@ -1,7 +1,7 @@
 /** Leaflet map setup: base layers (loaded straight from the public tile servers), NOAA ENC chart overlay,
  *  layer groups, icons. */
 
-import { $$, store } from './ui.js?v=2.1.6';
+import { $$, store } from './ui.js?v=2.1.7';
 
 const DEFAULT_VIEW = { center: [39.5, -98.35], zoom: 4 };
 
@@ -153,11 +153,30 @@ export function aidIcon(aid, selected = false) {
 const TOUCH = matchMedia('(pointer: coarse)').matches;
 const AID_R = TOUCH ? 8 : 5;
 const TAP_TOLERANCE = TOUCH ? 14 : 3;
+/* Aid colors as on a nautical chart: a light shows the color it flashes ("Fl R 4s" is red), a buoy or daybeacon
+   the color it is painted (red, green, yellow; white-and-orange regulatory marks orange). The type colors above
+   are the fallback when the Light List gives neither. */
+export const SIGNAL_COLORS = { R: '#ff4b4b', G: '#22c55e', Y: '#facc15', W: '#fff4d6', B: '#1f2937', O: '#ff8a3d', Bu: '#3b82f6' };
+const LIGHT_COLOR_RE = /\b(Bu|R|G|Y|W)\b/;
+export function aidColor(aid) {
+  if (aid.aid_type === 'bridge') return AID_COLORS.bridge;
+  const painted = String(aid.color || '').toUpperCase();
+  const fromPaint = painted.startsWith('WO') ? SIGNAL_COLORS.O : SIGNAL_COLORS[painted[0]];
+  const lit = LIGHT_COLOR_RE.exec(String(aid.characteristics || ''));
+  const fromLight = lit && SIGNAL_COLORS[lit[1]];
+  // No color listed: US lateral marks are numbered odd = green, even = red ("red, right, returning").
+  const num = /\b(\d+)[A-Z]?$/.exec(String(aid.aidname || '').trim());
+  const fromNumber = num && aid.aid_type !== 'bridge' ? SIGNAL_COLORS[Number(num[1]) % 2 ? 'G' : 'R'] : null;
+  return (aid.aid_type === 'light' ? fromLight || fromPaint : fromPaint || fromLight) || fromNumber || AID_COLORS[aid.aid_type] || AID_COLORS.other;
+}
+/** Ring around the dot: lights get a bright ring so they read as lights; marks a thin dark one. */
+const aidRing = (aid, fill) => (aid.aid_type === 'light' ? (fill === SIGNAL_COLORS.W ? '#f5c542' : '#ffffff') : 'rgba(15,23,42,.85)');
 export function aidStyle(aid, selected = false) {
-  const color = AID_COLORS[aid.aid_type] || AID_COLORS.other;
+  const color = aidColor(aid);
+  const light = aid.aid_type === 'light';
   return selected
     ? { radius: AID_R + 2, color: '#4f9dff', weight: 3, fillColor: color, fillOpacity: 1 }
-    : { radius: AID_R, color: 'rgba(255,255,255,.8)', weight: TOUCH ? 2 : 1.5, fillColor: color, fillOpacity: 1 };
+    : { radius: light ? AID_R + 0.5 : AID_R - 0.5, color: aidRing(aid, color), weight: light ? (TOUCH ? 2.5 : 2) : (TOUCH ? 2 : 1.5), fillColor: color, fillOpacity: 1 };
 }
 export function poiIcon(kind) {
   return L.divIcon({ className: '', html: `<div class="m-poi ${kind}">${POI_GLYPH[kind] || '•'}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] });

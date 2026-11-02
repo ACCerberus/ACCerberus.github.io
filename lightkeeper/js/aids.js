@@ -1,10 +1,10 @@
 /** Aids to Navigation: load from the backend, cluster on the map, list + select in the panel. */
 
-import { api } from './api.js?v=2.1.6';
-import { $, el, fmt, toast, panelSkeleton, debounce, setStatus, store } from './ui.js?v=2.1.6';
-import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.6';
-import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.6';
-import { lite, whenChecked, DESKTOP } from './netcheck.js?v=2.1.6';
+import { api } from './api.js?v=2.1.7';
+import { $, el, fmt, toast, panelSkeleton, debounce, setStatus, store } from './ui.js?v=2.1.7';
+import { map, layers, aidStyle, aidColor, flyTo, AID_COLORS } from './map.js?v=2.1.7';
+import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.7';
+import { lite, whenChecked, DESKTOP } from './netcheck.js?v=2.1.7';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
 const PAGE = 200;
@@ -87,7 +87,7 @@ export function init(view) {
   const { body } = panelSkeleton(view, 'Aids <span class="count" id="aids-count"></span>', 'USCG Light List — click an aid for details, tick it to add to a trip.');
   state.countEl = $('#aids-count');
   const pills = el('div', { class: 'pills' }, TYPES.map((t) => el('button', {
-    class: 'pill on', dataset: { type: t }, html: `<span class="dot" style="background:${AID_COLORS[t]}"></span>${fmt.title(t)}s`,
+    class: 'pill on', dataset: { type: t }, html: `<span class="dot type-${t}" style="--c:${AID_COLORS[t]}"></span>${fmt.title(t)}s`,
     onclick: (e) => { const b = e.currentTarget; b.classList.toggle('on'); b.classList.contains('on') ? state.types.add(t) : state.types.delete(t); refreshMarkers(); renderList(); },
   })));
   const tools = el('div', { class: 'row' }, [
@@ -144,23 +144,44 @@ export async function loadAll({ silent = false, full = false } = {}) {
 document.addEventListener('net-mode', () => { if (state.partial && !lite()) loadAll({ silent: true, full: true }); });
 
 /* ── Names above the aids ── */
-// From LABEL_ZOOM in, every aid in view gets its name above it (skipped while more than LABEL_MAX are in view).
+// From LABEL_ZOOM in, aids in view get their name above them. Where names would overlap only one is shown (aids on the
+// trip first, then lights, buoys, daybeacons, bridges); zooming in makes room for the rest. Below FULL_NAME_ZOOM a
+// numbered aid shows just its kind and number ("Light 19"): the waterway is on the map, the full name on hover / tap.
 const LABEL_ZOOM = 12;
-const LABEL_MAX = 250;
+const FULL_NAME_ZOOM = 14;
+const LABEL_MAX = 1500;            // candidates in view; overlap removal keeps the drawn ones few
+const LABEL_GAP = 3;               // px between names
+const RANK = { light: 1, buoy: 2, daybeacon: 3, bridge: 4 };
 let labelLayer = null;
 const escHtml = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const SHORT_RE = /\b(?:Lighted\s+)?(?:(?:Bell|Whistle|Gong|Horn|Mooring)\s+)*(Light|Buoy|Daybeacon|Beacon)\s+(\d[\w/.-]*|[A-Z]{1,3}\d*)$/;
+export function shortAidName(name) {
+  const m = SHORT_RE.exec(String(name || '').trim());
+  return m ? `${m[1]} ${m[2]}` : String(name || '');
+}
 function drawLabels() {
   if (!map) return;
   if (!labelLayer) labelLayer = L.layerGroup().addTo(map);
   labelLayer.clearLayers();
-  if (map.getZoom() < LABEL_ZOOM) return;
+  const zoom = map.getZoom();
+  if (zoom < LABEL_ZOOM) return;
   const b = map.getBounds().pad(0.05);
   const list = aidsInBounds(b).filter((a) => inDistrict(a) && (state.types.has(a.aid_type) || (a.aid_type === 'other' && state.types.size === TYPES.length))
     && b.contains([a.latitude, a.longitude]));
   if (list.length > LABEL_MAX) return;
+  const rank = (a) => (state.selected.has(a.objectid) ? 0 : RANK[a.aid_type] || 5);
+  list.sort((x, y) => rank(x) - rank(y) || (x.aidname || '').length - (y.aidname || '').length);
+  const placed = [];
   for (const a of list) {
+    const text = zoom >= FULL_NAME_ZOOM ? a.aidname : shortAidName(a.aidname);
+    if (!text) continue;
+    const p = map.latLngToContainerPoint([a.latitude, a.longitude]);
+    const w = text.length * 6 + 10; const h = 16;
+    const box = { l: p.x - w / 2 - LABEL_GAP, r: p.x + w / 2 + LABEL_GAP, t: p.y - 9 - h - LABEL_GAP, btm: p.y - 9 + LABEL_GAP };
+    if (placed.some((o) => box.l < o.r && box.r > o.l && box.t < o.btm && box.btm > o.t)) continue;
+    placed.push(box);
     L.marker([a.latitude, a.longitude], {
-      icon: L.divIcon({ className: 'aid-label', html: `<span>${escHtml(a.aidname)}</span>`, iconSize: [0, 0], iconAnchor: [0, 0] }),
+      icon: L.divIcon({ className: 'aid-label', html: `<span>${escHtml(text)}</span>`, iconSize: [0, 0], iconAnchor: [0, 0] }),
       interactive: false, keyboard: false,
     }).addTo(labelLayer);
   }
@@ -214,7 +235,7 @@ function row(aid) {
   const sel = state.selected.has(aid.objectid);
   return el('div', { class: `item${sel ? ' sel' : ''}`, dataset: { id: aid.objectid }, onclick: () => openAid(aid.objectid, { fly: !!state.q }) }, [
     el('input', { type: 'checkbox', checked: sel, onclick: (e) => { e.stopPropagation(); toggleSelect(aid.objectid); } }),
-    el('span', { class: 'ico', style: `background:${AID_COLORS[aid.aid_type] || AID_COLORS.other}` }),
+    el('span', { class: 'ico', style: `background:${aidColor(aid)}` }),
     el('div', { class: 'main' }, [
       el('div', { class: 'title', text: aid.aidname }),
       el('div', { class: 'sub', text: [aid.lightlistnumber ? `LL# ${aid.lightlistnumber}` : '', aid.characteristics, aid.waterway].filter(Boolean).join(' · ') }),
@@ -247,7 +268,6 @@ export async function openAid(id, { fly = false } = {}) {
   if (!slim) return;
   if (fly) flyTo(slim.latitude, slim.longitude, 14);
   const actions = () => {
-    if (document.body.classList.contains('phone')) return [];   // no trip planning on phones
     const sel = state.selected.has(id);
     return [{ label: sel ? 'Remove from trip' : 'Add to trip', primary: !sel, onClick: () => { toggleSelect(id); openAid(id); } }];
   };

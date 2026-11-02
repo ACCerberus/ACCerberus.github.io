@@ -1,0 +1,30 @@
+name: LightKeeper tests
+
+# On every push that changes the web app: every script parses, every script is in the service worker's offline list,
+# and the app starts with no connection (also right after an update) in a real Chrome.
+
+on:
+  push:
+    branches: [main]
+    paths: ["lightkeeper/js/**", "lightkeeper/css/**", "lightkeeper/*.html", "lightkeeper/sw.js", "lightkeeper/version.json", "tools/**", ".github/workflows/lightkeeper-test.yml"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Every script parses
+        run: for f in $(find lightkeeper/js -name '*.js') lightkeeper/sw.js; do node --check "$f" || exit 1; done
+      - name: Every script is saved for offline use
+        run: python tools/set_version.py --check
+      - name: App starts offline
+        run: node tools/test_offline_boot.mjs

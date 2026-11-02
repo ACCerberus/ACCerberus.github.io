@@ -1,0 +1,43 @@
+name: LightKeeper health
+
+# Daily: asks every data source LightKeeper uses a small real question and checks the published data files
+# (tools/check_sources.py). If a must-have source is down or changed its format, this job fails and GitHub
+# emails the repo owner. Results are kept in lightkeeper/data/health.json. Fixes: LightKeeper2/docs/repair.md.
+
+on:
+  schedule:
+    - cron: "40 14 * * *"   # 14:40 UTC = early morning Pacific
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lightkeeper-health
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check data sources
+        id: check
+        run: python tools/check_sources.py
+      - name: Save results
+        if: always()
+        run: |
+          git add lightkeeper/data/health.json
+          git diff --cached --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "[data] Source health check"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep 15
+          done
+          exit 1
