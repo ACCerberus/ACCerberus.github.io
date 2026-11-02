@@ -15,7 +15,7 @@
     list($('u-issues'), latest.known_issues);
     list($('u-todo'), latest.todo);
     const older = $('u-older');
-    for (const v of log.slice(1, 8)) {
+    for (const v of log.slice(0, 8)) {
       const d = document.createElement('details');
       const s = document.createElement('summary');
       s.textContent = `Version ${v.version}${v.title ? ` — ${v.title}` : ''}`;

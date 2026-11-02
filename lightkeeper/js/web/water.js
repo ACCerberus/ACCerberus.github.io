@@ -4,13 +4,14 @@
  *
  *  Backup chain for tides: NOAA (requested station → ±1 day window → next-nearest station) → Open-Meteo Marine. */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.4-2';
-import { cached, MIN, HOUR, DAY } from './store.js?v=2.1.4-2';
-import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.1.4-2';
-import { openMeteoGet, pointKey } from './weather.js?v=2.1.4-2';
-import * as ndbc from './ndbc.js?v=2.1.4-2';
-import { reverseGeocode } from './poi.js?v=2.1.4-2';
-import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.4-2';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.5';
+import { cached, idbSet, MIN, HOUR, DAY } from './store.js?v=2.1.5';
+import { nearestSaved } from './offline-store.js?v=2.1.5';
+import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.1.5';
+import { openMeteoGet, pointKey } from './weather.js?v=2.1.5';
+import * as ndbc from './ndbc.js?v=2.1.5';
+import { reverseGeocode } from './poi.js?v=2.1.5';
+import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.5';
 
 const NOAA_MDAPI = 'https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json';
 const NOAA_DATAGETTER = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
@@ -121,6 +122,26 @@ async function noaaProduct(stationId, product, begin, end, extra = {}) {
   });
   return value || {};
 }
+/** Offline download: one request for a station's tide highs/lows over several days, stored day by day under the
+ *  same keys a card uses, so the tide chart works with no signal. Returns the number of days stored. */
+export async function prefetchTides(station, startDay, days = 7) {
+  const code = noaaCode(station);
+  const end = shiftDate(startDay, days - 1);
+  const params = { begin_date: dateText(startDay), end_date: dateText(end), station: code, product: 'predictions', units: 'english', time_zone: 'lst_ldt', format: 'json', datum: NOAA_TIDE_DATUM, interval: 'hilo' };
+  const data = await getJson(`${NOAA_DATAGETTER}?${qs(params)}`, { timeoutMs: NOAA_TIMEOUT });
+  if (data.error || !data.predictions) return 0;
+  let stored = 0;
+  for (let i = 0; i < days; i += 1) {
+    const day = shiftDate(startDay, i);
+    const preds = data.predictions.filter((x) => String(x.t || '').startsWith(day));
+    if (!preds.length) continue;
+    await idbSet(`noaa:predictions:${code}:${dateText(day)}:${dateText(day)}:{}`, { predictions: preds });
+    stored += 1;
+  }
+  return stored;
+}
+export const tideStations = () => noaaStations('tide');
+
 async function noaaWaterTemp(stationId, day) {
   try {
     const readings = (await noaaProduct(stationId, 'water_temperature', day, day)).data || [];
@@ -566,6 +587,14 @@ export async function waterTempNear(lat, lon) {
   });
   found.sort((x, y) => x.distance_mi - y.distance_mi);
   const nearestRec = found[0] || null;
+  // A reading saved for offline use near here beats a far one (or none): use it when it's closer.
+  if (!nearestRec || nearestRec.distance_mi > WATER_TEMP_RADIUS_MI) {
+    const saved = await nearestSaved('temp', lat, lon, 40);
+    const savedMi = saved?.value?.primary ? saved.distance_mi + (saved.value.primary.distance_mi || 0) : Infinity;
+    if (saved && savedMi < (nearestRec?.distance_mi ?? Infinity)) {
+      return { ...saved.value, offline_saved: true, note: [saved.value.note, `Saved reading${navigator.onLine ? '' : ' (offline)'}`].filter(Boolean).join(' · ') };
+    }
+  }
   if (nearestRec && nearestRec.distance_mi <= WATER_TEMP_RADIUS_MI) {
     return { ok: true, primary: nearestRec, all: found, nearest_mi: nearestRec.distance_mi, note: null };
   }
@@ -579,6 +608,8 @@ export async function waterTempNear(lat, lon) {
     return { ok: true, primary: nearestRec, all: found, nearest_mi: nearestRec.distance_mi,
       note: `No water temperature station within ${WATER_TEMP_RADIUS_MI} mi of this spot; nearest reading is ${nearestRec.station_name}, ${Math.round(nearestRec.distance_mi)} mi away` };
   }
+  const saved = await nearestSaved('temp', lat, lon, 40);   // offline: the last reading saved for this area
+  if (saved?.value?.primary) return { ...saved.value, offline_saved: true, note: [saved.value.note, 'Offline: saved reading'].filter(Boolean).join(' · ') };
   return { ok: false, all: [], usgs_pending: usgsPending > 0,
     error: usgsPending > 0 ? 'Still looking up river gauges for this area; try again in a moment' : 'No water temperature source answered' };
 }

@@ -1,6 +1,6 @@
 /** "What's new" panel: the newest version in full, every earlier version in a dropdown, and the V1 history. */
 
-import { el, fmt, panelSkeleton } from './ui.js?v=2.1.4-2';
+import { el, fmt, panelSkeleton } from './ui.js?v=2.1.5';
 
 export async function init(view) {
   const { body } = panelSkeleton(view, "What's new", 'Recent changes and fixes, in plain language.');
@@ -22,13 +22,13 @@ export async function init(view) {
         el('ul', { class: 'note-list', style: 'line-height:1.55;margin-top:6px' }, latest.todo.map((c) => el('li', { text: c }))),
       ]) : null,
       el('ul', { class: 'note-list', style: 'line-height:1.55' }, latest.changes.map((c) => el('li', { text: c }))),
-      entries.length > 1 ? el('details', { class: 'box earlier-versions' }, [
-        el('summary', { text: `Earlier versions (${entries.length - 1})` }),
-        ...entries.slice(1).map((v) => el('details', { style: 'margin-top:6px' }, [
+      el('details', { class: 'box earlier-versions' }, [
+        el('summary', { text: `All versions (${entries.length})` }),
+        ...entries.map((v) => el('details', { style: 'margin-top:6px' }, [
           el('summary', { text: `Version ${v.version}${v.date ? ` · ${fmt.date(v.date)}` : ''}${v.title ? ` — ${v.title}` : ''}` }),
           el('ul', { class: 'note-list', style: 'line-height:1.55;margin-top:4px' }, (v.changes || []).map((c) => el('li', { text: c }))),
         ])),
-      ]) : null,
+      ]),
       v1History(),
       el('div', { class: 'muted small', text: 'LightKeeper by Evan Isakson · proprietary, all rights reserved.' }),
     );

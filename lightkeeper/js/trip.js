@@ -3,12 +3,12 @@
  *  Desktop: the panel is a full form and every day can be opened. Phone: one simple flow - tap lights on the map,
  *  Plan, then one day at a time. Planning itself is POST /api/trip/plan (desktop: trip.py; website: js/web/tripplan.js). */
 
-import { api } from './api.js?v=2.1.4-2';
-import { el, fmt, toast, panelSkeleton, debounce, store, showProgress, hideProgress, onPanelChange, showPanel } from './ui.js?v=2.1.4-2';
-import { map, layers, dayIcon, poiIcon, fitBounds, DAY_COLORS } from './map.js?v=2.1.4-2';
-import { enableLayer } from './poi.js?v=2.1.4-2';
-import { showPoi } from './detail.js?v=2.1.4-2';
-import { getSelected, onSelectionChange, toggleSelect, openAid, clearSelection } from './aids.js?v=2.1.4-2';
+import { api } from './api.js?v=2.1.5';
+import { el, fmt, toast, panelSkeleton, debounce, store, showProgress, hideProgress, onPanelChange, showPanel } from './ui.js?v=2.1.5';
+import { map, layers, dayIcon, poiIcon, fitBounds, DAY_COLORS } from './map.js?v=2.1.5';
+import { enableLayer } from './poi.js?v=2.1.5';
+import { showPoi } from './detail.js?v=2.1.5';
+import { getSelected, onSelectionChange, toggleSelect, openAid, clearSelection } from './aids.js?v=2.1.5';
 
 const LODGING = ['hotel', 'motel', 'resort', 'campground'];
 const LAUNCH_PREP_MIN = 25;

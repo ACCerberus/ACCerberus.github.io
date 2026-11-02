@@ -1,11 +1,13 @@
 /** Settings (web edition): vessel, Light List data status, storage, about + device diagnostics.
  *  Offline map download, pre-cache, API keys and backup files live in the desktop app. */
 
-import { api, VERSION } from './api.js?v=2.1.4-2';
-import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog, showPanel } from './ui.js?v=2.1.4-2';
-import { ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.4-2';
-import { setBase, getBase } from './map.js?v=2.1.4-2';
-import * as netcheck from './netcheck.js?v=2.1.4-2';
+import { api, VERSION } from './api.js?v=2.1.5';
+import { $, el, fmt, toast, panelSkeleton, onPanelChange, dialog, showPanel } from './ui.js?v=2.1.5';
+import { ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.5';
+import { setBase, getBase } from './map.js?v=2.1.5';
+import * as netcheck from './netcheck.js?v=2.1.5';
+import * as offline from './web/offline.js?v=2.1.5';
+import { getDistrict } from './aids.js?v=2.1.5';
 
 export const DOWNLOAD_INFO = '/download.json';   // the site's download switch (see /download.js)
 const state = { body: null, settings: {}, districtsEl: null };
@@ -60,6 +62,7 @@ async function render() {
     class: netcheck.net.mode === m ? 'on' : '', text: label, style: 'flex:1;min-height:40px',
     onclick: (e) => { netcheck.setMode(m); e.currentTarget.parentElement.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === e.currentTarget)); toast(netcheck.lite() ? 'Lite mode on' : 'Full mode on', 'ok'); },
   })));
+  b.append(offlineSection());
   b.append(section('Connection', [
     el('div', { class: 'small', id: 'net-line', text: netcheck.describe() }),
     netSeg,
@@ -97,6 +100,41 @@ async function render() {
       el('a', { href: './about', class: 'btn sm', text: 'Data sources & notices' }),
     ]),
   ]));
+}
+
+/** Offline: save the district you're working in so the app keeps going with no signal. */
+function offlineSection() {
+  const line = el('div', { class: 'small', text: 'Checking…' });
+  const prog = el('div', { class: 'muted small', hidden: true });
+  const bar = el('div', { class: 'off-bar', hidden: true }, [el('span')]);
+  const store = el('div', { class: 'muted small' });
+  const btn = el('button', { class: 'btn primary', style: 'min-height:44px' });
+  const d = getDistrict();
+  const refresh = async () => {
+    if (!d) { line.textContent = 'Pick a district at the top first.'; btn.disabled = true; btn.textContent = 'Make this district available offline'; return; }
+    const r = await offline.districtStatus(d);
+    const old = r && Date.now() - r.at > 7 * 864e5;
+    line.textContent = r ? `D${d} ${r.name}: saved ${new Date(r.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })} · ${r.tideStations} tide stations, ${r.areas} weather areas${old ? ' · over a week old, save again' : ''}` : `D${d}: not saved for offline yet`;
+    line.classList.toggle('warn-text', !!old);
+    btn.textContent = r ? `Save D${d} again` : `Make D${d} available offline`;
+    btn.disabled = false;
+    const st = await offline.storageInfo();
+    store.textContent = `${st.persisted ? 'Kept permanently on this device' : 'The browser may clear it when the device is low on space'}${st.usedMb != null ? ` · ${st.usedMb} MB used` : ''}`;
+  };
+  btn.addEventListener('click', async () => {
+    btn.disabled = true; prog.hidden = false; bar.hidden = false;
+    try {
+      const r = await offline.saveDistrict(d, (text, f) => { prog.textContent = text; bar.firstChild.style.width = `${Math.round(f * 100)}%`; });
+      toast(`D${d} ${r.name} saved for offline: ${r.tideDays} tide days, ${r.readings} readings`, 'ok', 6000);
+    } catch (err) { toast(`Offline save failed: ${err.message}`, 'warn', 6000); }
+    prog.hidden = true; bar.hidden = true;
+    refresh();
+  });
+  refresh();
+  return section('Offline', [
+    el('p', { class: 'muted small', style: 'margin:0', text: "Saves this district's aids, notices, 7 days of tides, and weather and water temperature for each area, so LightKeeper keeps working with no signal. Map areas you've already viewed stay saved too. Takes a minute or two on a good connection." }),
+    line, btn, bar, prog, store,
+  ]);
 }
 
 const section = (title, children, extraClass = '') => el('div', { class: `box${extraClass ? ` ${extraClass}` : ''}` }, [el('h4', { text: title }), ...children]);

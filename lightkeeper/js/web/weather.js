@@ -1,10 +1,11 @@
 /** NWS weather in the browser (port of weather.py): forecast periods + active alerts, nearest observation,
  *  Open-Meteo as the backup forecast. Same response shapes as the desktop endpoints. */
 
-import { getJson, qs } from './http.js?v=2.1.4-2';
-import { cached, MIN, HOUR } from './store.js?v=2.1.4-2';
-import { validateCoords, isInUs, haversineMi, compassPoint, round, METERS_PER_MILE } from './util.js?v=2.1.4-2';
-import * as ndbc from './ndbc.js?v=2.1.4-2';
+import { getJson, qs } from './http.js?v=2.1.5';
+import { cached, MIN, HOUR } from './store.js?v=2.1.5';
+import { validateCoords, isInUs, haversineMi, compassPoint, round, METERS_PER_MILE } from './util.js?v=2.1.5';
+import * as ndbc from './ndbc.js?v=2.1.5';
+import { nearestSaved, savedAgo } from './offline-store.js?v=2.1.5';
 
 const NWS_API_URL = 'https://api.weather.gov';
 const NWS_HEADERS = { Accept: 'application/geo+json' };
@@ -130,6 +131,12 @@ export async function getForecast(lat, lon) {
     return finish(value, age, fromCache, lat, lon);
   } catch (err) {
     console.warn('[lightkeeper] Open-Meteo backup unavailable:', err?.message);
+    // Offline: the nearest forecast saved with "Make this district available offline".
+    const saved = await nearestSaved('fc', lat, lon, 40);
+    if (saved) {
+      return { ...saved.value, ok: true, cached: true, offline_saved: true, cached_age_min: Math.round((Date.now() - saved.at) / 60000), alerts: [],
+        note: `Offline: forecast saved ${savedAgo(saved.at)}${saved.distance_mi > 2 ? `, ${saved.distance_mi} mi away` : ''}` };
+    }
     return forecastError(lat, lon, reason);
   }
 }
@@ -214,5 +221,8 @@ export async function nearestObservation(lat, lon) {
   }
   if (value && (value.temp_f != null || value.wind_kt != null)) return { ...value, ok: true, cached: fromCache };
   const backup = await backupObservation(lat, lon);
-  return backup ? { ...backup, ok: true, cached: false } : { ok: false, error: 'No weather reading available' };
+  if (backup) return { ...backup, ok: true, cached: false };
+  const saved = await nearestSaved('obs', lat, lon, 40);      // offline: the last reading saved for this area
+  if (saved) return { ...saved.value, ok: true, cached: true, offline_saved: true, observed_at: saved.value.observed_at || new Date(saved.at).toISOString() };
+  return { ok: false, error: 'No weather reading available' };
 }
