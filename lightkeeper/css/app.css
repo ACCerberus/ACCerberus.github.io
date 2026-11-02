@@ -602,3 +602,13 @@ body.phone .tl-swap .chip { min-height: 34px; font-size: 12.5px; }
 .district-pick .btn .muted { font-weight: 400; white-space: normal; }
 .district-pick .btn.all { grid-column: 1 / -1; align-items: center; min-height: 44px; }
 @media (max-width: 420px) { .district-pick { grid-template-columns: 1fr; } }
+
+/* Aid names above the aids (zoomed in) */
+.aid-label { pointer-events: none; }
+.aid-label span { position: absolute; left: 0; top: 0; transform: translate(-50%, calc(-100% - 9px)); white-space: nowrap;
+  font: 600 11px/1.2 Inter, system-ui, sans-serif; color: #fff; padding: 1px 5px; border-radius: 4px; background: rgba(11, 18, 24, .62);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .8); }
+
+.tl-swap .chip.pick { border-style: dashed; }
+.tl-swap .chip.pick.on { border-style: solid; border-color: var(--accent); color: var(--accent); }
+body[data-pick-kind] #map { cursor: crosshair; }

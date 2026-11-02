@@ -1,10 +1,10 @@
 /** Places layers: boat ramps / marinas, lodging, parks with ramps. Toggled by the top-bar chips. */
 
-import { api } from './api.js?v=2.1.3-3';
-import { $$, toast, debounce, store } from './ui.js?v=2.1.3-3';
-import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.1.3-3';
-import { showPoi } from './detail.js?v=2.1.3-3';
-import { getDistrict, districtAt } from './aids.js?v=2.1.3-3';
+import { api } from './api.js?v=2.1.4';
+import { $$, toast, debounce, store } from './ui.js?v=2.1.4';
+import { map, layers, poiIcon, viewportRadiusM } from './map.js?v=2.1.4';
+import { showPoi } from './detail.js?v=2.1.4';
+import { getDistrict, districtAt } from './aids.js?v=2.1.4';
 
 const LAYERS = {
   ramps: { path: '/api/poi/ramps', capM: 150000 },
@@ -108,7 +108,7 @@ async function refresh(name) {
       if (items[name].has(poi.id)) continue;
       const m = L.marker([poi.lat, poi.lon], { icon: poiIcon(poi.kind), title: poi.name });
       m.bindTooltip(poi.name, { direction: 'top', offset: [0, -12] });
-      m.on('click', () => showPoi(poi));
+      m.on('click', () => openOrPick(poi));
       m.addTo(layers[name]);
       items[name].set(poi.id, { poi, marker: m });
     }
@@ -132,6 +132,17 @@ async function refresh(name) {
     changed();
     if (again[name]) { again[name] = false; refresh(name); }
   }
+}
+
+/** Trip planner picking a ramp or hotel on the map: hand the place over instead of opening its card. */
+function openOrPick(poi) {
+  const want = document.body.dataset.pickKind;
+  const isRamp = ['ramp', 'marina'].includes(poi.kind);
+  if (want && ((want === 'ramp' && isRamp) || (want === 'hotel' && !isRamp && poi.kind !== 'park'))) {
+    document.dispatchEvent(new CustomEvent('place-picked', { detail: poi }));
+    return;
+  }
+  showPoi(poi);
 }
 
 /** Used by the search box: show a one-off place marker and open its detail. */

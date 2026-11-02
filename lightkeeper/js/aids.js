@@ -1,10 +1,10 @@
 /** Aids to Navigation: load from the backend, cluster on the map, list + select in the panel. */
 
-import { api } from './api.js?v=2.1.3-3';
-import { $, el, fmt, toast, panelSkeleton, debounce, setStatus, store } from './ui.js?v=2.1.3-3';
-import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.3-3';
-import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.3-3';
-import { lite, whenChecked, DESKTOP } from './netcheck.js?v=2.1.3-3';
+import { api } from './api.js?v=2.1.4';
+import { $, el, fmt, toast, panelSkeleton, debounce, setStatus, store } from './ui.js?v=2.1.4';
+import { map, layers, aidStyle, flyTo, AID_COLORS } from './map.js?v=2.1.4';
+import { showDetail, aidRecord, hideDetail, currentDetail } from './detail.js?v=2.1.4';
+import { lite, whenChecked, DESKTOP } from './netcheck.js?v=2.1.4';
 
 const TYPES = ['light', 'buoy', 'daybeacon', 'bridge'];
 const PAGE = 200;
@@ -82,6 +82,7 @@ export const allAids = () => state.all;
 export function onSelectionChange(fn) { selectionListeners.add(fn); }
 
 export function init(view) {
+  map.on('moveend zoomend', drawLabelsSoon);
   state.view = view;
   const { body } = panelSkeleton(view, 'Aids <span class="count" id="aids-count"></span>', 'USCG Light List — click an aid for details, tick it to add to a trip.');
   state.countEl = $('#aids-count');
@@ -142,6 +143,30 @@ export async function loadAll({ silent = false, full = false } = {}) {
 
 document.addEventListener('net-mode', () => { if (state.partial && !lite()) loadAll({ silent: true, full: true }); });
 
+/* ── Names above the aids ── */
+// From LABEL_ZOOM in, every aid in view gets its name above it (skipped while more than LABEL_MAX are in view).
+const LABEL_ZOOM = 12;
+const LABEL_MAX = 250;
+let labelLayer = null;
+const escHtml = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function drawLabels() {
+  if (!map) return;
+  if (!labelLayer) labelLayer = L.layerGroup().addTo(map);
+  labelLayer.clearLayers();
+  if (map.getZoom() < LABEL_ZOOM) return;
+  const b = map.getBounds().pad(0.05);
+  const list = aidsInBounds(b).filter((a) => inDistrict(a) && (state.types.has(a.aid_type) || (a.aid_type === 'other' && state.types.size === TYPES.length))
+    && b.contains([a.latitude, a.longitude]));
+  if (list.length > LABEL_MAX) return;
+  for (const a of list) {
+    L.marker([a.latitude, a.longitude], {
+      icon: L.divIcon({ className: 'aid-label', html: `<span>${escHtml(a.aidname)}</span>`, iconSize: [0, 0], iconAnchor: [0, 0] }),
+      interactive: false, keyboard: false,
+    }).addTo(labelLayer);
+  }
+}
+const drawLabelsSoon = debounce(drawLabels, 120);
+
 function refreshMarkers() {
   layers.aids.clearLayers();
   state.markers.clear();
@@ -155,6 +180,7 @@ function refreshMarkers() {
     markers.push(m);
   }
   layers.aids.addLayers(markers);
+  drawLabelsSoon();
 }
 
 function visibleAids() {

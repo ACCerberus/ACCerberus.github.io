@@ -3,11 +3,12 @@
  *  Desktop: the panel is a full form and every day can be opened. Phone: one simple flow - tap lights on the map,
  *  Plan, then one day at a time. Planning itself is POST /api/trip/plan (desktop: trip.py; website: js/web/tripplan.js). */
 
-import { api } from './api.js?v=2.1.3-3';
-import { el, fmt, toast, panelSkeleton, debounce, store, showProgress, hideProgress, onPanelChange, showPanel } from './ui.js?v=2.1.3-3';
-import { layers, dayIcon, poiIcon, fitBounds, DAY_COLORS } from './map.js?v=2.1.3-3';
-import { showPoi } from './detail.js?v=2.1.3-3';
-import { getSelected, onSelectionChange, toggleSelect, openAid, clearSelection } from './aids.js?v=2.1.3-3';
+import { api } from './api.js?v=2.1.4';
+import { el, fmt, toast, panelSkeleton, debounce, store, showProgress, hideProgress, onPanelChange, showPanel } from './ui.js?v=2.1.4';
+import { map, layers, dayIcon, poiIcon, fitBounds, DAY_COLORS } from './map.js?v=2.1.4';
+import { enableLayer } from './poi.js?v=2.1.4';
+import { showPoi } from './detail.js?v=2.1.4';
+import { getSelected, onSelectionChange, toggleSelect, openAid, clearSelection } from './aids.js?v=2.1.4';
 
 const LODGING = ['hotel', 'motel', 'resort', 'campground'];
 const LAUNCH_PREP_MIN = 25;
@@ -19,7 +20,7 @@ const ROAD_FACTOR = 1.3;
 const DRIVE_MPH = 45;
 const MI_PER_NM = 1.15078;
 
-const state = { body: null, form: {}, plan: null, savedId: null, depart: null, settings: {}, dayIdx: 0, picking: false, bar: null, dirty: false };
+const state = { body: null, form: {}, plan: null, savedId: null, depart: null, settings: {}, dayIdx: 0, picking: false, bar: null, dirty: false, placePick: null };
 const phone = () => document.body.classList.contains('phone');
 const hav = (a, b) => {
   const r = Math.PI / 180;
@@ -55,6 +56,13 @@ export function init(view) {
   onSelectionChange(() => { render(); updateBar(); });
   onPanelChange((name) => { setPicking(name === 'trip' && !phone()); render(); });
   document.addEventListener('trip-pick-done', () => setPicking(false));
+  document.addEventListener('place-picked', (e) => { if (state.placePick) finishPlacePick(e.detail); });
+  map.on('click', (e) => {       // no ramp known there: any spot on the shore can be the launch / recovery point
+    const pp = state.placePick;
+    if (!pp || pp.which === 'hotel') return;
+    const { lat, lng } = e.latlng;
+    finishPlacePick({ id: `custom:${lat.toFixed(5)},${lng.toFixed(5)}`, kind: 'ramp', name: `${pp.which === 'launch' ? 'Launch' : 'Recovery'} point ${lat.toFixed(4)}, ${lng.toFixed(4)}`, lat, lon: lng, address: '', tags: {}, quality: 'picked on the map' });
+  });
   render();
 }
 
@@ -341,11 +349,36 @@ const ALTS = { launch: 'alt_launches', recover: 'alt_recovers', hotel: 'alt_hote
 
 function swapChips(d, i, which) {
   const alts = (d[ALTS[which]] || []).filter((x) => x && !samePoi(x, d[which])).slice(0, 4);
-  if (!alts.length) return null;
+  const picking = state.placePick && state.placePick.i === i && state.placePick.which === which;
   return el('div', { class: 'tl-swap' }, [
-    el('span', { class: 'muted small', text: which === 'hotel' ? 'Other hotels:' : 'Other ramps:' }),
+    alts.length ? el('span', { class: 'muted small', text: which === 'hotel' ? 'Other hotels:' : 'Other ramps:' }) : null,
     ...alts.map((alt) => el('button', { type: 'button', class: 'chip sm', text: alt.name, title: `Use ${alt.name}`, onclick: () => swap(i, which, alt) })),
+    el('button', { type: 'button', class: `chip sm pick${picking ? ' on' : ''}`, text: picking ? 'Cancel picking' : 'Pick on map',
+      title: which === 'hotel' ? 'Tap any hotel on the map' : 'Tap any boat ramp on the map, or a spot on the shore',
+      onclick: () => (picking ? cancelPlacePick() : startPlacePick(i, which)) }),
   ]);
+}
+
+/* ── Picking a ramp or hotel on the map for one day ── */
+function startPlacePick(i, which) {
+  state.placePick = { i, which };
+  document.body.dataset.pickKind = which === 'hotel' ? 'hotel' : 'ramp';
+  enableLayer(which === 'hotel' ? 'hotels' : 'ramps');
+  if (phone()) document.body.classList.add('panel-hidden');
+  toast(which === 'hotel' ? 'Tap a hotel on the map' : 'Tap a boat ramp on the map, or tap a spot on the shore to launch there', 'info', 6000);
+  render();
+}
+function cancelPlacePick() {
+  state.placePick = null;
+  delete document.body.dataset.pickKind;
+  render();
+}
+function finishPlacePick(poi) {
+  const { i, which } = state.placePick;
+  state.placePick = null;
+  delete document.body.dataset.pickKind;
+  if (phone()) document.body.classList.remove('panel-hidden');
+  swap(i, which, poi);
 }
 
 function swap(i, which, alt) {

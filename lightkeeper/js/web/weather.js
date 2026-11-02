@@ -1,9 +1,10 @@
 /** NWS weather in the browser (port of weather.py): forecast periods + active alerts, nearest observation,
  *  Open-Meteo as the backup forecast. Same response shapes as the desktop endpoints. */
 
-import { getJson, qs } from './http.js?v=2.1.3-3';
-import { cached, MIN, HOUR } from './store.js?v=2.1.3-3';
-import { validateCoords, isInUs, haversineMi, compassPoint, round, METERS_PER_MILE } from './util.js?v=2.1.3-3';
+import { getJson, qs } from './http.js?v=2.1.4';
+import { cached, MIN, HOUR } from './store.js?v=2.1.4';
+import { validateCoords, isInUs, haversineMi, compassPoint, round, METERS_PER_MILE } from './util.js?v=2.1.4';
+import * as ndbc from './ndbc.js?v=2.1.4';
 
 const NWS_API_URL = 'https://api.weather.gov';
 const NWS_HEADERS = { Accept: 'application/geo+json' };
@@ -180,13 +181,38 @@ async function fetchObservation(lat, lon) {
     visibility_mi: quantity(obs, 'visibility', TO_MILES), pressure_mb: quantity(obs, 'barometricPressure', TO_MB),
   };
 }
+const WMO_TEXT = { 0: 'Clear', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Cloudy', 45: 'Fog', 48: 'Fog', 51: 'Drizzle', 53: 'Drizzle', 55: 'Drizzle',
+  61: 'Light rain', 63: 'Rain', 65: 'Heavy rain', 66: 'Freezing rain', 67: 'Freezing rain', 71: 'Light snow', 73: 'Snow', 75: 'Heavy snow', 77: 'Snow',
+  80: 'Showers', 81: 'Showers', 82: 'Heavy showers', 85: 'Snow showers', 86: 'Snow showers', 95: 'Thunderstorms', 96: 'Thunderstorms', 99: 'Thunderstorms' };
+
+/** No Weather Service report: the nearest NOAA buoy within 30 mi, then the Open-Meteo model at the spot. */
+async function backupObservation(lat, lon) {
+  const s = await ndbc.nearest(lat, lon, 'air_c', 30).catch(() => null) || await ndbc.nearest(lat, lon, 'wind_kt', 30).catch(() => null);
+  if (s) {
+    return { station: { id: `ndbc:${s.id}`, name: `NOAA buoy ${s.id}`, lat: s.lat, lon: s.lon, distance_mi: s.distance_mi }, observed_at: s.time,
+      temp_f: s.air_c != null ? Math.round((s.air_c * 9 / 5 + 32) * 10) / 10 : null, wind_kt: s.wind_kt ?? null, wind_dir: s.wind_dir, gust_kt: s.gust_kt ?? null,
+      conditions: null, visibility_mi: null, pressure_mb: null, source: 'NOAA buoys (NDBC)' };
+  }
+  try {
+    const d = await openMeteoGet(OPEN_METEO_FORECAST_URL, lat, lon, { current: 'temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m,weather_code', temperature_unit: 'fahrenheit', wind_speed_unit: 'kn' });
+    const c = d?.current || {};
+    if (c.temperature_2m == null) return null;
+    return { station: { id: 'open-meteo', name: 'Open-Meteo model (no station nearby)', lat, lon, distance_mi: 0 }, observed_at: c.time || '',
+      temp_f: c.temperature_2m, wind_kt: c.wind_speed_10m ?? null, wind_dir: c.wind_direction_10m != null ? compassPoint(c.wind_direction_10m) : null,
+      gust_kt: c.wind_gusts_10m ?? null, conditions: WMO_TEXT[c.weather_code] || null, visibility_mi: null, pressure_mb: null, source: 'Open-Meteo' };
+  } catch { return null; }
+}
+
 export async function nearestObservation(lat, lon) {
   if (!validateCoords(lat, lon)) return { ok: false, error: 'Invalid coordinates' };
-  if (!isInUs(lat, lon)) return { ok: false, error: 'NWS observations only cover US territory' };
-  const cell = NWS_OBSERVATION_CELL_DEG;
-  const key = `nws-obs:${(Math.round(lat / cell) * cell).toFixed(2)},${(Math.round(lon / cell) * cell).toFixed(2)}`;
-  try {
-    const { value, cached: fromCache } = await cached(key, NWS_OBSERVATION_CACHE_TTL, () => fetchObservation(lat, lon));
-    return { ...value, ok: true, cached: fromCache };
-  } catch { return { ok: false, error: 'NWS observation unavailable' }; }
+  let value = null;
+  let fromCache = false;
+  if (isInUs(lat, lon)) {
+    const cell = NWS_OBSERVATION_CELL_DEG;
+    const key = `nws-obs:${(Math.round(lat / cell) * cell).toFixed(2)},${(Math.round(lon / cell) * cell).toFixed(2)}`;
+    try { ({ value, cached: fromCache } = await cached(key, NWS_OBSERVATION_CACHE_TTL, () => fetchObservation(lat, lon))); } catch { value = null; }
+  }
+  if (value && (value.temp_f != null || value.wind_kt != null)) return { ...value, ok: true, cached: fromCache };
+  const backup = await backupObservation(lat, lon);
+  return backup ? { ...backup, ok: true, cached: false } : { ok: false, error: 'No weather reading available' };
 }

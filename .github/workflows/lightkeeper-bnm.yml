@@ -1,7 +1,7 @@
 name: LightKeeper BNM
 
-# Hourly: USCG Broadcast Notices to Mariners for aids to navigation (Northwest district for now) into
-# lightkeeper/data/bnm-D13.json, which the web app's Discrepancies > BNMs view reads. Commits only when notices change.
+# Hourly: USCG Broadcast Notices to Mariners for every district (lightkeeper/data/bnm-D<id>.json, the BNM tab)
+# and the latest NOAA buoy readings (lightkeeper/data/ndbc-latest.json, aid-card water temp and weather backups).
 
 on:
   schedule:
@@ -26,9 +26,11 @@ jobs:
           python-version: "3.11"
       - name: Fetch broadcast notices
         run: python tools/build_bnm.py
+      - name: Fetch NOAA buoy readings
+        run: python tools/build_ndbc.py
       - name: Commit changes
         run: |
-          git add lightkeeper/data/bnm-*.json
+          git add lightkeeper/data/bnm-*.json lightkeeper/data/ndbc-latest.json
           if git diff --cached --quiet; then
             echo "No new notices."
             exit 0

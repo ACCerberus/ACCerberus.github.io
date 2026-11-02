@@ -4,12 +4,13 @@
  *
  *  Backup chain for tides: NOAA (requested station → ±1 day window → next-nearest station) → Open-Meteo Marine. */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.3-3';
-import { cached, MIN, HOUR, DAY } from './store.js?v=2.1.3-3';
-import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.1.3-3';
-import { openMeteoGet, pointKey } from './weather.js?v=2.1.3-3';
-import { reverseGeocode } from './poi.js?v=2.1.3-3';
-import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.3-3';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.4';
+import { cached, MIN, HOUR, DAY } from './store.js?v=2.1.4';
+import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.1.4';
+import { openMeteoGet, pointKey } from './weather.js?v=2.1.4';
+import * as ndbc from './ndbc.js?v=2.1.4';
+import { reverseGeocode } from './poi.js?v=2.1.4';
+import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.4';
 
 const NOAA_MDAPI = 'https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json';
 const NOAA_DATAGETTER = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
@@ -537,6 +538,13 @@ async function marineTempNear(lat, lon) {
   if (temp == null) return null;
   return tempRecord(SOURCE_MARINE, { id: 'open-meteo:marine', name: 'Open-Meteo Marine model', lat: round(lat, 4), lon: round(lon, 4), distance_mi: 0 }, temp, when);
 }
+async function ndbcTempNear(lat, lon) {
+  const s = await ndbc.nearest(lat, lon, 'water_c', 300);
+  if (!s) return null;
+  return tempRecord('NOAA buoys (NDBC)', { id: `ndbc:${s.id}`, name: `NOAA buoy ${s.id}`, lat: s.lat, lon: s.lon, distance_mi: s.distance_mi },
+    Math.round((s.water_c * 9 / 5 + 32) * 10) / 10, s.time);
+}
+
 export async function waterTempNear(lat, lon) {
   if (!validateCoords(lat, lon)) return { ok: false, error: 'Invalid coordinates', all: [] };
   const found = [];
@@ -545,6 +553,7 @@ export async function waterTempNear(lat, lon) {
   const jobs = [
     ...TEMP_RINGS_MI.map((r) => usgsTempRing(lat, lon, r).then(keep).catch(() => {}).finally(() => { usgsPending -= 1; })),
     noaaTempNear(lat, lon).then(keep).catch(() => {}),
+    ndbcTempNear(lat, lon).then(keep).catch(() => {}),
   ];
   // Answer as soon as a reading within the first ring is in hand, or when everything settles, or at the deadline.
   // Searches still running keep going in the background and seed the cache for the next visit.
