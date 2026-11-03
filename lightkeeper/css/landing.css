@@ -180,7 +180,7 @@ a:focus-visible, .btn:focus-visible, summary:focus-visible { outline: 2px solid 
   .drow .dn { grid-column: 1 / -1; }
   .drow .dv { grid-column: 1 / -1; order: 9; }
   .drow .num::before, .drow .dv::before { display: block; color: var(--text-3); font: 600 10.5px var(--mono); letter-spacing: .1em; text-transform: uppercase; }
-  .drow .dv::before { content: "Well documented"; display: inline; margin-right: 4px; }
+  .drow .dv::before { content: "Verified"; display: inline; margin-right: 4px; }
   .drow .num:nth-child(2)::before { content: "Aids"; } .drow .num:nth-child(3)::before { content: "Places"; }
   .drow .num:nth-child(5)::before { content: "Phone"; } .drow .num:nth-child(6)::before { content: "Address"; }
   .nav nav { gap: 16px; }

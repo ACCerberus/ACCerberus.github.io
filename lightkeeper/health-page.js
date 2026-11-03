@@ -30,8 +30,8 @@
   const tiles = [
     [n(s.aids), 'Aids in the Light List', `Refreshed ${ago(s.light_list_built_at)}`],
     [n(all.places), 'Places', `Rebuilt ${ago(s.places_built_at)}`],
-    [pct(all.verified_pct), 'Well documented', `${n(q.verified)} places`],
-    [pct(all.checked_pct), 'Confirmed by a second source', all.checked_pct ? 'Official lists and other datasets agree' : 'Starts as official ramp lists are added'],
+    [pct(all.verified_pct), 'Verified', `${n(q.verified)} places`],
+    [pct(all.checked_pct), 'Confirmed by a second source', all.checked_pct ? 'Another dataset agrees on the place' : 'Starts as official lists are added'],
   ];
   $('h-tiles').replaceChildren(...tiles.map(([v, k, sub]) => {
     const t = el('div', 'tile'); t.append(el('b', null, v), el('span', null, k), el('small', null, sub)); return t;
@@ -41,7 +41,7 @@
   const total = (q.verified || 0) + (q.likely || 0) + (q.unverified || 0);
   const bar = $('h-qbar');
   if (total) {
-    for (const [key, cls, label] of [['verified', 'v', 'Well documented'], ['likely', 'l', 'Likely'], ['unverified', 'u', 'Thin']]) {
+    for (const [key, cls, label] of [['verified', 'v', 'Verified'], ['likely', 'l', 'Likely'], ['unverified', 'u', 'Thin']]) {
       const share = (q[key] || 0) / total * 100;
       const seg = el('span', cls);
       seg.style.width = `${share}%`;
@@ -49,7 +49,7 @@
       if (share >= 9) seg.textContent = `${Math.round(share)}%`;
       bar.append(seg);
     }
-    bar.setAttribute('aria-label', `Well documented ${Math.round(q.verified / total * 100)}%, likely ${Math.round(q.likely / total * 100)}%, thin ${Math.round(q.unverified / total * 100)}%`);
+    bar.setAttribute('aria-label', `Verified ${Math.round(q.verified / total * 100)}%, likely ${Math.round(q.likely / total * 100)}%, thin ${Math.round(q.unverified / total * 100)}%`);
   }
 
   // Completeness meters
@@ -68,7 +68,7 @@
 
   // District table
   const head = el('div', 'drow dhead');
-  for (const h of ['District', 'Aids', 'Places', 'Well documented', 'Phone', 'Address']) head.append(el('span', null, h));
+  for (const h of ['District', 'Aids', 'Places', 'Verified', 'Phone', 'Address']) head.append(el('span', null, h));
   const rows = DISTRICT_ORDER.filter((id) => s.districts && s.districts[id]).map((id) => {
     const d = s.districts[id];
     const r = el('div', 'drow');

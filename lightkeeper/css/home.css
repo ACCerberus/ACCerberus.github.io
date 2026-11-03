@@ -205,6 +205,6 @@ a:focus-visible, .btn:focus-visible { outline: 2px solid var(--teal); outline-of
 /* Data line under the hero buttons (filled by /home-stats.js) */
 .hero .stats { display: block; max-width: 560px; margin-top: 26px; color: var(--text-3); font: 12.5px/1.5 var(--mono); letter-spacing: .02em; text-decoration: none; }
 .hero .stats .lt { width: 7px; height: 7px; margin-right: 10px; vertical-align: 1px; animation: none; }
-.hero .stats b { display: inline-block; margin-left: 12px; color: var(--text); font-weight: 600; border-bottom: 1px solid var(--text-3); }
+.hero .stats b { display: inline-block; color: var(--text); font-weight: 600; border-bottom: 1px solid var(--text-3); }
 .hero .stats:hover b { border-color: var(--text); }
 .hero .stats[hidden] { display: none; }
