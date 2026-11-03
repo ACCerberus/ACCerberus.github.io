@@ -617,3 +617,48 @@ body[data-pick-kind] #map { cursor: crosshair; }
 .pill .dot.type-buoy { background: linear-gradient(90deg, #ff4b4b 50%, #22c55e 50%); }
 .pill .dot.type-daybeacon { background: linear-gradient(90deg, #ff4b4b 50%, #22c55e 50%); border-radius: 2px; }
 .pill .dot.type-bridge { background: var(--c); }
+
+/* ── Night watch theme (matches the website): black water, ice-blue highlight, white primary buttons,
+      mono labels, squarer corners. Overrides only; the rules above keep the layout. ── */
+:root {
+  --bg: #03060b; --bg-1: #070d15; --bg-2: #0c1520; --bg-3: #142131; --line: #1c2b3b;
+  --text: #eef3f8; --text-2: #a2b2c2; --text-3: #6a7d90;
+  --accent: #6cc4ff; --accent-2: #9ad6ff;
+  --green: #3be38a; --yellow: #ffd23f; --red: #ff4d5a; --cyan: #3ad0e8;
+  --radius: 6px; --radius-sm: 4px;
+  --shadow: 0 16px 44px rgba(0, 0, 0, .6);
+  --mono: ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace;
+}
+#map, .leaflet-container, .light-preview, #detail .d-hero { background: #03060b; }
+#topbar, #rail, #statusbar { background: #050a11; }
+#statusbar { font-family: var(--mono); letter-spacing: .02em; }
+.brand-ver { font-family: var(--mono); }
+
+/* Labels and headings in the website's voice */
+.view-head h2 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.box h4, .d-sec h4, .field label, .lt-label, .ac-k, .stat span, .place .pl-role, #search-results .kind, .badge {
+  font-family: var(--mono); letter-spacing: .08em; }
+#detail .d-head h3, .modal h3, .fr-card h2 { letter-spacing: -.01em; }
+.fr-card h2 { text-transform: uppercase; font-weight: 700; }
+
+/* Buttons and fields: squarer, primary is white like the site */
+.btn, #search, .field input, .field select, .field textarea, #district-select, .select, .seg, .dsel-btn, .disc-field input, .disc-field select, .disc-field textarea { border-radius: 4px; }
+.seg button { border-radius: 3px; }
+.btn.primary { background: var(--text); border-color: var(--text); color: #03060b; font-weight: 600; }
+.btn.primary:hover { background: #fff; }
+.item, .box, .stat, .place, .wx-period, .ac-tile, .live-tile, .day, .toast, .veil-box, #ctx-menu, .dsel-menu, #search-results, .map-legend, #hover-hint, .alert, .bnm-note { border-radius: 4px; }
+.card, #progress, .modal, .fr-card { border-radius: 8px; }
+
+/* Highlight tints follow the new accent */
+.chip.on { background: rgba(108, 196, 255, .12); }
+#rail button.on { background: rgba(108, 196, 255, .12); box-shadow: inset 2px 0 0 var(--accent); border-radius: 0 6px 6px 0; }
+.item.sel { background: rgba(108, 196, 255, .1); }
+.m.sel { box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px rgba(108, 196, 255, .3), 0 0 18px 6px rgba(108, 196, 255, .35); }
+.marker-cluster-small, .marker-cluster-medium, .marker-cluster-large { background: rgba(108, 196, 255, .2); }
+.marker-cluster-small div, .marker-cluster-medium div, .marker-cluster-large div { background: rgba(14, 34, 52, .92); color: var(--text); border: 1.5px solid rgba(108, 196, 255, .8); box-sizing: border-box; }
+.m-poi.wp, .trip-step > b { color: #03060b; }
+.leaflet-control-attribution { background: rgba(3, 6, 11, .72) !important; }
+.map-legend, #hover-hint { background: rgba(7, 13, 21, .92); }
+#detail .d-hero::after { background: linear-gradient(transparent, rgba(3, 6, 11, .8)); }
+.lp-dot.off { background: #1a2533; }
+.skel { background: linear-gradient(90deg, var(--bg-3) 25%, #22344a 50%, var(--bg-3) 75%); background-size: 200% 100%; }
