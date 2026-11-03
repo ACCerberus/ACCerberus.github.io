@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LightKeeper Data health — how complete and how fresh the data is</title>
+  <meta name="description" content="How fresh LightKeeper's Light List is, how complete its boat ramps, hotels and marinas are, and how much has been confirmed by a second source, district by district." />
+  <link rel="canonical" href="https://cerberusac.dev/lightkeeper/health" />
+  <meta name="theme-color" content="#03060b" />
+  <link rel="apple-touch-icon" href="/lightkeeper/img/apple-touch-icon.png" />
+  <link rel="manifest" href="/lightkeeper/manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-title" content="LightKeeper" />
+  <link rel="icon" href="./img/lighthouse.png" />
+  <link rel="stylesheet" href="./css/landing.css" />
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="./img/lighthouse.png" alt="" /><span>Light<b>Keeper</b></span></a>
+    <nav>
+      <a class="hide-sm" href="/">Home</a>
+      <a href="./">Open the app</a>
+      <a class="hide-xs" href="./roadmap">Roadmap</a>
+      <a class="on" href="./health">Data health</a>
+      <a class="hide-xs" href="./about">Data &amp; notices</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <div class="hero">
+      <span class="eyebrow"><span class="lt g" aria-hidden="true"></span><span id="h-stamp">Data health</span></span>
+      <h1>How good is the data. <span>Measured, not guessed.</span></h1>
+      <p class="lead">How fresh the Light List is, how complete the boat ramps, hotels and marinas are, and how much of it a second source has confirmed. Rebuilt automatically with the data.</p>
+      <div class="horizon" aria-hidden="true"><i style="--c:var(--green);left:52%;--p:4s"></i><i style="--c:var(--red);left:61%;--p:2.5s;--o:-.9s"></i><i style="--c:var(--white);left:70%;--k:q;--p:1s"></i><i style="--c:var(--yellow);left:79%;--o:-2.2s"></i><i style="--c:var(--red);left:88%;--k:oc;--o:-1.4s"></i><i style="--c:var(--green);left:95%;--p:6s;--o:-3s"></i></div>
+    </div>
+
+    <p class="note" id="h-error" hidden>Could not load the data health numbers right now. Please try again in a moment.</p>
+
+    <div class="tiles" id="h-tiles" aria-live="polite">
+      <div class="tile"><b>—</b><span>Aids in the Light List</span></div>
+      <div class="tile"><b>—</b><span>Places</span></div>
+      <div class="tile"><b>—</b><span>Well documented</span></div>
+      <div class="tile"><b>—</b><span>Confirmed by a second source</span></div>
+    </div>
+
+    <section id="quality">
+      <span class="eyebrow">Places</span>
+      <h2>How complete the places are.</h2>
+      <p class="sub">Boat ramps, marinas, hotels, motels, resorts and parks, from OpenStreetMap. Each one is graded by how much detail it carries.</p>
+      <div class="qbar" id="h-qbar" role="img" aria-label="Share of places by grade"></div>
+      <ul class="qkey">
+        <li><span class="sw v"></span><b>Well documented</b> Name plus the details that matter for its kind: operator, phone, address, website, surface or hours.</li>
+        <li><span class="sw l"></span><b>Likely</b> Named, with some details.</li>
+        <li><span class="sw u"></span><b>Thin</b> Few details. Check before you rely on it.</li>
+      </ul>
+      <div class="meters" id="h-meters"></div>
+    </section>
+
+    <section id="districts">
+      <span class="eyebrow">By district</span>
+      <h2>District by district.</h2>
+      <div class="dtable" id="h-districts"></div>
+    </section>
+
+    <section id="sources">
+      <span class="eyebrow">Sources</span>
+      <h2>Are the sources up?</h2>
+      <p class="sub" id="h-health-sub">Every day an automatic check calls each service LightKeeper uses.</p>
+      <div class="srcs" id="h-sources"></div>
+    </section>
+
+    <p class="legal" style="margin-top:56px"><b>What this measures</b>Completeness and freshness, not a promise that every place is right. "Confirmed by a second source" is the share that an official list or another dataset agrees with; it rises as those are added (see the <a href="./roadmap">roadmap</a>). Not for navigation.</p>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <span>LightKeeper &middot; &copy; 2026 ArsenalRX Dev &middot; all rights reserved</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="./">Web app</a>
+      <a href="./roadmap">Roadmap</a>
+      <a href="./about">Data &amp; notices</a>
+    </nav>
+  </div>
+</footer>
+<script src="/download.js" defer></script>
+<script src="./health-page.js" defer></script>
+</body>
+</html>
