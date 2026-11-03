@@ -111,7 +111,7 @@ def parse_item(title: str, description: str, pub: str, link: str) -> dict | None
         hm = re.search(r"^(?:\d\.\s*)?([A-Z0-9][A-Z0-9 '&.\-]+?)\s+(?:IS|ARE|HAS BEEN|HAVE BEEN)\s", upper)
     if hm:
         hint = re.sub(r"^(?:[A-Z]\.\s+)?(?:(?:THE|A|AN)\s+)?", "", hm.group(1).strip()).title()
-    if len(hint) > 48 or re.match(r"(?i)(cg|coast guard|the coast guard)", hint):
+    if len(hint) > 48 or re.match(r"(?i)(cg|coast guard|the coast guard)\b", hint):
         hint = ""        # a whole sentence ("CG RCVD A REPORT THAT ..."), not an aid name
     orig = re.sub(r"\s+", " ", m.group("orig").strip())
     return {
