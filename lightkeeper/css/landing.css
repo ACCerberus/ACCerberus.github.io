@@ -110,6 +110,24 @@ footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
 footer a { color: var(--text-2); text-decoration: none; }
 footer a:hover { color: var(--text); }
 
+/* Roadmap: stops along a dashed route, each marked by a buoy light */
+.route { position: relative; list-style: none; margin: 40px 0 0; padding: 0; }
+.route::before { content: ""; position: absolute; left: 21px; top: 22px; bottom: 120px; border-left: 2px dashed rgba(224, 85, 155, .55); }
+.stop { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 28px; padding-bottom: 80px; }
+.mark { position: relative; z-index: 1; width: 44px; height: 44px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line-2); display: grid; place-items: center; }
+.mark .lt { width: 12px; height: 12px; }
+.stop-body { padding-top: 12px; }
+.stop h2 { margin: 16px 0 26px; }
+.legs { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.legs li { display: grid; grid-template-columns: 250px minmax(0, 1fr) auto; gap: 20px; align-items: baseline; padding: 18px 6px; border-bottom: 1px solid var(--line); font-size: 15px; transition: background .2s; }
+.legs li:hover { background: linear-gradient(90deg, rgba(238, 243, 248, .04), transparent 70%); }
+.legs b { color: var(--text); font-weight: 600; font-size: 16px; }
+.legs em { font: 12px var(--mono); font-style: normal; color: var(--green); white-space: nowrap; }
+.stop.now .legs b { color: #fff1b8; }
+.stop.later h2, .stop.later .legs b { color: var(--text-2); }
+.route + .legal { margin-top: 0; }
+.legal a { color: var(--text); }
+
 details summary { cursor: pointer; }
 details summary::marker { color: var(--text-3); }
 a:focus-visible, .btn:focus-visible, summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
@@ -129,6 +147,14 @@ a:focus-visible, .btn:focus-visible, summary:focus-visible { outline: 2px solid 
   .lead { font-size: 16.5px; }
   .card { padding: 22px; }
   .sources div { grid-template-columns: 1fr; gap: 4px; }
+  .route::before { left: 15px; }
+  .stop { grid-template-columns: 32px minmax(0, 1fr); gap: 16px; padding-bottom: 60px; }
+  .mark { width: 32px; height: 32px; }
+  .mark .lt { width: 10px; height: 10px; }
+  .stop-body { padding-top: 6px; }
+  .legs li { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 16px 2px; }
+  .legs li span { grid-column: 1 / -1; grid-row: 2; }
+  .legs em { grid-column: 2; grid-row: 1; }
   .cta .btn { width: 100%; }
   section { padding-top: 76px; }
   .closing { margin-top: 84px; padding: 80px 18px 70px; }
