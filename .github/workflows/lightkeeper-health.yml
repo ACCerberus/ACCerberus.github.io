@@ -28,10 +28,13 @@ jobs:
       - name: Check data sources
         id: check
         run: python tools/check_sources.py
+      - name: Data stats for the Data health page
+        if: always()
+        run: python tools/build_stats.py
       - name: Save results
         if: always()
         run: |
-          git add lightkeeper/data/health.json
+          git add lightkeeper/data/health.json lightkeeper/data/stats.json
           git diff --cached --quiet && exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

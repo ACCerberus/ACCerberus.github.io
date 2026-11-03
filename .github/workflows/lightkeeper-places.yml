@@ -33,10 +33,13 @@ jobs:
       - run: python -m pip install osmium==4.*
       - name: Build places from state files
         run: python tools/build_places_osm.py --districts "${{ github.event.inputs.districts }}"
+      - name: Data stats for the Data health page
+        if: always()
+        run: python tools/build_stats.py
       - name: Commit changes
         if: always()
         run: |
-          git add lightkeeper/data/DISTRICT_*_Places.json lightkeeper/data/DISTRICT_*_Dams.json lightkeeper/data/manifest.json
+          git add lightkeeper/data/DISTRICT_*_Places.json lightkeeper/data/DISTRICT_*_Dams.json lightkeeper/data/manifest.json lightkeeper/data/stats.json
           git diff --cached --quiet && exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
