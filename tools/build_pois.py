@@ -480,6 +480,16 @@ def dedup(records: list[dict]) -> list[dict]:
     return kept
 
 
+def dedup_by_kind(records: list[dict]) -> list[dict]:
+    """dedup() within each kind (hotels / motels / resorts / campgrounds count as one), so a ramp never swallows the
+    park around it or a marina the hotel next door."""
+    lodging = ("hotel", "motel", "resort", "campground")
+    groups: dict[str, list[dict]] = {}
+    for rec in records:
+        groups.setdefault("lodging" if rec["kind"] in lodging else rec["kind"], []).append(rec)
+    return [rec for group in groups.values() for rec in dedup(group)]
+
+
 def link_parks(ramps: list[dict], parks: list[dict]) -> list[dict]:
     grid: dict[tuple[int, int], list[dict]] = {}
     for park in parks:

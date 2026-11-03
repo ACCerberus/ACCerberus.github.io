@@ -159,7 +159,7 @@ def crosscheck(places: list[dict], overture: list[dict]) -> tuple[list[dict], di
                      "website": o["website"], "operator": "", "tags": {}, "quality": "likely",
                      "source": "Overture", "sources": ["Overture"]})
         counts["added"] += 1
-    return bp.dedup(kept) if counts["added"] else kept, counts
+    return bp.dedup_by_kind(kept) if counts["added"] else kept, counts
 
 
 def main() -> int:
