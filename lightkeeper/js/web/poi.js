@@ -574,8 +574,9 @@ async function gather({ kinds, lat, lon, radiusM, liveKey, live, pick }) {
   const shipped = rank(withinRadius(await shippedPlaces(lat, lon), lat, lon, radiusM).filter((r) => kinds.includes(r.kind)));
   const cachedLive = await idbGet(liveKey);
   const liveFresh = Boolean(cachedLive && Date.now() - cachedLive.at < LIVE_TTL);
-  const livePromise = liveFresh ? null : startLive(liveKey, live);
+  // The weekly district file is complete (built from OpenStreetMap state files): no need to ask the busy live servers.
   if (shipped.length) return rank(dedup(shipped.concat(cachedLive ? fromLive(cachedLive.value) : [])));
+  const livePromise = liveFresh ? null : startLive(liveKey, live);
   if (liveFresh) return fromLive(cachedLive.value);
 
   const quickKey = `quick:${liveKey}:${kinds.join(',')}`;

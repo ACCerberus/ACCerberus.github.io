@@ -397,7 +397,7 @@ def main() -> int:
     write_json(manifest_path, {
         "built_at": built_at, "checked_at": now, "source": NAVCEN_BASE_URL, "version": "2.0.0",
         "fields": list(FIELDS), "counts": counts, "sizes": sizes, "total": sum(counts.values()),
-        "stations": stations, "places": previous.get("places", {}), "places_checked_at": previous.get("places_checked_at", ""),
+        "stations": stations, "places": previous.get("places", {}), "dams": previous.get("dams", {}), "places_checked_at": previous.get("places_checked_at", ""),
     })
     errors = sum(len(v) for v in failed.values()) + sum(1 for v in station_lists.values() if v is None)
     print(f"Done in {time.time() - started:.0f}s: {sum(counts.values()):,} aids, {errors} failed file(s), "

@@ -99,7 +99,9 @@ export async function saveDistrict(id, onProgress = () => {}) {
   onProgress('Saving the district data', 0.02);
   const name = (await districtList().catch(() => []))?.find?.((d) => d.id === id)?.name || `D${id}`;
   const aids = await loadDistrict(id);
-  for (const f of ['manifest.json', 'districts.json', 'stations-tide.json', 'stations-current.json', `bnm-D${id}.json`, 'ndbc-latest.json', 'cwms-dams.json']) {
+  const man = await staticJson('manifest.json', 0, { fresh: true }).catch(() => null);
+  const placeFiles = [man?.places?.[id]?.file, man?.dams?.[id]?.file].filter(Boolean);   // ramps, hotels, parks, dams
+  for (const f of ['districts.json', 'stations-tide.json', 'stations-current.json', `bnm-D${id}.json`, 'ndbc-latest.json', 'cwms-dams.json', ...placeFiles]) {
     await staticJson(f, 0, { fresh: true }).catch(() => null);
   }
   const zones = areas(aids);

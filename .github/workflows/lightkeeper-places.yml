@@ -1,0 +1,48 @@
+name: LightKeeper places
+
+# Weekly: boat ramps, marinas, hotels / motels / resorts, parks with a ramp and named dams for every district, built
+# from Geofabrik's OpenStreetMap state files (tools/build_places_osm.py). Replaces crawling the public Overpass
+# servers, which time out from GitHub. Each state file is downloaded, read and deleted one at a time.
+
+on:
+  schedule:
+    - cron: "20 8 * * 0"   # Sundays 08:20 UTC (Geofabrik publishes new state files every night)
+  workflow_dispatch:
+    inputs:
+      districts:
+        description: "District ids, comma-separated (blank = all)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lightkeeper-places
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install osmium==4.*
+      - name: Build places from state files
+        run: python tools/build_places_osm.py --districts "${{ github.event.inputs.districts }}"
+      - name: Commit changes
+        if: always()
+        run: |
+          git add lightkeeper/data/DISTRICT_*_Places.json lightkeeper/data/DISTRICT_*_Dams.json lightkeeper/data/manifest.json
+          git diff --cached --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "[data] Places from OpenStreetMap state files"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep 15
+          done
+          exit 1
