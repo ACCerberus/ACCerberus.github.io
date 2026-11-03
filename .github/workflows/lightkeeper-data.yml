@@ -33,6 +33,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Official USCG sector areas (fills aids the Light List leaves without a sector)
+        run: python tools/build_sectors.py || echo "sector areas unavailable; keeping the previous file"
+
       - name: Build Light List data
         run: python tools/build_aids.py
 

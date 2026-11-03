@@ -36,6 +36,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from sectors import Sectors  # noqa: E402
+
+SECTORS = Sectors()   # lightkeeper/data/uscg_sectors.json (tools/build_sectors.py)
 NAVCEN_BASE_URL = "https://www.navcen.uscg.gov/sites/default/files/msi/"
 NAVCEN_PARTS = {1: 10, 5: 9, 7: 15, 8: 10, 9: 5, 11: 2, 13: 3, 14: 1, 17: 2}  # part files per district
 USER_AGENT = "LightKeeper/2.0.0 (web data build)"
@@ -228,7 +232,8 @@ def process_geojson_features(features: list[dict[str, Any]], district_id: int) -
             "sound_signal": "" if sound.upper() in ("N/A", "NONE") else sound,
             "daymark_shape": _prop(props, "DAYMARK_SHAPE"),
             "structure_remark": _prop(props, "STRUCTURE_REMARK"),
-            "cg_sector": _prop(props, "GROUP_JURISDICTION"),
+            # The Light List leaves the sector blank for thousands of aids: fill it from the official sector areas.
+            "cg_sector": _prop(props, "GROUP_JURISDICTION") or SECTORS.code_at(lat, lon),
             "intl_llnr": _prop(props, "INTERNATIONAL_LLNR"),
         })
     return rows
