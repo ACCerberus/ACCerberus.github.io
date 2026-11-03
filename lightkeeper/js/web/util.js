@@ -1,6 +1,6 @@
 /** Browser-edition helpers shared by the data adapters (mirrors geo.py + small bits of poi.py). */
 
-import { haversineMi } from '../geo.js?v=2.1.8';
+import { haversineMi } from '../geo.js?v=2.1.8-6';
 
 export const METERS_PER_MILE = 1609.344;
 export const METERS_TO_FEET = 3.28084;
@@ -58,6 +58,41 @@ export function toNumber(raw) {
 export const round = (v, dp = 1) => (v == null ? null : Math.round(v * 10 ** dp) / 10 ** dp);
 export const cToF = (c) => round((c * 9) / 5 + 32, 1);
 export const fToC = (f) => round(((f - 32) * 5) / 9, 1);
+
+/* ── Sanity limits for live readings (same table as the desktop's sanity.py; keep the two in step) ──
+   An impossible value is dropped before it reaches a card: the next source answers, or the card says OUT_OF_RANGE. */
+export const OUT_OF_RANGE = 'reading out of range';
+export const READING_LIMITS = {
+  water_temp_f: [28, 100],          // sea water freezes near 28 °F; nothing navigable is hotter than 100 °F
+  flow_cfs: [0, null],              // discharge, inflow, outflow, spill, generation: never negative
+  wind_kt: [0, 200],                // sustained wind or gust
+  air_temp_f: [-80, 135],
+};
+export const STAGE_JUMP_MAX_FT = 30;                 // a river stage that moves more than this between readings is a glitch
+export const TIDE_OBSERVED_VS_PREDICTED_MAX_FT = 15; // observed water level this far from its prediction is a sensor fault
+export function inRange(kind, value) {
+  if (value === null || value === undefined || value === '') return false;
+  const v = Number(value);
+  if (!Number.isFinite(v)) return false;
+  const [low, high] = READING_LIMITS[kind] || [null, null];
+  return (low == null || v >= low) && (high == null || v <= high);
+}
+/** Gauge-stage points without readings that jump more than STAGE_JUMP_MAX_FT (vs the series median and the previous kept one). */
+export function cleanStageSeries(points, key = 'value') {
+  const values = points.map((p) => p[key]).filter((v) => v != null).sort((a, b) => a - b);
+  if (!values.length) return [];
+  const mid = Math.floor(values.length / 2);
+  const median = values.length % 2 ? values[mid] : (values[mid - 1] + values[mid]) / 2;
+  const kept = [];
+  for (const p of points) {
+    const v = p[key];
+    if (v == null) continue;
+    const prev = kept.length ? kept[kept.length - 1][key] : null;
+    if (Math.abs(v - median) <= STAGE_JUMP_MAX_FT && (prev == null || Math.abs(v - prev) <= STAGE_JUMP_MAX_FT)) kept.push(p);
+  }
+  return kept;
+}
+export const tideObservationOk = (observed, predicted) => observed != null && (predicted == null || Math.abs(observed - predicted) <= TIDE_OBSERVED_VS_PREDICTED_MAX_FT);
 
 export function latLonArgs(params) {
   const lat = Number(params?.lat); const lon = Number(params?.lon);

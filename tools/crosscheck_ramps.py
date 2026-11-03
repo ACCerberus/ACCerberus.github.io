@@ -78,6 +78,7 @@ SOURCES = [
     {"agency": "National Park Service", "url": "https://mapservices.nps.gov/arcgis/rest/services/NationalDatasets/NPS_Public_POIs/FeatureServer/0",
      "name": ["POINAME"], "status": ["POISTATUS"], "where": "POITYPE in ('Boat Launch','Boat Ramp')"},
 ]
+NOT_FOR_BOATS = re.compile(r"kayak|paddle|canoe|airboat|hand launch|carry.?in|tube|swim", re.I)   # not a trailer ramp: never added
 CLOSED_FOR_GOOD = re.compile(r"permanent|destroyed|abandon|removed|decommission", re.I)
 CLOSED_NOW = re.compile(r"clos|restrict", re.I)
 NOT_CLOSED = re.compile(r"^\s*(no|none|open)\b", re.I)          # "No closure", "Open"
@@ -209,7 +210,7 @@ def crosscheck(places: list[dict], official: list[dict], cells: set) -> tuple[li
                 p[field] = best[field]
         kept.append(p)
     for o in official:
-        if id(o) in used or not o["add"] or not o["name"] or not lanes_ok(o) or CLOSED_FOR_GOOD.search(o["status"]) or not bo.near_aids(o, cells):
+        if id(o) in used or not o["add"] or not o["name"] or NOT_FOR_BOATS.search(o["name"]) or not lanes_ok(o) or CLOSED_FOR_GOOD.search(o["status"]) or not bo.near_aids(o, cells):
             continue
         kept.append({"id": f"official:{o['agency']}:{o['lat']:.5f},{o['lon']:.5f}", "kind": "ramp", "name": o["name"],
                      "name_source": "official", "lat": round(o["lat"], 6), "lon": round(o["lon"], 6), "address": "",

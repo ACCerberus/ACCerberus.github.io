@@ -1,15 +1,15 @@
 /** The one detail card. Everything clickable on the map funnels into showDetail(). */
 
-import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.8';
-import { photoUrl, satView } from './photo.js?v=2.1.8';
-import { lite } from './netcheck.js?v=2.1.8';
-import { flyTo, map } from './map.js?v=2.1.8';
-import { api } from './api.js?v=2.1.8';
-import * as units from './units.js?v=2.1.8';
-import { layers, poiIcon, aidColor } from './map.js?v=2.1.8';
-import { loadedItems } from './poi.js?v=2.1.8';
-import { logForAid, ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.8';
-import { haversineNM } from './geo.js?v=2.1.8';
+import { $, el, esc, fmt, ICONS, toast, dialog } from './ui.js?v=2.1.8-6';
+import { photoUrl, satView } from './photo.js?v=2.1.8-6';
+import { lite, DESKTOP } from './netcheck.js?v=2.1.8-6';
+import { flyTo, map } from './map.js?v=2.1.8-6';
+import { api } from './api.js?v=2.1.8-6';
+import * as units from './units.js?v=2.1.8-6';
+import { layers, poiIcon, aidColor } from './map.js?v=2.1.8-6';
+import { loadedItems } from './poi.js?v=2.1.8-6';
+import { logForAid, ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.8-6';
+import { haversineNM } from './geo.js?v=2.1.8-6';
 
 const card = () => $('#detail');
 let current = null;
@@ -38,6 +38,7 @@ export function showDetail(record) {
   if (record.render) {                 // cards with their own layout (aids)
     record.render(body);
     if (record.source) body.append(el('div', { class: 'd-src', text: `Source: ${record.source}` }));
+    body.append(el('div', { class: 'd-report' }, [el('a', { href: '#', text: "Something's wrong? Tell us", onclick: (e) => { e.preventDefault(); reportProblem(record); } })]));
     const pic = hero(record, { photo: false, small: true });
     if (pic) c.append(pic);
     c.append(head, body);
@@ -86,7 +87,11 @@ export function showDetail(record) {
   }
   for (const a of record.actions || []) actions.append(el('button', { class: `btn sm${a.primary ? ' primary' : ''}`, text: a.label, onclick: a.onClick }));
   body.append(actions);
-  if (record.source) body.append(el('div', { class: 'd-src', text: `Source: ${record.source}${record.quality ? ` · ${record.quality}` : ''}` }));
+  const srcs = record.sources || [];
+  if (srcs.length > 1) body.append(el('div', { class: 'd-src confirmed', text: `Confirmed by ${srcs.length} sources: ${srcs.join(', ')}` }));
+  else if (record.source) body.append(el('div', { class: 'd-src', text: `Source: ${record.source}${record.quality ? ` · ${record.quality}` : ''}` }));
+  for (const w of record.warnings || []) body.append(el('div', { class: 'ac-flag info', text: w }));
+  body.append(el('div', { class: 'd-report' }, [el('a', { href: '#', text: "Something's wrong? Tell us", onclick: (e) => { e.preventDefault(); reportProblem(record); } })]));
   if (pic) c.append(pic);
   c.append(head, body);
   c.hidden = false;
@@ -346,6 +351,57 @@ function openGoogleRoute(ramp, aid) {
   document.body.append(a); a.click(); a.remove();
 }
 
+/** Coast Guard notices (discrepancies, temporary changes), NOAA chart differences and this week's Light List changes,
+ *  from the website's checks (tools/aton_notices.py hourly, tools/check_aids.py weekly). */
+async function aidChecks(aid, box) {
+  const r = await api.get('/api/aids/checks', { id: aid.objectid, district: aid.district_id }).catch(() => null);
+  if (!r?.ok) return;
+  for (const n of r.notices || []) {
+    box.append(el('div', { class: 'ac-flag warn' }, [el('b', { text: `Coast Guard: ${n.status}` }),
+      el('span', { class: 'muted small', text: ` · ${n.kind}${n.since ? `, reported ${n.since}` : ''}${n.bnm ? ` · BNM ${n.bnm}` : ''}` })]));
+  }
+  if (r.change) box.append(el('div', { class: 'ac-flag info' }, [el('span', { text: r.change.text }), el('span', { class: 'muted small', text: ` · ${r.change.date}` })]));
+  for (const t of r.chart || []) box.append(el('div', { class: 'ac-flag info' }, [el('span', { text: t }), el('span', { class: 'muted small', text: ' · one of the two may be out of date' })]));
+}
+
+/** Warnings from the weekly place checks (address vs pin, website, phone, agency status). */
+function placeWarnings(t) {
+  const w = [];
+  if (t.address_check === 'far') w.push('The address and the map pin disagree: check before you drive there.');
+  if (t.website_check === 'dead') w.push("The website didn't load at the last check.");
+  if (t.website_check === 'closed') w.push('The website says this place has closed.');
+  if (t.phone_check) w.push("The phone number's area code doesn't match the address: it may be out of date.");
+  return w;
+}
+
+/** "Something's wrong" from a card: a short report to the website (a Cloudflare function stores it for review). */
+const REPORT_URL = DESKTOP ? 'https://cerberusac.dev/api/report' : new URL('/api/report', location.href).href;
+function reportProblem(record) {
+  const text = el('textarea', { rows: 4, maxlength: 2000, style: 'width:100%;box-sizing:border-box',
+    placeholder: 'What is wrong? For example: ramp closed, wrong phone number, light extinguished, hotel gone.' });
+  const status = el('div', { class: 'muted small', style: 'margin-top:6px' });
+  let close = () => {};
+  const send = el('button', { class: 'btn primary', text: 'Send report', onclick: async () => {
+    const msg = text.value.trim();
+    if (msg.length < 4) { status.textContent = 'Say what is wrong first.'; return; }
+    send.disabled = true; status.textContent = 'Sending…';
+    try {
+      const resp = await fetch(REPORT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: record.kind || '', id: String(record.id || record.subtitle || ''), name: record.title || '',
+          lat: record.lat ?? null, lon: record.lon ?? null, text: msg, version: document.body.dataset.version || '' }) });
+      const j = await resp.json().catch(() => ({}));
+      if (!resp.ok || !j.ok) throw new Error(j.error || `HTTP ${resp.status}`);
+      close(); toast('Thanks, your report was sent', 'ok');
+    } catch (err) {
+      send.disabled = false;
+      status.textContent = `Couldn't send it (${err.message}). Use Report a bug in the side bar instead.`;
+    }
+  } });
+  close = dialog(`Something's wrong: ${record.title}`, [
+    el('p', { class: 'muted small', text: 'Reports go to the LightKeeper developer, who checks them and fixes the data. No personal details are sent.' }),
+    text, status, el('div', { class: 'row', style: 'justify-content:flex-start;margin-top:8px' }, [send])], { okText: 'Cancel' });
+}
+
 // Active Broadcast Notices for an aid (set by notices.js, which shows the BNM tab), drawn at the top of its card.
 const aidNotices = { lookup: () => [], banner: null };
 export function setAidNotices(lookup, banner) { aidNotices.lookup = lookup; aidNotices.banner = banner; }
@@ -370,6 +426,9 @@ export function aidRecord(aid, extraActions = []) {
   const render = (body) => {
     const notes = aidNotices.lookup(aid);
     if (notes.length && aidNotices.banner) body.append(aidNotices.banner(notes));
+    const checks = el('div', { class: 'ac-checks' });
+    body.append(checks);
+    aidChecks(aid, checks);
     body.append(glanceTiles(aid));
     const plain = plainCharacteristic(aid.characteristics, aid.aidrange);
     if (plain) body.append(el('div', { class: 'ac-plain', text: plain }));
@@ -459,7 +518,7 @@ function weatherTile(aid) {
     if (o?.ok !== false && o?.station) {
       const parts = [o.temp_f != null ? `${Math.round(o.temp_f)}°F` : null, o.conditions,
         o.wind_kt != null ? `${Math.round(o.wind_kt)} kt ${o.wind_dir || ''}`.trim() : null].filter(Boolean);
-      t.done(parts.join(' · ') || 'No current reading', `${o.station.name}, ${fmt.mi(o.station.distance_mi)}`, o.observed_at);
+      t.done(parts.join(' · ') || 'No current reading', [`${o.station.name}, ${fmt.mi(o.station.distance_mi)}`, o.note].filter(Boolean).join(' · '), o.observed_at);
       return;
     }
     const f = await api.get('/api/weather', q, { timeoutMs: 12000 });
@@ -525,7 +584,8 @@ export function poiRecord(poi, extraActions = []) {
   const t = poi.tags || {};
   const facts = [];
   if (['ramp', 'marina'].includes(poi.kind)) {
-    facts.push(['Surface', t.surface], ['Fee', t.fee], ['Access', t.access], ['Park', t.park], ['Operator', poi.operator], ['Tidal', t.tidal ? 'yes' : '']);
+    facts.push(['Status', t.status], ['Launch lanes', t.lanes], ['Trailer parking', t.trailer_parking], ['Surface', t.surface], ['Fee', t.fee],
+      ['Access', t.access], ['Park', t.park], ['Operator', poi.operator], ['Tidal', t.tidal ? 'yes' : '']);
   } else if (['hotel', 'motel', 'resort', 'campground'].includes(poi.kind)) {
     facts.push(['Brand', t.brand || poi.operator], ['Stars', t.stars], ['Rooms', t.rooms], ['Check-in', t.check_in], ['Check-out', t.check_out]);
   } else if (poi.kind === 'park') {
@@ -544,6 +604,6 @@ export function poiRecord(poi, extraActions = []) {
   const photo = ['ramp', 'marina', 'hotel', 'motel', 'resort', 'campground', 'park', 'dam'].includes(poi.kind);
   const hours = t.opening_hours ? (t.opening_hours === '24/7' ? 'Open 24 hours' : `Hours: ${t.opening_hours}`) : '';
   return { id: poi.id, title: poi.name, kind: poi.kind, lat: poi.lat, lon: poi.lon, address: poi.address, phone: poi.phone || t.phone || t['contact:phone'], website: safeUrl(poi.website || t.website || t['contact:website']),
-    hours, chips, facts, actions: extraActions, source: poi.source, quality: poi.quality, photo };
+    hours, chips, facts, actions: extraActions, source: poi.source, quality: poi.quality, sources: poi.sources || [], photo, warnings: placeWarnings(t) };
 }
 

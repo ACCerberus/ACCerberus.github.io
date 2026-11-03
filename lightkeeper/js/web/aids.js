@@ -1,8 +1,8 @@
 /** Light List in the browser: static per-district tables built by tools/build_aids.py, loaded lazily,
  *  kept in memory and mirrored in IndexedDB so the app keeps working offline. */
 
-import { idbGet, idbSet } from './store.js?v=2.1.8';
-import { parseBbox } from './util.js?v=2.1.8';
+import { idbGet, idbSet } from './store.js?v=2.1.8-6';
+import { parseBbox } from './util.js?v=2.1.8-6';
 
 const DATA_URL = new URL('../../data/', import.meta.url);
 const SLIM = ['objectid', 'lightlistnumber', 'aidname', 'latitude', 'longitude', 'aid_type', 'characteristics', 'waterway', 'district_id', 'color'];
@@ -140,3 +140,15 @@ export async function getAid(objectid) {
 }
 
 export function loadedCount() { let n = 0; for (const t of state.tables.values()) n += t.length; return n; }
+
+/** GET /api/aids/checks?id&district -> Coast Guard notices, NOAA chart differences and this week's change for one aid
+ *  (lightkeeper/data/aton-notices-D<id>.json, hourly; aid-checks-D<id>.json, weekly). */
+export async function checks({ id, district } = {}) {
+  const d = Number(district);
+  if (!d) return { ok: false, notices: [], chart: [], change: null };
+  const key = String(id);
+  const [n, c] = await Promise.all([
+    staticJson(`aton-notices-D${d}.json`, 60 * 60 * 1000).catch(() => null),
+    staticJson(`aid-checks-D${d}.json`, 6 * 60 * 60 * 1000).catch(() => null)]);
+  return { ok: true, notices: n?.items?.[key] || [], notices_at: n?.fetched_at || '', chart: c?.chart?.[key] || [], change: c?.changes?.[key] || null };
+}

@@ -634,6 +634,8 @@ def crawl_district(district: dict, data_dir: Path, client: Overpass, cell: float
 
 
 def write_district(path: Path, records: list[dict]) -> int:
+    # Last line of defence for every build step: never publish a hostel, whatever source named it.
+    records[:] = [r for r in records if not (r.get("kind") in LODGING_KINDS and is_hostel(r.get("name", ""), r.get("tags") or {}))]
     def dump(recs: list[dict]) -> bytes:
         return json.dumps(recs, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     data = dump(records)

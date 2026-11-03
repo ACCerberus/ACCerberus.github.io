@@ -59,7 +59,10 @@ def main() -> int:
         out_districts[did] = {"name": name, "aids": (man.get("counts") or {}).get(did, 0), "dams": dams, **summarize(places)}
     health_path = DATA / "health.json"
     health = json.loads(health_path.read_text("utf-8")) if health_path.exists() else None
+    old_path = DATA / "stats.json"
+    old = json.loads(old_path.read_text("utf-8")) if old_path.exists() else {}
     stats = {
+        "spot_check": old.get("spot_check"),      # kept between runs; written by tools/spotcheck.py score
         "built_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "light_list_built_at": man.get("built_at"),
         "places_built_at": man.get("places_checked_at"),

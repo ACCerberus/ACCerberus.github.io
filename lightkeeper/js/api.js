@@ -4,14 +4,14 @@
  *  settings from localStorage, trip plans from the in-page planner. Desktop-only endpoints (tile cache, pre-cache, backup, open file) answer
  *  `{ok:false}` quietly. */
 
-import * as aids from './web/aids.js?v=2.1.8';
-import * as poi from './web/poi.js?v=2.1.8';
-import * as water from './web/water.js?v=2.1.8';
-import * as weather from './web/weather.js?v=2.1.8';
-import * as discrep from './web/discrepancies.js?v=2.1.8';
-import * as bnm from './web/bnm.js?v=2.1.8';
-import * as tripplan from './web/tripplan.js?v=2.1.8';
-import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.1.8';
+import * as aids from './web/aids.js?v=2.1.8-6';
+import * as poi from './web/poi.js?v=2.1.8-6';
+import * as water from './web/water.js?v=2.1.8-6';
+import * as weather from './web/weather.js?v=2.1.8-6';
+import * as discrep from './web/discrepancies.js?v=2.1.8-6';
+import * as bnm from './web/bnm.js?v=2.1.8-6';
+import * as tripplan from './web/tripplan.js?v=2.1.8-6';
+import { latLonArgs, parseBbox, validateCoords } from './web/util.js?v=2.1.8-6';
 
 export const VERSION = '2.1.8';
 const LS_SETTINGS = 'lk2.web.settings';
@@ -82,6 +82,7 @@ async function route(method, path, params = {}, body = {}) {
       return aids.districts();
     case 'aids':
       if (sub === 'changes') return { ok: true, run_at: '', summary: { added: 0, removed: 0, moved: 0, changed: 0 }, items: [] };
+      if (sub === 'checks') return aids.checks(params);
       if (sub) { const aid = await aids.getAid(sub); if (!aid) throw new Error(`Aid ${sub} not found`); return aid; }
       return aids.query(params);
     case 'sync':

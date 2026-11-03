@@ -36,8 +36,14 @@ jobs:
       - name: Official USCG sector areas (fills aids the Light List leaves without a sector)
         run: python tools/build_sectors.py || echo "sector areas unavailable; keeping the previous file"
 
+      - name: Keep last week's Light List for the change check
+        run: mkdir -p /tmp/prev-aids && cp lightkeeper/data/aids-D*.json /tmp/prev-aids/
+
       - name: Build Light List data
         run: python tools/build_aids.py
+
+      - name: Compare with NOAA charts and last week (stops here if a district lost many aids at once)
+        run: python tools/check_aids.py --prev /tmp/prev-aids
 
       # Places crawl is paused: the public Overpass servers time out from GitHub's runners. It runs only when
       # started by hand with district ids; the weekly run refreshes the Light List only.

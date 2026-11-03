@@ -28,9 +28,11 @@ jobs:
         run: python tools/build_bnm.py
       - name: Fetch NOAA buoy readings
         run: python tools/build_ndbc.py
+      - name: USCG aid discrepancies and temporary changes
+        run: python tools/aton_notices.py || echo "notices layer unavailable; keeping the previous files"
       - name: Commit changes
         run: |
-          git add lightkeeper/data/bnm-*.json lightkeeper/data/ndbc-latest.json
+          git add lightkeeper/data/bnm-*.json lightkeeper/data/ndbc-latest.json lightkeeper/data/aton-notices-*.json
           if git diff --cached --quiet; then
             echo "No new notices."
             exit 0

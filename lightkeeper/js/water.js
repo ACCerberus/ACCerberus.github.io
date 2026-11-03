@@ -1,15 +1,16 @@
 /** Water: NOAA tide/current stations, USGS gages and USACE dams in view; readings on click. */
 
-import { api } from './api.js?v=2.1.8';
-import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.1.8';
-import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.1.8';
-import { showDetail, poiRecord } from './detail.js?v=2.1.8';
-import { haversineMi } from './geo.js?v=2.1.8';
-import { getDistrict, districtAt } from './aids.js?v=2.1.8';
-import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.1.8';
+import { api } from './api.js?v=2.1.8-6';
+import { el, fmt, toast, panelSkeleton, onPanelChange, debounce, store, showProgress, hideProgress } from './ui.js?v=2.1.8-6';
+import { map, layers, poiIcon, viewportBbox } from './map.js?v=2.1.8-6';
+import { showDetail, poiRecord } from './detail.js?v=2.1.8-6';
+import { haversineMi } from './geo.js?v=2.1.8-6';
+import { getDistrict, districtAt } from './aids.js?v=2.1.8-6';
+import { timeChart, interpolateExtremes, parseTime } from './chart.js?v=2.1.8-6';
 
 const TYPES = [['tide', 'Tides'], ['current', 'Currents'], ['gage', 'USGS gages'], ['dam', 'Dams']];
 const MIN_ZOOM = 7;
+const OUT_OF_RANGE = 'reading out of range';     // shown instead of an impossible reading (sanity limits)
 const DAM_MIN_ZOOM = 9;          // the Dams button: dam markers from regional zoom in (thousands of dams per district)
 const state = { types: new Set(store.get('waterTypes', ['tide', 'gage', 'dam'])), items: new Map(), listEl: null, active: false,
   hover: store.get('waterHover', false), dams: store.get('showDams', true) };
@@ -122,6 +123,7 @@ async function open(poi) {
     const now = Date.now();
     if (poi.kind === 'tide') {
       if (d.water_temp_f != null) rec.facts.push(['Water temp', `${d.water_temp_f} °F`]);
+      else if (d.water_temp_note) rec.facts.push(['Water temp', d.water_temp_note]);
       const ext = (d.predictions || []).map((p) => ({ t: parseTime(p.time), v: +p.height_ft, type: p.type })).filter((p) => !Number.isNaN(p.t));
       const chart = timeChart(interpolateExtremes(ext), ext.map((p) => ({ t: p.t, v: p.v, label: `${p.type[0]} ${p.v.toFixed(1)} ft` })), { unit: 'ft', now, title: 'Tide height today' });
       rec.facts.push([`Tides ${fmt.date(d.date) || 'today'}`, chart]);
@@ -130,31 +132,62 @@ async function open(poi) {
       if (d.datum) rec.facts.push(['Datum', d.datum]);
     } else if (poi.kind === 'gage') {
       const r = d.readings || {};
-      rec.facts.push(['Gage height', r.gage_height_ft != null ? `${r.gage_height_ft} ft` : '—'], ['Flow', r.discharge_cfs != null ? `${fmt.int(r.discharge_cfs)} cfs` : '—'], ['Water temp', r.water_temp_f != null ? `${r.water_temp_f} °F` : '—'], ['Updated', r.time || r.times?.gage || '']);
+      const bad = new Set(r.out_of_range || []);
+      // An impossible reading is never shown: the previous plausible one (marked) or "reading out of range".
+      const val = (k, text) => (r[k] != null ? text() + (bad.has(k) && !r.sources?.[k] ? ' (newest reading out of range)' : '') : bad.has(k) ? OUT_OF_RANGE : '—');
+      rec.facts.push(
+        ['Gage height', val('gage_height_ft', () => `${r.gage_height_ft} ft${r.sources?.gage_height_ft ? ` (${r.sources.gage_height_ft})` : ''}`)],
+        ['Flow', val('discharge_cfs', () => `${fmt.int(r.discharge_cfs)} cfs`)],
+        ['Water temp', val('water_temp_f', () => `${r.water_temp_f} °F`)],
+        ['Updated', d.newest_time ? `${fmt.ago(d.newest_time)}${d.stale ? ' — stale, over 24 h old' : ''}` : ''],
+      );
+      const n = d.nwps;
+      if (n) {
+        const fs = n.flood_stages_ft || {};
+        const stages = ['action', 'minor', 'moderate', 'major'].filter((k) => fs[k] != null).map((k) => `${fmt.title(k)} ${fs[k]} ft`).join(' · ');
+        const now = n.flood_category && !/^(no_flooding|not_defined|obs_not_current)$/.test(n.flood_category) ? ` — now ${n.flood_category.replace(/_/g, ' ')}` : '';
+        if (stages) rec.facts.push(['Flood stages', stages + now]);
+        const f = n.forecast;
+        if (f) {
+          const when = new Date(f.peak_time);
+          rec.facts.push(['NWS forecast', `Peak ${f.peak_ft} ft ${fmt.date(f.peak_time)} ${when.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}${f.rising_at_end ? ' (still rising at the end of the forecast)' : ''}`]);
+        }
+        const o = n.observed || {};
+        const c = n.comparison;
+        if (o.stage_ft != null) rec.facts.push(['NWS observed', `${o.stage_ft} ft, ${fmt.ago(o.time)}${o.stale ? ' — stale, over 24 h old' : ''}${c?.disagree ? ` — differs from USGS by ${Math.abs(c.diff_ft).toFixed(2)} ft` : ''}`]);
+        rec.facts.push(['NWS gauge', el('a', { href: n.url, target: '_blank', rel: 'noopener', text: `${n.name} (${n.lid})` })]);
+      }
       const hist = (d.history_7d || []).map((h) => ({ t: parseTime(h.time), v: h.value })).filter((h) => !Number.isNaN(h.t) && h.v != null);
       if (hist.length > 1) {
         const last = hist[hist.length - 1];
         rec.facts.push(['Level, last 7 days', timeChart(hist, [{ t: last.t, v: last.v, label: `${last.v.toFixed(2)} ft now` }], { unit: 'ft', now, title: 'Gage height, 7 days', fmtV: (v) => `${v.toFixed(2)} ft` })]);
       }
       if (d.stats_7d) rec.facts.push(['7-day range', `${d.stats_7d.min_ft} – ${d.stats_7d.max_ft} ft (mean ${d.stats_7d.mean_ft})`]);
+      if (d.note) rec.facts.push(['Note', d.note]);
     } else if (poi.kind === 'dam') {
       const NA = 'No data available';
       const live = ['pool_elevation_ft', 'tailwater_ft', 'inflow_cfs', 'outflow_cfs', 'storage_acft'].some((k) => d[k] != null);
       if (!live) {
         rec.facts.push(['Live data', NA], ['Operator office', d.office]);
       } else {
-        const ft = (v) => (v != null ? `${Number(v).toFixed(1)} ft` : NA);
-        const cfs = (v) => (v != null ? `${fmt.int(Math.round(v))} cfs` : NA);
-        const releasing = d.outflow_cfs == null ? NA : d.outflow_cfs > 0 ? `Yes — ${cfs(d.outflow_cfs)} going downstream` : 'No — gates closed';
+        const bad = new Set(d.out_of_range || []);
+        const usbr = d.source === 'Bureau of Reclamation';
+        const none = (k) => (bad.has(k) ? OUT_OF_RANGE : NA);
+        // Reclamation readings are daily and arrive on different days, so each carries its own date.
+        const at = (k) => (usbr && d.series?.[k]?.time ? ` · ${fmt.date(d.series[k].time)}` : '');
+        const ft = (v, k) => (v != null ? `${Number(v).toFixed(1)} ft` : none(k));
+        const cfs = (v, k) => (v != null ? `${fmt.int(Math.round(v))} cfs` : none(k));
+        const releasing = d.outflow_cfs == null ? none('outflow_cfs') : d.outflow_cfs > 0 ? `Yes — ${cfs(d.outflow_cfs)} going downstream${at('outflow_cfs')}` : `No — gates closed${at('outflow_cfs')}`;
         const head = d.pool_elevation_ft != null && d.tailwater_ft != null ? `${(d.pool_elevation_ft - d.tailwater_ft).toFixed(1)} ft drop across the dam` : '';
         rec.facts.push(
           ['Releasing water', releasing],
-          ['Water above dam', ft(d.pool_elevation_ft) + (d.pool_elevation_ft != null ? ' (pool / forebay)' : '')],
-          ['Water below dam', ft(d.tailwater_ft) + (d.tailwater_ft != null ? ' (tailwater)' : '')],
+          ['Water above dam', ft(d.pool_elevation_ft, 'pool_elevation_ft') + (d.pool_elevation_ft != null ? ` (pool / forebay)${at('pool_elevation_ft')}` : '')],
+          ['Water below dam', usbr && d.tailwater_ft == null ? '' : ft(d.tailwater_ft, 'tailwater_ft') + (d.tailwater_ft != null ? ' (tailwater)' : '')],
           ['Difference', head],
-          ['Flowing in', cfs(d.inflow_cfs)],
-          ['Storage', d.storage_acft != null ? `${fmt.int(d.storage_acft)} ac-ft` : NA],
+          ['Flowing in', usbr && d.inflow_cfs == null && !bad.has('inflow_cfs') ? '' : cfs(d.inflow_cfs, 'inflow_cfs') + (d.inflow_cfs != null ? at('inflow_cfs') : '')],
+          ['Storage', d.storage_acft != null ? `${fmt.int(d.storage_acft)} ac-ft${at('storage_acft')}` : none('storage_acft')],
           ['Operator office', d.office],
+          ['Data source', usbr ? `Bureau of Reclamation${d.usbr_location?.name ? ` — ${d.usbr_location.name}` : ''}` : ''],
           ['Updated', d.updated ? fmt.ago(d.updated) : ''],
         );
       }

@@ -1,0 +1,23 @@
+{
+  "about": "Places checked by hand. tools/check_known.py fails the weekly places build when one goes missing, so a bad source or a code change can't quietly break them. Add places you know: kind (ramp, marina, lodging = hotel/motel/resort/campground, dam), a name pattern (regular expression, case-insensitive; empty = any name), a point and how close it must be (miles).",
+  "places": [
+    {"label": "Kettle Falls launch (FDR Lake day 1)", "district": 13, "kind": ["ramp", "marina"], "name": "Kettle Falls", "lat": 48.599, "lon": -118.123, "within_mi": 1.0},
+    {"label": "Gifford Ferry launch (FDR Lake day 1-2)", "district": 13, "kind": ["ramp", "marina"], "name": "Gifford", "lat": 48.288, "lon": -118.145, "within_mi": 1.0},
+    {"label": "Two Rivers Marina (FDR Lake day 2-3)", "district": 13, "kind": ["ramp", "marina"], "name": "Two Rivers", "lat": 47.906, "lon": -118.327, "within_mi": 1.0},
+    {"label": "Seven Bays launch (FDR Lake day 4)", "district": 13, "kind": ["ramp", "marina"], "name": "Seven Bays|7 Bays", "lat": 47.854, "lon": -118.341, "within_mi": 1.0},
+    {"label": "Keller Ferry launch (FDR Lake day 5)", "district": 13, "kind": ["ramp", "marina"], "name": "Keller", "lat": 47.927, "lon": -118.693, "within_mi": 1.0},
+    {"label": "A ramp at Crescent Bay, Grand Coulee (FDR Lake day 5 recovery)", "district": 13, "kind": ["ramp", "marina"], "name": "", "lat": 47.946, "lon": -118.993, "within_mi": 1.0},
+    {"label": "Comfort Inn, Colville (FDR Lake north)", "district": 13, "kind": ["lodging"], "name": "Comfort Inn", "lat": 48.555, "lon": -117.919, "within_mi": 1.5},
+    {"label": "Selkirk Motel, Colville", "district": 13, "kind": ["lodging"], "name": "Selkirk", "lat": 48.542, "lon": -117.905, "within_mi": 1.5},
+    {"label": "White Willow, Fruitland (FDR Lake middle)", "district": 13, "kind": ["lodging"], "name": "White ?Willow", "lat": 47.97, "lon": -118.30, "within_mi": 2.0},
+    {"label": "Grand Coulee Dam", "district": 13, "kind": ["dam"], "name": "Grand Coulee", "lat": 47.96, "lon": -118.98, "within_mi": 3.0},
+    {"label": "Ice Harbor Dam (Snake)", "district": 13, "kind": ["dam"], "name": "Ice Harbor", "lat": 46.25, "lon": -118.88, "within_mi": 3.0},
+    {"label": "Lower Monumental Dam (Snake)", "district": 13, "kind": ["dam"], "name": "Lower Monumental", "lat": 46.56, "lon": -118.54, "within_mi": 3.0},
+    {"label": "Little Goose Dam (Snake)", "district": 13, "kind": ["dam"], "name": "Little Goose", "lat": 46.59, "lon": -118.03, "within_mi": 3.0},
+    {"label": "Lower Granite Dam (Snake)", "district": 13, "kind": ["dam"], "name": "Lower Granite", "lat": 46.66, "lon": -117.43, "within_mi": 3.0},
+    {"label": "McNary Dam (Columbia)", "district": 13, "kind": ["dam"], "name": "McNary", "lat": 45.93, "lon": -119.30, "within_mi": 3.0},
+    {"label": "John Day Dam (Columbia)", "district": 13, "kind": ["dam"], "name": "John Day", "lat": 45.72, "lon": -120.69, "within_mi": 3.0},
+    {"label": "The Dalles Dam (Columbia)", "district": 13, "kind": ["dam"], "name": "The Dalles", "lat": 45.62, "lon": -121.13, "within_mi": 3.0},
+    {"label": "Bonneville Dam (Columbia)", "district": 13, "kind": ["dam"], "name": "Bonneville", "lat": 45.64, "lon": -121.94, "within_mi": 3.0}
+  ]
+}

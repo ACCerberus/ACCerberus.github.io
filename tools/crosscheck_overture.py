@@ -47,9 +47,11 @@ KIND = {"hotel": "hotel", "motel": "motel", "resort": "resort", "lodge": "hotel"
 # shops under lodging categories. Fraternal lodges (Elks, Eagles...) are never lodging.
 LODGING_NAME = re.compile(r"\b(hotel|motel|inn|suites?|lodge|lodging|resort|motor|cabins?|cottages?|marina|harbou?r|moorage|"
                           r"yacht|boat|landing|holiday inn|best western|super 8|days inn|la quinta|hampton|hilton|marriott|"
-                          r"comfort|quality|travelodge|red lion|econo|sleep inn|choice|wyndham|sandman|courtyard|residence)\b", re.I)
+                          r"comfort|quality|travelodge|red lion|econo|sleep inn|choice|wyndham|sandman|courtyard|residence|vacation rentals?)\b", re.I)
 CLUB_NAME = re.compile(r"\b(elks?|bpoe|eagles|foe|moose|masonic|mason|odd fellows|ioof|legion|vfw|grange|fraternal|lions|"
                        r"rotary|kiwanis|church|ministr|furniture|realty|apartments?|storage|school|camp and retreat|boat ramp|launch|lodge (no\.?|#) ?\d+)\b", re.I)
+NOT_MARINA = re.compile(r"restaurant|bar|cafe|food|grill|pizza|shop|store|salon|church|school|apartment|real_estate|bank|"
+                        r"doctor|dentist|clinic|hospital|insurance|lawyer|office|hotel|motel|condo|residential", re.I)
 STOP = re.compile(r"\b(the|hotel|motel|inn|suites?|resort|lodge|marina|and|&|by|at|of)\b")
 
 
@@ -84,7 +86,7 @@ def query(con, release: str, cells: set[tuple[int, int]]) -> list[dict]:
                addresses[1].freeform, addresses[1].locality, addresses[1].region, addresses[1].postcode, addresses[1].country,
                operating_status, (bbox.ymin + bbox.ymax) / 2, (bbox.xmin + bbox.xmax) / 2
         FROM read_parquet('s3://{BUCKET}/release/{release}/theme=places/type=place/*', hive_partitioning=1)
-        WHERE bbox.xmin BETWEEN {w} AND {e} AND bbox.ymin BETWEEN {s} AND {n} AND taxonomy.primary IN ({cats})
+        WHERE bbox.xmin BETWEEN {w} AND {e} AND bbox.ymin BETWEEN {s} AND {n} AND (taxonomy.primary IN ({cats}) OR names.primary ILIKE '%marina%')
     """).fetchall()
     out = []
     for (oid, name, cat, conf, phones, webs, street, city, region, postcode, country, status, lat, lon) in rows:
@@ -92,6 +94,10 @@ def query(con, release: str, cells: set[tuple[int, int]]) -> list[dict]:
         if not name or (country and country != "US") or not bo.near_aids(el, cells):
             continue
         address = ", ".join(x for x in (street, city, " ".join(x for x in (region, postcode) if x)) if x)
+        if cat not in KIND:                       # a "... Marina" Overture filed under another category
+            if NOT_MARINA.search(cat or ""):
+                continue
+            cat = "marina"
         kind = KIND[cat] if KIND[cat] in ("marina", "campground") else bp.lodging_kind(name, {"tourism": "motel"} if cat == "motel" else {})
         out.append({"id": oid, "name": name, "kind": kind, "confidence": conf or 0, "status": status or "",
                     "phone": bp.clean_phone((phones or [""])[0]), "website": (webs or [""])[0] or "",
@@ -131,7 +137,7 @@ def crosscheck(places: list[dict], overture: list[dict]) -> tuple[list[dict], di
             kept.append(p)
             continue
         used.add(best["id"])
-        if best["status"] == "permanently_closed":
+        if best["status"] == "permanently_closed" or bp.is_hostel(best["name"], {}):
             counts["closed"] += 1
             continue
         counts["confirmed"] += 1

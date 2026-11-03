@@ -1,0 +1,31 @@
+name: LightKeeper spot-check
+
+# Monthly: opens an issue with 20 random places per district to check by hand against Google Maps
+# (tools/spotcheck.py). Tick the ones that are right and close the issue; the daily health job turns it into a
+# measured accuracy on the Data health page.
+
+on:
+  schedule:
+    - cron: "0 15 1 * *"   # 1st of the month, 15:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  open-issue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Open the spot-check issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python tools/spotcheck.py new > body.md
+          gh label create spot-check --color 0E8A16 --description "Monthly places accuracy check" 2>/dev/null || true
+          gh issue create --title "Places spot-check $(date -u +%Y-%m)" --label spot-check --body-file body.md

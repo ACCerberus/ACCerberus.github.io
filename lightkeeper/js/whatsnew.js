@@ -1,6 +1,6 @@
 /** "What's new" panel: the newest version in full, every earlier version in a dropdown, and the V1 history. */
 
-import { el, fmt, panelSkeleton } from './ui.js?v=2.1.8';
+import { el, fmt, panelSkeleton } from './ui.js?v=2.1.8-6';
 
 export async function init(view) {
   const { body } = panelSkeleton(view, "What's new", 'Recent changes and fixes, in plain language.');

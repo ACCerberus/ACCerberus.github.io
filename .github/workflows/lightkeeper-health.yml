@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  issues: read
 
 concurrency:
   group: lightkeeper-health
@@ -31,6 +32,11 @@ jobs:
       - name: Data stats for the Data health page
         if: always()
         run: python tools/build_stats.py
+      - name: Score the newest monthly spot-check
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python tools/spotcheck.py score || echo "spot-check score unavailable"
       - name: Save results
         if: always()
         run: |

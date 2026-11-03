@@ -2,16 +2,19 @@
  *  dams from the USACE inventory and OpenStreetMap with live USACE CWMS readings (the CWMS Data API allows web pages), water
  *  temperature and NWS flood alerts. Same response shapes as the desktop endpoints.
  *
- *  Backup chain for tides: NOAA (requested station → ±1 day window → next-nearest station) → Open-Meteo Marine. */
+ *  Backup chain for tides: NOAA (requested station → ±1 day window → next-nearest station) → Open-Meteo Marine.
+ *  River gauges add NOAA NWPS (flood stages, NWS forecast, a second observed stage); dams USACE has no readings for
+ *  fall back to the Bureau of Reclamation's RISE API. Impossible readings are dropped first (util.js READING_LIMITS).
+ *  Reclamation's PN Hydromet (used by the desktop for Grand Coulee & co.) sends no CORS header, so it is desktop-only. */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.8';
-import { cached, idbSet, MIN, HOUR, DAY } from './store.js?v=2.1.8';
-import { nearestSaved } from './offline-store.js?v=2.1.8';
-import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET } from './util.js?v=2.1.8';
-import { openMeteoGet, pointKey } from './weather.js?v=2.1.8';
-import * as ndbc from './ndbc.js?v=2.1.8';
-import { reverseGeocode } from './poi.js?v=2.1.8';
-import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.8';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.8-6';
+import { cached, idbSet, MIN, HOUR, DAY } from './store.js?v=2.1.8-6';
+import { nearestSaved } from './offline-store.js?v=2.1.8-6';
+import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET, inRange, cleanStageSeries, OUT_OF_RANGE } from './util.js?v=2.1.8-6';
+import { openMeteoGet, pointKey } from './weather.js?v=2.1.8-6';
+import * as ndbc from './ndbc.js?v=2.1.8-6';
+import { reverseGeocode } from './poi.js?v=2.1.8-6';
+import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.8-6';
 
 const NOAA_MDAPI = 'https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json';
 const NOAA_DATAGETTER = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
@@ -161,8 +164,10 @@ async function tideDetail(p, day) {
     const code = noaaCode(station);
     let predictions;
     try { predictions = await tidePredictions(code, day); } catch (err) { console.debug('[lightkeeper] NOAA tide failed for', station.id, err?.message); continue; }
-    const [temp, tempTime] = await noaaWaterTemp(code, day);
-    return withBackup({ ok: true, date: day, predictions, water_temp_f: temp, water_temp_time: tempTime, datum: NOAA_TIDE_DATUM, source: SOURCE_NOAA, backup: false }, p, station);
+    const [raw, tempTime] = await noaaWaterTemp(code, day);
+    const temp = raw != null && inRange('water_temp_f', raw) ? raw : null;
+    return withBackup({ ok: true, date: day, predictions, water_temp_f: temp, water_temp_time: tempTime, datum: NOAA_TIDE_DATUM, source: SOURCE_NOAA, backup: false,
+      water_temp_note: raw != null && temp == null ? OUT_OF_RANGE : null }, p, station);
   }
   return marineTideDetail(p, day);
 }
@@ -212,8 +217,10 @@ async function marineTideDetail(p, day) {
   const hourly = await marineHourly(p.lat, p.lon);
   const predictions = marineExtrema(hourly.time || [], hourly.sea_level_height_msl || []);
   const sameDay = predictions.filter((x) => x.time.startsWith(day));
-  const [temp, tempTime] = marineSeaTemp(hourly);
-  return { ok: true, poi: p, date: day, predictions: sameDay.length ? sameDay : predictions, water_temp_f: temp, water_temp_time: tempTime, datum: MARINE_DATUM, source: SOURCE_MARINE_BACKUP, backup: true, backup_station: false };
+  const [raw, tempTime] = marineSeaTemp(hourly);
+  const temp = raw != null && inRange('water_temp_f', raw) ? raw : null;
+  return { ok: true, poi: p, date: day, predictions: sameDay.length ? sameDay : predictions, water_temp_f: temp, water_temp_time: tempTime, datum: MARINE_DATUM, source: SOURCE_MARINE_BACKUP, backup: true, backup_station: false,
+    water_temp_note: raw != null && temp == null ? OUT_OF_RANGE : null };
 }
 
 /* ── USGS NWIS ── */
@@ -238,19 +245,29 @@ function parseUsgs(data) {
   return sites;
 }
 const TAG_FOR_PARAM = { [P_GAGE]: 'gage_height_ft', [P_FLOW]: 'discharge_cfs', [P_TEMP]: 'water_temp_f' };
+const cleanStage = (site) => cleanStageSeries(site.series[P_GAGE] || []);
+/** [readings, times, outOfRange]: impossible values dropped (a stage glitch falls back to the previous plausible stage). */
 function usgsReadings(site) {
-  const readings = {}; const times = {};
+  const readings = {}; const times = {}; const dropped = [];
   for (const [param, tag] of Object.entries(TAG_FOR_PARAM)) {
     let [value, when] = site.latest[param] || [null, ''];
-    if (value != null) value = param === P_TEMP ? cToF(value) : round(value, 2);
+    if (value != null && param === P_GAGE) {
+      const stage = cleanStage(site);
+      if (!stage.length || stage[stage.length - 1].time !== when) dropped.push(tag);
+      [value, when] = stage.length ? [round(stage[stage.length - 1].value, 2), stage[stage.length - 1].time] : [null, ''];
+    } else if (value != null) {
+      value = param === P_TEMP ? cToF(value) : round(value, 2);
+      if (!inRange(param === P_TEMP ? 'water_temp_f' : 'flow_cfs', value)) { dropped.push(tag); value = null; when = ''; }
+    }
     readings[tag] = value; times[tag] = when;
   }
-  return [readings, times];
+  return [readings, times, dropped];
 }
 function usgsPoi(site) {
-  const [readings, times] = usgsReadings(site);
+  const [readings, times, dropped] = usgsReadings(site);
   const tags = Object.fromEntries(Object.entries(readings).filter(([, v]) => v != null));
   tags.times = Object.fromEntries(Object.entries(times).filter(([, v]) => v));
+  if (dropped.length) tags.out_of_range = dropped;
   return poi(`usgs:${site.site}`, 'gage', site.name, site.lat, site.lon, SOURCE_USGS, { operator: 'USGS', website: `${USGS_SITE_HOME}${site.site}/`, tags });
 }
 function usgsBboxParam([s, w, n, e]) {
@@ -267,12 +284,126 @@ async function gageDetail(siteCode) {
   const sites = parseUsgs(await usgsFetch(`usgs:site:${siteCode}:P7D`, usgsUrl({ sites: siteCode, parameterCd: USGS_PARAMS, period: 'P7D', siteStatus: 'all' })));
   const site = sites[siteCode];
   if (!site) return { ok: false, error: `USGS site ${siteCode} not found or offline` };
-  const [readings, times] = usgsReadings(site);
+  const [readings, times, dropped] = usgsReadings(site);
   readings.times = times;
-  const history = (site.series[P_GAGE] || []).map((p) => ({ time: p.time, value: round(p.value, 2) }));
+  readings.out_of_range = dropped;
+  const history = cleanStage(site).map((p) => ({ time: p.time, value: round(p.value, 2) }));
   const values = history.map((h) => h.value);
   const stats = values.length ? { min_ft: round(Math.min(...values), 2), max_ft: round(Math.max(...values), 2), mean_ft: round(values.reduce((a, b) => a + b, 0) / values.length, 2) } : null;
-  return { ok: true, poi: usgsPoi(site), readings, history_7d: history, stats_7d: stats };
+  const detail = { ok: true, poi: usgsPoi(site), readings, history_7d: history, stats_7d: stats, note: null };
+  let nwps = null; let late = false;
+  try {
+    nwps = await Promise.race([nwpsForSite(siteCode, site.name, site.lat, site.lon),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), NWPS_BUDGET_MS))]);
+  } catch (err) { late = err?.message === 'timeout'; console.debug('[lightkeeper] NWPS unavailable:', err?.message); }
+  return attachNwps(detail, nwps, late, history);
+}
+
+/* ── NOAA National Water Prediction Service (second source for river gauges; the API sends CORS *) ── */
+const NWPS = 'https://api.water.noaa.gov/nwps/v1';
+const NWPS_PAGE = 'https://water.noaa.gov/gauges/';
+const NWPS_SEARCH_DEG = 0.05;
+const NWPS_MATCH_MI = 0.5;
+const NWPS_NAME_MATCH_MI = 3;
+const NWPS_BUDGET_MS = 8000;
+const NWPS_DISAGREE_FT = 0.5;
+const NWPS_DISAGREE_FRACTION = 0.1;
+const NWPS_COMPARE_WINDOW_MS = 2 * HOUR;
+const STALE_MS = DAY;
+const NWPS_STOP = new Set(['river', 'r', 'creek', 'cr', 'at', 'near', 'nr', 'below', 'blw', 'above', 'abv', 'the', 'of', 'and']);
+const nwpsWords = (name) => new Set(String(name || '').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w && !NWPS_STOP.has(w)));
+const nwpsValue = (v) => { const n = toNumber(v); return n == null || n <= -999 ? null : n; };
+const isStale = (iso) => { const t = Date.parse(iso || ''); return Number.isFinite(t) && Date.now() - t > STALE_MS; };
+async function nwpsGaugesNear(lat, lon) {
+  const clat = round(lat, 2); const clon = round(lon, 2);
+  const { value } = await cached(`nwps:gauges:${clat.toFixed(2)},${clon.toFixed(2)}`, DAY, async () => {
+    const q = qs({ 'bbox.xmin': (clon - NWPS_SEARCH_DEG).toFixed(3), 'bbox.ymin': (clat - NWPS_SEARCH_DEG).toFixed(3), 'bbox.xmax': (clon + NWPS_SEARCH_DEG).toFixed(3), 'bbox.ymax': (clat + NWPS_SEARCH_DEG).toFixed(3), srid: 'EPSG_4326' });
+    const data = await getJson(`${NWPS}/gauges?${q}`, { timeoutMs: 10000 });
+    return (data.gauges || []).filter((g) => g.lid && Number.isFinite(g.latitude) && Number.isFinite(g.longitude))
+      .map((g) => ({ lid: g.lid, name: g.name || g.lid, lat: g.latitude, lon: g.longitude }));
+  });
+  return value || [];
+}
+async function nwpsGauge(lid) {
+  const { value } = await cached(`nwps:gauge:${lid}`, WEATHER_CACHE_TTL, () => getJson(`${NWPS}/gauges/${encodeURIComponent(lid)}`, { timeoutMs: 10000 }));
+  return value || {};
+}
+/** The NWPS gauge that is this USGS gauge: same usgsId, else nearest within 0.5 mi, else within 3 mi with matching river + place words. */
+async function nwpsMatch(siteCode, name, lat, lon) {
+  const near = (await nwpsGaugesNear(lat, lon)).map((g) => ({ ...g, mi: haversineMi(lat, lon, g.lat, g.lon) }))
+    .filter((g) => g.mi <= NWPS_NAME_MATCH_MI).sort((a, b) => a.mi - b.mi).slice(0, 3);
+  if (!near.length) return null;
+  const details = await Promise.all(near.map((g) => nwpsGauge(g.lid).catch(() => null)));
+  const usgs = nwpsWords(name);
+  const rules = [['usgs_id', (g, d) => String(d.usgsId || '').trim() === siteCode], ['distance', (g) => g.mi <= NWPS_MATCH_MI],
+    ['name', (g) => { const w = nwpsWords(g.name); return w.size > 0 && [...w].every((x) => usgs.has(x)); }]];
+  for (const [how, ok] of rules) {
+    for (let i = 0; i < near.length; i += 1) if (details[i] && ok(near[i], details[i])) return { gauge: details[i], mi: near[i].mi, how };
+  }
+  return null;
+}
+async function nwpsForecastPeak(lid) {
+  const { value: series } = await cached(`nwps:forecast:${lid}`, WEATHER_CACHE_TTL, () => getJson(`${NWPS}/gauges/${encodeURIComponent(lid)}/stageflow/forecast`, { timeoutMs: 10000 }));
+  if (!series || String(series.primaryUnits || 'ft').toLowerCase() !== 'ft') return null;
+  const now = Date.now();
+  const pts = (series.data || []).map((d) => ({ t: Date.parse(d.validTime), v: nwpsValue(d.primary) })).filter((d) => Number.isFinite(d.t) && d.v != null && d.t >= now);
+  if (!pts.length) return null;
+  let i = 0;
+  pts.forEach((d, j) => { if (d.v > pts[i].v) i = j; });
+  return { peak_ft: round(pts[i].v, 2), peak_time: new Date(pts[i].t).toISOString(), rising_at_end: i === pts.length - 1, issued: series.issuedTime || '', until: new Date(pts[pts.length - 1].t).toISOString() };
+}
+async function nwpsForSite(siteCode, name, lat, lon) {
+  const m = await nwpsMatch(siteCode, name, lat, lon);
+  if (!m) return null;
+  const g = m.gauge; const lid = g.lid || '';
+  const flood = g.flood || {}; const cats = flood.categories || {};
+  const ftUnits = String(flood.stageUnits || 'ft').toLowerCase() === 'ft';
+  const stages = Object.fromEntries(['action', 'minor', 'moderate', 'major'].map((k) => [k, ftUnits ? nwpsValue(cats[k]?.stage) : null]));
+  const obs = g.status?.observed || {};
+  const stage = String(obs.primaryUnit || 'ft').toLowerCase() === 'ft' ? nwpsValue(obs.primary) : null;
+  const obsTime = stage != null ? obs.validTime || '' : '';
+  let forecast = null;
+  if (g.pedts?.forecast && nwpsValue(g.status?.forecast?.primary) != null) {
+    forecast = await nwpsForecastPeak(lid).catch(() => null);
+    if (forecast) forecast.flood_category = g.status?.forecast?.floodCategory || '';
+  }
+  return { lid, name: g.name || lid, url: `${NWPS_PAGE}${lid}`, distance_mi: round(m.mi, 2), match: m.how, usgs_id: g.usgsId || '',
+    flood_stages_ft: stages, flood_category: stage != null ? obs.floodCategory || '' : '',
+    observed: { stage_ft: stage, time: obsTime, stale: isStale(obsTime) }, forecast, source: 'NOAA NWPS' };
+}
+/** NWPS observed stage vs the USGS reading closest in time (≤ 2 h apart). */
+function stageComparison(obs, usgsPoints) {
+  const t = Date.parse(obs.time || '');
+  if (obs.stage_ft == null || !Number.isFinite(t)) return null;
+  let best = null;
+  for (const p of usgsPoints) { const gap = Math.abs(Date.parse(p.time) - t); if (Number.isFinite(gap) && (!best || gap < best.gap)) best = { gap, p }; }
+  if (!best || best.gap > NWPS_COMPARE_WINDOW_MS) return null;
+  const usgs = best.p.value;
+  const diff = round(obs.stage_ft - usgs, 2);
+  const limit = round(Math.max(NWPS_DISAGREE_FT, NWPS_DISAGREE_FRACTION * Math.abs(usgs)), 2);
+  return { usgs_ft: usgs, usgs_time: best.p.time, nwps_ft: obs.stage_ft, nwps_time: obs.time, diff_ft: diff, limit_ft: limit, disagree: Math.abs(diff) > limit };
+}
+function attachNwps(detail, nwps, late, usgsPoints) {
+  const r = detail.readings; const times = r.times || (r.times = {});
+  const notes = detail.note ? [detail.note] : [];
+  const stamps = Object.values(times).map((v) => Date.parse(v || '')).filter(Number.isFinite);
+  detail.newest_time = stamps.length ? new Date(Math.max(...stamps)).toISOString() : '';
+  detail.stale = stamps.length > 0 && isStale(detail.newest_time);
+  if (detail.stale) notes.push('Newest reading is more than 24 hours old (USGS)');
+  if (nwps) {
+    const o = nwps.observed;
+    if (r.gage_height_ft == null && o.stage_ft != null && !o.stale) {
+      r.gage_height_ft = o.stage_ft; times.gage_height_ft = o.time; r.sources = { gage_height_ft: 'NOAA NWPS' };
+      notes.push('Gauge height from NOAA NWPS: USGS has no plausible current stage');
+    } else {
+      nwps.comparison = stageComparison(o, usgsPoints);
+      if (nwps.comparison?.disagree) notes.push(`NWPS and USGS stages disagree by ${Math.abs(nwps.comparison.diff_ft).toFixed(2)} ft`);
+    }
+    if (o.stale) notes.push('Newest reading is more than 24 hours old (NWPS)');
+  } else if (late) notes.push('NOAA NWPS flood stages timed out');
+  detail.nwps = nwps;
+  detail.note = notes.join('; ') || null;
+  return detail;
 }
 
 /* ── OpenStreetMap dams ── */
@@ -427,7 +558,17 @@ async function cwmsLatest(name, office) {
 }
 
 /** Fill a dam detail with the newest CWMS readings of its matched project (best effort, ~10 s budget). */
+const FLOW_KEYS = new Set(['inflow_cfs', 'outflow_cfs', 'spill_cfs', 'generation_cfs']);
+const DAM_LABELS = { pool_elevation_ft: 'pool elevation', tailwater_ft: 'tailwater', inflow_cfs: 'inflow', outflow_cfs: 'outflow', storage_acft: 'storage', spill_cfs: 'spill', generation_cfs: 'generation' };
+const outOfRangeNote = (keys) => (keys.length ? `${keys.map((k) => DAM_LABELS[k]).join(', ')}: ${OUT_OF_RANGE}` : '');
+/** USACE readings first; when USACE has none for this dam, the Bureau of Reclamation's. */
 async function withCwms(detail, p) {
+  const usace = await withUsace(detail, p);
+  if (usace.data_available) return usace;
+  const usbr = await withReclamation(usace, p).catch((err) => { console.debug('[lightkeeper] Reclamation unavailable:', err?.message); return null; });
+  return usbr || usace;
+}
+async function withUsace(detail, p) {
   const c = await matchCwms(p).catch(() => null);
   if (!c) return { ...detail, note: 'No data available: this dam has no USACE readings.' };
   try {
@@ -445,19 +586,101 @@ async function withCwms(detail, p) {
       names.sort((a, b) => { const x = seriesRank(a); const y = seriesRank(b); return x[0] - y[0] || x[1] - y[1] || a.localeCompare(b); });
       for (const name of names.slice(0, 3)) jobs.push(cwmsLatest(name, c.o).then((r) => (r ? { key, ...r } : null)).catch(() => null));
     }
-    const got = {};
-    for (const r of await Promise.all(jobs)) if (r && (!got[r.key] || r.time > got[r.key].time)) got[r.key] = r;
+    const got = {}; const bad = new Set();
+    for (const r of await Promise.all(jobs)) {
+      if (r && FLOW_KEYS.has(r.key) && !inRange('flow_cfs', r.value)) { bad.add(r.key); continue; }   // another series answers
+      if (r && (!got[r.key] || r.time > got[r.key].time)) got[r.key] = r;
+    }
     if (!got.outflow_cfs && got.spill_cfs && got.generation_cfs) got.outflow_cfs = { value: got.spill_cfs.value + got.generation_cfs.value, time: got.spill_cfs.time };
     const out = { ...detail, office: c.o, location: c.c };
     let updated = '';
     for (const k of DAM_DETAIL_KEYS) if (got[k]) { out[k] = Math.round(got[k].value * 100) / 100; if (got[k].time > updated) updated = got[k].time; }
     out.updated = updated;
     out.data_available = DAM_DETAIL_KEYS.some((k) => out[k] != null);
-    out.note = out.data_available ? '' : 'No data available: no recent USACE readings for this dam.';
+    out.out_of_range = [...bad].filter((k) => !got[k]).sort();
+    out.source = out.data_available ? 'USACE CWMS' : '';
+    out.note = [out.data_available ? '' : 'No data available: no recent USACE readings for this dam.', outOfRangeNote(out.out_of_range)].filter(Boolean).join('; ');
     return out;
   } catch {
     return { ...detail, office: c.o, note: 'No data available right now (USACE data service did not answer).' };
   }
+}
+
+/* ── Bureau of Reclamation RISE (keyless JSON:API; reflects the page's Origin for CORS) ──
+   Locations with reservoir elevation / storage / release data (~230, three pages) are cached for a week; a dam is matched to
+   the nearest within 3 mi (preferring a shared name word), then the newest plausible reading per value is read. */
+const RISE = 'https://data.usbr.gov/rise/api';
+const RISE_MATCH_MI = 3;
+const RISE_LOOKBACK_DAYS = 10;
+const RISE_PARAMS = { pool_elevation_ft: [1748, 2, 1834], storage_acft: [1739, 3], outflow_cfs: [1814, 1830, 18], inflow_cfs: [1749, 12] };
+const RISE_GROUPS = [1, 2, 10];
+const riseUrl = (path, params) => `${RISE}/${path}?${Object.entries(params).flatMap(([k, v]) => (Array.isArray(v) ? v : [v]).map((x) => `${encodeURIComponent(k)}=${encodeURIComponent(x)}`)).join('&')}`;
+let riseList = null;
+function riseLocations() {
+  riseList ||= cached('rise:locations', 7 * DAY, async () => {
+    const found = [];
+    for (let page = 1; page <= 5; page += 1) {
+      const data = await getJson(riseUrl('location', { 'parameterGroupId[]': RISE_GROUPS, itemsPerPage: 100, page }), { timeoutMs: 15000 });
+      const items = data.data || [];
+      for (const it of items) {
+        const a = it.attributes || {}; const c = a.locationCoordinates || {};
+        if (c.type !== 'Point' || a._id == null) continue;
+        const [lon, lat] = (c.coordinates || []).map(Number);
+        if (!validateCoords(lat, lon)) continue;
+        found.push({ id: a._id, name: a.locationName || '', lat, lon, url: `https://data.usbr.gov/location/${a._id}` });
+      }
+      if (!items.length || page * 100 >= Number(data.meta?.totalItems || 0)) break;
+    }
+    return found;
+  }).then((r) => r.value || []).catch(() => { riseList = null; return []; });
+  return riseList;
+}
+async function riseMatch(p) {
+  const near = (await riseLocations()).map((r) => ({ ...r, mi: haversineMi(p.lat, p.lon, r.lat, r.lon) })).filter((r) => r.mi <= RISE_MATCH_MI).sort((a, b) => a.mi - b.mi);
+  if (!near.length) return null;
+  const want = tokens(p.name || '');
+  return near.find((r) => [...tokens(r.name)].some((w) => want.has(w))) || near[0];
+}
+/** Newest plausible {value, time} for one key; {value: null} when every reading in the window was impossible. */
+async function riseLatest(locationId, key) {
+  const after = new Date(Date.now() - RISE_LOOKBACK_DAYS * DAY).toISOString().slice(0, 10);
+  const { value: data } = await cached(`rise:result:${locationId}:${key}:${after}`, HOUR, () => getJson(riseUrl('result', {
+    locationId, 'parameterId[]': RISE_PARAMS[key], 'dateTime[after]': after, 'order[dateTime]': 'desc', itemsPerPage: 50 }), { timeoutMs: 15000 }));
+  const rank = new Map(RISE_PARAMS[key].map((pid, i) => [pid, i]));
+  let best = null; let impossible = null;
+  for (const row of data?.data || []) {
+    const a = row.attributes || {}; const v = toNumber(a.result);
+    if (v == null || !rank.has(a.parameterId)) continue;
+    if (FLOW_KEYS.has(key) && !inRange('flow_cfs', v)) { impossible ||= { value: null, time: a.dateTime }; continue; }
+    const cand = { value: v, time: a.dateTime || '', rank: rank.get(a.parameterId), pid: a.parameterId };
+    if (!best || cand.time > best.time || (cand.time === best.time && cand.rank < best.rank)) best = cand;
+  }
+  return best || impossible;
+}
+async function withReclamation(detail, p) {
+  if (!p.lat && !p.lon) return null;
+  const loc = await riseMatch(p);
+  if (!loc) return null;
+  const keys = Object.keys(RISE_PARAMS);
+  const got = await Promise.all(keys.map((k) => riseLatest(loc.id, k).catch(() => null)));
+  const out = { ...detail, series: {} };
+  const bad = [];
+  let updated = '';
+  keys.forEach((k, i) => {
+    const r = got[i];
+    if (!r) return;
+    if (r.value == null) { bad.push(k); return; }
+    out[k] = Math.round(r.value * 100) / 100;
+    out.series[k] = { series: `RISE location ${loc.id} parameter ${r.pid}`, time: r.time };
+    if (r.time > updated) updated = r.time;
+  });
+  if (!DAM_DETAIL_KEYS.some((k) => out[k] != null)) return null;
+  const wanted = ['pool_elevation_ft', 'storage_acft', 'outflow_cfs'].filter((k) => out[k] == null && !bad.includes(k));
+  Object.assign(out, { updated, data_available: true, source: 'Bureau of Reclamation', office: '', out_of_range: bad.sort(),
+    usbr_location: { id: loc.id, name: loc.name, url: loc.url, distance_mi: round(loc.mi, 2) },
+    note: [wanted.length ? `No recent Reclamation readings for: ${wanted.map((k) => DAM_LABELS[k]).join(', ')}` : '', outOfRangeNote(bad)].filter(Boolean).join('; ') });
+  if (!out.website) { out.website = loc.url; out.poi = { ...out.poi, website: loc.url }; }
+  return out;
 }
 
 async function nidDamDetail(stationId) {
@@ -541,22 +764,29 @@ async function usgsTempRing(lat, lon, radiusMi) {
   if (!sites.length) return null;
   const ids = sites.map((x) => x.site).join(',');
   const parsed = parseUsgs(await usgsFetch(`usgs:temp:${ids}:PT6H`, usgsUrl({ sites: ids, parameterCd: P_TEMP, period: 'PT6H' })));
-  const pois = Object.values(parsed).filter((x) => x.latest[P_TEMP] && x.latest[P_TEMP][0] > -999)
+  const reporting = Object.values(parsed).filter((x) => x.latest[P_TEMP] && x.latest[P_TEMP][0] > -999)
     .map(usgsPoi).map((x) => ({ ...x, distance_mi: round(haversineMi(lat, lon, x.lat, x.lon), 1) }))
     .sort((x, y) => x.distance_mi - y.distance_mi);
+  const pois = reporting.filter((x) => x.tags.water_temp_f != null);           // impossible values were dropped
   const p = pois[0];
-  return p ? tempRecord(SOURCE_USGS, p, p.tags.water_temp_f, p.tags.times?.water_temp_f || '') : null;
+  if (!p) return null;
+  const rec = tempRecord(SOURCE_USGS, p, p.tags.water_temp_f, p.tags.times?.water_temp_f || '');
+  const skipped = reporting.filter((x) => x.tags.water_temp_f == null && x.distance_mi < p.distance_mi).map((x) => x.name);
+  if (skipped.length) rec.skipped = skipped;
+  return rec;
 }
 async function noaaTempNear(lat, lon) {
+  const skipped = [];
   for (const p of nearestK(lat, lon, await noaaStations('tide'), TEMP_NOAA_MAX_MI, 3)) {
     const [temp, when] = await noaaWaterTemp(noaaCode(p), todayIso());
-    if (temp != null) return tempRecord(SOURCE_NOAA, p, temp, when);
+    if (temp != null && !inRange('water_temp_f', temp)) { skipped.push(p.name); continue; }   // impossible: next station
+    if (temp != null) return { ...tempRecord(SOURCE_NOAA, p, temp, when), ...(skipped.length ? { skipped } : {}) };
   }
   return null;
 }
 async function marineTempNear(lat, lon) {
   const [temp, when] = marineSeaTemp(await marineHourly(lat, lon));
-  if (temp == null) return null;
+  if (temp == null || !inRange('water_temp_f', temp)) return null;
   return tempRecord(SOURCE_MARINE, { id: 'open-meteo:marine', name: 'Open-Meteo Marine model', lat: round(lat, 4), lon: round(lon, 4), distance_mi: 0 }, temp, when);
 }
 async function ndbcTempNear(lat, lon) {
@@ -587,6 +817,15 @@ export async function waterTempNear(lat, lon) {
   });
   found.sort((x, y) => x.distance_mi - y.distance_mi);
   const nearestRec = found[0] || null;
+  const result = await waterTempAnswer(lat, lon, found, nearestRec, usgsPending);
+  const skipped = [...new Set(found.filter((f) => result.primary && (f === result.primary || f.distance_mi <= result.primary.distance_mi)).flatMap((f) => f.skipped || []))].sort();
+  if (skipped.length && result.ok && !result.offline_saved) {
+    result.out_of_range = skipped;
+    result.note = [result.note, `${skipped.join(', ')}: ${OUT_OF_RANGE}`].filter(Boolean).join('; ');
+  }
+  return result;
+}
+async function waterTempAnswer(lat, lon, found, nearestRec, usgsPending) {
   // A reading saved for offline use near here beats a far one (or none): use it when it's closer.
   if (!nearestRec || nearestRec.distance_mi > WATER_TEMP_RADIUS_MI) {
     const saved = await nearestSaved('temp', lat, lon, 40);
