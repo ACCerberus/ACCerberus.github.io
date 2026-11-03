@@ -6,7 +6,7 @@
  * Nominatim, Open-Meteo): never cached here — the page keeps those in IndexedDB with their own TTLs.
  */
 
-const VERSION = 'lk-2.1.8-6';
+const VERSION = 'lk-2.1.9';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 const TILES = 'lk-keep-tiles';          // kept across updates

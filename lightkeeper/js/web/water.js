@@ -7,14 +7,14 @@
  *  fall back to the Bureau of Reclamation's RISE API. Impossible readings are dropped first (util.js READING_LIMITS).
  *  Reclamation's PN Hydromet (used by the desktop for Grand Coulee & co.) sends no CORS header, so it is desktop-only. */
 
-import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.8-6';
-import { cached, idbSet, MIN, HOUR, DAY } from './store.js?v=2.1.8-6';
-import { nearestSaved } from './offline-store.js?v=2.1.8-6';
-import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET, inRange, cleanStageSeries, OUT_OF_RANGE } from './util.js?v=2.1.8-6';
-import { openMeteoGet, pointKey } from './weather.js?v=2.1.8-6';
-import * as ndbc from './ndbc.js?v=2.1.8-6';
-import { reverseGeocode } from './poi.js?v=2.1.8-6';
-import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.8-6';
+import { getJson, qs, overpass, nominatimGet } from './http.js?v=2.1.9';
+import { cached, idbSet, MIN, HOUR, DAY } from './store.js?v=2.1.9';
+import { nearestSaved } from './offline-store.js?v=2.1.9';
+import { validateCoords, haversineMi, inBbox, bboxAround, nearestK, nearest, toNumber, round, cToF, fToC, normalizePhone, todayIso, settle, METERS_PER_MILE, METERS_TO_FEET, inRange, cleanStageSeries, OUT_OF_RANGE } from './util.js?v=2.1.9';
+import { openMeteoGet, pointKey } from './weather.js?v=2.1.9';
+import * as ndbc from './ndbc.js?v=2.1.9';
+import { reverseGeocode } from './poi.js?v=2.1.9';
+import { staticJson, manifest, districts as districtList } from './aids.js?v=2.1.9';
 
 const NOAA_MDAPI = 'https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json';
 const NOAA_DATAGETTER = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';

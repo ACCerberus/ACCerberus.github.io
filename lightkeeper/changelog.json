@@ -1,5 +1,36 @@
 [
   {
+    "version": "2.1.9",
+    "date": "2026-11-02",
+    "title": "Checked against more sources",
+    "summary": "Version 2.1.9 — 6 changes since 2.1.8.",
+    "changes": [
+      "Places are checked against other sources: Overture Maps for hotels and marinas, 15 official ramp lists (12 states, the Forest Service and the Park Service), the Census address finder, Recreation.gov and Wikidata. Cards say \"Confirmed by N sources\", and about half of all places are now confirmed by two or more. Missing phone numbers were filled in (83% of hotels and marinas now have one), places listed as closed for good were dropped, and made-up ramp names were replaced with official ones. Ramp cards show launch lanes, trailer parking and closures from the agency.",
+      "Aid cards show current Coast Guard discrepancies and temporary changes (light extinguished, structure destroyed, off station...) even when no Broadcast Notice went out, lights whose NOAA chart position, color or period disagrees with the Light List, and Light List changes from the last four weeks.",
+      "CG sector filled in for about 7,500 aids the Light List left blank, from the official USCG sector areas; Upper Mississippi, Lower Mississippi and Ohio Valley sector cards work, and Mobile and Ohio Valley now show a 24-hour number.",
+      "River gauge cards add NWS flood stages, the NWS forecast peak and a warning when NWS and USGS disagree or a reading is over a day old. Dam cards fall back to Bureau of Reclamation readings where the Army Corps has none. Impossible readings (for example water at 120 °F or a negative river flow) are thrown out and the next source is used.",
+      "\"Something's wrong? Tell us\" on every card sends a short report to the developer.",
+      "Warnings on place cards when the address and the pin disagree, the website no longer loads, or the phone's area code doesn't match the address."
+    ],
+    "known_issues": [
+      "Small dams that neither the Army Corps nor the Bureau of Reclamation runs show only their name and location (no release or water-level data).",
+      "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
+      "NOAA chart comparisons on aid cards can be missing for a week when NOAA's chart service is down; the previous week's results are kept."
+    ],
+    "todo": [
+      "Discrepancy tracker (in progress).",
+      "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
+      "Turn on the Windows app download on this site.",
+      "Field check: spot-check aids you know (FDR Lake, Snake, Columbia) for the right nearest ramp, ramp names, phone numbers, hotels and closed ramps.",
+      "Confirm CG sector and district on aid cards, and the 24-hour numbers (find Mobile and Ohio Valley).",
+      "Trip planner: compare auto plans against one or two real trips (day splits, launch/recovery ramps, lodging).",
+      "Add a Google Places key and verify every ramp, hotel and park against Google.",
+      "Test on a real phone (one-tap aids, scrolling card, map-only zoom, Center) and on a work PC network.",
+      "Check dam cards you know for correct pool, tailwater and release status.",
+      "Flag any water temp or weather station that is a bad pick for its area."
+    ]
+  },
+  {
     "version": "2.1.8",
     "date": "2026-11-02",
     "title": "Places for every district",
@@ -9,14 +40,11 @@
       "Website and phone: \"Make this district available offline\" also saves the district's ramps, hotels, parks and dams, so trips can be planned with no signal."
     ],
     "known_issues": [
-      "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
-      "Small dams that the Army Corps doesn't run show only their name and location (no release or water-level data).",
-      "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",
+      "Small dams that neither the Army Corps nor the Bureau of Reclamation runs show only their name and location (no release or water-level data).",
       "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
-      "Mobile and Ohio Valley sector cards have no published 24-hour number."
+      "NOAA chart comparisons on aid cards can be missing for a week when NOAA's chart service is down; the previous week's results are kept."
     ],
     "todo": [
-      "Add boat ramps, hotels, marinas, campgrounds, parks and dams for every district from downloaded OpenStreetMap state files (the public map servers were too overloaded to crawl). Northwest (D13) first.",
       "Discrepancy tracker (in progress).",
       "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
       "Turn on the Windows app download on this site.",
