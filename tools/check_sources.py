@@ -212,6 +212,16 @@ def bnm_feeds() -> str:
     return f"{total} notices across {len(bnm.FEEDS)} districts"
 
 
+def places_files() -> str:
+    man = json.loads((DATA / "manifest.json").read_text("utf-8"))
+    places = man.get("places") or {}
+    missing = [f"D{d}" for d in DISTRICTS if (places.get(str(d)) or {}).get("count", 0) < 20]
+    need(not missing, "no places file (or almost empty) for " + ", ".join(missing))
+    at = datetime.fromisoformat(man["places_checked_at"].replace("Z", "+00:00"))
+    need(datetime.now(timezone.utc) - at < timedelta(days=15), f"places last built {man['places_checked_at']} (weekly places job stalled?)")
+    return f"{sum(p['count'] for p in places.values()):,} places, built {man['places_checked_at'][:10]}"
+
+
 def ndbc_file() -> str:
     items = json.loads((DATA / "ndbc-latest.json").read_text("utf-8")).get("items") or []
     need(len(items) > 300, f"only {len(items)} buoys in ndbc-latest.json")
@@ -241,6 +251,7 @@ CHECKS: list[tuple[str, Callable[[], str], bool]] = [
     ("Published Light List files", light_list_files, True),
     ("Notice feeds, all districts", bnm_feeds, True),
     ("Published buoy file", ndbc_file, True),
+    ("Published places files", places_files, True),
 ]
 
 

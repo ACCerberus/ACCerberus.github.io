@@ -6,14 +6,14 @@
  *  water temperature. Cards fall back to these (with their age) when there's no signal. Map tiles are not downloaded in
  *  bulk (the public tile servers don't allow it); areas already viewed stay cached by the service worker. */
 
-import { staticJson, loadDistrict, districts as districtList } from './aids.js?v=2.1.7';
-import { idbGet, idbSet } from './store.js?v=2.1.7';
-import { haversineMi, todayIso } from './util.js?v=2.1.7';
-import { getForecast, nearestObservation } from './weather.js?v=2.1.7';
-import { waterTempNear, prefetchTides, tideStations } from './water.js?v=2.1.7';
-import { saveReading, savedAgo } from './offline-store.js?v=2.1.7';
-import { chartTileUrls, setCharts, chartsOn } from '../map.js?v=2.1.7';
-import { toast } from '../ui.js?v=2.1.7';
+import { staticJson, loadDistrict, districts as districtList } from './aids.js?v=2.1.8';
+import { idbGet, idbSet } from './store.js?v=2.1.8';
+import { haversineMi, todayIso } from './util.js?v=2.1.8';
+import { getForecast, nearestObservation } from './weather.js?v=2.1.8';
+import { waterTempNear, prefetchTides, tideStations } from './water.js?v=2.1.8';
+import { saveReading, savedAgo } from './offline-store.js?v=2.1.8';
+import { chartTileUrls, setCharts, chartsOn } from '../map.js?v=2.1.8';
+import { toast } from '../ui.js?v=2.1.8';
 
 const CELL_DEG = 0.5;
 const MAX_CELLS = 60;

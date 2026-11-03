@@ -1,27 +1,27 @@
 /** Boot: map, panels, top bar (search, district, base map, layer chips), status polling, shortcuts. */
 
-import { api } from './api.js?v=2.1.7';
-import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.7';
-import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn, setLiteTiles } from './map.js?v=2.1.7';
-import { reportBug } from './settings.js?v=2.1.7';
-import * as aids from './aids.js?v=2.1.7';
-import * as poi from './poi.js?v=2.1.7';
-import * as measure from './measure.js?v=2.1.7';
-import * as trip from './trip.js?v=2.1.7';
-import * as water from './water.js?v=2.1.7';
-import * as weather from './weather.js?v=2.1.7';
-import * as settings from './settings.js?v=2.1.7';
-import * as hover from './hover.js?v=2.1.7';
-import * as context from './context.js?v=2.1.7';
-import * as places from './places.js?v=2.1.7';
-import * as phone from './phone.js?v=2.1.7';
-import * as whatsnew from './whatsnew.js?v=2.1.7';
-import * as discrep from './discrepancies.js?v=2.1.7';
-import * as notices from './notices.js?v=2.1.7';
-import * as netcheck from './netcheck.js?v=2.1.7';
-import { initUpdater } from './web/updater.js?v=2.1.7';
-import { initOfflineBadge } from './web/offline.js?v=2.1.7';
-import { hideDetail, clearRoute } from './detail.js?v=2.1.7';
+import { api } from './api.js?v=2.1.8';
+import { $, $$, el, fmt, toast, showPanel, currentPanel, setStatus, showProgress, hideProgress, debounce, store, dialog } from './ui.js?v=2.1.8';
+import { locateMe, createMap, setBase, map, fitWSEN, flyTo, setCharts, chartsOn, setLiteTiles } from './map.js?v=2.1.8';
+import { reportBug } from './settings.js?v=2.1.8';
+import * as aids from './aids.js?v=2.1.8';
+import * as poi from './poi.js?v=2.1.8';
+import * as measure from './measure.js?v=2.1.8';
+import * as trip from './trip.js?v=2.1.8';
+import * as water from './water.js?v=2.1.8';
+import * as weather from './weather.js?v=2.1.8';
+import * as settings from './settings.js?v=2.1.8';
+import * as hover from './hover.js?v=2.1.8';
+import * as context from './context.js?v=2.1.8';
+import * as places from './places.js?v=2.1.8';
+import * as phone from './phone.js?v=2.1.8';
+import * as whatsnew from './whatsnew.js?v=2.1.8';
+import * as discrep from './discrepancies.js?v=2.1.8';
+import * as notices from './notices.js?v=2.1.8';
+import * as netcheck from './netcheck.js?v=2.1.8';
+import { initUpdater } from './web/updater.js?v=2.1.8';
+import { initOfflineBadge } from './web/offline.js?v=2.1.8';
+import { hideDetail, clearRoute } from './detail.js?v=2.1.8';
 
 const state = { districts: [], syncWasRunning: false, lastAidsTotal: -1, statusTimer: null };
 

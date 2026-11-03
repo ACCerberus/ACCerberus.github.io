@@ -1,15 +1,15 @@
 /** The one detail card. Everything clickable on the map funnels into showDetail(). */
 
-import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.7';
-import { photoUrl, satView } from './photo.js?v=2.1.7';
-import { lite } from './netcheck.js?v=2.1.7';
-import { flyTo, map } from './map.js?v=2.1.7';
-import { api } from './api.js?v=2.1.7';
-import * as units from './units.js?v=2.1.7';
-import { layers, poiIcon, aidColor } from './map.js?v=2.1.7';
-import { loadedItems } from './poi.js?v=2.1.7';
-import { logForAid, ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.7';
-import { haversineNM } from './geo.js?v=2.1.7';
+import { $, el, esc, fmt, ICONS, toast } from './ui.js?v=2.1.8';
+import { photoUrl, satView } from './photo.js?v=2.1.8';
+import { lite } from './netcheck.js?v=2.1.8';
+import { flyTo, map } from './map.js?v=2.1.8';
+import { api } from './api.js?v=2.1.8';
+import * as units from './units.js?v=2.1.8';
+import { layers, poiIcon, aidColor } from './map.js?v=2.1.8';
+import { loadedItems } from './poi.js?v=2.1.8';
+import { logForAid, ENABLED as DISCREP_ON } from './discrepancies.js?v=2.1.8';
+import { haversineNM } from './geo.js?v=2.1.8';
 
 const card = () => $('#detail');
 let current = null;

@@ -1,5 +1,35 @@
 [
   {
+    "version": "2.1.8",
+    "date": "2026-11-02",
+    "title": "Places for every district",
+    "summary": "Version 2.1.8 — 2 changes since 2.1.7.",
+    "changes": [
+      "Boat ramps, marinas, hotels, parks and dams for every district now come from files built each week from OpenStreetMap's state downloads. They show up at once instead of waiting on the busy public map servers, so trip plans stop saying \"no ramp found\".",
+      "Website and phone: \"Make this district available offline\" also saves the district's ramps, hotels, parks and dams, so trips can be planned with no signal."
+    ],
+    "known_issues": [
+      "Some CG sectors and districts shown on aid cards may be incorrect (currently fixing).",
+      "Small dams that the Army Corps doesn't run show only their name and location (no release or water-level data).",
+      "Boat ramps, hotels and parks can load slowly or partially when the public OpenStreetMap servers are busy; the app falls back to other sources.",
+      "Some phone numbers come from OpenStreetMap and may be out of date; add a Google Places key in Settings to verify against Google.",
+      "Mobile and Ohio Valley sector cards have no published 24-hour number."
+    ],
+    "todo": [
+      "Add boat ramps, hotels, marinas, campgrounds, parks and dams for every district from downloaded OpenStreetMap state files (the public map servers were too overloaded to crawl). Northwest (D13) first.",
+      "Discrepancy tracker (in progress).",
+      "Split each district's places into separate boat ramp, lodging, park and dam files so each toggle reads one small file.",
+      "Turn on the Windows app download on this site.",
+      "Field check: spot-check aids you know (FDR Lake, Snake, Columbia) for the right nearest ramp, ramp names, phone numbers, hotels and closed ramps.",
+      "Confirm CG sector and district on aid cards, and the 24-hour numbers (find Mobile and Ohio Valley).",
+      "Trip planner: compare auto plans against one or two real trips (day splits, launch/recovery ramps, lodging).",
+      "Add a Google Places key and verify every ramp, hotel and park against Google.",
+      "Test on a real phone (one-tap aids, scrolling card, map-only zoom, Center) and on a work PC network.",
+      "Check dam cards you know for correct pool, tailwater and release status.",
+      "Flag any water temp or weather station that is a bad pick for its area."
+    ]
+  },
+  {
     "version": "2.1.7",
     "date": "2026-11-02",
     "title": "Real light colors, tidier names",
