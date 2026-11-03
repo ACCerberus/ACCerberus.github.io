@@ -10,12 +10,13 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://accerberus.github.io/" />
   <link rel="canonical" href="https://accerberus.github.io/" />
-  <meta name="theme-color" content="#0f1923" />
+  <meta name="theme-color" content="#03060b" />
   <link rel="apple-touch-icon" href="/lightkeeper/img/apple-touch-icon.png" />
   <link rel="manifest" href="/lightkeeper/manifest.webmanifest" />
   <meta name="apple-mobile-web-app-title" content="LightKeeper" />
   <link rel="icon" href="/lightkeeper/img/lighthouse.png" />
-  <link rel="stylesheet" href="/lightkeeper/css/landing.css" />
+  <link rel="preload" href="/lightkeeper/vendor/fonts/inter-700.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/lightkeeper/css/home.css" />
 </head>
 <body>
 <header class="nav">
@@ -23,59 +24,235 @@
     <a class="brand" href="/"><img src="/lightkeeper/img/lighthouse.png" alt="" /><span>Light<b>Keeper</b></span></a>
     <nav>
       <a href="/lightkeeper/">Open the app</a>
-      <a href="/lightkeeper/updates">Version</a>
+      <a class="hide-xs" href="/lightkeeper/updates">Version</a>
       <a href="/lightkeeper/about">Data &amp; notices</a>
       <a class="hide-sm" href="#download">Windows app (soon)</a>
     </nav>
   </div>
 </header>
-<main>
-  <div class="wrap">
 
-    <div class="hero">
-      <span class="eyebrow">LightKeeper 2.1.7 · by Evan Isakson</span>
-      <h1>Every aid to navigation, <span>one tap away.</span></h1>
-      <p class="lead">For Coast Guard Aids-to-Navigation crews: all 54,000 lights and buoys on one map, with the boat ramps, hotels, tides and weather around them. Plan trips and take it on the water, even with no signal.</p>
-      <div class="cta">
-        <a class="btn primary" href="/lightkeeper/">Open LightKeeper</a>
-        <a class="btn" href="#download">Windows app — coming soon</a>
+<main>
+  <div class="hero">
+    <!-- Night on the water: a lighthouse sweeping the horizon and buoys flashing at their Light List rhythms, each reflected in the water. -->
+    <svg class="sea" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#010307" /><stop offset=".75" stop-color="#06101c" /><stop offset="1" stop-color="#0b1a2b" /></linearGradient>
+        <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#07111d" /><stop offset=".35" stop-color="#040a12" /><stop offset="1" stop-color="#020508" /></linearGradient>
+        <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff4d6" stop-opacity=".32" /><stop offset=".5" stop-color="#fff4d6" stop-opacity=".07" /><stop offset="1" stop-color="#fff4d6" stop-opacity="0" /></linearGradient>
+        <radialGradient id="hg"><stop offset="0" stop-color="#3be38a" stop-opacity=".9" /><stop offset=".22" stop-color="#3be38a" stop-opacity=".32" /><stop offset="1" stop-color="#3be38a" stop-opacity="0" /></radialGradient>
+        <radialGradient id="hr"><stop offset="0" stop-color="#ff4d5a" stop-opacity=".9" /><stop offset=".22" stop-color="#ff4d5a" stop-opacity=".32" /><stop offset="1" stop-color="#ff4d5a" stop-opacity="0" /></radialGradient>
+        <radialGradient id="hw"><stop offset="0" stop-color="#fff4d6" stop-opacity=".95" /><stop offset=".22" stop-color="#fff4d6" stop-opacity=".3" /><stop offset="1" stop-color="#fff4d6" stop-opacity="0" /></radialGradient>
+        <radialGradient id="hy"><stop offset="0" stop-color="#ffd23f" stop-opacity=".9" /><stop offset=".22" stop-color="#ffd23f" stop-opacity=".3" /><stop offset="1" stop-color="#ffd23f" stop-opacity="0" /></radialGradient>
+        <radialGradient id="fg"><stop offset="0" stop-color="#3be38a" stop-opacity=".38" /><stop offset="1" stop-color="#3be38a" stop-opacity="0" /></radialGradient>
+        <radialGradient id="fr"><stop offset="0" stop-color="#ff4d5a" stop-opacity=".38" /><stop offset="1" stop-color="#ff4d5a" stop-opacity="0" /></radialGradient>
+        <radialGradient id="fw"><stop offset="0" stop-color="#fff4d6" stop-opacity=".36" /><stop offset="1" stop-color="#fff4d6" stop-opacity="0" /></radialGradient>
+        <radialGradient id="fy"><stop offset="0" stop-color="#ffd23f" stop-opacity=".36" /><stop offset="1" stop-color="#ffd23f" stop-opacity="0" /></radialGradient>
+      </defs>
+
+      <rect width="1600" height="560" fill="url(#sky)" />
+      <g class="star">
+        <circle cx="690" cy="90" r="1.1" opacity=".5" /><circle cx="820" cy="170" r=".8" opacity=".35" /><circle cx="940" cy="60" r="1.2" opacity=".55" /><circle cx="1040" cy="210" r=".8" opacity=".3" />
+        <circle cx="1150" cy="120" r="1" opacity=".45" /><circle cx="1260" cy="70" r=".9" opacity=".4" /><circle cx="1330" cy="240" r=".8" opacity=".3" /><circle cx="1420" cy="150" r="1.3" opacity=".55" />
+        <circle cx="1530" cy="90" r=".9" opacity=".4" /><circle cx="1580" cy="260" r=".8" opacity=".3" /><circle cx="760" cy="300" r=".7" opacity=".25" /><circle cx="1210" cy="330" r=".7" opacity=".25" />
+        <circle cx="890" cy="380" r=".7" opacity=".2" /><circle cx="1480" cy="380" r=".7" opacity=".22" /><circle cx="600" cy="200" r=".8" opacity=".3" /><circle cx="1000" cy="130" r=".7" opacity=".3" />
+      </g>
+
+      <!-- lighthouse on the far point, its beam sweeping out over the water -->
+      <polygon class="beam" points="236,470 1720,300 1720,600" fill="url(#beam)" />
+      <path d="M0 560 V520 C60 506 120 500 180 505 L214 499 L262 502 C320 510 390 534 480 548 C570 556 650 558 720 560 Z" fill="#03070c" />
+      <path d="M1080 560 C1190 553 1330 547 1440 552 C1510 555 1560 551 1600 549 V560 Z" fill="#03070c" />
+      <polygon points="229,503 243,503 240,476 232,476" fill="#0b131c" /><rect x="228" y="471" width="16" height="5" fill="#0b131c" />
+      <g class="lamp"><circle cx="236" cy="470" r="34" fill="url(#hw)" /><circle cx="236" cy="470" r="2.6" fill="#fff" /></g>
+
+      <rect y="560" width="1600" height="340" fill="url(#water)" />
+      <line x1="0" y1="560" x2="1600" y2="560" stroke="rgba(150,190,230,.16)" />
+      <g>
+        <line class="swell" x1="300" y1="580" x2="1500" y2="580" stroke-dasharray="40 26 90 30" />
+        <line class="swell" x1="200" y1="602" x2="1600" y2="602" stroke-dasharray="70 40 30 60" />
+        <line class="swell" x1="100" y1="630" x2="1600" y2="630" stroke-dasharray="120 50 60 80" />
+        <line class="swell" x1="0" y1="664" x2="1600" y2="664" stroke-dasharray="150 70 90 100" />
+        <line class="swell" x1="0" y1="706" x2="1600" y2="706" stroke-dasharray="200 90 120 140" />
+        <line class="swell" x1="0" y1="756" x2="1600" y2="756" stroke-dasharray="260 120 160 180" />
+        <line class="swell" x1="0" y1="816" x2="1600" y2="816" stroke-dasharray="320 150 200 220" />
+        <line class="swell" x1="0" y1="884" x2="1600" y2="884" stroke-dasharray="400 180 260 260" />
+      </g>
+
+      <!-- buoys: halo, white-hot core and a reflection, flashing together -->
+      <g class="lit" style="--k:fl;--p:4s;--o:0s"><ellipse cx="1180" cy="784" rx="9.1" ry="116" fill="url(#fg)" /><circle cx="1180" cy="720" r="49" fill="url(#hg)" /><circle cx="1180" cy="720" r="4.2" fill="#fff" /></g>
+      <g class="lit" style="--k:fl;--p:2.5s;--o:-.9s"><ellipse cx="1390" cy="688" rx="6.5" ry="70" fill="url(#fr)" /><circle cx="1390" cy="650" r="35" fill="url(#hr)" /><circle cx="1390" cy="650" r="3" fill="#fff" /></g>
+      <g class="lit" style="--k:q;--p:1s;--o:-.3s"><ellipse cx="985" cy="636" rx="4.7" ry="43" fill="url(#fw)" /><circle cx="985" cy="612" r="25" fill="url(#hw)" /><circle cx="985" cy="612" r="2.2" fill="#fff" /></g>
+      <g class="lit" style="--k:iso;--p:6s;--o:-2s"><ellipse cx="1515" cy="620" rx="4.4" ry="36" fill="url(#fw)" /><circle cx="1515" cy="600" r="24" fill="url(#hw)" /><circle cx="1515" cy="600" r="2" fill="#fff" /></g>
+      <g class="lit" style="--k:oc;--p:4s;--o:-1.4s"><ellipse cx="770" cy="674" rx="5.7" ry="62" fill="url(#fr)" /><circle cx="770" cy="640" r="31" fill="url(#hr)" /><circle cx="770" cy="640" r="2.6" fill="#fff" /></g>
+      <g class="lit" style="--k:fl;--p:6s;--o:-3.1s"><ellipse cx="640" cy="616" rx="3.9" ry="33" fill="url(#fg)" /><circle cx="640" cy="598" r="21" fill="url(#hg)" /><circle cx="640" cy="598" r="1.8" fill="#fff" /></g>
+      <g class="lit" style="--k:fl;--p:4s;--o:-2.2s"><ellipse cx="1290" cy="603" rx="3.6" ry="27" fill="url(#fy)" /><circle cx="1290" cy="588" r="20" fill="url(#hy)" /><circle cx="1290" cy="588" r="1.7" fill="#fff" /></g>
+      <g class="lit" style="--k:q;--p:1s;--o:-.55s"><ellipse cx="1470" cy="907" rx="11.1" ry="173" fill="url(#fr)" /><circle cx="1470" cy="812" r="60" fill="url(#hr)" /><circle cx="1470" cy="812" r="5.1" fill="#fff" /></g>
+      <g class="lit" style="--k:fl;--p:2.5s;--o:-1.7s"><ellipse cx="880" cy="755" rx="7.3" ry="99" fill="url(#fg)" /><circle cx="880" cy="700" r="39" fill="url(#hg)" /><circle cx="880" cy="700" r="3.4" fill="#fff" /></g>
+      <g class="lit" style="--k:fl;--p:4s;--o:-.4s"><ellipse cx="1060" cy="583" rx="2.6" ry="16" fill="url(#fr)" /><circle cx="1060" cy="574" r="14" fill="url(#hr)" /><circle cx="1060" cy="574" r="1.2" fill="#fff" /></g>
+      <g class="lit" style="--k:fl;--p:4s;--o:-2.7s"><ellipse cx="860" cy="578" rx="2.3" ry="13" fill="url(#fg)" /><circle cx="860" cy="571" r="13" fill="url(#hg)" /><circle cx="860" cy="571" r="1.1" fill="#fff" /></g>
+      <g class="lit" style="--k:q;--p:1s;--o:-.2s"><ellipse cx="1580" cy="584" rx="2.6" ry="16" fill="url(#fg)" /><circle cx="1580" cy="575" r="14" fill="url(#hg)" /><circle cx="1580" cy="575" r="1.2" fill="#fff" /></g>
+      <g class="lit" style="--k:fl;--p:6s;--o:-4s"><ellipse cx="1210" cy="575" rx="2.1" ry="11" fill="url(#fw)" /><circle cx="1210" cy="569" r="11" fill="url(#hw)" /><circle cx="1210" cy="569" r="1" fill="#fff" /></g>
+
+      <text class="tag" x="1213" y="703">Fl G 4s</text><text class="tag" x="1415" y="638">Fl R 2.5s</text><text class="tag" x="1005" y="603">Q W</text>
+      <text class="tag" x="1534" y="592">Iso W 6s</text><text class="tag" x="793" y="629">Oc R 4s</text><text class="tag" x="1307" y="581">Fl Y 4s</text>
+      <text class="tag" x="1509" y="791">Q R</text><text class="tag" x="908" y="686">Fl G 2.5s</text>
+    </svg>
+
+    <div class="wrap">
+      <div class="copy">
+        <span class="eyebrow"><span class="lt g" style="--k:fl;--p:4s"></span>LightKeeper 2.1.7 · by Evan Isakson</span>
+        <h1>Every aid to navigation. <span>One tap away.</span></h1>
+        <p class="lead">For Coast Guard Aids-to-Navigation crews: all 54,000 lights and buoys on one map, with the boat ramps, hotels, tides and weather around them. Plan trips and take it on the water, even with no signal.</p>
+        <div class="cta">
+          <a class="btn primary" href="/lightkeeper/">Open LightKeeper <span class="arrow">&rarr;</span></a>
+          <a class="btn" href="#download">Windows app — coming soon</a>
+        </div>
       </div>
     </div>
 
+    <a class="scroll" href="#features">SCROLL</a>
+  </div>
+
+  <div class="wrap">
     <section id="features">
-      <span class="eyebrow">What it does</span>
+      <span class="kicker">Light List · what it does</span>
       <h2>Every light, and what's around it.</h2>
-      <div class="grid">
-        <article class="card"><h3>Every aid</h3><p>All lights and buoys from the USCG Light List, in every district. Search by name or number.</p></article>
-        <article class="card"><h3>Ramps and hotels</h3><p>Boat ramps, marinas and places to stay near each light, with a phone number you can tap.</p></article>
-        <article class="card"><h3>Water and weather</h3><p>Tides, river levels, dams, water temperature and the forecast.</p></article>
-        <article class="card"><h3>Charts</h3><p>NOAA nautical charts, satellite and street maps, and a tool to measure distance.</p></article>
-        <article class="card"><h3>Trip planner</h3><p>Pick the lights; it plans the days, the ramps and where to stay.</p></article>
-        <article class="card"><h3>Works offline</h3><p>Save your district before you go. It keeps working with no signal.</p></article>
+      <ol class="ll">
+        <li class="g"><span class="lt g" style="--k:fl;--p:4s"></span><span class="no">001</span><h3>Every aid</h3><p>All lights and buoys from the USCG Light List, in every district. Search by name or number.</p><span class="ch">Fl G 4s</span></li>
+        <li class="r"><span class="lt r" style="--k:fl;--p:4s;--o:-1.5s"></span><span class="no">002</span><h3>Ramps and hotels</h3><p>Boat ramps, marinas and places to stay near each light, with a phone number you can tap.</p><span class="ch">Fl R 4s</span></li>
+        <li class="w"><span class="lt w" style="--k:iso;--p:6s"></span><span class="no">003</span><h3>Water and weather</h3><p>Tides, river levels, dams, water temperature and the forecast.</p><span class="ch">Iso W 6s</span></li>
+        <li class="g"><span class="lt g" style="--k:q;--p:1s"></span><span class="no">004</span><h3>Charts</h3><p>NOAA nautical charts, satellite and street maps, and a tool to measure distance.</p><span class="ch">Q G</span></li>
+        <li class="r"><span class="lt r" style="--k:fl;--p:2.5s;--o:-.6s"></span><span class="no">005</span><h3>Trip planner</h3><p>Pick the lights; it plans the days, the ramps and where to stay.</p><span class="ch">Fl R 2.5s</span></li>
+        <li class="y"><span class="lt y" style="--k:fl;--p:4s;--o:-2.6s"></span><span class="no">006</span><h3>Works offline</h3><p>Save your district before you go. It keeps working with no signal.</p><span class="ch">Fl Y 4s</span></li>
+      </ol>
+    </section>
+
+    <section id="map">
+      <span class="kicker">On the map</span>
+      <h2>Tap a light. See the whole day.</h2>
+      <p class="sub">The ramp to launch from, a hotel for the night, the tide, the wind and the water temperature, all in one card.</p>
+      <div class="chart">
+        <div class="frame">
+          <div class="bar"><i></i><i></i><i></i><span>LightKeeper · Lower River · 2-day trip</span></div>
+          <!-- A drawn chart: a river channel with buoys, ramps, hotels and a two-day trip. -->
+          <svg class="map" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+            <defs>
+              <radialGradient id="mg"><stop offset="0" stop-color="#3be38a" stop-opacity=".75" /><stop offset=".35" stop-color="#3be38a" stop-opacity=".22" /><stop offset="1" stop-color="#3be38a" stop-opacity="0" /></radialGradient>
+              <radialGradient id="mr"><stop offset="0" stop-color="#ff4d5a" stop-opacity=".75" /><stop offset=".35" stop-color="#ff4d5a" stop-opacity=".22" /><stop offset="1" stop-color="#ff4d5a" stop-opacity="0" /></radialGradient>
+              <radialGradient id="mw"><stop offset="0" stop-color="#fff4d6" stop-opacity=".8" /><stop offset=".3" stop-color="#fff4d6" stop-opacity=".2" /><stop offset="1" stop-color="#fff4d6" stop-opacity="0" /></radialGradient>
+              <path id="channel" d="M-60 830 C180 800 300 700 520 660 S900 720 1060 560 S1180 300 1350 220 S1560 120 1700 90" />
+              <path id="creek" d="M850 660 C880 760 800 840 850 960" />
+            </defs>
+            <rect width="1600" height="900" fill="#0a121b" />
+            <g class="grid">
+              <line x1="0" y1="150" x2="1600" y2="150" /><line x1="0" y1="350" x2="1600" y2="350" /><line x1="0" y1="550" x2="1600" y2="550" /><line x1="0" y1="750" x2="1600" y2="750" />
+              <line x1="200" y1="0" x2="200" y2="900" /><line x1="500" y1="0" x2="500" y2="900" /><line x1="800" y1="0" x2="800" y2="900" /><line x1="1100" y1="0" x2="1100" y2="900" /><line x1="1400" y1="0" x2="1400" y2="900" />
+            </g>
+            <g fill="none" stroke-linecap="round">
+              <use href="#creek" stroke="#1d4561" stroke-width="74" /><use href="#creek" stroke="#0e2436" stroke-width="70" />
+              <use href="#channel" stroke="#1d4561" stroke-width="214" /><use href="#channel" stroke="#10283b" stroke-width="210" />
+              <use href="#channel" stroke="#163650" stroke-width="128" /><use href="#channel" stroke="#0b1c2b" stroke-width="124" />
+              <use href="#channel" stroke="rgba(255,255,255,.08)" stroke-width="1.5" stroke-dasharray="2 10" />
+            </g>
+            <g fill="rgba(255,255,255,.2)" font-style="italic" font-size="12" font-family="Inter, system-ui, sans-serif">
+              <text x="240" y="720">8</text><text x="300" y="790">4₂</text><text x="610" y="640">14</text><text x="590" y="720">6</text><text x="860" y="610">17</text>
+              <text x="1010" y="650">5₃</text><text x="1090" y="500">19</text><text x="1180" y="330">12</text><text x="1300" y="260">21</text><text x="1420" y="190">9</text><text x="1540" y="100">16</text>
+            </g>
+            <text class="label" dy="5"><textPath href="#channel" startOffset="47%">Lower River</textPath></text>
+
+            <path class="route" d="M470 560 L505 640 C700 690 900 690 1050 580 L1165 545" />
+            <path class="route" d="M1165 545 C1200 440 1250 300 1350 250 L1405 300" style="animation-delay:-.8s" />
+            <g class="day" transform="translate(640 618)"><rect x="-30" y="-12" width="60" height="24" rx="3" /><text text-anchor="middle" y="4">DAY 1</text></g>
+            <g class="day" transform="translate(1268 382)"><rect x="-30" y="-12" width="60" height="24" rx="3" /><text text-anchor="middle" y="4">DAY 2</text></g>
+
+            <g class="pin ramp" transform="translate(470 560)"><rect x="-13" y="-13" width="26" height="26" rx="5" /><path d="M-7 6 L7 -6 M-8 7 H8" /></g>
+            <g class="pin ramp" transform="translate(1165 545)"><rect x="-13" y="-13" width="26" height="26" rx="5" /><path d="M-7 6 L7 -6 M-8 7 H8" /></g>
+            <g class="pin ramp" transform="translate(1405 300)"><rect x="-13" y="-13" width="26" height="26" rx="5" /><path d="M-7 6 L7 -6 M-8 7 H8" /></g>
+            <g class="pin hotel" transform="translate(420 505)"><rect x="-13" y="-13" width="26" height="26" rx="5" /><path d="M-6 -6 V7 M6 -6 V7 M-6 1 H6" /></g>
+            <g class="pin hotel" transform="translate(1235 590)"><rect x="-13" y="-13" width="26" height="26" rx="5" /><path d="M-6 -6 V7 M6 -6 V7 M-6 1 H6" /></g>
+            <text class="tag" x="492" y="564">Ramp</text><text class="tag" x="1187" y="549">Ramp</text><text class="tag" x="1257" y="594">Hotel</text><text class="tag" x="442" y="509">Hotel</text>
+
+            <g class="aid g" transform="translate(144 831)"><g class="lit" style="--k:fl;--p:2.5s;--o:-.71s"><circle r="26" fill="url(#mg)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid r" transform="translate(115 744)"><g class="lit" style="--k:q;--p:1s;--o:-.63s"><circle r="26" fill="url(#mr)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid g" transform="translate(385 743)"><g class="lit" style="--k:fl;--p:6s;--o:-1.11s"><circle r="26" fill="url(#mg)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid r" transform="translate(356 656)"><g class="lit" style="--k:oc;--p:4s;--o:-1.81s"><circle r="26" fill="url(#mr)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid g" transform="translate(701 697)"><g class="lit" style="--k:fl;--p:4s;--o:-1.88s"><circle r="26" fill="url(#mg)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid r" transform="translate(705 605)"><g class="lit" style="--k:fl;--p:4s;--o:-.2s"><circle r="26" fill="url(#mr)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid g" transform="translate(954 681)"><g class="lit" style="--k:fl;--p:2.5s;--o:-.04s"><circle r="26" fill="url(#mg)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid r" transform="translate(924 594)"><g class="lit" style="--k:q;--p:1s;--o:-.51s"><circle r="26" fill="url(#mr)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid g" transform="translate(1200 455)"><g class="lit" style="--k:fl;--p:6s;--o:-.78s"><circle r="26" fill="url(#mg)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid r" transform="translate(1122 407)"><g class="lit" style="--k:oc;--p:4s;--o:-.7s"><circle r="26" fill="url(#mr)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid g" transform="translate(1288 317)"><g class="lit" style="--k:fl;--p:4s;--o:-2.99s"><circle r="26" fill="url(#mg)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid r" transform="translate(1223 252)"><g class="lit" style="--k:fl;--p:4s;--o:-1.41s"><circle r="26" fill="url(#mr)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid g" transform="translate(1493 204)"><g class="lit" style="--k:fl;--p:2.5s;--o:-2.51s"><circle r="26" fill="url(#mg)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid r" transform="translate(1455 120)"><g class="lit" style="--k:q;--p:1s;--o:-.43s"><circle r="26" fill="url(#mr)" /><circle r="4.5" class="core" /></g><circle r="4.5" class="dot" /></g>
+            <g class="aid w" transform="translate(1030 455)"><g class="lit" style="--k:iso;--p:6s"><circle r="40" fill="url(#mw)" /><circle r="5" class="core" /></g><circle r="5" class="dot" /></g>
+
+            <text class="tag" x="725" y="597">"6" Fl R 4s</text>
+            <text class="tag" x="974" y="700">"7" Fl G 2.5s</text>
+            <text class="tag" x="944" y="586">"8" Q R</text>
+            <text class="tag" x="1220" y="460">"9" Fl G 6s</text>
+            <text class="tag" x="1052" y="448">Iso W 6s</text>
+            <circle class="pick" cx="924" cy="594" r="15" />
+          </svg>
+        </div>
+        <aside class="pop" aria-hidden="true">
+          <header><span class="lt r" style="--k:q;--p:1s;--o:-.51s"></span><div><b>Lighted Buoy 8</b><span>Q R · red · nun</span></div></header>
+          <dl>
+            <dt>Nearest ramp</dt><dd>1.2 mi</dd>
+            <dt>Hotel</dt><dd>3.4 mi · tap to call</dd>
+            <dt>Wind</dt><dd>NW 8 kt</dd>
+            <dt>Water</dt><dd>58 °F</dd>
+          </dl>
+          <div class="tide">
+            <svg viewBox="0 0 260 50" preserveAspectRatio="none"><path d="M0 38 C30 38 45 7 75 7 S120 42 150 42 S205 9 235 9 L260 11 V50 H0Z" fill="rgba(58,208,232,.1)" /><path d="M0 38 C30 38 45 7 75 7 S120 42 150 42 S205 9 235 9 L260 11" fill="none" stroke="#3ad0e8" stroke-width="2" /><line x1="104" y1="0" x2="104" y2="50" stroke="#eef3f8" stroke-opacity=".5" stroke-dasharray="2 3" /></svg>
+            <small><span>Tide</span><span>+3.1 ft falling</span></small>
+          </div>
+          <footer>Saved for offline · 7 days</footer>
+        </aside>
       </div>
     </section>
 
     <section id="editions">
-      <span class="eyebrow">Two editions</span>
+      <span class="kicker">Two editions</span>
       <h2>Use it in the browser, or install it.</h2>
-      <div class="grid g2">
-        <article class="card"><h3>Web edition</h3><p>Runs in your browser, on a computer or a phone. Add it to your home screen and save your district to use it with no signal.</p><a class="more" href="/lightkeeper/">Open LightKeeper &rarr;</a></article>
-        <article class="card"><h3>Windows app</h3><p>The same app for Windows. Keeps everything on your computer, so it runs with no connection at all.</p><a class="more" href="#download">Download the latest release &rarr;</a></article>
+      <div class="editions">
+        <article class="ed">
+          <div class="device">
+            <svg viewBox="0 0 84 150" aria-hidden="true"><defs><clipPath id="ph"><rect x="8" y="10" width="68" height="130" rx="7" /></clipPath></defs><rect x="2" y="2" width="80" height="146" rx="13" fill="#0a121b" stroke="#24364a" stroke-width="2" /><g clip-path="url(#ph)"><rect x="8" y="10" width="68" height="130" fill="#0a121b" /><path d="M-10 130 C20 120 30 90 45 80 S70 40 90 30" fill="none" stroke="#10283b" stroke-width="26" /><circle cx="30" cy="104" r="2.5" fill="#3be38a" /><circle cx="44" cy="70" r="2.5" fill="#ff4d5a" /><circle cx="60" cy="50" r="2.5" fill="#3be38a" /><rect x="14" y="16" width="56" height="10" rx="3" fill="#152231" /></g></svg>
+          </div>
+          <span class="badge"><span class="lt g" style="--k:iso;--p:2s"></span>Live</span>
+          <h3>Web edition</h3>
+          <p>Runs in your browser, on a computer or a phone. Add it to your home screen and save your district to use it with no signal.</p>
+          <a class="more" href="/lightkeeper/">Open LightKeeper &rarr;</a>
+        </article>
+        <article class="ed">
+          <div class="device">
+            <svg viewBox="0 0 250 150" aria-hidden="true"><defs><clipPath id="win"><rect x="4" y="22" width="242" height="124" /></clipPath></defs><rect x="2" y="2" width="246" height="146" rx="8" fill="#0a121b" stroke="#24364a" stroke-width="2" /><rect x="3" y="3" width="244" height="19" rx="7" fill="#152231" /><circle cx="226" cy="12" r="3" fill="#24364a" /><circle cx="214" cy="12" r="3" fill="#24364a" /><g clip-path="url(#win)"><path d="M-10 140 C60 120 90 90 130 85 S200 50 260 40" fill="none" stroke="#10283b" stroke-width="30" /><circle cx="90" cy="108" r="2.5" fill="#3be38a" /><circle cx="128" cy="80" r="2.5" fill="#ff4d5a" /><circle cx="175" cy="72" r="2.5" fill="#3be38a" /><circle cx="215" cy="46" r="2.5" fill="#ff4d5a" /><rect x="10" y="30" width="58" height="108" rx="4" fill="#111c28" /><rect x="16" y="38" width="44" height="5" rx="2" fill="#24364a" /><rect x="16" y="50" width="34" height="5" rx="2" fill="#24364a" /><rect x="16" y="62" width="40" height="5" rx="2" fill="#24364a" /></g></svg>
+          </div>
+          <span class="badge"><span class="lt y" style="--k:fl;--p:4s"></span>Coming soon</span>
+          <h3>Windows app</h3>
+          <p>The same app for Windows. Keeps everything on your computer, so it runs with no connection at all.</p>
+          <a class="more" href="#download">Download the latest release &rarr;</a>
+        </article>
       </div>
-      <p class="note" style="margin-top:22px">Not for navigation. Data from USCG NAVCEN, OpenStreetMap, NOAA, USGS, the National Weather Service, Open-Meteo and Esri; see <a href="/lightkeeper/about">data sources and notices</a>.</p>
+      <p class="caution"><b>CAUTION</b>Not for navigation. Data from USCG NAVCEN, OpenStreetMap, NOAA, USGS, the National Weather Service, Open-Meteo and Esri; see <a href="/lightkeeper/about">data sources and notices</a>.</p>
     </section>
+  </div>
 
-    <div class="closing">
+  <div class="closing">
+    <div class="wrap">
+      <div class="beacon"></div>
+      <span class="ch">ISO W 6S</span>
       <h2>Open LightKeeper.</h2>
       <p>Works in any modern browser, including on phones.</p>
       <div class="cta">
-        <a class="btn primary" href="/lightkeeper/">Open LightKeeper</a>
+        <a class="btn primary" href="/lightkeeper/">Open LightKeeper <span class="arrow">&rarr;</span></a>
         <a class="btn" href="#download">Windows app — coming soon</a>
       </div>
     </div>
-
   </div>
 </main>
+
 <footer>
   <div class="wrap">
     <span>LightKeeper v2.1.7 &middot; &copy; 2026 ArsenalRX Dev &middot; all rights reserved</span>
