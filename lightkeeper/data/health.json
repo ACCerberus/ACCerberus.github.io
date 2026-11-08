@@ -1,158 +1,158 @@
 {
- "checked_at": "2026-11-07T19:08:25+00:00",
+ "checked_at": "2026-11-08T19:09:20+00:00",
  "sources": [
   {
    "name": "USCG Light List (NAVCEN)",
-   "ok": false,
+   "ok": true,
    "must_have": true,
-   "detail": "URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'navcen.uscg.gov'. (_ssl.c:1018)>",
-   "ms": 0
+   "detail": "1000 aids in D13 part 1",
+   "ms": 2563
   },
   {
    "name": "Broadcast Notices (GovDelivery)",
    "ok": true,
    "must_have": true,
    "detail": "22 D13 notices",
-   "ms": 1428
+   "ms": 1285
   },
   {
    "name": "NOAA buoys (NDBC)",
    "ok": true,
    "must_have": true,
-   "detail": "854 buoys",
-   "ms": 225
+   "detail": "853 buoys",
+   "ms": 148
   },
   {
    "name": "NOAA tide stations",
    "ok": true,
    "must_have": true,
    "detail": "3502 tide stations",
-   "ms": 601
+   "ms": 724
   },
   {
    "name": "NOAA tide predictions",
    "ok": true,
    "must_have": true,
    "detail": "4 Seattle highs/lows today",
-   "ms": 184
+   "ms": 192
   },
   {
    "name": "National Weather Service",
    "ok": true,
    "must_have": true,
    "detail": "14 forecast periods",
-   "ms": 237
+   "ms": 196
   },
   {
    "name": "USGS water temperature",
    "ok": true,
    "must_have": true,
    "detail": "91 WA water-temperature gauges",
-   "ms": 803
+   "ms": 515
   },
   {
    "name": "Dam inventory (NID)",
    "ok": true,
    "must_have": true,
    "detail": "dam inventory answers with the expected fields",
-   "ms": 142
+   "ms": 924
   },
   {
    "name": "Army Corps dam readings (CWMS)",
    "ok": true,
    "must_have": true,
    "detail": "20 Ice Harbor series",
-   "ms": 956
+   "ms": 808
   },
   {
    "name": "Open-Meteo weather",
    "ok": true,
    "must_have": true,
    "detail": "current conditions OK",
-   "ms": 141
+   "ms": 299
   },
   {
    "name": "NOAA charts",
    "ok": true,
    "must_have": true,
    "detail": "chart tile 29 KB",
-   "ms": 330
+   "ms": 451
   },
   {
    "name": "OpenStreetMap tiles",
    "ok": true,
    "must_have": true,
    "detail": "street map tile OK",
-   "ms": 88
+   "ms": 56
   },
   {
    "name": "Esri satellite tiles",
    "ok": true,
    "must_have": true,
    "detail": "satellite tile OK",
-   "ms": 161
+   "ms": 170
   },
   {
    "name": "Wikimedia photos",
    "ok": true,
    "must_have": false,
    "detail": "photo search OK",
-   "ms": 625
+   "ms": 741
   },
   {
    "name": "Overpass (places)",
    "ok": true,
    "must_have": false,
    "detail": "5 ramps near Seattle",
-   "ms": 29024
+   "ms": 36167
   },
   {
    "name": "Photon (place search)",
    "ok": true,
    "must_have": false,
    "detail": "place search OK",
-   "ms": 774
+   "ms": 641
   },
   {
    "name": "Nominatim (place search)",
    "ok": true,
    "must_have": false,
    "detail": "place search OK",
-   "ms": 241
+   "ms": 577
   },
   {
    "name": "OSRM (drive times)",
    "ok": true,
    "must_have": false,
    "detail": "drive 18 min",
-   "ms": 1109
+   "ms": 1306
   },
   {
    "name": "Published Light List files",
    "ok": true,
    "must_have": true,
    "detail": "53652 aids, built 2026-11-03",
-   "ms": 88
+   "ms": 110
   },
   {
    "name": "Notice feeds, all districts",
    "ok": true,
    "must_have": true,
-   "detail": "3916 notices across 9 districts",
-   "ms": 169927
+   "detail": "3920 notices across 9 districts",
+   "ms": 175552
   },
   {
    "name": "Published buoy file",
    "ok": true,
    "must_have": true,
-   "detail": "846 buoys",
+   "detail": "844 buoys",
    "ms": 1
   },
   {
    "name": "Published places files",
    "ok": true,
    "must_have": true,
-   "detail": "68,843 places, built 2026-11-03",
+   "detail": "68,878 places, built 2026-11-08",
    "ms": 0
   }
  ]
